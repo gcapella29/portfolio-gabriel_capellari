@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriel Capellari — Poker Journalist</title>
+<meta name="description" content="Gabriel Capellari — Jornalista de poker, repórter de torneios ao vivo e redator SEO.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --felt: #0e3b2e;
+    --felt-dark: #082720;
+    --felt-line: rgba(243,238,226,0.14);
+    --cream: #f3eee2;
+    --paper: #faf7f0;
+    --ink: #171310;
+    --gold: #c9a227;
+    --gold-bright: #e3bb3d;
+    --brick: #a83c2e;
+    --muted: #7c8f86;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; margin:0; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex;
+    align-items:center;
+    gap:0.6em;
+  }
+  .eyebrow::before{content:"♠"; font-size:0.9em;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    background:
+      linear-gradient(180deg, rgba(8,39,32,0.55) 0%, rgba(8,39,32,0.88) 62%, var(--felt-dark) 100%),
+      url('img/wsop-portrait.jpg') center 18% / cover no-repeat;
+    color:var(--cream);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:1.4rem 1.4rem 2.2rem;
+    overflow:hidden;
+  }
+  .hero-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:rgba(243,238,226,0.75);
+  }
+  .badge{
+    border:1px solid rgba(243,238,226,0.4);
+    border-radius:3px;
+    padding:0.35rem 0.6rem;
+    background:rgba(8,39,32,0.4);
+    backdrop-filter:blur(2px);
+  }
+  .hero-main{margin-top:auto; padding-top:3rem;}
+  .hero-name{
+    font-size:clamp(2.6rem, 11vw, 5rem);
+    line-height:0.96;
+    font-weight:600;
+  }
+  .hero-name em{font-style:italic; font-weight:500; color:var(--gold-bright);}
+  .hero-role{
+    margin-top:0.9rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.82rem;
+    letter-spacing:0.03em;
+    color:rgba(243,238,226,0.88);
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.5rem 0;
+  }
+  .hero-role .sep{margin:0 0.55rem; color:var(--gold);}
+  .hero-flags{
+    margin-top:1.6rem;
+    display:flex;
+    gap:0.5rem;
+    flex-wrap:wrap;
+  }
+  .chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.04em;
+    border:1px solid rgba(243,238,226,0.35);
+    border-radius:999px;
+    padding:0.3rem 0.7rem 0.32rem;
+    color:rgba(243,238,226,0.9);
+  }
+
+  /* ---------- TICKER ---------- */
+  .ticker-wrap{
+    background:var(--gold);
+    color:var(--felt-dark);
+    overflow:hidden;
+    white-space:nowrap;
+    border-top:1px solid var(--felt-dark);
+    border-bottom:1px solid var(--felt-dark);
+  }
+  .ticker{
+    display:inline-flex;
+    padding:0.55rem 0;
+    animation:scroll 34s linear infinite;
+  }
+  .ticker span{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.75rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    padding:0 1.4rem;
+    text-transform:uppercase;
+  }
+  .ticker span::after{content:"◆"; margin-left:1.4rem; opacity:0.6; font-size:0.6rem; vertical-align:middle;}
+  @keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:4.2rem 1.4rem;}
+  .section-head{margin-bottom:2rem;}
+  .section-head h2{font-size:clamp(1.7rem,6vw,2.3rem); margin-top:0.4rem; font-weight:600;}
+
+  /* ABOUT */
+  .about{background:var(--paper);}
+  .about-photo{
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:1.8rem;
+    aspect-ratio:4/5;
+    background:var(--felt);
+  }
+  .about-photo img{width:100%; height:100%; object-fit:cover; object-position:top;}
+  .about p{font-size:1.02rem; line-height:1.65; color:#3a342c; max-width:60ch;}
+  .about p + p{margin-top:1rem;}
+
+  /* COVERAGE — live board */
+  .coverage{background:var(--felt); color:var(--cream);}
+  .coverage .eyebrow{color:var(--gold-bright);}
+  .coverage .section-head h2{color:var(--cream);}
+  .board{
+    border-top:1px solid var(--felt-line);
+  }
+  .board-row{
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    padding:0.85rem 0;
+    border-bottom:1px solid var(--felt-line);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.82rem;
+  }
+  .board-row .ev{color:var(--cream); font-weight:500;}
+  .board-row .yr{color:var(--gold-bright); white-space:nowrap; text-align:right;}
+
+  /* PORTFOLIO */
+  .portfolio{background:var(--paper);}
+  .press-cards{display:grid; gap:0.9rem; grid-template-columns:1fr;}
+  .press-card{
+    border:1px solid #e2dbc8;
+    border-radius:6px;
+    padding:1.1rem 1.2rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    text-decoration:none;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .press-card:hover, .press-card:focus-visible{border-color:var(--gold); background:#fbf6e9;}
+  .press-card .name{font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem;}
+  .press-card .desc{font-size:0.85rem; color:var(--muted); margin-top:0.15rem;}
+  .press-card .arrow{font-family:'IBM Plex Mono',monospace; font-size:1.1rem; color:var(--brick); flex-shrink:0;}
+
+  /* EXPERIENCE — hand history log */
+  .experience{background:var(--felt-dark); color:var(--cream);}
+  .experience .eyebrow{color:var(--gold-bright);}
+  .experience .section-head h2{color:var(--cream);}
+  .log{border-top:1px solid var(--felt-line);}
+  .log-entry{
+    padding:1.1rem 0;
+    border-bottom:1px solid var(--felt-line);
+    display:flex;
+    flex-direction:column;
+    gap:0.2rem;
+  }
+  .log-entry .top-line{display:flex; justify-content:space-between; gap:1rem; align-items:baseline; flex-wrap:wrap;}
+  .log-entry .role{font-family:'Fraunces',serif; font-size:1.08rem; font-weight:600;}
+  .log-entry .yrs{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--gold-bright); white-space:nowrap;}
+  .log-entry .org{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:rgba(243,238,226,0.65); margin-top:0.15rem;}
+  .log-entry .note{font-size:0.9rem; color:rgba(243,238,226,0.8); margin-top:0.35rem; max-width:58ch; line-height:1.5;}
+
+  /* EDU + SKILLS */
+  .edu{background:var(--paper);}
+  .edu-grid{display:grid; gap:2.4rem; grid-template-columns:1fr;}
+  .edu-item{border-left:2px solid var(--gold); padding-left:1rem;}
+  .edu-item .deg{font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem;}
+  .edu-item .inst{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--muted); margin-top:0.2rem;}
+  .stack-title{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.8rem;}
+  .chipstack{display:flex; flex-wrap:wrap; gap:0.6rem;}
+  .poker-chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.74rem;
+    font-weight:600;
+    border-radius:999px;
+    padding:0.42rem 0.85rem;
+    border:2px dashed var(--gold);
+    color:var(--ink);
+    background:repeating-linear-gradient(135deg, var(--cream), var(--cream) 6px, #f8f0d8 6px, #f8f0d8 12px);
+  }
+  .poker-chip.high{border-color:var(--brick); border-style:solid;}
+
+  /* CONTACT */
+  .contact{
+    background:var(--felt);
+    color:var(--cream);
+    text-align:left;
+  }
+  .contact .section-head h2{color:var(--cream);}
+  .contact-photo{
+    border-radius:4px;
+    overflow:hidden;
+    margin:1.6rem 0 2rem;
+    aspect-ratio:16/10;
+  }
+  .contact-photo img{width:100%; height:100%; object-fit:cover;}
+  .contact-links{display:flex; flex-direction:column; gap:0.8rem;}
+  .contact-links a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.95rem;
+    text-decoration:none;
+    border-bottom:1px solid var(--felt-line);
+    padding-bottom:0.8rem;
+    display:flex;
+    justify-content:space-between;
+  }
+  .contact-links a span.lbl{color:var(--gold-bright); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;}
+  footer{
+    background:var(--felt-dark);
+    color:rgba(243,238,226,0.5);
+    text-align:center;
+    padding:1.6rem 1.4rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- DESKTOP ---------- */
+  @media (min-width:820px){
+    section{padding:6rem 4rem;}
+    .hero{padding:2rem 4rem 3rem;}
+    .hero-main{max-width:900px;}
+    .about-grid{display:grid; grid-template-columns:340px 1fr; gap:3.5rem; align-items:start;}
+    .about-photo{margin-bottom:0;}
+    .board{max-width:820px;}
+    .press-cards{grid-template-columns:1fr 1fr;}
+    .log{max-width:820px;}
+    .log-entry .top-line{flex-wrap:nowrap;}
+    .edu-grid{grid-template-columns:1fr 1fr; align-items:start;}
+    .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;}
+    .contact-photo{margin:0;}
+  }
+
+  :focus-visible{outline:2px solid var(--gold-bright); outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-top">
+    <span class="badge">CREDENCIAL DE IMPRENSA</span>
+    <span class="badge">IBITINGA · SP · BR</span>
+  </div>
+  <div class="hero-main">
+    <div class="eyebrow">Ao vivo desde a mesa final</div>
+    <h1 class="hero-name">Gabriel<br><em>Capellari</em></h1>
+    <div class="hero-role">
+      JORNALISTA DE POKER <span class="sep">·</span> REPÓRTER DE TORNEIOS AO VIVO <span class="sep">·</span> REDATOR SEO
+    </div>
+    <div class="hero-flags">
+      <span class="chip">🇧🇷 Português — nativo</span>
+      <span class="chip">🇬🇧 Inglês — C2</span>
+      <span class="chip">🇪🇸 Espanhol — B1</span>
+    </div>
+  </div>
+</header>
+
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker">
+    <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
+    <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="sobre">
+  <div class="about-grid">
+    <div class="about-photo">
+      <img src="img/reglife.jpg" alt="Gabriel Capellari operando câmera durante cobertura ao vivo de torneio de poker" loading="lazy">
+    </div>
+    <div>
+      <div class="section-head">
+        <div class="eyebrow">Perfil</div>
+        <h2>Da sala de aula<br>à mesa final</h2>
+      </div>
+      <p>Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu carreira dupla: oito anos como professor de inglês e redator de conteúdo editorial, e mais de quatro anos como repórter de poker ao vivo — cobrindo mesas finais em Las Vegas, Brasil, Panamá e Uruguai.</p>
+      <p>Hoje une as duas frentes em conteúdo SEO, jornalismo de eventos e cobertura multiplataforma para os maiores veículos de poker do país, com fluência total em inglês e trânsito editorial em espanhol.</p>
+    </div>
+  </div>
+</section>
+
+<!-- COVERAGE / LIVE BOARD -->
+<section class="coverage" id="cobertura">
+  <div class="section-head">
+    <div class="eyebrow">Painel de cobertura</div>
+    <h2>Torneios cobertos</h2>
+  </div>
+  <div class="board">
+    <div class="board-row"><span class="ev">WSOP — Las Vegas</span><span class="yr">2023 · 2024 · 2025</span></div>
+    <div class="board-row"><span class="ev">WSOP &amp; WPT World Championship — Las Vegas</span><span class="yr">2022</span></div>
+    <div class="board-row"><span class="ev">WSOP Brasil</span><span class="yr">2022</span></div>
+    <div class="board-row"><span class="ev">BSOP Millions</span><span class="yr">2022 · 2023 · 2025</span></div>
+    <div class="board-row"><span class="ev">BSOP São Paulo</span><span class="yr">2023 · 2024</span></div>
+    <div class="board-row"><span class="ev">BSOP Winter Millions</span><span class="yr">2023 · 2025 (remoto)</span></div>
+    <div class="board-row"><span class="ev">BSOP / LAPT Foz do Iguaçu</span><span class="yr">2023</span></div>
+    <div class="board-row"><span class="ev">BSOP / LAPT Rio</span><span class="yr">2024</span></div>
+    <div class="board-row"><span class="ev">LAPT Montevidéu</span><span class="yr">2023</span></div>
+    <div class="board-row"><span class="ev">LAPT Panamá</span><span class="yr">2024</span></div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio" id="portfolio">
+  <div class="section-head">
+    <div class="eyebrow">Onde ler</div>
+    <h2>Portfólio publicado</h2>
+  </div>
+  <div class="press-cards">
+    <a class="press-card" href="https://superpoker.com.br/info/staff/gabrielcapellari" target="_blank" rel="noopener">
+      <div>
+        <div class="name">SuperPoker</div>
+        <div class="desc">Notícias, coberturas ao vivo e entrevistas · 2022–2024</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+    <a class="press-card" href="https://br.pokernews.com/editores/gabriel-capellari/" target="_blank" rel="noopener">
+      <div>
+        <div class="name">PokerNews</div>
+        <div class="desc">Conteúdo editorial global · 2025–2026</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+    <a class="press-card" href="https://www.canalhasgames.com.br/pages/quem-somos" target="_blank" rel="noopener">
+      <div>
+        <div class="name">Canalhas Games</div>
+        <div class="desc">Conteúdo de mídia</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience" id="experiencia">
+  <div class="section-head">
+    <div class="eyebrow">Histórico de mãos</div>
+    <h2>Experiência profissional</h2>
+  </div>
+  <div class="log">
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Content Writer</span><span class="yrs">2025 — 2026</span></div>
+      <div class="org">PokerNews Brasil</div>
+      <div class="note">Redação de matérias e cobertura de conteúdo ligado ao poker para um dos maiores veículos de mídia do gênero no mundo.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Copywriter</span><span class="yrs">2025</span></div>
+      <div class="org">RegLife</div>
+      <div class="note">Produção de conteúdo de marketing e editorial com foco na indústria do poker.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Jornalista / Content Writer</span><span class="yrs">2022 — 2024</span></div>
+      <div class="org">SuperPoker Group</div>
+      <div class="note">Notícias, cobertura de torneios ao vivo, entrevistas e conteúdo editorial para uma das principais plataformas de mídia de poker do Brasil.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Professora de Literatura (Ensino Médio)</span><span class="yrs">2020 — 2022</span></div>
+      <div class="org">Colégio Max Beny Macena</div>
+      <div class="note">Ensino de literatura brasileira e portuguesa para o ensino médio.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Corretor de Redação</span><span class="yrs">2019 — 2021</span></div>
+      <div class="org">ENEM / ENCCEJA</div>
+      <div class="note">Avaliação de redações de candidatos em exames nacionais de educação.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2014 — 2022</span></div>
+      <div class="org">Escola LYVA</div>
+      <div class="note">Ensino de inglês para alunos do fundamental ao médio.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2017 — 2022</span></div>
+      <div class="org">Escola EDUCARE</div>
+      <div class="note">Instrução de inglês para o ensino fundamental.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Assistente de Laboratório de TI</span><span class="yrs">2011 — 2013</span></div>
+      <div class="org">Prescon Informática Assessoria LTDA</div>
+      <div class="note">Suporte técnico e assistência em laboratórios de informática.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION + SKILLS -->
+<section class="edu" id="formacao">
+  <div class="section-head">
+    <div class="eyebrow">Fundamentos</div>
+    <h2>Formação &amp; ferramentas</h2>
+  </div>
+  <div class="edu-grid">
+    <div>
+      <div class="edu-item" style="margin-bottom:1.6rem;">
+        <div class="deg">Bacharelado e Licenciatura em Letras (Português/Inglês)</div>
+        <div class="inst">UNESP — Araraquara · 2018/2019</div>
+      </div>
+      <div class="edu-item" style="margin-bottom:1.6rem;">
+        <div class="deg">Técnico em Informática</div>
+        <div class="inst">Centro Paula Souza — ETEC Ibitinga · 2010</div>
+      </div>
+      <div class="edu-item">
+        <div class="deg">Certificação em SEO Best Practices</div>
+        <div class="inst">Better Collective · 2024</div>
+      </div>
+    </div>
+    <div>
+      <div class="stack-title">Idiomas &amp; ferramentas — mesa de fichas</div>
+      <div class="chipstack">
+        <span class="poker-chip high">Inglês C2</span>
+        <span class="poker-chip">Espanhol B1</span>
+        <span class="poker-chip">SEO</span>
+        <span class="poker-chip">Cobertura ao vivo</span>
+        <span class="poker-chip">Canva</span>
+        <span class="poker-chip">CapCut</span>
+        <span class="poker-chip">Google Workspace</span>
+        <span class="poker-chip">Microsoft Office</span>
+        <span class="poker-chip">CNH categoria AB</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contato">
+  <div class="contact-grid">
+    <div>
+      <div class="section-head">
+        <div class="eyebrow">Última rodada</div>
+        <h2>Vamos falar</h2>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:gcapellari@hotmail.com"><span class="lbl">E-mail</span> gcapellari@hotmail.com</a>
+        <a href="tel:+5516997168229"><span class="lbl">Telefone</span> +55 16 99716-8229</a>
+        <a href="https://br.pokernews.com/editores/gabriel-capellari/" target="_blank" rel="noopener"><span class="lbl">PokerNews</span> Ver perfil →</a>
+      </div>
+    </div>
+    <div class="contact-photo">
+      <img src="img/wsop-table.jpg" alt="Gabriel Capellari filmando mesa final durante torneio de poker" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<footer>
+  GABRIEL CAPELLARI · JORNALISMO DE POKER · IBITINGA, SP — BRASIL
+</footer>
+
+</body>
+</html>
