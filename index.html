@@ -263,6 +263,19 @@
     justify-content:space-between;
   }
   .contact-links a span.lbl{color:var(--gold-bright); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;}
+
+  /* HIGHLIGHTS STRIP */
+  .stats{
+    background:var(--felt-dark);
+    padding:2.6rem 1.4rem;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:1.8rem;
+    border-bottom:1px solid var(--felt-line);
+  }
+  .stat{text-align:left;}
+  .stat .num{font-family:'Fraunces',serif; font-weight:600; font-size:2.6rem; color:var(--gold-bright); line-height:1;}
+  .stat .lbl{font-family:'IBM Plex Mono',monospace; font-size:0.74rem; color:rgba(243,238,226,0.75); margin-top:0.4rem; letter-spacing:0.02em; max-width:24ch;}
   footer{
     background:var(--felt-dark);
     color:rgba(243,238,226,0.5);
@@ -287,6 +300,7 @@
     .edu-grid{grid-template-columns:1fr 1fr; align-items:start;}
     .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;}
     .contact-photo{margin:0;}
+    .stats{grid-template-columns:repeat(3,1fr); padding:3.2rem 4rem; gap:2.5rem;}
   }
 
   :focus-visible{outline:2px solid var(--gold-bright); outline-offset:2px;}
@@ -397,6 +411,21 @@
   </div>
 </div>
 
+<section class="stats reveal-stagger" id="destaques">
+  <div class="stat">
+    <div class="num">8</div>
+    <div class="lbl">anos como professor de inglês &amp; literatura</div>
+  </div>
+  <div class="stat">
+    <div class="num">4+</div>
+    <div class="lbl">anos de cobertura de poker ao vivo</div>
+  </div>
+  <div class="stat">
+    <div class="num">4</div>
+    <div class="lbl">países cobertos — Brasil · EUA · Panamá · Uruguai</div>
+  </div>
+</section>
+
 <!-- ABOUT -->
 <section class="about reveal" id="sobre">
   <div class="about-grid">
@@ -408,8 +437,8 @@
         <div class="eyebrow">Perfil</div>
         <h2>Da sala de aula<br>à mesa final</h2>
       </div>
-      <p>Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu carreira dupla: oito anos como professor de inglês e redator de conteúdo editorial, e mais de quatro anos como repórter de poker ao vivo — cobrindo mesas finais em Las Vegas, Brasil, Panamá e Uruguai.</p>
-      <p>Hoje une as duas frentes em conteúdo SEO, jornalismo de eventos e cobertura multiplataforma para os maiores veículos de poker do país, com fluência total em inglês e trânsito editorial em espanhol.</p>
+      <p>Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.</p>
+      <p>Hoje soma mais de quatro anos cobrindo mesas finais em quatro países — Brasil, Estados Unidos, Panamá e Uruguai —, produzindo conteúdo editorial e SEO para os principais veículos do setor, com inglês fluente (C2) e trânsito editorial em espanhol (B1).</p>
     </div>
   </div>
 </section>
@@ -444,21 +473,21 @@
     <a class="press-card" href="https://superpoker.com.br/info/staff/gabrielcapellari" target="_blank" rel="noopener">
       <div>
         <div class="name">SuperPoker</div>
-        <div class="desc">Notícias, coberturas ao vivo e entrevistas · 2022–2024</div>
+        <div class="desc">Notícias, cobertura ao vivo e entrevistas exclusivas · 2022–2024</div>
       </div>
       <span class="arrow">→</span>
     </a>
     <a class="press-card" href="https://br.pokernews.com/editores/gabriel-capellari/" target="_blank" rel="noopener">
       <div>
         <div class="name">PokerNews</div>
-        <div class="desc">Conteúdo editorial global · 2025–2026</div>
+        <div class="desc">Conteúdo editorial para o maior veículo de poker do mundo · 2025–2026</div>
       </div>
       <span class="arrow">→</span>
     </a>
     <a class="press-card" href="https://www.canalhasgames.com.br/pages/quem-somos" target="_blank" rel="noopener">
       <div>
         <div class="name">Canalhas Games</div>
-        <div class="desc">Conteúdo de mídia</div>
+        <div class="desc">Produção de conteúdo de mídia esportiva</div>
       </div>
       <span class="arrow">→</span>
     </a>
@@ -475,42 +504,42 @@
     <div class="log-entry">
       <div class="top-line"><span class="role">Content Writer</span><span class="yrs">2025 — 2026</span></div>
       <div class="org">PokerNews Brasil</div>
-      <div class="note">Redação de matérias e cobertura de conteúdo ligado ao poker para um dos maiores veículos de mídia do gênero no mundo.</div>
+      <div class="note">Produzo conteúdo editorial e cobertura jornalística para um dos maiores veículos de poker do mundo, unindo precisão informativa a SEO estratégico.</div>
     </div>
     <div class="log-entry">
       <div class="top-line"><span class="role">Copywriter</span><span class="yrs">2025</span></div>
       <div class="org">RegLife</div>
-      <div class="note">Produção de conteúdo de marketing e editorial com foco na indústria do poker.</div>
+      <div class="note">Desenvolvi conteúdo de marketing e editorial voltado à indústria do poker, com foco em conversão e engajamento.</div>
     </div>
     <div class="log-entry">
       <div class="top-line"><span class="role">Jornalista / Content Writer</span><span class="yrs">2022 — 2024</span></div>
       <div class="org">SuperPoker Group</div>
-      <div class="note">Notícias, cobertura de torneios ao vivo, entrevistas e conteúdo editorial para uma das principais plataformas de mídia de poker do Brasil.</div>
+      <div class="note">Conduzi cobertura ao vivo de torneios, entrevistas e produção de notícias para uma das maiores plataformas de mídia de poker do Brasil, consolidando presença editorial no setor.</div>
     </div>
     <div class="log-entry">
-      <div class="top-line"><span class="role">Professora de Literatura (Ensino Médio)</span><span class="yrs">2020 — 2022</span></div>
+      <div class="top-line"><span class="role">Professor de Literatura (Ensino Médio)</span><span class="yrs">2020 — 2022</span></div>
       <div class="org">Colégio Max Beny Macena</div>
-      <div class="note">Ensino de literatura brasileira e portuguesa para o ensino médio.</div>
+      <div class="note">Lecionei literatura brasileira e portuguesa para turmas do ensino médio, desenvolvendo habilidades de comunicação e didática que hoje sustentam meu trabalho como redator e repórter.</div>
     </div>
     <div class="log-entry">
       <div class="top-line"><span class="role">Corretor de Redação</span><span class="yrs">2019 — 2021</span></div>
       <div class="org">ENEM / ENCCEJA</div>
-      <div class="note">Avaliação de redações de candidatos em exames nacionais de educação.</div>
+      <div class="note">Avaliei redações de candidatos em exames nacionais, aplicando critérios técnicos de coesão, argumentação e norma culta.</div>
     </div>
     <div class="log-entry">
       <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2014 — 2022</span></div>
       <div class="org">Escola LYVA</div>
-      <div class="note">Ensino de inglês para alunos do fundamental ao médio.</div>
+      <div class="note">Lecionei inglês para turmas do fundamental ao médio, construindo a base do domínio fluente (C2) que hoje aplico no jornalismo internacional.</div>
     </div>
     <div class="log-entry">
       <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2017 — 2022</span></div>
       <div class="org">Escola EDUCARE</div>
-      <div class="note">Instrução de inglês para o ensino fundamental.</div>
+      <div class="note">Conduzi aulas de inglês para o ensino fundamental, reforçando fundamentos de leitura, escrita e conversação.</div>
     </div>
     <div class="log-entry">
       <div class="top-line"><span class="role">Assistente de Laboratório de TI</span><span class="yrs">2011 — 2013</span></div>
       <div class="org">Prescon Informática Assessoria LTDA</div>
-      <div class="note">Suporte técnico e assistência em laboratórios de informática.</div>
+      <div class="note">Prestei suporte técnico e apoio operacional em laboratórios de informática.</div>
     </div>
   </div>
 </section>
@@ -585,8 +614,9 @@
       </div>
       <div class="contact-links">
         <a href="mailto:gcapellari@hotmail.com"><span class="lbl">E-mail</span> gcapellari@hotmail.com</a>
-        <a href="tel:+5516997168229"><span class="lbl">Telefone</span> +55 16 99716-8229</a>
-        <a href="https://br.pokernews.com/editores/gabriel-capellari/" target="_blank" rel="noopener"><span class="lbl">PokerNews</span> Ver perfil →</a>
+        <a href="https://wa.me/5516997168229" target="_blank" rel="noopener"><span class="lbl">WhatsApp</span> +55 16 99716-8229</a>
+        <a href="https://www.instagram.com/gabrielcapellari/" target="_blank" rel="noopener"><span class="lbl">Instagram</span> @gabrielcapellari →</a>
+        <a href="https://www.linkedin.com/in/gabriel-capellari-%E2%80%99-5347ba14b/" target="_blank" rel="noopener"><span class="lbl">LinkedIn</span> Ver perfil →</a>
       </div>
     </div>
     <div class="contact-photo">
