@@ -10,7 +10,7 @@ collections:
   - name: "conteudo"
     label: "Conteúdo do Site"
     files:
-      - file: "content/dados.json"
+      - file: "admin/content/dados.json"
         label: "Dados do Currículo"
         name: "dados"
         fields:
