@@ -1,0 +1,18 @@
+backend:
+  name: github
+  repo: gcapella29/portfolio-gabriel_capellari
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "conteudo"
+    label: "Conteúdo do Site"
+    files:
+      - file: "content/dados.json"
+        label: "Informações Gerais"
+        name: "dados"
+        fields:
+          - {label: "Nome Completo", name: "nome", widget: "string"}
+          - {label: "Título Principal (Hero)", name: "titulo_hero", widget: "string"}
