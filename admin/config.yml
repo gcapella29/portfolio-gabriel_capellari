@@ -1,7 +1,8 @@
 backend:
   name: github
-  repo: gcapella29/portfolio-gabriel_capellari
+  repo: seu-usuario/seu-repositorio
   branch: main
+  base_url: https://decap-cms-oauth-vercel.vercel.app # Ou o proxy de autenticação configurado
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
