@@ -440,6 +440,15 @@
     font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em;
     color:var(--felt-dark); background:var(--gold-bright); padding:0.5rem 1rem; border-radius:999px; text-decoration:none;
   }
+  /* ---------- EXPERIENCE POLISH ---------- */
+  .language-toggle{appearance:none; border:1px solid rgba(243,238,226,.48); border-radius:999px; padding:.48rem .78rem; color:var(--cream); background:rgba(8,39,32,.46); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); font:600 .72rem/1 'IBM Plex Mono',monospace; letter-spacing:.08em; cursor:pointer; transition:transform .2s ease, background .2s ease, border-color .2s ease;}
+  .language-toggle:hover{transform:translateY(-2px); background:rgba(201,162,39,.22); border-color:var(--gold-bright);}
+  .language-toggle:focus-visible{outline:3px solid var(--gold-bright); outline-offset:3px;}
+  .hero-top{gap:.65rem;}
+  .hero::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 84% 12%, rgba(227,187,61,.16), transparent 23%); mix-blend-mode:screen;}
+  .hero-content{position:relative; z-index:1;}
+  @media (prefers-reduced-motion:no-preference){.hero-name em{animation:gold-glow 4s ease-in-out infinite;} @keyframes gold-glow{50%{text-shadow:0 0 26px rgba(227,187,61,.32);}}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;} *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
 </style>
 </head>
 <body>
@@ -449,6 +458,7 @@
   <div class="hero-bg-layer" id="heroBg"></div>
   <div class="hero-content">
     <div class="hero-top">
+      <button class="language-toggle" id="languageToggle" type="button" aria-pressed="false" aria-label="Switch portfolio language to English">EN</button>
       <span class="badge">IBITINGA · SP · BR</span>
     </div>
     <div class="hero-main">
@@ -723,6 +733,70 @@
 </footer>
 
 <script>
+  // ---------- LANGUAGE + ENCODING ----------
+  // The original text was pasted with mojibake. Decode only rendered copy, keeping
+  // the original markup and embedded image data untouched.
+  const cp1252 = {"€":128,"‚":130,"ƒ":131,"„":132,"…":133,"†":134,"‡":135,"ˆ":136,"‰":137,"Š":138,"‹":139,"Œ":140,"Ž":142,"‘":145,"’":146,"“":147,"”":148,"•":149,"–":150,"—":151,"˜":152,"™":153,"š":154,"›":155,"œ":156,"ž":158,"Ÿ":159};
+  const textDecoder = new TextDecoder('utf-8');
+  const restoreText = value => {
+    if (!/[ÃÂâð]/.test(value)) return value;
+    try { return textDecoder.decode(Uint8Array.from(value, char => cp1252[char] ?? char.charCodeAt(0))); }
+    catch { return value; }
+  };
+  const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = []; while (textNodes.nextNode()) nodes.push(textNodes.currentNode);
+  nodes.forEach(node => node.nodeValue = restoreText(node.nodeValue));
+  document.querySelectorAll('[alt],[title],[aria-label]').forEach(el => ['alt','title','aria-label'].forEach(attr => {
+    if (el.hasAttribute(attr)) el.setAttribute(attr, restoreText(el.getAttribute(attr)));
+  }));
+
+  const translations = new Map([
+    ['JORNALISTA DE POKER · REPÓRTER DE TORNEIOS AO VIVO · REDATOR SEO', 'POKER JOURNALIST · LIVE TOURNAMENT REPORTER · SEO WRITER'],
+    ['Português — nativo', 'Portuguese — native'], ['Inglês — C1', 'English — C1'], ['Espanhol — B1', 'Spanish — B1'],
+    ['anos como professor de inglês & literatura', 'years as an English & literature teacher'], ['anos de cobertura de poker ao vivo', 'years covering live poker'], ['países cobertos — Brasil · EUA · Panamá · Uruguai', 'countries covered — Brazil · USA · Panama · Uruguay'],
+    ['Da sala de aula aos feltros', 'From the classroom to the felt'], ['Torneios cobertos', 'Tournaments covered'], ['Portfólio publicado', 'Published portfolio'],
+    ['Formado em Letras (Português/Inglês), sempre fui apaixonado por esportes e comunicação. Através das palavras, encontrei uma forma de contar histórias, aproximar pessoas e transformar experiências em conexão.', 'With a degree in Languages (Portuguese/English), I have always been passionate about sports and communication. Through words, I found a way to tell stories, bring people together and turn experiences into connection.'],
+    ['Produção de conteúdo de mídia esportiva', 'Sports-media content production'], ['Histórico de mãos', 'Hand history'], ['Experiência profissional', 'Professional experience'],
+    ['Pesquisei imagens de torneios de poker e documentei mãos-chave, histórias de jogadores e marcações de tempo para apoiar a produção de conteúdo de uma das maiores empresas de mídia de poker do mundo.', 'Researched poker-tournament footage and documented key hands, player stories and timestamps to support content production for one of the world’s largest poker media companies.'],
+    ['Pesquisei jogadores profissionais de poker, levantando históricos, destaques de carreira e conquistas relevantes para apoiar a produção de conteúdo.', 'Researched professional poker players, gathering backgrounds, career highlights and relevant achievements to support content production.'],
+    ['Produzo conteúdo editorial e cobertura jornalística para um dos maiores veículos de poker do mundo, unindo precisão informativa a SEO estratégico.', 'Produce editorial content and journalistic coverage for one of the world’s largest poker outlets, combining accuracy with strategic SEO.'],
+    ['Desenvolvi conteúdo de marketing e editorial voltado à indústria do poker, com foco em conversão e engajamento.', 'Developed marketing and editorial content for the poker industry, focused on conversion and engagement.'],
+    ['Conduzi cobertura ao vivo de torneios, entrevistas e produção de notícias para uma das maiores plataformas de mídia de poker do Brasil, consolidando presença editorial no setor.', 'Led live tournament coverage, interviews and news production for one of Brazil’s largest poker media platforms, building a strong editorial presence in the sector.'],
+    ['Professor de Literatura (Ensino Médio)', 'High School Literature Teacher'], ['Lecionei literatura brasileira e portuguesa para turmas do ensino médio, desenvolvendo habilidades de comunicação e didática que hoje sustentam meu trabalho como redator e repórter.', 'Taught Brazilian and Portuguese literature to high-school classes, developing the communication and teaching skills that now support my work as a writer and reporter.'],
+    ['Corretor de Redação', 'Essay Evaluator'], ['Avaliei redações de candidatos em exames nacionais, aplicando critérios técnicos de coesão, argumentação e norma culta.', 'Evaluated candidate essays in national examinations, applying technical standards for cohesion, argumentation and formal language.'],
+    ['Professor de Inglês', 'English Teacher'], ['Lecionei inglês para turmas do fundamental ao médio, construindo a base do domínio fluente (C2) que hoje aplico no jornalismo internacional.', 'Taught English from elementary through high-school levels, building the fluent command (C2) I now apply in international journalism.'],
+    ['Conduzi aulas de inglês para o ensino fundamental, reforçando fundamentos de leitura, escrita e conversação.', 'Taught English in elementary school, reinforcing foundations of reading, writing and conversation.'],
+    ['Assistente de Laboratório de TI', 'IT Lab Assistant'], ['Prestei suporte técnico e apoio operacional em laboratórios de informática.', 'Provided technical and operational support in computer labs.'],
+    ['Fundamentos', 'Foundations'], ['Formação & ferramentas', 'Education & tools'], ['Bacharelado e Licenciatura em Letras (Português/Inglês)', 'BA and Teaching Degree in Languages (Portuguese/English)'], ['Técnico em Informática', 'IT Technician'], ['Certificação em SEO Best Practices', 'SEO Best Practices Certification'], ['Idiomas & ferramentas — mesa de fichas', 'Languages & tools — chip stack'], ['Cobertura ao vivo', 'Live coverage'], ['CNH categoria AB', 'Brazilian driver’s license (AB)'],
+    ['Bastidores', 'Behind the scenes'], ['Também no Instagram', 'Also on Instagram'], ['Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.', 'Final-table behind the scenes, reporting trips and everyday reporter life — all there.'], ['Ver no Instagram', 'View on Instagram'],
+    ['Contato', 'Contact'], ['E-mail alternativo', 'Alternative email'], ['Ver perfil →', 'View profile →'], ['GABRIEL CAPELLARI · JORNALISMO DE POKER · IBITINGA, SP — BRASIL', 'GABRIEL CAPELLARI · POKER JOURNALISM · IBITINGA, SP — BRAZIL'],
+    ['Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.', 'With a degree in Languages (Portuguese/English) from UNESP, Gabriel built a career that blends language mastery, classroom discipline and journalistic instinct. He spent eight years teaching English and literature before moving into live-event coverage — a transition that brought teaching rigor and clarity to poker journalism.'],
+    ['Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.', 'He now has more than four years of event coverage across Brazil, the United States, Panama and Uruguay, producing editorial and SEO content for leading outlets in the industry.']
+  ]);
+  const replaceCopy = (root, language) => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const copy = []; while (walker.nextNode()) copy.push(walker.currentNode);
+    copy.forEach(node => {
+      const current = node.nodeValue;
+      if (!node.dataset) node.__pt = node.__pt ?? current;
+      const pt = node.__pt;
+      node.nodeValue = language === 'en' ? (translations.get(pt.trim()) ? pt.replace(pt.trim(), translations.get(pt.trim())) : pt) : pt;
+    });
+  };
+  const toggle = document.getElementById('languageToggle');
+  let language = localStorage.getItem('portfolio-language') || 'pt';
+  const setLanguage = next => {
+    language = next; replaceCopy(document.body, language);
+    document.documentElement.lang = language === 'en' ? 'en' : 'pt-BR';
+    document.title = language === 'en' ? 'Gabriel Capellari — Poker Journalist' : 'Gabriel Capellari — Jornalista de Poker';
+    toggle.textContent = language === 'en' ? 'PT' : 'EN';
+    toggle.setAttribute('aria-pressed', String(language === 'en'));
+    toggle.setAttribute('aria-label', language === 'en' ? 'Mudar idioma do portfólio para português' : 'Switch portfolio language to English');
+    localStorage.setItem('portfolio-language', language);
+  };
+  toggle.addEventListener('click', () => setLanguage(language === 'en' ? 'pt' : 'en'));
+  setLanguage(language);
+
   // ---------- CONFIGURE SEU INSTAGRAM AQUI ----------
   const INSTAGRAM_USER = "gabrielcapellari";
   const REEL_URL = "https://www.instagram.com/p/DZK3eH_uRzP/";
