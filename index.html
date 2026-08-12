@@ -1367,6 +1367,11 @@ button,a{touch-action:manipulation;}
     "sameAs":["https://www.linkedin.com/in/gabriel-capellari-5347ba14b/","https://www.instagram.com/gabrielcapellari/"]
   }
 }</script>
+
+<!-- VITRINE PRO CMS — Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
 </head>
 <body>
 
@@ -1427,11 +1432,11 @@ button,a{touch-action:manipulation;}
     </div>
     <div>
       <div class="section-head">
-        <div class="eyebrow">Perfil</div>
-        <h2>Da sala de aula<br>aos feltros</h2>
+        <div class="eyebrow" id="aboutEyebrow">Perfil</div>
+        <h2 id="aboutTitle">Da sala de aula<br>aos feltros</h2>
       </div>
-      <p>Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.</p>
-      <p>Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.</p>
+      <p id="aboutParagraph1">Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.</p>
+      <p id="aboutParagraph2">Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.</p>
     </div>
   </div>
 </section>
@@ -2122,6 +2127,87 @@ button,a{touch-action:manipulation;}
 
   show(0);
   schedule();
+})();
+</script>
+
+
+<script>
+/* =========================================================
+   VITRINE PRO CMS — PUBLIC CONTENT LOADER
+   Phase 1: "Sobre" section
+   The HTML remains the fallback if Supabase is unavailable.
+   ========================================================= */
+(() => {
+  if (!window.supabase || !window.VITRINE_SUPABASE) return;
+
+  const { url, publishableKey, projectSlug } = window.VITRINE_SUPABASE;
+  const cms = window.supabase.createClient(url, publishableKey, {
+    auth: { persistSession: true, autoRefreshToken: true }
+  });
+
+  let aboutContent = null;
+
+  const currentLanguage = () =>
+    document.documentElement.lang.toLowerCase().startsWith('en') ? 'en' : 'pt';
+
+  const renderAbout = () => {
+    if (!aboutContent) return;
+    const lang = currentLanguage();
+
+    const eyebrow = document.getElementById('aboutEyebrow');
+    const title = document.getElementById('aboutTitle');
+    const p1 = document.getElementById('aboutParagraph1');
+    const p2 = document.getElementById('aboutParagraph2');
+
+    if (eyebrow) eyebrow.textContent =
+      lang === 'en' ? (aboutContent.eyebrow_en || aboutContent.eyebrow_pt) : aboutContent.eyebrow_pt;
+
+    if (title) title.innerHTML =
+      lang === 'en' ? (aboutContent.title_en || aboutContent.title_pt) : aboutContent.title_pt;
+
+    if (p1) p1.textContent =
+      lang === 'en' ? (aboutContent.paragraph1_en || aboutContent.paragraph1_pt) : aboutContent.paragraph1_pt;
+
+    if (p2) p2.textContent =
+      lang === 'en' ? (aboutContent.paragraph2_en || aboutContent.paragraph2_pt) : aboutContent.paragraph2_pt;
+  };
+
+  const loadAbout = async () => {
+    try {
+      const { data: project, error: projectError } = await cms
+        .from('projects')
+        .select('id')
+        .eq('slug', projectSlug)
+        .eq('is_published', true)
+        .maybeSingle();
+
+      if (projectError || !project) return;
+
+      const { data, error } = await cms
+        .from('site_content')
+        .select('content,is_visible')
+        .eq('project_id', project.id)
+        .eq('section_key', 'about')
+        .maybeSingle();
+
+      if (error || !data || data.is_visible === false) return;
+
+      aboutContent = data.content;
+      renderAbout();
+    } catch (error) {
+      console.warn('Vitrine Pro CMS: conteúdo remoto indisponível; usando fallback do HTML.', error);
+    }
+  };
+
+  // Existing language buttons continue to work; after they switch language,
+  // re-render CMS content using the selected locale.
+  document.querySelectorAll('[data-language]').forEach(button => {
+    button.addEventListener('click', () => {
+      window.setTimeout(renderAbout, 0);
+    });
+  });
+
+  loadAbout();
 })();
 </script>
 
