@@ -1090,7 +1090,7 @@ button,a{touch-action:manipulation;}
 .featured-wsop-grid{display:grid;gap:1.6rem;align-items:stretch}
 .wsop-visual{min-height:330px;border-radius:var(--ui-radius);overflow:hidden;position:relative;background:linear-gradient(145deg,var(--felt),var(--felt-dark));box-shadow:var(--ui-shadow)}
 .wsop-visual::before{content:"WSOP";position:absolute;inset:auto auto 1.1rem 1.1rem;font:600 clamp(3.8rem,15vw,8rem)/.8 'Fraunces',serif;color:rgba(227,187,61,.17);letter-spacing:-.05em}
-.wsop-visual::after{content:"LAS VEGAS · 2022 · 2023 · 2024 · 2025";position:absolute;left:1.25rem;top:1.25rem;padding:.5rem .7rem;border:1px solid rgba(243,238,226,.28);border-radius:999px;color:var(--cream);font:600 .65rem/1 'IBM Plex Mono',monospace;letter-spacing:.08em;background:rgba(8,39,32,.45);backdrop-filter:blur(8px)}
+.wsop-visual::after{content:none;}
 .wsop-copy{display:flex;flex-direction:column;justify-content:center;padding:.4rem 0}
 .wsop-copy h2{font-size:clamp(2rem,6vw,3.4rem);line-height:.98;margin:.45rem 0 1rem}
 .wsop-copy p{max-width:55ch;line-height:1.7;color:#3a342c}
@@ -1314,25 +1314,7 @@ button,a{touch-action:manipulation;}
   font:500 .65rem/1 'IBM Plex Mono',monospace;
   letter-spacing:.06em;
 }
-.wsop-progress{
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:8;
-  height:3px;
-  background:rgba(243,238,226,.10);
-}
-.wsop-progress span{
-  display:block;
-  width:100%;
-  height:100%;
-  transform-origin:left center;
-  background:var(--gold-bright);
-  animation:wsop-timer 10s linear forwards;
-}
-@keyframes wsop-timer{
-  from{transform:scaleX(0)}
+
   to{transform:scaleX(1)}
 }
 @media(min-width:820px){
@@ -1352,7 +1334,7 @@ button,a{touch-action:manipulation;}
 }
 @media(prefers-reduced-motion:reduce){
   .wsop-slide{transition:none!important;transform:none!important;}
-  .wsop-progress span{animation:none!important;transform:scaleX(1);}
+  
 }
 
 </style>
@@ -1523,8 +1505,6 @@ button,a{touch-action:manipulation;}
       </div>
       <div class="wsop-counter" aria-live="polite"><span id="wsopCurrent">01</span> / 07</div>
     </div>
-
-    <div class="wsop-progress" aria-hidden="true"><span></span></div>
   </div>
 </div>
     <div class="wsop-copy">
@@ -2069,21 +2049,14 @@ button,a{touch-action:manipulation;}
   const prev = carousel.querySelector('[data-wsop-prev]');
   const next = carousel.querySelector('[data-wsop-next]');
   const current = document.getElementById('wsopCurrent');
-  const progress = carousel.querySelector('.wsop-progress span');
 
   const INTERVAL = 10000;
   let index = 0;
   let timer = null;
   let touchStartX = null;
 
-  const restartProgress = () => {
-    if (!progress) return;
-    progress.style.animation = 'none';
-    void progress.offsetWidth;
-    progress.style.animation = `wsop-timer ${INTERVAL}ms linear forwards`;
-  };
 
-  const show = (newIndex, restart = true) => {
+  const show = (newIndex) => {
     index = (newIndex + slides.length) % slides.length;
 
     slides.forEach((slide, i) => {
@@ -2100,13 +2073,11 @@ button,a{touch-action:manipulation;}
     });
 
     if (current) current.textContent = String(index + 1).padStart(2, '0');
-    if (restart) restartProgress();
   };
 
   const schedule = () => {
     clearInterval(timer);
     timer = setInterval(() => show(index + 1), INTERVAL);
-    restartProgress();
   };
 
   const manualGo = (newIndex) => {
@@ -2149,7 +2120,7 @@ button,a{touch-action:manipulation;}
     }
   });
 
-  show(0, false);
+  show(0);
   schedule();
 })();
 </script>
