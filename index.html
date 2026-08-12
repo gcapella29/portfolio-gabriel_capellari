@@ -941,6 +941,116 @@ button,a{touch-action:manipulation;}
   .about-photo img,.media-bio-photo img,.contact-photo img{transition:none !important;}
 }
 
+
+
+/* =========================================================
+   DESKTOP REFINEMENT — balanced editorial layout
+   ========================================================= */
+@media (min-width: 820px){
+  :root{
+    --desktop-max: 1180px;
+    --desktop-gutter: clamp(2rem, 5vw, 5rem);
+  }
+
+  /* Keep the desktop composition centered and visually contained. */
+  section{
+    padding-left: var(--desktop-gutter);
+    padding-right: var(--desktop-gutter);
+  }
+
+  .hero{
+    padding-left: var(--desktop-gutter);
+    padding-right: var(--desktop-gutter);
+  }
+
+  .hero-content,
+  .portfolio > *,
+  .coverage > *,
+  .experience > *,
+  .edu > *,
+  .instagram > *,
+  .contact > *{
+    width: min(100%, var(--desktop-max));
+  }
+
+  .hero-content{max-width:var(--desktop-max);}
+  .hero-main{max-width:960px;}
+
+  /* More deliberate proportions for the editorial sections. */
+  .about-grid{
+    grid-template-columns:minmax(320px, 390px) minmax(0, 1fr);
+    gap:clamp(4rem, 7vw, 6.5rem);
+    align-items:center;
+  }
+
+  .about-photo{
+    aspect-ratio:4 / 5;
+    max-height:540px;
+  }
+
+  .section-head{margin-bottom:2.5rem;}
+  .section-head h2{font-size:clamp(2rem,3.3vw,3rem);}
+
+  .board{max-width:none;}
+  .board-row{min-height:54px; align-items:center;}
+
+  .media-bio{
+    min-height:250px;
+    padding:2rem;
+    gap:2rem;
+  }
+  .media-bio-photo{width:220px; max-width:220px;}
+  .media-bio-content{padding-top:.25rem;}
+
+  .press-cards{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:1rem;
+  }
+
+  .log{max-width:none;}
+  .log-entry{padding-top:1.35rem; padding-bottom:1.35rem;}
+  .log-entry .note{max-width:72ch;}
+
+  .edu-grid{gap:clamp(4rem,7vw,7rem);}
+
+  .insta-grid{
+    grid-template-columns:minmax(0,1fr) 360px;
+    gap:clamp(4rem,8vw,8rem);
+  }
+  .reel-frame{width:360px; max-width:360px;}
+
+  .contact-grid{
+    grid-template-columns:minmax(0,1fr) minmax(320px,520px);
+    gap:clamp(4rem,8vw,8rem);
+  }
+  .contact-photo{max-height:430px;}
+
+  .stats{
+    grid-template-columns:repeat(3,minmax(0,360px));
+    justify-content:center;
+    gap:1.2rem;
+    padding-left:var(--desktop-gutter);
+    padding-right:var(--desktop-gutter);
+  }
+  .stat{width:100%;}
+
+  /* Keep the section dots subtle rather than competing with the page. */
+  .section-nav{
+    right:18px;
+    padding:.45rem;
+    background:rgba(250,247,240,.82);
+    box-shadow:0 10px 28px rgba(23,19,16,.08);
+  }
+}
+
+/* Language control: flags only, fixed and intentionally static. */
+.language-toggle::before{display:none !important;}
+.language-option:hover,
+.language-option[aria-pressed="true"]:hover{
+  transform:none !important;
+}
+.language-option{cursor:pointer;}
+
 </style>
 </head>
 <body>
