@@ -98,7 +98,7 @@
     margin-top:0.9rem;
     font-family:'IBM Plex Mono',monospace;
     font-size:0.82rem;
-    letter-spacing:0.03em;
+    letter-spacing:0.045em;
     color:rgba(243,238,226,0.88);
     display:flex;
     flex-wrap:wrap;
@@ -130,14 +130,14 @@
     border-top:1px solid var(--felt-dark);
     border-bottom:1px solid var(--felt-dark);
   }
-  .ticker{display:flex; width:max-content; will-change:transform; animation:scroll 28s linear infinite;}
-  .ticker-group{display:flex; flex-shrink:0; padding:0.55rem 0;}
+  .ticker{display:flex; width:max-content; will-change:transform; animation:scroll 24s linear infinite;}
+  .ticker-group{display:flex; flex-shrink:0; padding:0.72rem 0;}
   .ticker span{
     font-family:'IBM Plex Mono',monospace;
-    font-size:0.75rem;
+    font-size:0.78rem;
     font-weight:600;
     letter-spacing:0.03em;
-    padding:0 1.4rem;
+    padding:0 1.65rem;
     text-transform:uppercase;
   }
   .ticker span::after{content:"◆"; margin-left:1.4rem; opacity:0.6; font-size:0.6rem; vertical-align:middle;}
@@ -146,6 +146,8 @@
     to{transform:translateX(-50%);}
   }
   @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
+
+  @media (min-width:820px){.ticker-wrap{min-height:52px;display:flex;align-items:center;}.ticker-group{padding:0.82rem 0;}.ticker span{font-size:0.8rem;padding-left:1.9rem;padding-right:1.9rem;}}
 
   /* ---------- SECTIONS ---------- */
   section{padding:4.2rem 1.4rem;}
@@ -450,7 +452,7 @@
   .hero-content{position:relative; z-index:1;}
   @media (prefers-reduced-motion:no-preference){.hero-name em{animation:gold-glow 4s ease-in-out infinite;} @keyframes gold-glow{50%{text-shadow:0 0 26px rgba(227,187,61,.32);}}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;} *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
-  @media (prefers-reduced-motion:reduce){.ticker{animation:scroll 28s linear infinite!important;}}
+  @media (prefers-reduced-motion:reduce){.ticker{animation:none!important;}}
 
 /* =========================================================
    MODERN UI LAYER — preserves original content and images
@@ -578,7 +580,7 @@ button,a{touch-action:manipulation;}
 /* Ticker */
 .ticker-wrap{position:relative;z-index:3;box-shadow:0 8px 30px rgba(8,39,32,.12);}
 .ticker span{transition:letter-spacing .3s ease;}
-.ticker-wrap:hover .ticker{animation-play-state:paused;}
+.ticker-wrap:hover .ticker{animation-play-state:running;}
 
 /* Stats */
 .stats{
@@ -1235,7 +1237,7 @@ button,a{touch-action:manipulation;}
     <div class="log-entry">
       <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2014 — 2022</span></div>
       <div class="org">Escola LYVA</div>
-      <div class="note">Lecionei inglês para turmas do fundamental ao médio, construindo a base do domínio fluente (C1) que hoje aplico no jornalismo internacional.</div>
+      <div class="note">Lecionei inglês para turmas do fundamental ao médio, construindo a base do domínio fluente (C2) que hoje aplico no jornalismo internacional.</div>
     </div>
     <div class="log-entry">
       <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2017 — 2022</span></div>
