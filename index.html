@@ -452,7 +452,7 @@
   .hero-content{position:relative; z-index:1;}
   @media (prefers-reduced-motion:no-preference){.hero-name em{animation:gold-glow 4s ease-in-out infinite;} @keyframes gold-glow{50%{text-shadow:0 0 26px rgba(227,187,61,.32);}}}
   @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;} *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
-  @media (prefers-reduced-motion:reduce){.ticker{animation:none!important;}}
+  
 
 /* =========================================================
    MODERN UI LAYER — preserves original content and images
@@ -936,7 +936,6 @@ button,a{touch-action:manipulation;}
 
 /* Reduced motion: never force movement */
 @media (prefers-reduced-motion:reduce){
-  .ticker{animation:none !important;}
   .hero-bg-layer{transform:none !important;}
   .pointer-glow{display:none;}
   .language-option,.stat,.press-card,.poker-chip,.edu-item,.contact-links a,.insta-handle,
@@ -1053,6 +1052,32 @@ button,a{touch-action:manipulation;}
 }
 .language-option{cursor:pointer;}
 
+/* FINAL TICKER OVERRIDE — seamless, constant right-to-left motion */
+.ticker-wrap{
+  overflow:hidden;
+}
+.ticker{
+  display:flex;
+  width:max-content;
+  animation:ticker-continuous 24s linear infinite !important;
+  animation-play-state:running !important;
+  will-change:transform;
+}
+.ticker-group{
+  display:flex;
+  flex-shrink:0;
+  align-items:center;
+  min-width:max-content;
+}
+@keyframes ticker-continuous{
+  from{transform:translate3d(0,0,0);}
+  to{transform:translate3d(-50%,0,0);}
+}
+.ticker-wrap:hover .ticker,
+.ticker-wrap:focus-within .ticker{
+  animation-play-state:running !important;
+}
+
 </style>
 </head>
 <body>
@@ -1084,8 +1109,12 @@ button,a{touch-action:manipulation;}
 
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker">
-    <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
-    <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
+    <div class="ticker-group">
+      <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
+    </div>
+    <div class="ticker-group">
+      <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
+    </div>
   </div>
 </div>
 
