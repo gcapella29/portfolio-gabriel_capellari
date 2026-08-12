@@ -1078,7 +1078,58 @@ button,a{touch-action:manipulation;}
   animation-play-state:running !important;
 }
 
+
+/* ---------- CONVERSION / FEATURED / SEO UPGRADE ---------- */
+.hero-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.45rem;align-items:center}
+.cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;padding:.72rem 1rem;border-radius:999px;font:600 .72rem/1 'IBM Plex Mono',monospace;letter-spacing:.035em;text-decoration:none;border:1px solid rgba(243,238,226,.42);transition:transform .3s var(--ui-ease),background .25s ease,border-color .25s ease,box-shadow .3s ease}
+.cta-btn.primary{background:var(--gold-bright);color:var(--felt-dark);border-color:var(--gold-bright);box-shadow:0 10px 28px rgba(201,162,39,.18)}
+.cta-btn.secondary{background:rgba(8,39,32,.32);color:var(--cream);backdrop-filter:blur(8px)}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.featured-wsop{background:var(--cream);position:relative;overflow:hidden}
+.featured-wsop-grid{display:grid;gap:1.6rem;align-items:stretch}
+.wsop-visual{min-height:330px;border-radius:var(--ui-radius);overflow:hidden;position:relative;background:linear-gradient(145deg,var(--felt),var(--felt-dark));box-shadow:var(--ui-shadow)}
+.wsop-visual::before{content:"WSOP";position:absolute;inset:auto auto 1.1rem 1.1rem;font:600 clamp(3.8rem,15vw,8rem)/.8 'Fraunces',serif;color:rgba(227,187,61,.17);letter-spacing:-.05em}
+.wsop-visual::after{content:"LAS VEGAS · 2023 · 2024 · 2025";position:absolute;left:1.25rem;top:1.25rem;padding:.5rem .7rem;border:1px solid rgba(243,238,226,.28);border-radius:999px;color:var(--cream);font:600 .65rem/1 'IBM Plex Mono',monospace;letter-spacing:.08em;background:rgba(8,39,32,.45);backdrop-filter:blur(8px)}
+.wsop-copy{display:flex;flex-direction:column;justify-content:center;padding:.4rem 0}
+.wsop-copy h2{font-size:clamp(2rem,6vw,3.4rem);line-height:.98;margin:.45rem 0 1rem}
+.wsop-copy p{max-width:55ch;line-height:1.7;color:#3a342c}
+.wsop-points{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.2rem}
+.wsop-points span{padding:.42rem .7rem;border:1px solid #d8cfb5;border-radius:999px;font:600 .67rem/1 'IBM Plex Mono',monospace;color:var(--felt)}
+.cv-inline{margin-top:1.1rem}
+@media(min-width:820px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.featured-wsop-grid{grid-template-columns:minmax(360px,.95fr) minmax(0,1.05fr);gap:4.5rem}.wsop-visual{min-height:500px}.hero-actions{margin-top:1.7rem}}
+@media(max-width:560px){.hero-actions{display:grid;grid-template-columns:1fr 1fr}.cta-btn{padding:.7rem .75rem;font-size:.65rem}.featured-wsop{padding-top:3.8rem;padding-bottom:3.8rem}.wsop-visual{min-height:280px}}
+
 </style>
+
+<!-- SEO, social sharing & identity -->
+<meta name="author" content="Gabriel Capellari">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#0e3b2e">
+<meta property="og:type" content="profile">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:title" content="Gabriel Capellari — Jornalista de Poker">
+<meta property="og:description" content="Jornalista de poker, repórter de torneios ao vivo e redator SEO com experiência em coberturas internacionais.">
+<meta property="og:image" content="og-gabriel-capellari.jpg">
+<meta property="og:image:alt" content="Gabriel Capellari — Jornalista de Poker">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gabriel Capellari — Jornalista de Poker">
+<meta name="twitter:description" content="Jornalista de poker, repórter de torneios ao vivo e redator SEO com experiência em coberturas internacionais.">
+<meta name="twitter:image" content="og-gabriel-capellari.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23082720'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='38' fill='%23e3bb3d'%3E%E2%99%A0%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">{
+  "@context":"https://schema.org",
+  "@type":"ProfilePage",
+  "mainEntity":{
+    "@type":"Person",
+    "name":"Gabriel Capellari",
+    "jobTitle":"Poker Journalist",
+    "email":"mailto:gcapellari@hotmail.com",
+    "knowsLanguage":["Portuguese","English","Spanish"],
+    "sameAs":["https://www.linkedin.com/in/gabriel-capellari-5347ba14b/","https://www.instagram.com/gabrielcapellari/"]
+  }
+}</script>
 </head>
 <body>
 
@@ -1103,6 +1154,11 @@ button,a{touch-action:manipulation;}
         <span class="chip">🇬🇧 Inglês — C1</span>
         <span class="chip">🇪🇸 Espanhol — B1</span>
       </div>
+      <div class="hero-actions" aria-label="Ações principais">
+        <a class="cta-btn primary track-cta" data-event="hero_portfolio" href="#portfolio">Ver meu trabalho ↘</a>
+        <a class="cta-btn secondary track-cta" data-event="hero_contact" href="#contato">Entrar em contato →</a>
+        <a class="cta-btn secondary track-cta" data-event="hero_cv" href="CV-Gabriel-Capellari.pdf" download>Baixar CV ↓</a>
+      </div>
     </div>
   </div>
 </header>
@@ -1119,18 +1175,10 @@ button,a{touch-action:manipulation;}
 </div>
 
 <section class="stats reveal-stagger" id="destaques">
-  <div class="stat">
-    <div class="num">8</div>
-    <div class="lbl">anos como professor de inglês</div>
-  </div>
-  <div class="stat">
-    <div class="num">4+</div>
-    <div class="lbl">anos de cobertura de poker ao vivo</div>
-  </div>
-  <div class="stat">
-    <div class="num">4</div>
-    <div class="lbl">países cobertos — Brasil · EUA · Panamá · Uruguai</div>
-  </div>
+  <div class="stat"><div class="num">4+</div><div class="lbl">anos de cobertura de poker ao vivo</div></div>
+  <div class="stat"><div class="num">4</div><div class="lbl">países cobertos — Brasil · EUA · Panamá · Uruguai</div></div>
+  <div class="stat"><div class="num">4</div><div class="lbl">grandes circuitos — WSOP · WPT · BSOP · LAPT</div></div>
+  <div class="stat"><div class="num">3</div><div class="lbl">idiomas — Português · Inglês · Espanhol</div></div>
 </section>
 
 <!-- ABOUT -->
@@ -1146,6 +1194,21 @@ button,a{touch-action:manipulation;}
       </div>
       <p>Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.</p>
       <p>Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- FEATURED COVERAGE -->
+<section class="featured-wsop reveal" id="wsop-featured">
+  <div class="featured-wsop-grid">
+    <div class="wsop-visual" aria-label="Destaque de cobertura da WSOP Las Vegas"></div>
+    <div class="wsop-copy">
+      <div class="eyebrow">Cobertura em destaque</div>
+      <h2>WSOP<br>Las Vegas</h2>
+      <p>Três edições consecutivas da World Series of Poker em Las Vegas, somadas à cobertura de WSOP &amp; WPT World Championship em 2022. Experiência internacional em reportagem ao vivo, produção editorial e conteúdo para a audiência brasileira de poker.</p>
+      <div class="wsop-points"><span>2023</span><span>2024</span><span>2025</span><span>Las Vegas · EUA</span></div>
+      <div class="cv-inline"><a class="cta-btn primary track-cta" data-event="wsop_portfolio" href="#portfolio">Ver portfólio →</a></div>
     </div>
   </div>
 </section>
@@ -1350,6 +1413,7 @@ button,a{touch-action:manipulation;}
         <h2>Contato</h2>
       </div>
       <div class="contact-links">
+      <a class="track-cta" data-event="contact_cv" href="CV-Gabriel-Capellari.pdf" download><span class="lbl">Currículo</span> Baixar CV em PDF ↓</a>
         <a href="mailto:gcapellari@hotmail.com"><span class="lbl">E-mail</span> gcapellari@hotmail.com</a>
         <a href="mailto:gcapellari1@gmail.com"><span class="lbl">E-mail alternativo</span> gcapellari1@gmail.com</a>
         <a href="https://wa.me/5516997168229" target="_blank" rel="noopener"><span class="lbl">WhatsApp</span> +55 16 99716-8229</a>
@@ -1406,7 +1470,8 @@ button,a{touch-action:manipulation;}
     ['Bastidores', 'Behind the scenes'], ['Também no Instagram', 'Also on Instagram'], ['Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.', 'Final-table behind the scenes, reporting trips and everyday reporter life — all there.'], ['Ver no Instagram', 'View on Instagram'],
     ['Contato', 'Contact'], ['E-mail alternativo', 'Alternative email'], ['Ver perfil →', 'View profile →'], ['GABRIEL CAPELLARI · JORNALISMO DE POKER · IBITINGA, SP — BRASIL', 'GABRIEL CAPELLARI · POKER JOURNALISM · IBITINGA, SP — BRAZIL'],
     ['Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.', 'With a degree in Languages (Portuguese/English) from UNESP, Gabriel built a career that blends language mastery, classroom discipline and journalistic instinct. He spent eight years teaching English and literature before moving into live-event coverage — a transition that brought teaching rigor and clarity to poker journalism.'],
-    ['Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.', 'He now has more than four years of event coverage across Brazil, the United States, Panama and Uruguay, producing editorial and SEO content for leading outlets in the industry.']
+    ['Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.', 'He now has more than four years of event coverage across Brazil, the United States, Panama and Uruguay, producing editorial and SEO content for leading outlets in the industry.'],
+    ['Ver meu trabalho ↘','View my work ↘'], ['Entrar em contato →','Get in touch →'], ['Baixar CV ↓','Download CV ↓'], ['Baixar CV em PDF ↓','Download CV as PDF ↓'], ['Currículo','CV'], ['grandes circuitos — WSOP · WPT · BSOP · LAPT','major circuits — WSOP · WPT · BSOP · LAPT'], ['idiomas — Português · Inglês · Espanhol','languages — Portuguese · English · Spanish'], ['Cobertura em destaque','Featured coverage'], ['Três edições consecutivas da World Series of Poker em Las Vegas, somadas à cobertura de WSOP & WPT World Championship em 2022. Experiência internacional em reportagem ao vivo, produção editorial e conteúdo para a audiência brasileira de poker.','Three consecutive editions of the World Series of Poker in Las Vegas, plus WSOP & WPT World Championship coverage in 2022. International experience in live reporting, editorial production and content for Brazilian poker audiences.'], ['Ver portfólio →','View portfolio →'], ['Las Vegas · EUA','Las Vegas · USA']
   ]);
   const replaceCopy = (root, language) => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -1431,6 +1496,25 @@ button,a{touch-action:manipulation;}
   };
   languageOptions.forEach(option => option.addEventListener('click', () => setLanguage(option.dataset.language)));
   setLanguage(language);
+
+
+  // ---------- ANALYTICS (configure once the site is published) ----------
+  // Add your GA4 Measurement ID below (example format: G-XXXXXXXXXX).
+  // Leaving it empty keeps the portfolio completely tracker-free.
+  const ANALYTICS_ID = '';
+  if (ANALYTICS_ID) {
+    const ga = document.createElement('script');
+    ga.async = true;
+    ga.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ANALYTICS_ID)}`;
+    document.head.appendChild(ga);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){ dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', ANALYTICS_ID, {anonymize_ip:true});
+    document.querySelectorAll('[data-event]').forEach(el => el.addEventListener('click', () => {
+      gtag('event', el.dataset.event, {event_category:'portfolio_engagement'});
+    }));
+  }
 
   // ---------- CONFIGURE SEU INSTAGRAM AQUI ----------
   const INSTAGRAM_USER = "gabrielcapellari";
