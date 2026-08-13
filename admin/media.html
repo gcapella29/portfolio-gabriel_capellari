@@ -45,15 +45,15 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 <div class="shell hidden" id="app">
   <aside class="sidebar">
-    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 3</div>
+    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 4</div>
     <div class="side-links"><a href="/admin/">Conteúdo</a><a class="active" href="media.html">Fotos</a><a href="/" target="_blank">Visualizar site ↗</a></div>
   </aside>
   <main class="main">
-    <header class="top"><div><div class="sub" style="color:var(--muted)">Gerenciamento de mídia</div><h1>Fotos</h1></div><a class="btn ghost" href="/admin/">← Conteúdo</a></header>
+    <header class="top"><div><div class="sub" style="color:var(--muted)">Gerenciamento de mídia · Rascunho</div><h1>Fotos</h1></div><a class="btn ghost" href="/admin/">← Conteúdo</a></header>
 
     <section class="card">
       <h2 style="font-family:Fraunces,serif;margin-top:0">Imagens principais</h2>
-      <p class="help">Enquanto não houver upload, o site continua usando a imagem original incorporada ao HTML.</p>
+      <p class="help"><strong>Modo rascunho:</strong> uploads e alterações ficam no preview até você clicar em “Publicar alterações” no painel de Conteúdo. Enquanto não houver upload, o site continua usando a imagem original incorporada ao HTML.</p>
       <div class="media-layout" id="slots"></div>
     </section>
 
@@ -74,7 +74,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   const config=window.VITRINE_SUPABASE;
   const sb=window.supabase.createClient(config.url,config.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
   const BUCKET='site-media';
-  let user=null,project=null,row=null,content=null;
+  let user=null,project=null,draftRow=null,content=null,draftSnapshot=null;
 
   const $=id=>document.getElementById(id),toast=$('toast');
   const defaults={
@@ -95,20 +95,32 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   }
 
   async function loadMedia(){
-    const q=await sb.from('site_content').select('*').eq('project_id',project.id).eq('section_key','media').maybeSingle();
-    if(q.error)throw q.error;
-    if(!q.data){
-      const i=await sb.from('site_content').insert({project_id:project.id,section_key:'media',content:defaults,is_visible:true,sort_order:999}).select().single();
-      if(i.error)throw i.error;row=i.data;
-    }else row=q.data;
-    content=structuredClone(row.content||defaults);render();
+    const d=await sb.from('project_drafts').select('*').eq('project_id',project.id).maybeSingle();
+    if(d.error)throw d.error;
+    if(!d.data){
+      const q=await sb.from('site_content').select('section_key,content,is_visible').eq('project_id',project.id);
+      if(q.error)throw q.error;
+      const snapshot={};
+      for(const r of q.data||[])snapshot[r.section_key]={content:r.content||{},is_visible:r.is_visible!==false};
+      if(!snapshot.media)snapshot.media={content:defaults,is_visible:true};
+      const i=await sb.from('project_drafts').insert({project_id:project.id,snapshot,updated_by:user.id}).select().single();
+      if(i.error)throw i.error;draftRow=i.data;
+    }else draftRow=d.data;
+    draftSnapshot=structuredClone(draftRow.snapshot||{});
+    if(!draftSnapshot.media)draftSnapshot.media={content:defaults,is_visible:true};
+    content=structuredClone(draftSnapshot.media.content||defaults);
+    render();
   }
 
   async function save(){
-    const v=await sb.from('site_versions').insert({project_id:project.id,section_key:'media',content:row.content,created_by:user.id});
-    if(v.error)throw v.error;
-    const u=await sb.from('site_content').update({content,updated_at:new Date().toISOString()}).eq('id',row.id).select().single();
-    if(u.error)throw u.error;row=u.data;
+    draftSnapshot.media={content:structuredClone(content),is_visible:true};
+    const u=await sb.from('project_drafts').update({
+      snapshot:draftSnapshot,
+      updated_by:user.id,
+      updated_at:new Date().toISOString()
+    }).eq('project_id',project.id).select().single();
+    if(u.error)throw u.error;
+    draftRow=u.data;
   }
 
   async function upload(file,folder){
@@ -119,7 +131,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
     if(u.error)throw u.error;
     return {path,url:sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl};
   }
-  async function remove(path){if(path){const r=await sb.storage.from(BUCKET).remove([path]);if(r.error)throw r.error}}
+  async function remove(path){ /* Phase 4: keep old files to protect published versions. Cleanup comes later. */ }
 
   function img(url){return url?`<img src="${url}" alt="">`:'<span class="help">Imagem original do site</span>'}
   function slot(key,title,portrait=false){
