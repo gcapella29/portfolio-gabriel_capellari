@@ -99,7 +99,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
-    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 8.2</div></div>
+    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 8.3</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="sidebar-bottom">
       <div class="email" id="userEmail"></div>
@@ -309,6 +309,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   const canManageTeam = () => myRole === 'owner';
   const canManageDomains = () => myRole === 'owner';
   const canManageStructure = () => ['owner','admin'].includes(myRole);
+  const canManageTheme = () => ['owner','admin'].includes(myRole);
   const isViewer = () => myRole === 'viewer';
 
   async function loadMyRole(){
@@ -355,10 +356,14 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     const structureItem=canManageStructure()
       ? `<a class="nav-link" href="/admin/structure.html${q}">Estrutura</a>`
       : '';
+    const themeItem=canManageTheme()
+      ? `<a class="nav-link" href="/admin/theme.html${q}">Aparência</a>`
+      : '';
     const pages=`
       <a class="nav-link" href="/admin/media.html${q}">Fotos</a>
       <a class="nav-link" href="/admin/history.html${q}">Histórico</a>
       ${structureItem}
+      ${themeItem}
       ${teamItem}
       ${domainItem}
       <a class="nav-link" href="/admin/projects.html">Projetos</a>`;
