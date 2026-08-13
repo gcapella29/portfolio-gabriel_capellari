@@ -24,7 +24,7 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
   <form id="loginForm"><div class="field"><label>E-mail</label><input id="email" type="email" required></div><div class="field"><label>Senha</label><input id="password" type="password" required></div><div id="err" style="color:#a83c2e;font-size:.8rem"></div><button class="btn gold">Entrar</button></form>
 </div></section>
 <main class="shell hidden" id="app">
-  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 6</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" id="teamLink" href="/admin/team.html">Equipe</a><a class="btn ghost" href="/admin/projects.html">Projetos</a><a class="btn ghost" id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
+  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 7</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" id="teamLink" href="/admin/team.html">Equipe</a><a class="btn ghost" href="/admin/projects.html">Projetos</a><a class="btn ghost" id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
   <div class="list" id="list"></div>
 </main>
 <div class="toast" id="toast"></div>
@@ -39,7 +39,7 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
  async function load(){
    const q=await sb.from('project_versions').select('id,label,created_at,snapshot').eq('project_id',project.id).order('created_at',{ascending:false}).limit(30);
    if(q.error)throw q.error;
-   if($('teamLink'))$('teamLink').style.display=['owner','admin'].includes(myRole)?'inline-flex':'none';
+   if($('teamLink'))$('teamLink').style.display=myRole==='owner'?'inline-flex':'none';
    if(!q.data.length){$('list').innerHTML='<div class="empty">Ainda não há versões. A primeira aparecerá depois da próxima publicação.</div>';return}
    $('list').innerHTML=q.data.map((v,i)=>`<article class="version"><div class="meta"><strong>${v.label||'Versão publicada'}</strong><span>${new Date(v.created_at).toLocaleString('pt-BR')} · ${Object.keys(v.snapshot||{}).length} seções</span></div><div class="actions">${['owner','admin'].includes(myRole)?`<button class="btn ghost" data-restore="${v.id}">Restaurar como rascunho</button>`:''}</div></article>`).join('');
    $('list').querySelectorAll('[data-restore]').forEach(btn=>btn.onclick=async()=>{
