@@ -45,12 +45,12 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 <div class="shell hidden" id="app">
   <aside class="sidebar">
-    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 5</div>
+    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 6</div>
     <div class="side-links">
       <a id="contentLink" href="/admin/">Conteúdo</a>
       <a class="active" id="mediaLink" href="/admin/media.html">Fotos</a>
       <a id="historyLink" href="/admin/history.html">Histórico</a>
-      <a href="/admin/projects.html">Projetos</a>
+      <a id="teamLink" href="/admin/team.html">Equipe</a><a href="/admin/projects.html">Projetos</a>
       <a id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a>
       <a id="siteLink" href="/" target="_blank">Visualizar site ↗</a>
     </div>
@@ -96,7 +96,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   function safeName(name){const dot=name.lastIndexOf('.'),ext=dot>-1?name.slice(dot).toLowerCase():'.jpg';const base=(dot>-1?name.slice(0,dot):name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();return `${base||'image'}-${Date.now()}${ext}`}
 
   async function ensureProject(){
-    const q=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug)).maybeSingle();
+    const q=await sb.from('projects').select('*').eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug)).maybeSingle();
     if(q.error)throw q.error;if(q.data)return q.data;
     const i=await sb.from('projects').insert({owner_id:user.id,slug:(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug),name:'Gabriel Capellari',site_type:'portfolio',is_published:true}).select().single();
     if(i.error)throw i.error;return i.data;
@@ -134,7 +134,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   async function upload(file,folder){
     if(!file?.type?.startsWith('image/'))throw new Error('Envie uma imagem válida.');
     if(file.size>8*1024*1024)throw new Error('Máximo de 8 MB por imagem.');
-    const path=`${user.id}/${(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug)}/${folder}/${safeName(file.name)}`;
+    const path=`${project.id}/${folder}/${safeName(file.name)}`;
     const u=await sb.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
     if(u.error)throw u.error;
     return {path,url:sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl};
@@ -199,6 +199,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       $('backContentLink').href=`/admin/${q}`;
       $('mediaLink').href=`/admin/media.html${q}`;
       $('historyLink').href=`/admin/history.html${q}`;
+      $('teamLink').href=`/admin/team.html${q}`;
       $('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;
       $('siteLink').href=slug===(window.VITRINE_PROJECT_CONTEXT?.defaultSlug||config.projectSlug)
         ? '/'
