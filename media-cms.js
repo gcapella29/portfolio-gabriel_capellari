@@ -2,7 +2,8 @@
 (() => {
   if (!window.supabase || !window.VITRINE_SUPABASE) return;
 
-  const { url, publishableKey, projectSlug } = window.VITRINE_SUPABASE;
+  const { url, publishableKey, projectSlug: defaultProjectSlug } = window.VITRINE_SUPABASE;
+  const projectSlug = window.VITRINE_PROJECT_CONTEXT?.slug || defaultProjectSlug;
   const cms = window.supabase.createClient(url, publishableKey, {
     auth: { persistSession: true, autoRefreshToken: true }
   });
@@ -15,6 +16,11 @@
     if (!url) return;
     const img = document.querySelector(selector);
     if (!img) return;
+    const fallbackSrc = img.getAttribute('src');
+    img.onerror = () => {
+      img.onerror = null;
+      if (fallbackSrc) img.src = fallbackSrc;
+    };
     img.src = url;
     if (alt) img.alt = alt;
     if (position) img.style.objectPosition = position;
@@ -24,10 +30,14 @@
     if (!content.hero_url) return;
     const layer = document.getElementById('heroBg');
     if (!layer) return;
-    layer.style.backgroundImage =
-      `linear-gradient(180deg,rgba(8,39,32,.48),rgba(8,39,32,.86)),url("${content.hero_url}")`;
-    layer.style.backgroundSize = 'cover';
-    layer.style.backgroundPosition = content.hero_position || 'center center';
+    const test = new Image();
+    test.onload = () => {
+      layer.style.backgroundImage =
+        `linear-gradient(180deg,rgba(8,39,32,.48),rgba(8,39,32,.86)),url("${content.hero_url}")`;
+      layer.style.backgroundSize = 'cover';
+      layer.style.backgroundPosition = content.hero_position || 'center center';
+    };
+    test.src = content.hero_url;
   }
 
   function applyWsopGallery(content) {
