@@ -54,18 +54,31 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
    isPlatformOwner=defaultProject.data?.owner_id===user.id;
    $('createProjectCard').style.display=isPlatformOwner?'block':'none';
 
-   const q=await sb.from('projects').select('*').order('created_at',{ascending:true});
-   if(q.error){toast('Erro ao carregar projetos');return}
-   if(!q.data.length){$('projects').innerHTML='<div class="empty">Nenhum projeto encontrado.</div>';return}
+   const q=await sb.rpc('vitrine_my_projects');
+   if(q.error){toast('Execute o hotfix SQL da Fase 6.');return}
+   const projects=q.data||[];
 
-   const ids=q.data.map(p=>p.id);
-   const memberships=await sb.from('project_members').select('project_id,role').eq('user_id',user.id).in('project_id',ids);
-   const roleMap=new Map((memberships.data||[]).map(x=>[x.project_id,x.role]));
+   if(!projects.length){
+     $('projects').innerHTML='<div class="empty">Sua conta ainda não possui acesso a nenhum projeto.</div>';
+     return;
+   }
 
-   $('projects').innerHTML=q.data.map(p=>{
-     const role=roleMap.get(p.id)||'viewer';
-     return `<article class="project"><div class="meta"><h3>${p.name}</h3><span>${p.slug}</span><div class="type">${p.site_type||'portfolio'} · ${role}</div></div><div class="actions"><button class="btn gold" data-open="${p.slug}">Gerenciar</button>${['owner','admin'].includes(role)?`<a class="btn ghost" href="/admin/team.html?project=${encodeURIComponent(p.slug)}">Equipe</a>`:''}<a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a><a class="btn ghost" href="${p.slug===cfg.projectSlug?'/':`/site.html?project=${encodeURIComponent(p.slug)}`}" target="_blank" title="Abrir o site deste projeto">Site</a></div></article>`;
-   }).join('');
+   $('projects').innerHTML=projects.map(p=>`
+     <article class="project">
+       <div class="meta">
+         <h3>${p.name}</h3>
+         <span>${p.slug}</span>
+         <div class="type">${p.site_type||'portfolio'} · ${p.role}</div>
+       </div>
+       <div class="actions">
+         <button class="btn gold" data-open="${p.slug}">Gerenciar</button>
+         ${p.role==='owner'
+           ? `<a class="btn ghost" href="/admin/team.html?project=${encodeURIComponent(p.slug)}">Equipe</a><a class="btn ghost" href="/admin/domains.html?project=${encodeURIComponent(p.slug)}">Domínio</a>`
+           : ''}
+         <a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a>
+         <a class="btn ghost" href="${p.custom_domain?`https://${p.custom_domain}/`:(p.slug===cfg.projectSlug?'/':`/p/${encodeURIComponent(p.slug)}`)}" target="_blank" title="Abrir o site deste projeto">Site</a>
+       </div>
+     </article>`).join('');
 
    $('projects').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{
      window.VITRINE_PROJECT_CONTEXT.set(b.dataset.open);
