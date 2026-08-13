@@ -26,7 +26,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 </div></section>
 
 <main class="shell hidden" id="app">
-<header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">VITRINE PRO · FASE 5</div><h1>Projetos</h1><p>Gerencie múltiplos sites com a mesma conta. Cada projeto mantém conteúdo, mídia, rascunhos, histórico e SEO separados.</p></div><a class="btn ghost" href="/admin/">← Painel</a></header>
+<header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">VITRINE PRO · FASE 5</div><h1>Projetos</h1><p>Gerencie seus projetos e os projetos dos quais você faz parte. Cada projeto pode ter vários membros com permissões diferentes.</p></div><a class="btn ghost" href="/admin/">← Painel</a></header>
 <div class="grid">
 <section class="card"><h2 style="margin-top:0">Meus projetos</h2><div class="projects" id="projects"></div></section>
 <aside class="card"><h2 style="margin-top:0">Novo projeto</h2><form class="form" id="createForm">
@@ -50,10 +50,10 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
  $('slug').oninput=()=>{$('slug').dataset.edited='1';$('slug').value=slugify($('slug').value)};
 
  async function load(){
-   const q=await sb.from('projects').select('*').eq('owner_id',user.id).order('created_at',{ascending:true});
+   const q=await sb.from('projects').select('*').order('created_at',{ascending:true});
    if(q.error){toast('Erro ao carregar projetos');return}
    if(!q.data.length){$('projects').innerHTML='<div class="empty">Nenhum projeto encontrado.</div>';return}
-   $('projects').innerHTML=q.data.map(p=>`<article class="project"><div class="meta"><h3>${p.name}</h3><span>${p.slug}</span><div class="type">${p.site_type||'portfolio'}</div></div><div class="actions"><button class="btn gold" data-open="${p.slug}">Gerenciar</button><a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a><a class="btn ghost" href="${p.slug===cfg.projectSlug?'/':`/site.html?project=${encodeURIComponent(p.slug)}`}" target="_blank">Site</a></div></article>`).join('');
+   $('projects').innerHTML=q.data.map(p=>`<article class="project"><div class="meta"><h3>${p.name}</h3><span>${p.slug}</span><div class="type">${p.site_type||'portfolio'}</div></div><div class="actions"><button class="btn gold" data-open="${p.slug}">Gerenciar</button><a class="btn ghost" href="/admin/team.html?project=${encodeURIComponent(p.slug)}">Equipe</a><a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a><a class="btn ghost" href="${p.slug===cfg.projectSlug?'/':`/site.html?project=${encodeURIComponent(p.slug)}`}" target="_blank" title="Abrir o site deste projeto">Site</a></div></article>`).join('');
    $('projects').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{window.VITRINE_PROJECT_CONTEXT.set(b.dataset.open);location.href=`/admin/?project=${encodeURIComponent(b.dataset.open)}`});
  }
 
