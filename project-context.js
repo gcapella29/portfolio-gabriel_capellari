@@ -12,16 +12,17 @@
   const cookieSlug = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
 
   const isAdmin = window.location.pathname.startsWith('/admin');
-  const storedSlug = isAdmin ? localStorage.getItem('vitrine-current-project') : null;
 
-  // Public root on the primary domain should always stay on the default project.
-  // Query/path/cookie only override it when a tenant route/domain explicitly resolved.
-  const resolved =
-    querySlug ||
-    cleanPathSlug ||
-    cookieSlug ||
-    storedSlug ||
-    cfg.projectSlug;
+  /*
+   * Regra da Fase 7:
+   * - /admin ou /admin/ SEM ?project= sempre abre o projeto padrão.
+   * - /admin/?project=slug abre explicitamente o projeto indicado.
+   * - páginas públicas /p/slug continuam resolvendo pelo path/cookie.
+   * - localStorage serve apenas para navegação auxiliar, nunca para sobrescrever /admin puro.
+   */
+  const resolved = isAdmin
+    ? (querySlug || cfg.projectSlug)
+    : (querySlug || cleanPathSlug || cookieSlug || cfg.projectSlug);
 
   window.VITRINE_PROJECT_CONTEXT = {
     slug: resolved,
@@ -48,5 +49,13 @@
 
   if (querySlug && isAdmin) {
     localStorage.setItem('vitrine-current-project', querySlug);
+  }
+
+  /*
+   * Se o usuário entrou diretamente em /admin sem project,
+   * limpamos a seleção anterior para não "grudar" no último cliente.
+   */
+  if (isAdmin && !querySlug) {
+    localStorage.removeItem('vitrine-current-project');
   }
 })();
