@@ -45,7 +45,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 <div class="shell hidden" id="app">
   <aside class="sidebar">
-    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 6</div>
+    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 7</div>
     <div class="side-links">
       <a id="contentLink" href="/admin/">Conteúdo</a>
       <a class="active" id="mediaLink" href="/admin/media.html">Fotos</a>
@@ -97,7 +97,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 
   const canEdit=()=>['owner','admin','editor'].includes(myRole);
-  const canManageTeam=()=>['owner','admin'].includes(myRole);
+  const canManageTeam=()=>myRole==='owner';
 
   async function loadMyRole(){
     const q=await sb.from('project_members').select('role')
@@ -225,9 +225,11 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       $('historyLink').href=`/admin/history.html${q}`;
       $('teamLink').href=`/admin/team.html${q}`;
       $('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;
-      $('siteLink').href=slug===(window.VITRINE_PROJECT_CONTEXT?.defaultSlug||config.projectSlug)
-        ? '/'
-        : `/site.html?project=${encodeURIComponent(slug)}`;await loadMedia()}catch(e){console.error(e);notify('Erro ao carregar o gerenciador')}
+      $('siteLink').href=project.custom_domain
+        ? `https://${project.custom_domain}/`
+        : (slug===(window.VITRINE_PROJECT_CONTEXT?.defaultSlug||config.projectSlug)
+          ? '/'
+          : `/p/${encodeURIComponent(slug)}`);await loadMedia()}catch(e){console.error(e);notify('Erro ao carregar o gerenciador')}
   }
   $('loginForm').onsubmit=async e=>{e.preventDefault();const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(r.error){$('loginError').textContent='E-mail ou senha inválidos.';return}open(r.data.user)};
   sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
