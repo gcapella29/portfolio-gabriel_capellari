@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vitrine Pro Admin — Fase 3</title>
+<title>Vitrine Pro Admin — Fase 4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,12 +40,54 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 }
 
 </style>
+
+<style id="phase4-css">
+.workflow-bar{
+  display:flex;gap:.55rem;flex-wrap:wrap;align-items:center
+}
+.workflow-badge{
+  display:inline-flex;align-items:center;gap:.45rem;padding:.55rem .75rem;
+  border:1px solid var(--line);border-radius:999px;background:#fff;
+  font:600 .66rem/1 "IBM Plex Mono",monospace;color:var(--muted)
+}
+.workflow-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:#aaa}
+.workflow-badge.dirty::before{background:var(--gold)}
+.workflow-badge.clean::before{background:#2d8a60}
+.publish-btn{background:var(--dark)!important;color:#fff!important}
+.savebar{justify-content:space-between!important;flex-wrap:wrap}
+.savebar-left{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.nav-link{
+  border:0;border-radius:11px;background:transparent;color:rgba(243,238,226,.7);
+  padding:.72rem .8rem;text-align:left;text-decoration:none;display:block
+}
+.nav-link:hover,.nav-link.active{background:rgba(227,187,61,.13);color:var(--gold2)}
+.preview-note{
+  padding:.85rem 1rem;border-radius:12px;background:#f3f0e7;color:var(--muted);
+  font-size:.78rem;line-height:1.5;margin-bottom:1rem
+}
+.confirm-modal{
+  position:fixed;inset:0;background:rgba(8,39,32,.64);display:none;place-items:center;
+  padding:1rem;z-index:999
+}
+.confirm-modal.show{display:grid}
+.confirm-box{width:min(480px,100%);background:#fff;border-radius:18px;padding:1.3rem;box-shadow:0 25px 80px rgba(0,0,0,.25)}
+.confirm-box h3{font-family:Fraunces,serif;margin:.1rem 0 .5rem;font-size:1.5rem}
+.confirm-actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1rem}
+@media(max-width:560px){
+  .workflow-bar{width:100%}.workflow-bar .btn{flex:1}
+  .savebar{align-items:stretch}.savebar-left{width:100%}
+}
+</style>
+
 </head>
+
 <body>
 <section class="login-wrap" id="loginView">
   <div class="login">
     <h1>Vitrine <em>Pro</em></h1>
-    <p style="color:var(--muted);line-height:1.55">Fase 3: conteúdo + gerenciamento de fotos pelo próprio painel.</p>
+    <p style="color:var(--muted);line-height:1.55">
+      Fase 4: edite em rascunho, visualize antes e publique quando estiver pronto.
+    </p>
     <form class="form" id="loginForm">
       <div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required></div>
       <div class="field"><label for="password">Senha</label><input id="password" type="password" autocomplete="current-password" required></div>
@@ -57,33 +99,84 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
-    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 3</div></div>
+    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 4</div></div>
     <nav class="nav" id="nav"></nav>
-    <div class="sidebar-bottom"><div class="email" id="userEmail"></div><button class="logout" id="logoutButton">Sair</button></div>
+    <div style="margin-top:.5rem;display:grid;gap:.3rem">
+      <a class="nav-link" href="/admin/media.html">Fotos</a>
+      <a class="nav-link" href="/admin/history.html">Histórico</a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="email" id="userEmail"></div>
+      <button class="logout" id="logoutButton">Sair</button>
+    </div>
   </aside>
+
   <main class="main">
     <header class="top">
-      <div><div class="sub" style="color:var(--muted)">Gabriel Capellari · Site</div><h1>Gerenciar conteúdo</h1><div class="status" id="statusText">Conectando…</div></div>
-      <div class="top-actions"><a class="btn ghost" href="../" target="_blank" rel="noopener">Visualizar site ↗</a></div>
+      <div>
+        <div class="sub" style="color:var(--muted)">Gabriel Capellari · Site</div>
+        <h1>Gerenciar conteúdo</h1>
+        <div class="status" id="statusText">Conectando…</div>
+      </div>
+      <div class="workflow-bar">
+        <span class="workflow-badge clean" id="draftBadge">Rascunho sincronizado</span>
+        <a class="btn ghost" href="/preview.html?preview=draft" target="_blank" rel="noopener">Preview ↗</a>
+        <a class="btn ghost" href="/" target="_blank" rel="noopener">Site publicado ↗</a>
+        <button class="btn publish-btn" id="publishButton" type="button">Publicar alterações</button>
+      </div>
     </header>
+
     <div class="card">
-      <div class="card-head"><h2 id="editorTitle">Conteúdo</h2><div class="locale-tabs"><button class="locale-tab active" data-locale="pt">🇧🇷 PT</button><button class="locale-tab" data-locale="en">🇬🇧 EN</button></div></div>
+      <div class="card-head">
+        <h2 id="editorTitle">Conteúdo</h2>
+        <div class="locale-tabs">
+          <button class="locale-tab active" data-locale="pt">🇧🇷 PT</button>
+          <button class="locale-tab" data-locale="en">🇬🇧 EN</button>
+        </div>
+      </div>
       <div class="card-body">
-        <div class="toolbar"><label class="visibility"><input id="isVisible" type="checkbox" checked> Seção visível no site</label><span class="help" id="lastSaved"></span></div>
+        <div class="preview-note">
+          <strong>Fluxo editorial:</strong> “Salvar rascunho” não altera o site público.
+          Use Preview para conferir e “Publicar alterações” quando estiver pronto.
+        </div>
+        <div class="toolbar">
+          <label class="visibility"><input id="isVisible" type="checkbox" checked> Seção visível</label>
+          <span class="help" id="lastSaved"></span>
+        </div>
         <div id="editorHost"></div>
-        <div class="savebar"><button class="btn gold" id="saveButton">Salvar e publicar</button></div>
+        <div class="savebar">
+          <div class="savebar-left">
+            <span class="help" id="saveHint">Alterações locais ainda não salvas.</span>
+          </div>
+          <button class="btn gold" id="saveButton" type="button">Salvar rascunho</button>
+        </div>
       </div>
     </div>
   </main>
 </div>
+
 <div class="toast" id="toast"></div>
+
+<div class="confirm-modal" id="publishModal" role="dialog" aria-modal="true" aria-labelledby="publishTitle">
+  <div class="confirm-box">
+    <h3 id="publishTitle">Publicar alterações?</h3>
+    <p class="help">O site público será atualizado com o rascunho atual. A versão publicada anterior será salva no histórico.</p>
+    <div class="confirm-actions">
+      <button class="btn ghost" id="cancelPublish" type="button">Cancelar</button>
+      <button class="btn publish-btn" id="confirmPublish" type="button">Publicar agora</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+
 <script>
 (() => {
   const config = window.VITRINE_SUPABASE;
-  const sb = window.supabase.createClient(config.url, config.publishableKey, {auth:{persistSession:true,autoRefreshToken:true}});
+  const sb = window.supabase.createClient(config.url, config.publishableKey, {
+    auth:{persistSession:true,autoRefreshToken:true}
+  });
 
   const defaults = {
     hero:{name_html:'Gabriel<br><em>Capellari</em>',location:'IBITINGA · SP · BR',role_pt:'JORNALISTA DE POKER · REPÓRTER DE TORNEIOS AO VIVO · REDATOR SEO · APRENDIZ .·.',role_en:'POKER JOURNALIST · LIVE TOURNAMENT REPORTER · SEO WRITER · LEARNER .·.',ticker:['WSOP LAS VEGAS','WSOP BRASIL','BSOP MILLIONS','LAPT PANAMÁ','BSOP/LAPT RIO','LAPT MONTEVIDÉU','WPT WORLD CHAMPIONSHIP']},
@@ -121,7 +214,16 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
       {degree_pt:'Certificação em SEO Best Practices',degree_en:'SEO Best Practices Certification',institution:'Better Collective · 2024'}
     ],skills:['Inglês C1','Espanhol B1','SEO','Cobertura ao vivo','ChatGPT · Gemini · Claude','Canva','CapCut','Google Workspace','Microsoft Office','CNH categoria AB']},
     instagram:{eyebrow_pt:'Bastidores',eyebrow_en:'Behind the scenes',title_pt:'Também no Instagram',title_en:'Also on Instagram',text_pt:'Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.',text_en:'Final-table behind the scenes, reporting trips and everyday reporter life — all there.',user:'gabrielcapellari',reel_url:'https://www.instagram.com/p/DZK3eH_uRzP/'},
-    contact:{title_pt:'Contato',title_en:'Contact',email1:'gcapellari@hotmail.com',email2:'gcapellari1@gmail.com',whatsapp_number:'5516997168229',whatsapp_display:'+55 16 99716-8229',instagram_user:'gabrielcapellari',linkedin_url:'https://www.linkedin.com/in/gabriel-capellari-5347ba14b/'}
+    contact:{title_pt:'Contato',title_en:'Contact',email1:'gcapellari@hotmail.com',email2:'gcapellari1@gmail.com',whatsapp_number:'5516997168229',whatsapp_display:'+55 16 99716-8229',instagram_user:'gabrielcapellari',linkedin_url:'https://www.linkedin.com/in/gabriel-capellari-5347ba14b/'},
+    seo:{
+      title_pt:'Gabriel Capellari — Jornalista de Poker',
+      title_en:'Gabriel Capellari — Poker Journalist',
+      description_pt:'Gabriel Capellari — Jornalista de poker, repórter de torneios ao vivo e redator SEO.',
+      description_en:'Gabriel Capellari — Poker journalist, live tournament reporter and SEO content writer.',
+      canonical_url:'',
+      og_image_url:'og-gabriel-capellari.jpg',
+      schema_type:'Person'
+    }
   };
 
   const defs = {
@@ -134,137 +236,293 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     experience:{title:'Experiência',fields:[['eyebrow','Etiqueta','text'],['title','Título','text']],lists:[['items','Experiências',['role','years','org','note']]]},
     education:{title:'Formação',fields:[['eyebrow','Etiqueta','text'],['title','Título','text'],['skills_title','Título das ferramentas','text']],lists:[['items','Formação acadêmica',['degree','institution']],['skills','Ferramentas / idiomas',['value']]]},
     instagram:{title:'Instagram',fields:[['eyebrow','Etiqueta','text'],['title','Título','text'],['text','Texto','textarea'],['user','Usuário','text'],['reel_url','URL do Reels','text']]},
-    contact:{title:'Contato',fields:[['title','Título','text'],['email1','E-mail principal','text'],['email2','E-mail alternativo','text'],['whatsapp_number','WhatsApp — número só dígitos','text'],['whatsapp_display','WhatsApp — texto exibido','text'],['instagram_user','Instagram','text'],['linkedin_url','LinkedIn URL','text']]}
+    contact:{title:'Contato',fields:[['title','Título','text'],['email1','E-mail principal','text'],['email2','E-mail alternativo','text'],['whatsapp_number','WhatsApp — número só dígitos','text'],['whatsapp_display','WhatsApp — texto exibido','text'],['instagram_user','Instagram','text'],['linkedin_url','LinkedIn URL','text']]},
+    seo:{title:'SEO',fields:[
+      ['title','Título da página','text'],
+      ['description','Meta description','textarea'],
+      ['canonical_url','URL canônica','text'],
+      ['og_image_url','Imagem de compartilhamento (URL ou caminho)','text'],
+      ['schema_type','Schema.org — tipo','text']
+    ]}
   };
 
-  const order=['hero','stats','about','wsop','coverage','portfolio','experience','education','instagram','contact'];
-  let user=null, project=null, rows=new Map(), currentKey='hero', locale='pt';
+  const order=['hero','stats','about','wsop','coverage','portfolio','experience','education','instagram','contact','seo'];
+  let user=null, project=null, publishedSnapshot={}, draftSnapshot={}, currentKey='hero', locale='pt';
+  let draftRow=null, localDirty=false;
 
-  const $=id=>document.getElementById(id), host=$('editorHost'), toast=$('toast');
-  const localeKey = base => `${base}_${locale}`;
+  const $=id=>document.getElementById(id);
+  const host=$('editorHost'), toast=$('toast');
+  const localeKey=base=>`${base}_${locale}`;
+  const sharedKeys=['name_html','location','profile_name','user','reel_url','email1','email2','whatsapp_number','whatsapp_display','instagram_user','linkedin_url','canonical_url','og_image_url','schema_type'];
 
-  function notify(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(notify.t);notify.t=setTimeout(()=>toast.classList.remove('show'),2300)}
+  function notify(msg){
+    toast.textContent=msg;toast.classList.add('show');
+    clearTimeout(notify.t);notify.t=setTimeout(()=>toast.classList.remove('show'),2400);
+  }
+
+  function markDirty(flag=true){
+    localDirty=flag;
+    const badge=$('draftBadge');
+    badge.classList.toggle('dirty',flag);
+    badge.classList.toggle('clean',!flag);
+    badge.textContent=flag?'Alterações não salvas':'Rascunho salvo';
+    $('saveHint').textContent=flag?'Existem alterações locais não salvas.':'Rascunho salvo no Supabase.';
+  }
+
+  function deepClone(v){return JSON.parse(JSON.stringify(v));}
+
   function fieldValue(content,key){
-    if (['name_html','location','profile_name','user','reel_url','email1','email2','whatsapp_number','whatsapp_display','instagram_user','linkedin_url'].includes(key)) return content[key]??'';
-    return content[localeKey(key)] ?? content[`${key}_pt`] ?? '';
+    if(sharedKeys.includes(key)) return content?.[key]??'';
+    return content?.[localeKey(key)] ?? content?.[`${key}_pt`] ?? '';
   }
   function setField(content,key,value){
-    if (['name_html','location','profile_name','user','reel_url','email1','email2','whatsapp_number','whatsapp_display','instagram_user','linkedin_url'].includes(key)) content[key]=value;
+    if(sharedKeys.includes(key)) content[key]=value;
     else content[localeKey(key)]=value;
+    markDirty();
   }
   function labelsFor(prop){
     const m={num:'Número',label:'Legenda',event:'Evento',years:'Ano(s)',name:'Nome',desc:'Descrição',url:'URL',role:'Cargo',org:'Empresa / organização',note:'Descrição',degree:'Formação',institution:'Instituição / detalhes',value:'Item'};
     return m[prop]||prop;
   }
+  function h(value){return String(value??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
 
-  function renderNav(){
-    const regularItems = order.map(k =>
-      `<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`
-    ).join('');
-
-    const photosItem = `<button type="button" data-media-page>Fotos</button>`;
-
-    $('nav').innerHTML = regularItems + photosItem;
-
-    $('nav').querySelectorAll('[data-key]').forEach(b => {
-      b.onclick = () => {
-        currentKey = b.dataset.key;
-        renderNav();
-        renderEditor();
-      };
-    });
-
-    const mediaButton = $('nav').querySelector('[data-media-page]');
-    if (mediaButton) {
-      mediaButton.onclick = () => {
-        window.location.href = '/admin/media.html';
+  function ensureSnapshotShape(snapshot){
+    for(const key of order){
+      if(!snapshot[key]){
+        snapshot[key]={content:deepClone(defaults[key]),is_visible:true};
+      }
+    }
+    if(!snapshot.media){
+      snapshot.media={
+        content:{
+          hero_url:'',hero_path:'',hero_position:'center center',
+          about_url:'',about_path:'',about_alt:'Gabriel Capellari',about_position:'top center',
+          contact_url:'',contact_path:'',contact_alt:'Gabriel Capellari em cobertura de poker',contact_position:'center center',
+          wsop_gallery:[]
+        },
+        is_visible:true
       };
     }
+    return snapshot;
+  }
+
+  function renderNav(){
+    $('nav').innerHTML=order.map(k=>`<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`).join('');
+    $('nav').querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>{
+      captureCurrentEditor();
+      currentKey=b.dataset.key;
+      renderNav();renderEditor();
+    });
+  }
+
+  function captureCurrentEditor(){
+    if(!host.__working || !draftSnapshot[currentKey]) return;
+    draftSnapshot[currentKey].content=deepClone(host.__working);
+    draftSnapshot[currentKey].is_visible=$('isVisible').checked;
   }
 
   function renderEditor(){
-    const def=defs[currentKey], row=rows.get(currentKey), content=structuredClone(row?.content || defaults[currentKey]);
+    const def=defs[currentKey];
+    const section=draftSnapshot[currentKey] || {content:deepClone(defaults[currentKey]),is_visible:true};
+    const content=deepClone(section.content || defaults[currentKey]);
+
     $('editorTitle').textContent=def.title;
-    $('isVisible').checked=row?.is_visible!==false;
-    $('lastSaved').textContent=row?.updated_at?'Última atualização: '+new Date(row.updated_at).toLocaleString('pt-BR'):'';
+    $('isVisible').disabled=false;
+    $('isVisible').checked=section.is_visible!==false;
+    $('lastSaved').textContent=draftRow?.updated_at
+      ? 'Rascunho: '+new Date(draftRow.updated_at).toLocaleString('pt-BR')
+      : '';
 
     let markup='<div class="form">';
     for(const [key,label,type] of (def.fields||[])){
       const value=fieldValue(content,key);
-      markup+=`<div class="field"><label>${label}</label>${type==='textarea'
-        ? `<textarea data-field="${key}">${String(value).replaceAll('&','&amp;').replaceAll('<','&lt;')}</textarea>`
-        : `<input data-field="${key}" value="${String(value).replaceAll('&','&amp;').replaceAll('"','&quot;')}">`}</div>`;
+      markup+=`<div class="field"><label>${label}</label>${
+        type==='textarea'
+          ? `<textarea data-field="${key}">${h(value)}</textarea>`
+          : `<input data-field="${key}" value="${h(value)}">`
+      }</div>`;
     }
     markup+='</div>';
 
     for(const [listKey,title,props] of (def.lists||[])){
-      markup+=`<div style="margin-top:1.35rem"><div class="toolbar"><strong>${title}</strong><button class="btn ghost" type="button" data-add="${listKey}">+ Adicionar</button></div><div class="repeaters" data-list="${listKey}"></div></div>`;
+      markup+=`<div style="margin-top:1.35rem">
+        <div class="toolbar"><strong>${title}</strong><button class="btn ghost" type="button" data-add="${listKey}">+ Adicionar</button></div>
+        <div class="repeaters" data-list="${listKey}"></div>
+      </div>`;
     }
+
     host.innerHTML=markup;
     host.__working=content;
 
     host.querySelectorAll('[data-field]').forEach(el=>el.oninput=()=>setField(host.__working,el.dataset.field,el.value));
+    $('isVisible').onchange=()=>markDirty();
+
     host.querySelectorAll('[data-add]').forEach(btn=>btn.onclick=()=>{
-      const list=btn.dataset.add; host.__working[list]=host.__working[list]||[];
-      const defList=(def.lists||[]).find(x=>x[0]===list); const obj={};
-      for(const p of defList[2]) obj[p==='label'||p==='desc'||p==='role'||p==='note'||p==='degree' ? `${p}_${locale}` : p]='';
-      host.__working[list].push(defList[2].length===1?'':obj); renderRepeaters();
+      const list=btn.dataset.add;
+      host.__working[list]=host.__working[list]||[];
+      const defList=(def.lists||[]).find(x=>x[0]===list);
+      const obj={};
+      for(const p of defList[2]){
+        obj[['label','desc','role','note','degree'].includes(p)?`${p}_${locale}`:p]='';
+      }
+      host.__working[list].push(defList[2].length===1?'':obj);
+      markDirty();renderRepeaters();
     });
+
     renderRepeaters();
   }
 
   function renderRepeaters(){
     const def=defs[currentKey], c=host.__working;
     for(const [listKey,title,props] of (def.lists||[])){
-      const wrap=host.querySelector(`[data-list="${listKey}"]`); if(!wrap) continue;
+      const wrap=host.querySelector(`[data-list="${listKey}"]`);if(!wrap)continue;
       const arr=c[listKey]||[];
       wrap.innerHTML=arr.map((item,i)=>{
-        const obj=props.length===1 ? {value:item} : item;
+        const obj=props.length===1?{value:item}:item;
         const fields=props.map(p=>{
           const localized=['label','desc','role','note','degree'].includes(p);
           const key=localized?`${p}_${locale}`:p;
           const val=obj?.[key] ?? (localized?obj?.[`${p}_pt`]:obj?.[p]) ?? '';
           const wide=['desc','note','url'].includes(p)?' wide':'';
-          return `<div class="field${wide}"><label>${labelsFor(p)}</label>${['note','desc'].includes(p)
-            ? `<textarea data-list-field="${listKey}" data-index="${i}" data-prop="${p}">${String(val).replaceAll('&','&amp;').replaceAll('<','&lt;')}</textarea>`
-            : `<input data-list-field="${listKey}" data-index="${i}" data-prop="${p}" value="${String(val).replaceAll('&','&amp;').replaceAll('"','&quot;')}">`}</div>`;
+          return `<div class="field${wide}"><label>${labelsFor(p)}</label>${
+            ['note','desc'].includes(p)
+              ? `<textarea data-list-field="${listKey}" data-index="${i}" data-prop="${p}">${h(val)}</textarea>`
+              : `<input data-list-field="${listKey}" data-index="${i}" data-prop="${p}" value="${h(val)}">`
+          }</div>`;
         }).join('');
-        return `<div class="repeat-card"><div class="repeat-grid">${fields}</div><div class="repeat-actions"><button class="btn danger" type="button" data-remove="${listKey}" data-index="${i}">Remover</button></div></div>`;
+        return `<div class="repeat-card"><div class="repeat-grid">${fields}</div>
+          <div class="repeat-actions"><button class="btn danger" type="button" data-remove="${listKey}" data-index="${i}">Remover</button></div>
+        </div>`;
       }).join('');
 
       wrap.querySelectorAll('[data-list-field]').forEach(el=>el.oninput=()=>{
-        const list=el.dataset.listField, i=+el.dataset.index, p=el.dataset.prop;
-        if(props.length===1){c[list][i]=el.value;return}
+        const list=el.dataset.listField,i=+el.dataset.index,p=el.dataset.prop;
+        if(props.length===1){c[list][i]=el.value;markDirty();return}
         const localized=['label','desc','role','note','degree'].includes(p);
         c[list][i][localized?`${p}_${locale}`:p]=el.value;
+        markDirty();
       });
-      wrap.querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>{c[btn.dataset.remove].splice(+btn.dataset.index,1);renderRepeaters()});
+      wrap.querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>{
+        c[btn.dataset.remove].splice(+btn.dataset.index,1);markDirty();renderRepeaters();
+      });
     }
   }
 
   async function ensureProject(){
-    let {data,error}=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',config.projectSlug).maybeSingle();
-    if(error) throw error;
-    if(data) return data;
-    const result=await sb.from('projects').insert({owner_id:user.id,slug:config.projectSlug,name:'Gabriel Capellari',site_type:'portfolio',is_published:true}).select().single();
-    if(result.error) throw result.error; return result.data;
+    const q=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',config.projectSlug).maybeSingle();
+    if(q.error)throw q.error;
+    if(q.data)return q.data;
+    const i=await sb.from('projects').insert({
+      owner_id:user.id,slug:config.projectSlug,name:'Gabriel Capellari',site_type:'portfolio',is_published:true
+    }).select().single();
+    if(i.error)throw i.error;
+    return i.data;
   }
 
-  async function seedAndLoad(){
-    const q=await sb.from('site_content').select('*').eq('project_id',project.id);
-    if(q.error) throw q.error;
-    rows=new Map((q.data||[]).map(r=>[r.section_key,r]));
-    for(const key of order){
-      if(rows.has(key)) continue;
-      const ins=await sb.from('site_content').insert({project_id:project.id,section_key:key,content:defaults[key],is_visible:true,sort_order:order.indexOf(key)*10}).select().single();
-      if(ins.error) throw ins.error; rows.set(key,ins.data);
+  async function loadPublishedSnapshot(){
+    const q=await sb.from('site_content').select('section_key,content,is_visible').eq('project_id',project.id);
+    if(q.error)throw q.error;
+    const snap={};
+    for(const row of q.data||[]){
+      snap[row.section_key]={content:row.content||{},is_visible:row.is_visible!==false};
     }
+    return ensureSnapshotShape(snap);
+  }
+
+  async function ensureDraft(){
+    const q=await sb.from('project_drafts').select('*').eq('project_id',project.id).maybeSingle();
+    if(q.error)throw q.error;
+    if(q.data){
+      draftRow=q.data;
+      return ensureSnapshotShape(deepClone(q.data.snapshot||{}));
+    }
+
+    const i=await sb.from('project_drafts').insert({
+      project_id:project.id,
+      snapshot:publishedSnapshot,
+      updated_by:user.id
+    }).select().single();
+    if(i.error)throw i.error;
+    draftRow=i.data;
+    return ensureSnapshotShape(deepClone(i.data.snapshot||{}));
+  }
+
+  async function saveDraft(){
+    captureCurrentEditor();
+    const btn=$('saveButton');btn.disabled=true;btn.textContent='Salvando…';
+    try{
+      const u=await sb.from('project_drafts').update({
+        snapshot:draftSnapshot,updated_by:user.id,updated_at:new Date().toISOString()
+      }).eq('project_id',project.id).select().single();
+      if(u.error)throw u.error;
+      draftRow=u.data;markDirty(false);
+      $('lastSaved').textContent='Rascunho: '+new Date(u.data.updated_at).toLocaleString('pt-BR');
+      notify('Rascunho salvo ✓');
+    }catch(e){console.error(e);notify('Erro ao salvar rascunho.')}
+    finally{btn.disabled=false;btn.textContent='Salvar rascunho'}
+  }
+
+  async function publishDraft(){
+    captureCurrentEditor();
+    if(localDirty) await saveDraft();
+
+    const btn=$('confirmPublish');btn.disabled=true;btn.textContent='Publicando…';
+    try{
+      // Save a full snapshot of what is currently live.
+      const v=await sb.from('project_versions').insert({
+        project_id:project.id,
+        snapshot:publishedSnapshot,
+        created_by:user.id,
+        label:'Antes da publicação'
+      });
+      if(v.error)throw v.error;
+
+      // Upsert every managed section, including media and SEO.
+      const payload=Object.entries(draftSnapshot).map(([section_key,section],i)=>({
+        project_id:project.id,
+        section_key,
+        content:section.content||{},
+        is_visible:section.is_visible!==false,
+        sort_order:i*10,
+        updated_at:new Date().toISOString()
+      }));
+
+      const u=await sb.from('site_content').upsert(payload,{onConflict:'project_id,section_key'});
+      if(u.error)throw u.error;
+
+      publishedSnapshot=deepClone(draftSnapshot);
+
+      const d=await sb.from('project_drafts').update({
+        snapshot:draftSnapshot,
+        updated_by:user.id,
+        updated_at:new Date().toISOString(),
+        last_published_at:new Date().toISOString()
+      }).eq('project_id',project.id).select().single();
+      if(d.error)throw d.error;
+      draftRow=d.data;markDirty(false);
+
+      $('publishModal').classList.remove('show');
+      notify('Site publicado com sucesso ✓');
+      $('statusText').textContent='Publicado agora · rascunho sincronizado';
+    }catch(e){console.error(e);notify('Erro ao publicar. Confira a migração da Fase 4.')}
+    finally{btn.disabled=false;btn.textContent='Publicar agora'}
   }
 
   async function openApp(sessionUser){
-    user=sessionUser;$('loginView').classList.add('hidden');$('appView').classList.remove('hidden');$('userEmail').textContent=user.email||'';$('statusText').textContent='Carregando conteúdo…';
-    try{project=await ensureProject();await seedAndLoad();$('statusText').textContent='Site conectado · Fase 2 ativa';renderNav();renderEditor()}
-    catch(e){console.error(e);$('statusText').textContent='Erro de conexão';notify('Erro ao carregar. Confira o Supabase.')}
+    user=sessionUser;
+    $('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
+    $('userEmail').textContent=user.email||'';
+    $('statusText').textContent='Carregando rascunho…';
+    try{
+      project=await ensureProject();
+      publishedSnapshot=await loadPublishedSnapshot();
+      draftSnapshot=await ensureDraft();
+      $('statusText').textContent='Modo rascunho ativo';
+      markDirty(false);renderNav();renderEditor();
+    }catch(e){
+      console.error(e);$('statusText').textContent='Erro de conexão';
+      notify('Execute o SQL da Fase 4 antes de usar este painel.');
+    }
   }
 
   $('loginForm').onsubmit=async e=>{
@@ -274,24 +532,26 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     if(error){$('loginError').textContent='Não foi possível entrar. Verifique e-mail e senha.';return}
     openApp(data.user);
   };
+
   $('logoutButton').onclick=async()=>{await sb.auth.signOut();location.reload()};
+  $('saveButton').onclick=saveDraft;
 
   document.querySelectorAll('.locale-tab').forEach(tab=>tab.onclick=()=>{
-    locale=tab.dataset.locale;document.querySelectorAll('.locale-tab').forEach(x=>x.classList.toggle('active',x===tab));renderEditor()
+    captureCurrentEditor();
+    locale=tab.dataset.locale;
+    document.querySelectorAll('.locale-tab').forEach(x=>x.classList.toggle('active',x===tab));
+    renderEditor();
   });
 
-  $('saveButton').onclick=async()=>{
-    const row=rows.get(currentKey); if(!row) return;
-    const btn=$('saveButton');btn.disabled=true;btn.textContent='Salvando…';
-    try{
-      const ver=await sb.from('site_versions').insert({project_id:project.id,section_key:currentKey,content:row.content,created_by:user.id});
-      if(ver.error) throw ver.error;
-      const upd=await sb.from('site_content').update({content:host.__working,is_visible:$('isVisible').checked,updated_at:new Date().toISOString()}).eq('id',row.id).select().single();
-      if(upd.error) throw upd.error;
-      rows.set(currentKey,upd.data);notify('Alterações publicadas ✓');renderEditor()
-    }catch(e){console.error(e);notify('Erro ao salvar.')}
-    finally{btn.disabled=false;btn.textContent='Salvar e publicar'}
-  };
+  $('publishButton').onclick=()=>{$('publishModal').classList.add('show')};
+  $('cancelPublish').onclick=()=>{$('publishModal').classList.remove('show')};
+  $('confirmPublish').onclick=publishDraft;
+  $('publishModal').onclick=e=>{if(e.target===$('publishModal'))$('publishModal').classList.remove('show')};
+
+  window.addEventListener('beforeunload',e=>{
+    if(!localDirty)return;
+    e.preventDefault();e.returnValue='';
+  });
 
   sb.auth.getSession().then(({data})=>{if(data.session?.user)openApp(data.session.user)});
 })();
