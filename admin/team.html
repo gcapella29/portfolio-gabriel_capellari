@@ -63,6 +63,11 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
    const me=q.data.find(x=>x.user_id===user.id);myRole=me?.role||null;
    const canManage=['owner','admin'].includes(myRole);
    $('inviteForm').style.display=canManage?'grid':'none';
+   if(canManage){
+     $('inviteRole').innerHTML=myRole==='owner'
+       ? '<option value="admin">Admin</option><option value="editor">Editor</option><option value="viewer">Viewer</option>'
+       : '<option value="editor">Editor</option><option value="viewer">Viewer</option>';
+   }
    $('members').innerHTML=q.data.map(m=>`<article class="member"><div class="meta"><strong>${m.email||'Usuário'}</strong><span>${m.user_id===user.id?'Você · ':''}${new Date(m.created_at).toLocaleDateString('pt-BR')}</span><div class="role">${m.role}</div></div><div class="actions">${canManage&&m.role!=='owner'&&m.user_id!==user.id?`<select data-role="${m.user_id}" style="padding:.55rem;border:1px solid var(--line);border-radius:9px"><option ${m.role==='admin'?'selected':''} value="admin">Admin</option><option ${m.role==='editor'?'selected':''} value="editor">Editor</option><option ${m.role==='viewer'?'selected':''} value="viewer">Viewer</option></select><button class="btn danger" data-remove="${m.user_id}">Remover</button>`:''}</div></article>`).join('');
    $('members').querySelectorAll('[data-role]').forEach(sel=>sel.onchange=()=>memberAction('update_role',sel.dataset.role,sel.value));
    $('members').querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>{if(confirm('Remover esta pessoa do projeto?'))memberAction('remove',btn.dataset.remove)});

@@ -29,7 +29,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 <header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">VITRINE PRO · FASE 5</div><h1>Projetos</h1><p>Gerencie seus projetos e os projetos dos quais você faz parte. Cada projeto pode ter vários membros com permissões diferentes.</p></div><a class="btn ghost" href="/admin/">← Painel</a></header>
 <div class="grid">
 <section class="card"><h2 style="margin-top:0">Meus projetos</h2><div class="projects" id="projects"></div></section>
-<aside class="card"><h2 style="margin-top:0">Novo projeto</h2><form class="form" id="createForm">
+<aside class="card" id="createProjectCard"><h2 style="margin-top:0">Novo projeto</h2><form class="form" id="createForm">
 <div class="field"><label>Nome do projeto</label><input id="name" placeholder="Mariana Personal Trainer" required></div>
 <div class="field"><label>Slug</label><input id="slug" placeholder="mariana-personal" required pattern="[a-z0-9-]+"></div>
 <div class="field"><label>Tipo</label><select id="type"><option value="portfolio">Portfólio profissional</option><option value="personal_trainer">Personal trainer</option><option value="language_teacher">Professor de idiomas</option><option value="local_business">Comércio local</option><option value="journalist">Jornalista</option><option value="other">Outro</option></select></div>
@@ -43,22 +43,38 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 <script>
 (() => {
  const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
- let user=null;const $=id=>document.getElementById(id);
+ let user=null,isPlatformOwner=false;const $=id=>document.getElementById(id);
  function toast(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2200)}
  function slugify(v){return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
  $('name').oninput=()=>{if(!$('slug').dataset.edited)$('slug').value=slugify($('name').value)};
  $('slug').oninput=()=>{$('slug').dataset.edited='1';$('slug').value=slugify($('slug').value)};
 
  async function load(){
+   const defaultProject=await sb.from('projects').select('id,owner_id').eq('slug',cfg.projectSlug).maybeSingle();
+   isPlatformOwner=defaultProject.data?.owner_id===user.id;
+   $('createProjectCard').style.display=isPlatformOwner?'block':'none';
+
    const q=await sb.from('projects').select('*').order('created_at',{ascending:true});
    if(q.error){toast('Erro ao carregar projetos');return}
    if(!q.data.length){$('projects').innerHTML='<div class="empty">Nenhum projeto encontrado.</div>';return}
-   $('projects').innerHTML=q.data.map(p=>`<article class="project"><div class="meta"><h3>${p.name}</h3><span>${p.slug}</span><div class="type">${p.site_type||'portfolio'}</div></div><div class="actions"><button class="btn gold" data-open="${p.slug}">Gerenciar</button><a class="btn ghost" href="/admin/team.html?project=${encodeURIComponent(p.slug)}">Equipe</a><a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a><a class="btn ghost" href="${p.slug===cfg.projectSlug?'/':`/site.html?project=${encodeURIComponent(p.slug)}`}" target="_blank" title="Abrir o site deste projeto">Site</a></div></article>`).join('');
-   $('projects').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{window.VITRINE_PROJECT_CONTEXT.set(b.dataset.open);location.href=`/admin/?project=${encodeURIComponent(b.dataset.open)}`});
+
+   const ids=q.data.map(p=>p.id);
+   const memberships=await sb.from('project_members').select('project_id,role').eq('user_id',user.id).in('project_id',ids);
+   const roleMap=new Map((memberships.data||[]).map(x=>[x.project_id,x.role]));
+
+   $('projects').innerHTML=q.data.map(p=>{
+     const role=roleMap.get(p.id)||'viewer';
+     return `<article class="project"><div class="meta"><h3>${p.name}</h3><span>${p.slug}</span><div class="type">${p.site_type||'portfolio'} · ${role}</div></div><div class="actions"><button class="btn gold" data-open="${p.slug}">Gerenciar</button>${['owner','admin'].includes(role)?`<a class="btn ghost" href="/admin/team.html?project=${encodeURIComponent(p.slug)}">Equipe</a>`:''}<a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a><a class="btn ghost" href="${p.slug===cfg.projectSlug?'/':`/site.html?project=${encodeURIComponent(p.slug)}`}" target="_blank" title="Abrir o site deste projeto">Site</a></div></article>`;
+   }).join('');
+
+   $('projects').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{
+     window.VITRINE_PROJECT_CONTEXT.set(b.dataset.open);
+     location.href=`/admin/?project=${encodeURIComponent(b.dataset.open)}`;
+   });
  }
 
  $('createForm').onsubmit=async e=>{
-   e.preventDefault();const name=$('name').value.trim(),slug=$('slug').value.trim(),site_type=$('type').value;if(!name||!slug)return;
+   e.preventDefault();if(!isPlatformOwner){toast('Sua conta não pode criar novos projetos.');return;}const name=$('name').value.trim(),slug=$('slug').value.trim(),site_type=$('type').value;if(!name||!slug)return;
    const r=await sb.from('projects').insert({owner_id:user.id,name,slug,site_type,is_published:true}).select().single();
    if(r.error){toast(r.error.message.includes('duplicate')?'Esse slug já existe.':'Erro ao criar projeto.');return}
    // Seed a draft with empty/general starting sections. Published content remains empty until first publish.

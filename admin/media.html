@@ -82,7 +82,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   const config=window.VITRINE_SUPABASE;
   const sb=window.supabase.createClient(config.url,config.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
   const BUCKET='site-media';
-  let user=null,project=null,draftRow=null,content=null,draftSnapshot=null;
+  let user=null,project=null,myRole=null,draftRow=null,content=null,draftSnapshot=null;
 
   const $=id=>document.getElementById(id),toast=$('toast');
   const defaults={
@@ -94,6 +94,27 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
   function notify(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(notify.t);notify.t=setTimeout(()=>toast.classList.remove('show'),2300)}
   function safeName(name){const dot=name.lastIndexOf('.'),ext=dot>-1?name.slice(dot).toLowerCase():'.jpg';const base=(dot>-1?name.slice(0,dot):name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();return `${base||'image'}-${Date.now()}${ext}`}
+
+
+  const canEdit=()=>['owner','admin','editor'].includes(myRole);
+  const canManageTeam=()=>['owner','admin'].includes(myRole);
+
+  async function loadMyRole(){
+    const q=await sb.from('project_members').select('role')
+      .eq('project_id',project.id).eq('user_id',user.id).maybeSingle();
+    if(q.error)throw q.error;
+    myRole=q.data?.role||null;
+    if(!myRole)throw new Error('Sem acesso ao projeto.');
+  }
+
+  function applyRoleUI(){
+    if($('teamLink')) $('teamLink').style.display=canManageTeam()?'block':'none';
+    if(!canEdit()){
+      document.querySelectorAll('[data-upload],[data-reset],[data-pos],[data-alt],[data-f],[data-move],[data-replace],[data-del],#galleryInput').forEach(el=>el.disabled=true);
+      const dz=$('dropZone');
+      if(dz){dz.style.pointerEvents='none';dz.style.opacity='.55';}
+    }
+  }
 
   async function ensureProject(){
     const q=await sb.from('projects').select('*').eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug)).maybeSingle();
@@ -117,10 +138,11 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
     draftSnapshot=structuredClone(draftRow.snapshot||{});
     if(!draftSnapshot.media)draftSnapshot.media={content:defaults,is_visible:true};
     content=structuredClone(draftSnapshot.media.content||defaults);
-    render();
+    render();applyRoleUI();
   }
 
   async function save(){
+    if(!canEdit())throw new Error('Acesso somente leitura.');
     draftSnapshot.media={content:structuredClone(content),is_visible:true};
     const u=await sb.from('project_drafts').update({
       snapshot:draftSnapshot,
@@ -132,6 +154,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   }
 
   async function upload(file,folder){
+    if(!canEdit())throw new Error('Acesso somente leitura.');
     if(!file?.type?.startsWith('image/'))throw new Error('Envie uma imagem válida.');
     if(file.size>8*1024*1024)throw new Error('Máximo de 8 MB por imagem.');
     const path=`${project.id}/${folder}/${safeName(file.name)}`;
@@ -193,6 +216,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   async function open(userObj){
     user=userObj;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');
     try{project=await ensureProject();
+      await loadMyRole();
       const slug=project.slug;
       const q=`?project=${encodeURIComponent(slug)}`;
       $('contentLink').href=`/admin/${q}`;
