@@ -2420,23 +2420,76 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
   }
 
   function renderAll() {
-    renderHero(); renderStats(); renderAbout(); renderWsop(); renderCoverage();
-    renderPortfolio(); renderExperience(); renderEducation(); renderInstagram(); renderContact();
+    const renderers = [
+      renderHero, renderStats, renderAbout, renderWsop, renderCoverage,
+      renderPortfolio, renderExperience, renderEducation, renderInstagram, renderContact
+    ];
+
+    renderers.forEach(fn => {
+      try {
+        fn();
+      } catch (error) {
+        console.warn(`Falha ao renderizar ${fn.name}`, error);
+      }
+    });
+  }
+
+  function finishTenantLoading() {
+    document.documentElement.classList.remove('vitrine-tenant-loading');
+    document.dispatchEvent(new CustomEvent('vitrine:tenant-ready'));
+  }
+
+  function showTenantLoadError(message = 'Não foi possível carregar este site.') {
+    const loader = document.getElementById('vitrineTenantLoader');
+    if (loader) {
+      loader.innerHTML = `
+        <div class="vitrine-loader-inner">
+          <div style="font-size:1.05rem;font-weight:600">Site indisponível no momento</div>
+          <div style="font-size:.8rem;opacity:.72;text-align:center;max-width:320px">${message}</div>
+        </div>`;
+      loader.style.display = 'flex';
+    }
   }
 
   async function loadCms() {
+    let loaded = false;
+
     try {
-      const { data: project } = await cms.from('projects').select('id').eq('slug', projectSlug).eq('is_published', true).maybeSingle();
-      if (!project) return;
-      const { data, error } = await cms.from('site_content').select('section_key,content,is_visible').eq('project_id', project.id);
-      if (error || !data) return;
-      contentMap = new Map(data.map(row => [row.section_key,row]));
+      const { data: project, error: projectError } = await cms
+        .from('projects')
+        .select('id')
+        .eq('slug', projectSlug)
+        .eq('is_published', true)
+        .maybeSingle();
+
+      if (projectError) throw projectError;
+
+      if (!project) {
+        showTenantLoadError('O projeto solicitado não foi encontrado ou ainda não está publicado.');
+        return;
+      }
+
+      const { data, error } = await cms
+        .from('site_content')
+        .select('section_key,content,is_visible')
+        .eq('project_id', project.id);
+
+      if (error) throw error;
+      if (!data) throw new Error('Conteúdo do projeto indisponível.');
+
+      contentMap = new Map(data.map(row => [row.section_key, row]));
       renderAll();
-      document.documentElement.classList.remove('vitrine-tenant-loading');
-      document.dispatchEvent(new CustomEvent('vitrine:tenant-ready'));
+      loaded = true;
+      finishTenantLoading();
 
     } catch (error) {
-      console.warn('Vitrine Pro CMS indisponível; usando conteúdo do HTML.', error);
+      console.warn('Vitrine Pro CMS indisponível.', error);
+      showTenantLoadError('Tente atualizar a página em alguns instantes.');
+    }
+
+    // Safety valve: successful loads must never remain covered.
+    if (loaded) {
+      setTimeout(finishTenantLoading, 50);
     }
   }
 
@@ -2450,5 +2503,31 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
 
 <script src="media-cms.js"></script>
 <script src="seo-cms.js"></script>
+
+<script>
+(() => {
+  const isTenant = document.documentElement.classList.contains('vitrine-tenant-loading');
+  if (!isTenant) return;
+
+  setTimeout(() => {
+    if (!document.documentElement.classList.contains('vitrine-tenant-loading')) return;
+
+    const loader = document.getElementById('vitrineTenantLoader');
+    if (loader) {
+      loader.innerHTML = `
+        <div class="vitrine-loader-inner">
+          <div style="font-size:1rem;font-weight:600">O carregamento demorou mais que o esperado</div>
+          <button type="button"
+            onclick="location.reload()"
+            style="border:1px solid rgba(243,238,226,.35);background:transparent;color:#f3eee2;border-radius:999px;padding:.7rem 1rem;cursor:pointer">
+            Tentar novamente
+          </button>
+        </div>`;
+      loader.style.display = 'flex';
+    }
+  }, 8000);
+})();
+</script>
+
 </body>
 </html>
