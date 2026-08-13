@@ -1371,6 +1371,7 @@ button,a{touch-action:manipulation;}
 <!-- VITRINE PRO CMS — Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="project-context.js"></script>
 
 
 <style>
@@ -2150,6 +2151,7 @@ button,a{touch-action:manipulation;}
   if (!window.supabase || !window.VITRINE_SUPABASE) return;
 
   const { url, publishableKey, projectSlug } = window.VITRINE_SUPABASE;
+  projectSlug = window.VITRINE_PROJECT_CONTEXT?.slug || projectSlug;
   const cms = window.supabase.createClient(url, publishableKey, {
     auth: { persistSession: true, autoRefreshToken: true }
   });
