@@ -39,13 +39,6 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   margin-top:.15rem;
 }
 
-
-.nav .nav-link{
-  flex:0 0 auto;
-  width:100%;
-  margin:0;
-}
-
 </style>
 
 <style id="phase4-css">
@@ -107,9 +100,12 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
     <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 4</div></div>
-    <nav class="nav" id="nav">
-      <!-- Conteúdo, Fotos e Histórico são renderizados juntos pelo JS -->
-    </nav>
+    <nav class="nav" id="nav"></nav>
+    <div style="margin-top:.5rem;display:grid;gap:.3rem">
+      <a class="nav-link" href="/admin/media.html">Fotos</a>
+      <a class="nav-link" href="/admin/history.html">Histórico</a>
+      <a class="nav-link" href="/admin/projects.html">Projetos</a>
+    </div>
     <div class="sidebar-bottom">
       <div class="email" id="userEmail"></div>
       <button class="logout" id="logoutButton">Sair</button>
@@ -119,14 +115,14 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   <main class="main">
     <header class="top">
       <div>
-        <div class="sub" style="color:var(--muted)">Gabriel Capellari · Site</div>
+        <div class="sub" style="color:var(--muted)" id="projectIdentity">Projeto</div>
         <h1>Gerenciar conteúdo</h1>
         <div class="status" id="statusText">Conectando…</div>
       </div>
       <div class="workflow-bar">
         <span class="workflow-badge clean" id="draftBadge">Rascunho sincronizado</span>
-        <a class="btn ghost" href="/preview.html?preview=draft" target="_blank" rel="noopener">Preview ↗</a>
-        <a class="btn ghost" href="/" target="_blank" rel="noopener">Site publicado ↗</a>
+        <a class="btn ghost" id="previewLink" href="/preview.html?preview=draft" target="_blank" rel="noopener">Preview ↗</a>
+        <a class="btn ghost" id="publishedLink" href="/" target="_blank" rel="noopener">Site publicado ↗</a>
         <button class="btn publish-btn" id="publishButton" type="button">Publicar alterações</button>
       </div>
     </header>
@@ -175,6 +171,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="../project-context.js"></script>
 
 <script>
 (() => {
@@ -312,22 +309,11 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   }
 
   function renderNav(){
-    const sectionItems = order.map(k =>
-      `<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`
-    ).join('');
-
-    const pageItems = `
-      <a class="nav-link" href="/admin/media.html">Fotos</a>
-      <a class="nav-link" href="/admin/history.html">Histórico</a>
-    `;
-
-    $('nav').innerHTML = sectionItems + pageItems;
-
+    $('nav').innerHTML=order.map(k=>`<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`).join('');
     $('nav').querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>{
       captureCurrentEditor();
       currentKey=b.dataset.key;
-      renderNav();
-      renderEditor();
+      renderNav();renderEditor();
     });
   }
 
@@ -425,11 +411,11 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   }
 
   async function ensureProject(){
-    const q=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',config.projectSlug).maybeSingle();
+    const q=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug)).maybeSingle();
     if(q.error)throw q.error;
     if(q.data)return q.data;
     const i=await sb.from('projects').insert({
-      owner_id:user.id,slug:config.projectSlug,name:'Gabriel Capellari',site_type:'portfolio',is_published:true
+      owner_id:user.id,slug:(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug),name:'Gabriel Capellari',site_type:'portfolio',is_published:true
     }).select().single();
     if(i.error)throw i.error;
     return i.data;
@@ -531,9 +517,13 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     $('statusText').textContent='Carregando rascunho…';
     try{
       project=await ensureProject();
+      $('projectIdentity').textContent=`${project.name} · ${project.slug}`;
       publishedSnapshot=await loadPublishedSnapshot();
       draftSnapshot=await ensureDraft();
       $('statusText').textContent='Modo rascunho ativo';
+      const ctx=window.VITRINE_PROJECT_CONTEXT;
+      $('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(project.slug)}`;
+      $('publishedLink').href=project.slug===ctx.defaultSlug ? '/' : `/site.html?project=${encodeURIComponent(project.slug)}`;
       markDirty(false);renderNav();renderEditor();
     }catch(e){
       console.error(e);$('statusText').textContent='Erro de conexão';
