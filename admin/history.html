@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Vitrine Pro — Histórico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--dark:#082720;--felt:#0e3b2e;--paper:#f7f4ec;--ink:#171310;--gold:#e3bb3d;--muted:#728078;--line:#ded8c8}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}.hidden{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(145deg,var(--dark),var(--felt));padding:1rem}.login-card{width:min(430px,100%);background:#fff;padding:2rem;border-radius:22px}
+input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.field{display:grid;gap:.4rem;margin:.7rem 0}.field label{font:600 .66rem "IBM Plex Mono",monospace;color:var(--muted);text-transform:uppercase}
+.btn{border:0;border-radius:999px;padding:.7rem .9rem;font:600 .68rem "IBM Plex Mono",monospace;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}.gold{background:var(--gold);color:var(--dark)}.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.shell{max-width:1050px;margin:auto;padding:2rem 1rem 4rem}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}.top h1{font-family:Fraunces,serif;font-size:clamp(2rem,5vw,3.2rem);margin:0}.list{display:grid;gap:.8rem}.version{background:#fff;border:1px solid var(--line);border-radius:15px;padding:1rem;display:flex;justify-content:space-between;gap:1rem;align-items:center}.meta strong{display:block;margin-bottom:.3rem}.meta span{font-size:.78rem;color:var(--muted)}.actions{display:flex;gap:.5rem;flex-wrap:wrap}.empty{background:#fff;border:1px solid var(--line);border-radius:15px;padding:1.2rem;color:var(--muted)}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.8rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
+@media(max-width:650px){.top,.version{flex-direction:column}.actions{width:100%}.actions .btn{flex:1;justify-content:center}}
+</style>
+</head>
+<body>
+<section class="login" id="loginView"><div class="login-card">
+  <h1 style="font-family:Fraunces,serif;margin:0">Vitrine <span style="color:#c9a227">Pro</span></h1>
+  <p style="color:var(--muted)">Entre para consultar o histórico.</p>
+  <form id="loginForm"><div class="field"><label>E-mail</label><input id="email" type="email" required></div><div class="field"><label>Senha</label><input id="password" type="password" required></div><div id="err" style="color:#a83c2e;font-size:.8rem"></div><button class="btn gold">Entrar</button></form>
+</div></section>
+<main class="shell hidden" id="app">
+  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 4</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" href="/admin/">← Conteúdo</a><a class="btn ghost" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
+  <div class="list" id="list"></div>
+</main>
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script>
+<script>
+(() => {
+ const c=window.VITRINE_SUPABASE,sb=window.supabase.createClient(c.url,c.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
+ let user=null,project=null;const $=id=>document.getElementById(id);
+ function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
+ async function projectForUser(){const q=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',c.projectSlug).single();if(q.error)throw q.error;return q.data}
+ async function load(){
+   const q=await sb.from('project_versions').select('id,label,created_at,snapshot').eq('project_id',project.id).order('created_at',{ascending:false}).limit(30);
+   if(q.error)throw q.error;
+   if(!q.data.length){$('list').innerHTML='<div class="empty">Ainda não há versões. A primeira aparecerá depois da próxima publicação.</div>';return}
+   $('list').innerHTML=q.data.map((v,i)=>`<article class="version"><div class="meta"><strong>${v.label||'Versão publicada'}</strong><span>${new Date(v.created_at).toLocaleString('pt-BR')} · ${Object.keys(v.snapshot||{}).length} seções</span></div><div class="actions"><button class="btn ghost" data-restore="${v.id}">Restaurar como rascunho</button></div></article>`).join('');
+   $('list').querySelectorAll('[data-restore]').forEach(btn=>btn.onclick=async()=>{
+     const version=q.data.find(v=>v.id===btn.dataset.restore);if(!version)return;
+     if(!confirm('Substituir o rascunho atual por esta versão? O site público não será alterado até você publicar.'))return;
+     const u=await sb.from('project_drafts').upsert({project_id:project.id,snapshot:version.snapshot,updated_by:user.id,updated_at:new Date().toISOString()},{onConflict:'project_id'});if(u.error){toast('Erro ao restaurar');return}
+     toast('Versão restaurada como rascunho ✓');
+   });
+ }
+ async function open(u){user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');try{project=await projectForUser();await load()}catch(e){console.error(e);toast('Execute a migração da Fase 4.')}}
+ $('loginForm').onsubmit=async e=>{e.preventDefault();const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(r.error){$('err').textContent='E-mail ou senha inválidos.';return}open(r.data.user)};
+ sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
+})();
+</script>
+</body></html>
