@@ -45,11 +45,18 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 <div class="shell hidden" id="app">
   <aside class="sidebar">
-    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 4</div>
-    <div class="side-links"><a href="/admin/">Conteúdo</a><a class="active" href="media.html">Fotos</a><a href="/" target="_blank">Visualizar site ↗</a></div>
+    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 5</div>
+    <div class="side-links">
+      <a id="contentLink" href="/admin/">Conteúdo</a>
+      <a class="active" id="mediaLink" href="/admin/media.html">Fotos</a>
+      <a id="historyLink" href="/admin/history.html">Histórico</a>
+      <a href="/admin/projects.html">Projetos</a>
+      <a id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a>
+      <a id="siteLink" href="/" target="_blank">Visualizar site ↗</a>
+    </div>
   </aside>
   <main class="main">
-    <header class="top"><div><div class="sub" style="color:var(--muted)">Gerenciamento de mídia · Rascunho</div><h1>Fotos</h1></div><a class="btn ghost" href="/admin/">← Conteúdo</a></header>
+    <header class="top"><div><div class="sub" style="color:var(--muted)">Gerenciamento de mídia · Rascunho</div><h1>Fotos</h1></div><a class="btn ghost" id="backContentLink" href="/admin/">← Conteúdo</a></header>
 
     <section class="card">
       <h2 style="font-family:Fraunces,serif;margin-top:0">Imagens principais</h2>
@@ -185,7 +192,17 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
   async function open(userObj){
     user=userObj;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');
-    try{project=await ensureProject();await loadMedia()}catch(e){console.error(e);notify('Erro ao carregar o gerenciador')}
+    try{project=await ensureProject();
+      const slug=project.slug;
+      const q=`?project=${encodeURIComponent(slug)}`;
+      $('contentLink').href=`/admin/${q}`;
+      $('backContentLink').href=`/admin/${q}`;
+      $('mediaLink').href=`/admin/media.html${q}`;
+      $('historyLink').href=`/admin/history.html${q}`;
+      $('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;
+      $('siteLink').href=slug===(window.VITRINE_PROJECT_CONTEXT?.defaultSlug||config.projectSlug)
+        ? '/'
+        : `/site.html?project=${encodeURIComponent(slug)}`;await loadMedia()}catch(e){console.error(e);notify('Erro ao carregar o gerenciador')}
   }
   $('loginForm').onsubmit=async e=>{e.preventDefault();const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(r.error){$('loginError').textContent='E-mail ou senha inválidos.';return}open(r.data.user)};
   sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
