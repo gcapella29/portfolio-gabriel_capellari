@@ -24,7 +24,7 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
   <form id="loginForm"><div class="field"><label>E-mail</label><input id="email" type="email" required></div><div class="field"><label>Senha</label><input id="password" type="password" required></div><div id="err" style="color:#a83c2e;font-size:.8rem"></div><button class="btn gold">Entrar</button></form>
 </div></section>
 <main class="shell hidden" id="app">
-  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 4</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" href="/admin/">← Conteúdo</a><a class="btn ghost" href="/admin/projects.html">Projetos</a><a class="btn ghost" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
+  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 5</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" href="/admin/projects.html">Projetos</a><a class="btn ghost" id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
   <div class="list" id="list"></div>
 </main>
 <div class="toast" id="toast"></div>
@@ -48,7 +48,7 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
      toast('Versão restaurada como rascunho ✓');
    });
  }
- async function open(u){user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');try{project=await projectForUser();await load()}catch(e){console.error(e);toast('Execute a migração da Fase 4.')}}
+ async function open(u){user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');try{project=await projectForUser();const slug=project.slug;$('contentLink').href=`/admin/?project=${encodeURIComponent(slug)}`;$('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;await load()}catch(e){console.error(e);toast('Execute a migração da Fase 4.')}}
  $('loginForm').onsubmit=async e=>{e.preventDefault();const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(r.error){$('err').textContent='E-mail ou senha inválidos.';return}open(r.data.user)};
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
