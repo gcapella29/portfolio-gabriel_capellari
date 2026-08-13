@@ -2211,6 +2211,7 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
 
   const { url, publishableKey, projectSlug: defaultProjectSlug } = window.VITRINE_SUPABASE;
   const projectSlug = window.VITRINE_PROJECT_CONTEXT?.slug || defaultProjectSlug;
+  const isTenantProject = projectSlug !== defaultProjectSlug;
   document.documentElement.dataset.vitrineProject = projectSlug;
   const cms = window.supabase.createClient(url, publishableKey, {
     auth: { persistSession: true, autoRefreshToken: true }
@@ -2233,9 +2234,30 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
   const sectionVisible = (key, domId) => {
     const row = contentMap.get(key);
     const el = document.getElementById(domId);
+
+    if (!row && isTenantProject) {
+      if (el) el.hidden = true;
+      return false;
+    }
+
     if (el && row) el.hidden = row.is_visible === false;
     return !row || row.is_visible !== false;
   };
+
+
+  function prepareTenantShell() {
+    if (!isTenantProject) return;
+
+    [
+      'destaques','sobre','wsop-featured','cobertura','portfolio',
+      'experiencia','formacao','instagram','contato'
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+
+    document.querySelectorAll('.ticker-group').forEach(group => group.innerHTML = '');
+  }
 
   function renderHero() {
     const row = contentMap.get('hero'); if (!row) return;
@@ -2243,14 +2265,19 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
     const role = document.querySelector('.hero-role');
     const badge = document.querySelector('.hero .badge');
     const name = document.querySelector('.hero-name');
-    if (name && c.name_html) name.innerHTML = c.name_html;
+    if (name) {
+      if (c.name_html) name.innerHTML = c.name_html;
+      else if (isTenantProject) name.innerHTML = '';
+    }
     if (role) role.textContent = pick(c,'role');
-    if (badge && c.location) badge.textContent = c.location;
+    if (badge) badge.textContent = c.location || '';
 
-    if (Array.isArray(c.ticker) && c.ticker.length) {
+    if (Array.isArray(c.ticker)) {
       document.querySelectorAll('.ticker-group').forEach(group => {
         group.innerHTML = c.ticker.map(x => `<span>${esc(x)}</span>`).join('');
       });
+    } else if (isTenantProject) {
+      document.querySelectorAll('.ticker-group').forEach(group => group.innerHTML = '');
     }
   }
 
@@ -2494,6 +2521,7 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
     button.addEventListener('click', () => setTimeout(renderAll, 0));
   });
 
+  prepareTenantShell();
   loadCms();
 })();
 </script>
@@ -2557,20 +2585,7 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
 </script>
 
 
-<script>
-(() => {
-  const params = new URLSearchParams(location.search);
-  if (params.get('tenantRoot') !== '1') return;
 
-  const cleanTenantAddress = () => {
-    // Keeps the custom hostname, removes /site.html?... from the address bar.
-    history.replaceState(null, '', '/');
-  };
-
-  document.addEventListener('vitrine:tenant-content-ready', cleanTenantAddress, {once:true});
-  document.addEventListener('vitrine:tenant-ready', cleanTenantAddress, {once:true});
-})();
-</script>
 
 </body>
 </html>

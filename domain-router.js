@@ -9,7 +9,6 @@
     '127.0.0.1'
   ]);
 
-  // Main deployment continues to serve Gabriel normally.
   if (primaryHosts.has(host) || host.endsWith('.vercel.app')) {
     document.documentElement.classList.remove('vitrine-domain-resolving');
     return;
@@ -32,7 +31,6 @@
 
   const findProject = async () => {
     try {
-      // Exact custom domain has priority.
       let q = await sb.from('projects')
         .select('slug')
         .eq('custom_domain', host)
@@ -42,7 +40,6 @@
       if (q.error) throw q.error;
       let slug = q.data?.slug;
 
-      // Wildcard/subdomain fallback, e.g. fabio.vitrinepro.com.br -> fabio.
       if (!slug) {
         const firstLabel = host.split('.')[0];
         if (firstLabel && firstLabel !== 'www') {
@@ -62,9 +59,8 @@
         return;
       }
 
-      // Static-project solution: resolve client-side, then site.html hides the
-      // technical route from the address bar once the project is ready.
-      location.replace(`/site.html?project=${encodeURIComponent(slug)}&tenantRoot=1`);
+      // Same route used by the regular public project URL.
+      location.replace(`/p/${encodeURIComponent(slug)}`);
     } catch (error) {
       console.error('Vitrine domain resolver', error);
       fail('Não foi possível resolver o domínio. Tente novamente em instantes.');
