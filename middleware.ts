@@ -55,7 +55,7 @@ async function resolveProjectByDomain(host: string) {
   return null
 }
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const host = normalizeHost(request.headers.get('host'))
 
