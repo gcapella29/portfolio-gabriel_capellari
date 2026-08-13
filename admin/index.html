@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vitrine Pro Admin — Fase 4</title>
+<title>Vitrine Pro Admin — Fase 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 .nav{display:grid;gap:.35rem;margin-top:1.5rem;overflow:auto}.nav button{border:0;border-radius:11px;background:transparent;color:rgba(243,238,226,.7);padding:.72rem .8rem;text-align:left}.nav button.active{background:rgba(227,187,61,.13);color:var(--gold2)}.sidebar-bottom{margin-top:auto}.email{font:500 .66rem/1.4 "IBM Plex Mono",monospace;color:rgba(243,238,226,.55);word-break:break-all}.logout{margin-top:.7rem;width:100%;background:transparent;border:1px solid rgba(243,238,226,.16);color:#fff;padding:.7rem;border-radius:10px}
 .main{padding:2rem clamp(1rem,4vw,4rem) 4rem;min-width:0}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}.top h1{font-size:clamp(2rem,4vw,3rem)}.top-actions{display:flex;gap:.6rem;flex-wrap:wrap}.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.card-head{padding:1.1rem 1.25rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:1rem}.card-head h2{font-family:Fraunces,serif;margin:0;font-size:1.35rem}.card-body{padding:1.25rem}.editor{display:none}.editor.active{display:block}.locale-tabs{display:flex;gap:.4rem}.locale-tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:.43rem .65rem;font:600 .65rem/1 "IBM Plex Mono",monospace}.locale-tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}.repeaters{display:grid;gap:.75rem}.repeat-card{border:1px solid var(--line);border-radius:14px;padding:.9rem;background:#fbfaf6}.repeat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem}.repeat-card .wide{grid-column:1/-1}.repeat-actions{display:flex;justify-content:flex-end;margin-top:.7rem}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:.8rem;margin-bottom:1rem}.visibility{display:flex;gap:.5rem;align-items:center;font-size:.82rem}.visibility input{width:auto}.savebar{display:flex;justify-content:flex-end;align-items:center;gap:.8rem;margin-top:1.2rem}.help{font-size:.76rem;color:var(--muted);line-height:1.5}.status{font:500 .7rem/1.4 "IBM Plex Mono",monospace;color:var(--muted)}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.85rem 1rem;border-radius:12px;box-shadow:0 15px 50px rgba(0,0,0,.25);opacity:0;transform:translateY(140%);transition:.25s;z-index:100}.toast.show{opacity:1;transform:none}
-@media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.nav{display:flex}.sidebar-bottom{margin-top:1rem}.row2,.repeat-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto;max-height:100vh}.nav{display:grid;max-height:58vh;overflow-y:auto;overflow-x:hidden}.sidebar-bottom{margin-top:1rem}.row2,.repeat-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.main{padding:1rem 1rem 3rem}.top{flex-direction:column}.top-actions{width:100%}.top-actions .btn{flex:1}.card-head{align-items:flex-start;flex-direction:column}.savebar{flex-direction:column}.savebar .btn{width:100%}}
 
 /* Fase 3 — navigation polish */
@@ -86,7 +86,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   <div class="login">
     <h1>Vitrine <em>Pro</em></h1>
     <p style="color:var(--muted);line-height:1.55">
-      Fase 4: edite em rascunho, visualize antes e publique quando estiver pronto.
+      Fase 5: edite em rascunho, visualize antes e publique quando estiver pronto.
     </p>
     <form class="form" id="loginForm">
       <div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required></div>
@@ -99,13 +99,8 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
-    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 4</div></div>
+    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 5</div></div>
     <nav class="nav" id="nav"></nav>
-    <div style="margin-top:.5rem;display:grid;gap:.3rem">
-      <a class="nav-link" href="/admin/media.html">Fotos</a>
-      <a class="nav-link" href="/admin/history.html">Histórico</a>
-      <a class="nav-link" href="/admin/projects.html">Projetos</a>
-    </div>
     <div class="sidebar-bottom">
       <div class="email" id="userEmail"></div>
       <button class="logout" id="logoutButton">Sair</button>
@@ -309,7 +304,14 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   }
 
   function renderNav(){
-    $('nav').innerHTML=order.map(k=>`<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`).join('');
+    const slug=project?.slug || window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug;
+    const q=`?project=${encodeURIComponent(slug)}`;
+    const sections=order.map(k=>`<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`).join('');
+    const pages=`
+      <a class="nav-link" href="/admin/media.html${q}">Fotos</a>
+      <a class="nav-link" href="/admin/history.html${q}">Histórico</a>
+      <a class="nav-link" href="/admin/projects.html">Projetos</a>`;
+    $('nav').innerHTML=sections+pages;
     $('nav').querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>{
       captureCurrentEditor();
       currentKey=b.dataset.key;
