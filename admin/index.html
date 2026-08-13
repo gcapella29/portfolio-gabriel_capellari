@@ -39,6 +39,13 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   margin-top:.15rem;
 }
 
+
+.nav .nav-link{
+  flex:0 0 auto;
+  width:100%;
+  margin:0;
+}
+
 </style>
 
 <style id="phase4-css">
@@ -100,11 +107,9 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
     <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 4</div></div>
-    <nav class="nav" id="nav"></nav>
-    <div style="margin-top:.5rem;display:grid;gap:.3rem">
-      <a class="nav-link" href="/admin/media.html">Fotos</a>
-      <a class="nav-link" href="/admin/history.html">Histórico</a>
-    </div>
+    <nav class="nav" id="nav">
+      <!-- Conteúdo, Fotos e Histórico são renderizados juntos pelo JS -->
+    </nav>
     <div class="sidebar-bottom">
       <div class="email" id="userEmail"></div>
       <button class="logout" id="logoutButton">Sair</button>
@@ -307,11 +312,22 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   }
 
   function renderNav(){
-    $('nav').innerHTML=order.map(k=>`<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`).join('');
+    const sectionItems = order.map(k =>
+      `<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`
+    ).join('');
+
+    const pageItems = `
+      <a class="nav-link" href="/admin/media.html">Fotos</a>
+      <a class="nav-link" href="/admin/history.html">Histórico</a>
+    `;
+
+    $('nav').innerHTML = sectionItems + pageItems;
+
     $('nav').querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>{
       captureCurrentEditor();
       currentKey=b.dataset.key;
-      renderNav();renderEditor();
+      renderNav();
+      renderEditor();
     });
   }
 
