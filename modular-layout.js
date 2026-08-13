@@ -36,7 +36,80 @@
       .sort((a,b)=>a.order-b.order);
   }
 
+
+  function ensureVariantStyles(){
+    if(document.getElementById('vitrine-module-variant-styles')) return;
+
+    const style=document.createElement('style');
+    style.id='vitrine-module-variant-styles';
+    style.textContent=`
+      [data-vitrine-module]{transition:opacity .2s ease, transform .2s ease}
+
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner,
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid{
+        direction:rtl;
+      }
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner > *,
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid > *{
+        direction:ltr;
+      }
+      [data-vitrine-module="about"][data-vitrine-variant="centered"]{
+        text-align:center;
+      }
+
+      [data-vitrine-module="ticker"][data-vitrine-variant="static"] .ticker-track{
+        animation:none!important;
+        transform:none!important;
+      }
+      [data-vitrine-module="ticker"][data-vitrine-variant="compact"]{
+        transform:scaleY(.82);
+        transform-origin:center top;
+      }
+
+      [data-vitrine-module="stats"][data-vitrine-variant="minimal"] .stat{
+        background:transparent!important;
+        border-color:transparent!important;
+        box-shadow:none!important;
+      }
+      [data-vitrine-module="stats"][data-vitrine-variant="split"]{
+        max-width:980px;
+        margin-inline:auto;
+      }
+
+      [data-vitrine-module="coverage"][data-vitrine-variant="compact"] .board-row,
+      [data-vitrine-module="experience"][data-vitrine-variant="compact"] .log-entry,
+      [data-vitrine-module="education"][data-vitrine-variant="compact"] .edu-item{
+        padding-block:.55rem!important;
+      }
+
+      [data-vitrine-module="portfolio"][data-vitrine-variant="list"] .press-cards{
+        grid-template-columns:1fr!important;
+      }
+
+      [data-vitrine-module="education"][data-vitrine-variant="stacked"] .edu-grid{
+        grid-template-columns:1fr!important;
+      }
+
+      [data-vitrine-module="instagram"][data-vitrine-variant="minimal"] .insta-grid{
+        grid-template-columns:1fr!important;
+      }
+
+      [data-vitrine-module="contact"][data-vitrine-variant="centered"]{
+        text-align:center;
+      }
+
+      @media(max-width:760px){
+        [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner,
+        [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid{
+          direction:ltr;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function applyLayout(layout) {
+    ensureVariantStyles();
     const modules = normalizeModules(layout?.modules);
     if (!modules.length) return;
 
