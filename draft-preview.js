@@ -6,7 +6,7 @@
   if(!session.data.session?.user){
     document.body.innerHTML='<main style="font-family:sans-serif;padding:3rem"><h1>Preview privado</h1><p>Faça login em /admin/ e abra o preview novamente.</p></main>';return;
   }
-  const p=await sb.from('projects').select('id').eq('owner_id',session.data.session.user.id).eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || cfg.projectSlug)).single();
+  const p=await sb.from('projects').select('id').eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || cfg.projectSlug)).single();
   if(p.error)return;
   const d=await sb.from('project_drafts').select('snapshot').eq('project_id',p.data.id).maybeSingle();
   const s=d.data?.snapshot;if(!s)return;
