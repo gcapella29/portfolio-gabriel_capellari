@@ -2556,5 +2556,21 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
 })();
 </script>
 
+
+<script>
+(() => {
+  const params = new URLSearchParams(location.search);
+  if (params.get('tenantRoot') !== '1') return;
+
+  const cleanTenantAddress = () => {
+    // Keeps the custom hostname, removes /site.html?... from the address bar.
+    history.replaceState(null, '', '/');
+  };
+
+  document.addEventListener('vitrine:tenant-content-ready', cleanTenantAddress, {once:true});
+  document.addEventListener('vitrine:tenant-ready', cleanTenantAddress, {once:true});
+})();
+</script>
+
 </body>
 </html>

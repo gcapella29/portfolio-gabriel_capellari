@@ -1371,9 +1371,55 @@ button,a{touch-action:manipulation;}
 <!-- VITRINE PRO CMS — Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
+<script src="/domain-router.js"></script>
+
+
+<script>
+(() => {
+  const host = location.hostname.toLowerCase();
+  const isPrimary =
+    host === 'portfolio-gabriel-capellari.vercel.app' ||
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host.endsWith('.vercel.app');
+
+  if (!isPrimary) document.documentElement.classList.add('vitrine-domain-resolving');
+})();
+</script>
+<style>
+html.vitrine-domain-resolving body{overflow:hidden}
+html.vitrine-domain-resolving body > *:not(#vitrineDomainLoader){
+  visibility:hidden!important;
+}
+#vitrineDomainLoader{display:none}
+html.vitrine-domain-resolving #vitrineDomainLoader{
+  display:flex;position:fixed;inset:0;z-index:999999;
+  align-items:center;justify-content:center;background:#082720;color:#f3eee2;
+}
+.vitrine-domain-loader-inner{
+  display:grid;justify-items:center;gap:.75rem;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.vitrine-domain-loader-inner strong{font-size:1rem}
+.vitrine-domain-loader-inner span{font-size:.8rem;opacity:.72;text-align:center;max-width:330px}
+.vitrine-domain-spinner{
+  width:42px;height:42px;border-radius:50%;
+  border:3px solid rgba(243,238,226,.18);border-top-color:#e3bb3d;
+  animation:vitrineDomainSpin .8s linear infinite
+}
+@keyframes vitrineDomainSpin{to{transform:rotate(360deg)}}
+</style>
 
 </head>
 <body>
+
+<div id="vitrineDomainLoader" aria-live="polite">
+  <div class="vitrine-domain-loader-inner">
+    <div class="vitrine-domain-spinner" aria-hidden="true"></div>
+    <span>Carregando site</span>
+  </div>
+</div>
+
 
 <!-- HERO -->
 <header class="hero">
