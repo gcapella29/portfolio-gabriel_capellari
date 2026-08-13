@@ -24,17 +24,18 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
   <form id="loginForm"><div class="field"><label>E-mail</label><input id="email" type="email" required></div><div class="field"><label>Senha</label><input id="password" type="password" required></div><div id="err" style="color:#a83c2e;font-size:.8rem"></div><button class="btn gold">Entrar</button></form>
 </div></section>
 <main class="shell hidden" id="app">
-  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 4</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" href="/admin/">← Conteúdo</a><a class="btn ghost" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
+  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 4</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" href="/admin/">← Conteúdo</a><a class="btn ghost" href="/admin/projects.html">Projetos</a><a class="btn ghost" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
   <div class="list" id="list"></div>
 </main>
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script>
+<script src="../project-context.js"></script>
 <script>
 (() => {
  const c=window.VITRINE_SUPABASE,sb=window.supabase.createClient(c.url,c.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
  let user=null,project=null;const $=id=>document.getElementById(id);
  function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
- async function projectForUser(){const q=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',c.projectSlug).single();if(q.error)throw q.error;return q.data}
+ async function projectForUser(){const q=await sb.from('projects').select('*').eq('owner_id',user.id).eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || c.projectSlug)).single();if(q.error)throw q.error;return q.data}
  async function load(){
    const q=await sb.from('project_versions').select('id,label,created_at,snapshot').eq('project_id',project.id).order('created_at',{ascending:false}).limit(30);
    if(q.error)throw q.error;
