@@ -2,6 +2,28 @@
   "rewrites": [
     {
       "source": "/p/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|Slackbot|TelegramBot|Discordbot).*"
+        }
+      ],
+      "destination": "/api/social-preview?project=:slug"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|Slackbot|TelegramBot|Discordbot).*"
+        }
+      ],
+      "destination": "/api/social-preview"
+    },
+    {
+      "source": "/p/:slug",
       "destination": "/site.html?project=:slug"
     }
   ]
