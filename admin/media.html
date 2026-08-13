@@ -60,7 +60,19 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
     <section class="card">
       <h2 style="font-family:Fraunces,serif;margin-top:0">Imagens principais</h2>
-      <p class="help"><strong>Modo rascunho:</strong> uploads e alterações ficam no preview até você clicar em “Publicar alterações” no painel de Conteúdo. Enquanto não houver upload, o site continua usando a imagem original incorporada ao HTML.</p>
+      <div style="padding:.9rem 1rem;border:1px solid #ded8c8;border-radius:12px;background:#fff8df;margin-bottom:1rem">
+  <strong style="display:block;margin-bottom:.3rem">Fotos são salvas primeiro como rascunho</strong>
+  <div class="help">
+    Trocar uma imagem aqui não altera imediatamente o site publicado.
+    Depois do upload, confira no Preview e clique em <strong>Publicar alterações</strong>
+    no painel de Conteúdo para colocar a nova foto no ar.
+  </div>
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem">
+    <a class="btn ghost" id="mediaPreviewLink" href="/preview.html?preview=draft" target="_blank">Ver Preview ↗</a>
+    <a class="btn gold" id="mediaPublishLink" href="/admin/">Ir para publicar →</a>
+  </div>
+</div>
+<p class="help">Enquanto não houver upload, o site continua usando a imagem original incorporada ao HTML.</p>
       <div class="media-layout" id="slots"></div>
     </section>
 
@@ -183,7 +195,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   function bindSlots(){
     document.querySelectorAll('[data-pos]').forEach(el=>el.onchange=async()=>{content[`${el.dataset.pos}_position`]=el.value;try{await save();notify('Enquadramento salvo ✓')}catch(e){notify('Erro ao salvar')}});
     document.querySelectorAll('[data-alt]').forEach(el=>el.onchange=async()=>{content[`${el.dataset.alt}_alt`]=el.value.trim();try{await save();notify('Texto alternativo salvo ✓')}catch(e){notify('Erro ao salvar')}});
-    document.querySelectorAll('[data-upload]').forEach(el=>el.onchange=async()=>{const key=el.dataset.upload,file=el.files?.[0],old=content[`${key}_path`];if(!file)return;try{notify('Enviando…');const u=await upload(file,key);content[`${key}_url`]=u.url;content[`${key}_path`]=u.path;await save();if(old)await remove(old).catch(()=>{});render();notify('Imagem publicada ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}});
+    document.querySelectorAll('[data-upload]').forEach(el=>el.onchange=async()=>{const key=el.dataset.upload,file=el.files?.[0],old=content[`${key}_path`];if(!file)return;try{notify('Enviando…');const u=await upload(file,key);content[`${key}_url`]=u.url;content[`${key}_path`]=u.path;await save();if(old)await remove(old).catch(()=>{});render();notify('Imagem salva no rascunho — publique para colocá-la no site ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}});
     document.querySelectorAll('[data-reset]').forEach(btn=>btn.onclick=async()=>{const key=btn.dataset.reset,old=content[`${key}_path`];if(!confirm('Voltar à imagem original?'))return;content[`${key}_url`]='';content[`${key}_path`]='';try{await save();if(old)await remove(old).catch(()=>{});render();notify('Imagem original restaurada ✓')}catch(e){notify('Erro ao restaurar')}});
   }
 
@@ -199,12 +211,12 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
     document.querySelectorAll('[data-f]').forEach(el=>el.onchange=async()=>{const x=g.find(v=>v.id===el.dataset.id);if(!x)return;x[el.dataset.f]=el.value;content.wsop_gallery=g;try{await save();notify('Foto atualizada ✓')}catch(e){notify('Erro ao salvar')}});
     document.querySelectorAll('[data-move]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id),j=i+Number(btn.dataset.move);if(j<0||j>=g.length)return;[g[i],g[j]]=[g[j],g[i]];g.forEach((x,k)=>x.order=k);content.wsop_gallery=g;try{await save();renderGallery();notify('Ordem atualizada ✓')}catch(e){notify('Erro ao reordenar')}});
-    document.querySelectorAll('[data-replace]').forEach(inp=>inp.onchange=async()=>{const x=g.find(v=>v.id===inp.dataset.replace),file=inp.files?.[0];if(!x||!file)return;const old=x.path;try{const u=await upload(file,'wsop');x.url=u.url;x.path=u.path;content.wsop_gallery=g;await save();if(old)await remove(old).catch(()=>{});renderGallery();notify('Foto substituída ✓')}catch(e){notify(e.message||'Erro no upload')}});
+    document.querySelectorAll('[data-replace]').forEach(inp=>inp.onchange=async()=>{const x=g.find(v=>v.id===inp.dataset.replace),file=inp.files?.[0];if(!x||!file)return;const old=x.path;try{const u=await upload(file,'wsop');x.url=u.url;x.path=u.path;content.wsop_gallery=g;await save();if(old)await remove(old).catch(()=>{});renderGallery();notify('Foto substituída no rascunho — publique para colocá-la no site ✓')}catch(e){notify(e.message||'Erro no upload')}});
     document.querySelectorAll('[data-del]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id);if(i<0||!confirm('Excluir esta foto?'))return;const [x]=g.splice(i,1);g.forEach((v,k)=>v.order=k);content.wsop_gallery=g;try{await save();if(x.path)await remove(x.path).catch(()=>{});renderGallery();notify('Foto excluída ✓')}catch(e){notify('Erro ao excluir')}});
   }
 
   async function addGallery(file){
-    try{notify('Enviando…');const u=await upload(file,'wsop');const g=content.wsop_gallery||[];g.push({id:crypto.randomUUID(),path:u.path,url:u.url,year:'2025',caption:'WSOP Las Vegas',alt:'Cobertura da WSOP Las Vegas',position:'center center',order:g.length});content.wsop_gallery=g;await save();renderGallery();notify('Foto adicionada ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}
+    try{notify('Enviando…');const u=await upload(file,'wsop');const g=content.wsop_gallery||[];g.push({id:crypto.randomUUID(),path:u.path,url:u.url,year:'2025',caption:'WSOP Las Vegas',alt:'Cobertura da WSOP Las Vegas',position:'center center',order:g.length});content.wsop_gallery=g;await save();renderGallery();notify('Foto adicionada ao rascunho — publique para colocá-la no site ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}
   }
 
   $('dropZone').onclick=()=>$('galleryInput').click();
@@ -219,6 +231,8 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       await loadMyRole();
       const slug=project.slug;
       const q=`?project=${encodeURIComponent(slug)}`;
+      if($('mediaPublishLink')) $('mediaPublishLink').href=`/admin/${q}`;
+      if($('mediaPreviewLink')) $('mediaPreviewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;
       $('contentLink').href=`/admin/${q}`;
       $('backContentLink').href=`/admin/${q}`;
       $('mediaLink').href=`/admin/media.html${q}`;
