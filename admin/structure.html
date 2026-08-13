@@ -18,6 +18,71 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
 .notice{background:#fff8df;border:1px solid #ead9a0;padding:.9rem 1rem;border-radius:12px;color:#6d5a1e;font-size:.78rem;line-height:1.5;margin-bottom:1rem}.savebar{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:1rem}.help{font-size:.76rem;color:var(--muted);line-height:1.5}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.85rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
 @media(max-width:700px){.top,.savebar{flex-direction:column;align-items:stretch}.module{grid-template-columns:1fr}.handle{display:none}.controls{justify-content:space-between}.actions .btn{flex:1}}
 </style>
+
+<style id="phase82-css">
+.module{
+  cursor:grab;
+  transition:transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+}
+.module:active{cursor:grabbing}
+.module.dragging{
+  opacity:.42;
+  transform:scale(.985);
+}
+.module.drag-over{
+  box-shadow:0 0 0 2px var(--gold) inset;
+}
+.handle{
+  cursor:grab;
+  user-select:none;
+}
+.variant-wrap{
+  display:flex;
+  align-items:center;
+  gap:.45rem;
+  flex-wrap:wrap;
+  margin-top:.55rem;
+}
+.variant-wrap label{
+  font:600 .62rem "IBM Plex Mono",monospace;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.variant-wrap select{
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:.48rem .55rem;
+  background:#fff;
+  color:var(--ink);
+}
+.preview-chip{
+  display:inline-flex;
+  padding:.25rem .45rem;
+  border-radius:999px;
+  background:#f2efe6;
+  color:var(--muted);
+  font-size:.68rem;
+}
+.module-tools{
+  display:flex;
+  align-items:center;
+  gap:.45rem;
+  flex-wrap:wrap;
+}
+.reset-btn{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:999px;
+  padding:.55rem .7rem;
+  font:600 .64rem "IBM Plex Mono",monospace;
+  cursor:pointer;
+}
+@media(max-width:700px){
+  .module{cursor:default}
+  .handle{display:block}
+}
+</style>
+
 </head>
 <body>
 <section class="login" id="loginView"><div class="login-card">
@@ -27,13 +92,13 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
 </div></section>
 
 <main class="shell hidden" id="app">
-<header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">VITRINE PRO · FASE 8.1</div><h1>Estrutura do site</h1><p id="projectLabel">Organize os blocos do projeto.</p></div>
+<header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">VITRINE PRO · FASE 8.2</div><h1>Estrutura do site</h1><p id="projectLabel">Organize os blocos do projeto.</p></div>
 <div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" id="previewLink" target="_blank">Preview ↗</a></div></header>
 
 <section class="card">
-<div class="notice"><strong>Agora você já pode remover blocos do layout sem apagar conteúdo.</strong> Desative “Faixa de eventos” para remover a faixa amarela ou “Números / destaques” para remover o bloco dos quatro números. Esta etapa usa setas para reordenar; drag-and-drop entra na 8.2.</div>
+<div class="notice"><strong>Agora você já pode remover blocos do layout sem apagar conteúdo.</strong> Desative “Faixa de eventos” para remover a faixa amarela ou “Números / destaques” para remover o bloco dos quatro números. Arraste os blocos para reordenar e escolha variações de layout por seção.</div>
 <div class="module-list" id="list"></div>
-<div class="savebar"><div class="help">As alterações ficam em <strong>rascunho</strong>. Confira no Preview e publique no painel principal.</div><button class="btn gold" id="saveButton">Salvar estrutura</button></div>
+<div class="savebar"><div class="help">As alterações ficam em <strong>rascunho</strong>. Confira no Preview e publique no painel principal.</div><div class="actions"><button class="reset-btn" id="resetButton" type="button">Restaurar padrão</button><button class="btn gold" id="saveButton">Salvar estrutura</button></div></div>
 </section>
 </main>
 <div class="toast" id="toast"></div>
@@ -48,16 +113,56 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
  let user=null,project=null,myRole=null,draftRow=null,snapshot=null,modules=[];
 
  const definitions=[
-  {key:'ticker',label:'Faixa de eventos',desc:'Faixa amarela animada abaixo do topo.'},
-  {key:'stats',label:'Números / destaques',desc:'Bloco com 4+, países, circuitos, idiomas etc.'},
-  {key:'about',label:'Sobre',desc:'Apresentação, foto e biografia.'},
-  {key:'wsop',label:'Destaque principal',desc:'Bloco especial WSOP / destaque profissional.'},
-  {key:'coverage',label:'Coberturas / projetos',desc:'Lista de eventos ou projetos realizados.'},
-  {key:'portfolio',label:'Portfólio',desc:'Trabalhos, matérias e links.'},
-  {key:'experience',label:'Experiência',desc:'Histórico profissional.'},
-  {key:'education',label:'Formação & ferramentas',desc:'Formação, cursos e habilidades.'},
-  {key:'instagram',label:'Instagram / redes',desc:'Bloco social e chamada para perfil.'},
-  {key:'contact',label:'Contato',desc:'E-mail, WhatsApp e redes profissionais.'}
+  {key:'ticker',label:'Faixa de eventos',desc:'Faixa amarela animada abaixo do topo.',variants:[
+    {value:'marquee',label:'Marquee contínuo'},
+    {value:'static',label:'Faixa estática'},
+    {value:'compact',label:'Compacta'}
+  ]},
+  {key:'stats',label:'Números / destaques',desc:'Bloco com 4+, países, circuitos, idiomas etc.',variants:[
+    {value:'cards',label:'Cards'},
+    {value:'minimal',label:'Minimalista'},
+    {value:'split',label:'Dividido'}
+  ]},
+  {key:'about',label:'Sobre',desc:'Apresentação, foto e biografia.',variants:[
+    {value:'image-left',label:'Imagem à esquerda'},
+    {value:'image-right',label:'Imagem à direita'},
+    {value:'centered',label:'Centralizado'}
+  ]},
+  {key:'wsop',label:'Destaque principal',desc:'Bloco especial WSOP / destaque profissional.',variants:[
+    {value:'featured',label:'Destaque grande'},
+    {value:'compact',label:'Compacto'},
+    {value:'text-first',label:'Texto em destaque'}
+  ]},
+  {key:'coverage',label:'Coberturas / projetos',desc:'Lista de eventos ou projetos realizados.',variants:[
+    {value:'rows',label:'Lista'},
+    {value:'cards',label:'Cards'},
+    {value:'compact',label:'Compacta'}
+  ]},
+  {key:'portfolio',label:'Portfólio',desc:'Trabalhos, matérias e links.',variants:[
+    {value:'cards',label:'Cards'},
+    {value:'list',label:'Lista'},
+    {value:'featured',label:'Destaque editorial'}
+  ]},
+  {key:'experience',label:'Experiência',desc:'Histórico profissional.',variants:[
+    {value:'timeline',label:'Linha do tempo'},
+    {value:'cards',label:'Cards'},
+    {value:'compact',label:'Compacta'}
+  ]},
+  {key:'education',label:'Formação & ferramentas',desc:'Formação, cursos e habilidades.',variants:[
+    {value:'split',label:'Duas colunas'},
+    {value:'stacked',label:'Empilhado'},
+    {value:'compact',label:'Compacto'}
+  ]},
+  {key:'instagram',label:'Instagram / redes',desc:'Bloco social e chamada para perfil.',variants:[
+    {value:'featured',label:'Destaque'},
+    {value:'compact',label:'Compacto'},
+    {value:'minimal',label:'Minimalista'}
+  ]},
+  {key:'contact',label:'Contato',desc:'E-mail, WhatsApp e redes profissionais.',variants:[
+    {value:'split',label:'Duas colunas'},
+    {value:'centered',label:'Centralizado'},
+    {value:'compact',label:'Compacto'}
+  ]}
  ];
 
  const sectionMap={stats:'stats',about:'about',wsop:'wsop',coverage:'coverage',portfolio:'portfolio',experience:'experience',education:'education',instagram:'instagram',contact:'contact'};
@@ -70,7 +175,7 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
      const byKey=new Map(existing.map(x=>[x.key,x]));
      modules=definitions.map((d,i)=>{
        const x=byKey.get(d.key)||{};
-       return {key:d.key,visible:x.visible!==false,order:Number.isFinite(Number(x.order))?Number(x.order):i,variant:x.variant||'default'};
+       return {key:d.key,visible:x.visible!==false,order:Number.isFinite(Number(x.order))?Number(x.order):i,variant:x.variant||(definitions.find(d=>d.key===x.key)?.variants?.[0]?.value||'default')};
      }).sort((a,b)=>a.order-b.order);
      return;
    }
@@ -84,30 +189,54 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
        const sec=snapshot?.[sectionMap[d.key]];
        if(sec) visible=sec.is_visible!==false;
      }
-     return {key:d.key,visible,order:i,variant:'default'};
+     return {key:d.key,visible,order:i,variant:d.variants?.[0]?.value||'default'};
    });
  }
 
  function render(){
    modules.forEach((m,i)=>m.order=i);
+
    $('list').innerHTML=modules.map((m,i)=>{
      const d=definitions.find(x=>x.key===m.key);
-     return `<article class="module ${m.visible?'':'off'}">
-       <div class="handle">⋮⋮</div>
-       <div class="meta"><strong>${d.label}</strong><span>${d.desc}</span></div>
+     const variants=(d.variants||[]).map(v=>`<option value="${v.value}" ${m.variant===v.value?'selected':''}>${v.label}</option>`).join('');
+
+     return `<article class="module ${m.visible?'':'off'}" draggable="true" data-module="${m.key}">
+       <div class="handle" title="Arrastar">⋮⋮</div>
+       <div class="meta">
+         <strong>${d.label}</strong>
+         <span>${d.desc}</span>
+         <div class="variant-wrap">
+           <label>Layout</label>
+           <select data-variant="${m.key}">${variants}</select>
+           <span class="preview-chip">${m.variant}</span>
+         </div>
+       </div>
        <div class="controls">
          <label class="toggle"><input type="checkbox" data-visible="${m.key}" ${m.visible?'checked':''}> Exibir</label>
-         <button class="small" data-up="${m.key}" ${i===0?'disabled':''} aria-label="Mover para cima">↑</button>
-         <button class="small" data-down="${m.key}" ${i===modules.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
+         <div class="module-tools">
+           <button class="small" data-up="${m.key}" ${i===0?'disabled':''} aria-label="Mover para cima">↑</button>
+           <button class="small" data-down="${m.key}" ${i===modules.length-1?'disabled':''} aria-label="Mover para baixo">↓</button>
+         </div>
        </div>
      </article>`;
    }).join('');
 
    document.querySelectorAll('[data-visible]').forEach(el=>el.onchange=()=>{
-     const m=modules.find(x=>x.key===el.dataset.visible);m.visible=el.checked;render();
+     const m=modules.find(x=>x.key===el.dataset.visible);
+     m.visible=el.checked;
+     render();
    });
+
+   document.querySelectorAll('[data-variant]').forEach(el=>el.onchange=()=>{
+     const m=modules.find(x=>x.key===el.dataset.variant);
+     m.variant=el.value;
+     render();
+   });
+
    document.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>move(b.dataset.up,-1));
    document.querySelectorAll('[data-down]').forEach(b=>b.onclick=()=>move(b.dataset.down,1));
+
+   bindDragAndDrop();
  }
 
  function move(key,delta){
@@ -115,6 +244,50 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
    if(i<0||j<0||j>=modules.length)return;
    [modules[i],modules[j]]=[modules[j],modules[i]];
    render();
+ }
+
+ function bindDragAndDrop(){
+   let draggingKey=null;
+
+   document.querySelectorAll('.module').forEach(card=>{
+     card.addEventListener('dragstart',e=>{
+       draggingKey=card.dataset.module;
+       card.classList.add('dragging');
+       e.dataTransfer.effectAllowed='move';
+       e.dataTransfer.setData('text/plain',draggingKey);
+     });
+
+     card.addEventListener('dragend',()=>{
+       draggingKey=null;
+       document.querySelectorAll('.module').forEach(x=>x.classList.remove('dragging','drag-over'));
+     });
+
+     card.addEventListener('dragover',e=>{
+       e.preventDefault();
+       if(!draggingKey || draggingKey===card.dataset.module)return;
+       card.classList.add('drag-over');
+       e.dataTransfer.dropEffect='move';
+     });
+
+     card.addEventListener('dragleave',()=>{
+       card.classList.remove('drag-over');
+     });
+
+     card.addEventListener('drop',e=>{
+       e.preventDefault();
+       card.classList.remove('drag-over');
+
+       const sourceKey=e.dataTransfer.getData('text/plain')||draggingKey;
+       const targetKey=card.dataset.module;
+       const from=modules.findIndex(x=>x.key===sourceKey);
+       const to=modules.findIndex(x=>x.key===targetKey);
+       if(from<0||to<0||from===to)return;
+
+       const [moved]=modules.splice(from,1);
+       modules.splice(to,0,moved);
+       render();
+     });
+   });
  }
 
  async function load(){
@@ -141,6 +314,19 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
 
    seedModules();render();
  }
+
+
+ $('resetButton').onclick=()=>{
+   if(!confirm('Restaurar a ordem e os layouts padrão desta página?'))return;
+   modules=definitions.map((d,i)=>({
+     key:d.key,
+     visible:true,
+     order:i,
+     variant:d.variants?.[0]?.value||'default'
+   }));
+   render();
+   toast('Estrutura restaurada localmente. Salve para confirmar.');
+ };
 
  $('saveButton').onclick=async()=>{
    const btn=$('saveButton');btn.disabled=true;btn.textContent='Salvando…';
