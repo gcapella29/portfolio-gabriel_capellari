@@ -135,31 +135,37 @@
 
   async function loadMedia() {
     try {
-      const { data: project } = await cms
+      const { data: project, error: projectError } = await cms
         .from('projects')
         .select('id')
         .eq('slug', projectSlug)
         .eq('is_published', true)
         .maybeSingle();
 
-      if (!project) return;
+      if (projectError) throw projectError;
 
-      const { data: row } = await cms
-        .from('site_content')
-        .select('content')
-        .eq('project_id', project.id)
-        .eq('section_key', 'media')
-        .maybeSingle();
+      if (project) {
+        const { data: row, error: mediaError } = await cms
+          .from('site_content')
+          .select('content')
+          .eq('project_id', project.id)
+          .eq('section_key', 'media')
+          .maybeSingle();
 
-      if (!row?.content) return;
-      const c = row.content;
+        if (mediaError) throw mediaError;
 
-      applyHero(c);
-      applyStaticImage('.about-photo img', c.about_url, c.about_alt, c.about_position);
-      applyStaticImage('.contact-photo img', c.contact_url, c.contact_alt, c.contact_position);
-      applyWsopGallery(c);
+        if (row?.content) {
+          const c = row.content;
+          applyHero(c);
+          applyStaticImage('.about-photo img', c.about_url, c.about_alt, c.about_position);
+          applyStaticImage('.contact-photo img', c.contact_url, c.contact_alt, c.contact_position);
+          applyWsopGallery(c);
+        }
+      }
     } catch (error) {
-      console.warn('Vitrine Pro Media: usando imagens originais como fallback.', error);
+      console.warn('Vitrine Pro Media: mídia gerenciada indisponível.', error);
+    } finally {
+      document.dispatchEvent(new CustomEvent('vitrine:tenant-media-ready'));
     }
   }
 

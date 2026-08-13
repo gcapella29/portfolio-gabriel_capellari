@@ -1370,8 +1370,8 @@ button,a{touch-action:manipulation;}
 
 <!-- VITRINE PRO CMS — Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script src="project-context.js"></script>
+<script src="/supabase-config.js"></script>
+<script src="/project-context.js"></script>
 
 
 <script>
@@ -1464,7 +1464,7 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
       <div class="hero-actions" aria-label="Ações principais">
         <a class="cta-btn primary track-cta" data-event="hero_portfolio" href="#portfolio">Ver meu trabalho ↘</a>
         <a class="cta-btn secondary track-cta" data-event="hero_contact" href="#contato">Entrar em contato →</a>
-        <a class="cta-btn secondary track-cta" data-event="hero_cv" href="CV-Gabriel-Capellari.pdf" download>Baixar CV ↓</a>
+        <a class="cta-btn secondary track-cta" data-event="hero_cv" href="/CV-Gabriel-Capellari.pdf" download>Baixar CV ↓</a>
         <button class="cta-btn secondary share-btn track-cta" data-event="hero_share" type="button" data-share-portfolio>Compartilhar ↗</button>
       </div>
     </div>
@@ -1787,7 +1787,7 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
         <h2>Contato</h2>
       </div>
       <div class="contact-links">
-      <a class="track-cta" data-event="contact_cv" href="CV-Gabriel-Capellari.pdf" download><span class="lbl">Currículo</span> Baixar CV em PDF ↓</a>
+      <a class="track-cta" data-event="contact_cv" href="/CV-Gabriel-Capellari.pdf" download><span class="lbl">Currículo</span> Baixar CV em PDF ↓</a>
       <button class="contact-share track-cta" data-event="contact_share" type="button" data-share-portfolio><span class="lbl">Portfólio</span> Compartilhar ↗</button>
         <a href="mailto:gcapellari@hotmail.com"><span class="lbl">E-mail</span> gcapellari@hotmail.com</a>
         <a href="mailto:gcapellari1@gmail.com"><span class="lbl">E-mail alternativo</span> gcapellari1@gmail.com</a>
@@ -2480,17 +2480,14 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
       contentMap = new Map(data.map(row => [row.section_key, row]));
       renderAll();
       loaded = true;
-      finishTenantLoading();
+      document.dispatchEvent(new CustomEvent('vitrine:tenant-content-ready'));
 
     } catch (error) {
       console.warn('Vitrine Pro CMS indisponível.', error);
       showTenantLoadError('Tente atualizar a página em alguns instantes.');
     }
 
-    // Safety valve: successful loads must never remain covered.
-    if (loaded) {
-      setTimeout(finishTenantLoading, 50);
-    }
+
   }
 
   document.querySelectorAll('[data-language]').forEach(button => {
@@ -2501,31 +2498,61 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
 })();
 </script>
 
-<script src="media-cms.js"></script>
-<script src="seo-cms.js"></script>
+<script src="/media-cms.js"></script>
+<script src="/seo-cms.js"></script>
+
+
+
 
 <script>
 (() => {
-  const isTenant = document.documentElement.classList.contains('vitrine-tenant-loading');
-  if (!isTenant) return;
+  if (!document.documentElement.classList.contains('vitrine-tenant-loading')) return;
+
+  let contentReady = false;
+  let mediaReady = false;
+  let revealed = false;
+
+  const reveal = () => {
+    if (revealed || !contentReady || !mediaReady) return;
+    revealed = true;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.documentElement.classList.remove('vitrine-tenant-loading');
+      });
+    });
+  };
+
+  document.addEventListener('vitrine:tenant-content-ready', () => {
+    contentReady = true;
+    reveal();
+  }, { once:true });
+
+  document.addEventListener('vitrine:tenant-media-ready', () => {
+    mediaReady = true;
+    reveal();
+  }, { once:true });
 
   setTimeout(() => {
-    if (!document.documentElement.classList.contains('vitrine-tenant-loading')) return;
+    if (contentReady && !mediaReady) {
+      mediaReady = true;
+      reveal();
+    }
+  }, 2500);
 
+  setTimeout(() => {
+    if (revealed || !document.documentElement.classList.contains('vitrine-tenant-loading')) return;
     const loader = document.getElementById('vitrineTenantLoader');
     if (loader) {
       loader.innerHTML = `
         <div class="vitrine-loader-inner">
-          <div style="font-size:1rem;font-weight:600">O carregamento demorou mais que o esperado</div>
-          <button type="button"
-            onclick="location.reload()"
+          <div style="font-size:1rem;font-weight:600">Não foi possível carregar este site</div>
+          <button type="button" onclick="location.reload()"
             style="border:1px solid rgba(243,238,226,.35);background:transparent;color:#f3eee2;border-radius:999px;padding:.7rem 1rem;cursor:pointer">
             Tentar novamente
           </button>
         </div>`;
-      loader.style.display = 'flex';
     }
-  }, 8000);
+  }, 9000);
 })();
 </script>
 
