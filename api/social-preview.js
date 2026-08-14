@@ -35,6 +35,10 @@ async function supabaseGet(path) {
 }
 
 async function resolveProject(host, forcedSlug) {
+  if (!forcedSlug && (host === 'webappcap.com.br' || host === 'www.webappcap.com.br')) {
+    forcedSlug = 'gabriel-capellari';
+  }
+
   if (forcedSlug) {
     const rows = await supabaseGet(
       `projects?select=id,slug,name,custom_domain,subdomain&slug=eq.${encodeURIComponent(forcedSlug)}&is_published=eq.true&limit=1`
