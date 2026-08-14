@@ -66,6 +66,8 @@
   function applyTheme(raw){
     const t=mergeTheme(raw);
     const root=document.documentElement;
+    const isDefaultProject = slug === cfg.projectSlug;
+    root.dataset.vitrineThemeScope = isDefaultProject ? 'default' : 'tenant';
 
     root.style.setProperty('--vp-primary', t.colors.primary);
     root.style.setProperty('--vp-secondary', t.colors.secondary);
@@ -120,18 +122,19 @@
         color:var(--vp-text)!important;
         font-family:${JSON.stringify(t.typography.body)},Inter,sans-serif!important;
       }
-      .hero,footer,.sidebar{
-        background-color:var(--vp-primary)!important;
+      /*
+       * Theme isolation:
+       * colors flow primarily through the original template variables.
+       * Avoid forcing component backgrounds/display/layout here.
+       */
+      :where(.btn,button,a.btn){
+        border-radius:var(--vp-button-radius)!important;
+        font-weight:var(--vp-button-weight)!important;
       }
-      :where(.section,.about,.portfolio,.experience,.education,.instagram,.contact,
-             #sobre,#portfolio,#experiencia,#formacao,#instagram,#contato,#cobertura,#wsop-featured){
-        background-color:var(--vp-background);
-        color:var(--vp-text);
+      :where(.about-photo img,.contact-photo img){
+        border-radius:var(--vp-radius)!important;
       }
-      :where(.card,.press-card,.repeat-card,.stat,.contact-card,.media-bio,.board-row,.log-entry,.edu-item){
-        background-color:var(--vp-surface)!important;
-        color:var(--vp-text)!important;
-      }
+
       h1,h2,h3,h4,.hero-name,.section-head h2{
         font-family:${JSON.stringify(t.typography.heading)},Fraunces,serif!important;
       }
@@ -149,15 +152,7 @@
         padding-top:var(--vp-section-space)!important;
         padding-bottom:var(--vp-section-space)!important;
       }
-      :where(.card,.press-card,.repeat-card,.stat,.contact-card,.about-photo img,.contact-photo img){
-        border-radius:var(--vp-radius)!important;
-      }
-      :where(.card,.press-card,.stat,.contact-card){
-        box-shadow:var(--vp-shadow);
-      }
       :where(.btn,button,a.btn){
-        border-radius:var(--vp-button-radius)!important;
-        font-weight:var(--vp-button-weight)!important;
         transition:transform var(--vp-motion) ease,opacity var(--vp-motion) ease,background var(--vp-motion) ease;
       }
       :where(.btn,button,a.btn):hover{transform:translateY(-1px)}
@@ -175,12 +170,9 @@
       :where(.help,.muted,.desc,.note,.lbl,.inst){
         color:var(--vp-muted)!important;
       }
+      /* Density changes spacing rather than scaling whole modules. */
       [data-vitrine-module]{
-        transform:scale(var(--vp-density));
-        transform-origin:center top;
-      }
-      @media(max-width:760px){
-        [data-vitrine-module]{transform:none}
+        --vp-density-factor:var(--vp-density);
       }
     `;
 
