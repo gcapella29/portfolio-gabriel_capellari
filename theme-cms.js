@@ -75,6 +75,18 @@
     root.style.setProperty('--vp-text', t.colors.text);
     root.style.setProperty('--vp-muted', t.colors.muted);
 
+    // Compatibility layer with the original template.
+    // Most of the portfolio CSS still consumes these variables.
+    root.style.setProperty('--dark', t.colors.primary);
+    root.style.setProperty('--felt-dark', t.colors.primary);
+    root.style.setProperty('--felt', t.colors.secondary);
+    root.style.setProperty('--gold', t.colors.accent);
+    root.style.setProperty('--gold2', t.colors.accent);
+    root.style.setProperty('--paper', t.colors.background);
+    root.style.setProperty('--cream', t.colors.surface);
+    root.style.setProperty('--ink', t.colors.text);
+    root.style.setProperty('--muted', t.colors.muted);
+
     const width=Math.max(760, Math.min(1600, Number(t.layout.content_width)||1200));
     const spacingMap={compact:'2.8rem',normal:'4.8rem',airy:'7rem'};
     const radiusMap={none:'0px',small:'8px',medium:'16px',large:'28px'};
@@ -107,6 +119,18 @@
         background:var(--vp-background)!important;
         color:var(--vp-text)!important;
         font-family:${JSON.stringify(t.typography.body)},Inter,sans-serif!important;
+      }
+      .hero,footer,.sidebar{
+        background-color:var(--vp-primary)!important;
+      }
+      :where(.section,.about,.portfolio,.experience,.education,.instagram,.contact,
+             #sobre,#portfolio,#experiencia,#formacao,#instagram,#contato,#cobertura,#wsop-featured){
+        background-color:var(--vp-background);
+        color:var(--vp-text);
+      }
+      :where(.card,.press-card,.repeat-card,.stat,.contact-card,.media-bio,.board-row,.log-entry,.edu-item){
+        background-color:var(--vp-surface)!important;
+        color:var(--vp-text)!important;
       }
       h1,h2,h3,h4,.hero-name,.section-head h2{
         font-family:${JSON.stringify(t.typography.heading)},Fraunces,serif!important;
@@ -203,4 +227,5 @@
 
   document.addEventListener('vitrine:tenant-content-ready',loadTheme);
   document.addEventListener('vitrine:layout-ready',loadTheme);
+  document.addEventListener('vitrine:tenant-media-ready',loadTheme);
 })();

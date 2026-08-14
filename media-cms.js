@@ -1,4 +1,3 @@
-
 (() => {
   if (!window.supabase || !window.VITRINE_SUPABASE) return;
 
@@ -12,32 +11,94 @@
     .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
     .replaceAll('"','&quot;').replaceAll("'","&#039;");
 
-  function applyStaticImage(selector, url, alt, position) {
-    if (!url) return;
+  const clamp = (n,min,max) => Math.max(min,Math.min(max,Number(n)));
+  const fitCss = fit => fit === 'contain' ? 'contain' : fit === 'original' ? 'scale-down' : 'cover';
+
+  function mediaSettings(content,key,fallbackPosition='50% 50%'){
+    const legacy = String(content[`${key}_position`] || fallbackPosition);
+    const legacyParts = legacy.match(/(top|bottom|center|\d+%)\s+(left|right|center|\d+%)/i);
+    let x = Number(content[`${key}_x`]);
+    let y = Number(content[`${key}_y`]);
+
+    if(!Number.isFinite(x)){
+      if(/left/i.test(legacy)) x=0;
+      else if(/right/i.test(legacy)) x=100;
+      else x=50;
+    }
+    if(!Number.isFinite(y)){
+      if(/top/i.test(legacy)) y=0;
+      else if(/bottom/i.test(legacy)) y=100;
+      else y=50;
+    }
+
+    return {
+      fit: content[`${key}_fit`] || 'cover',
+      x: clamp(x,0,100),
+      y: clamp(y,0,100),
+      zoom: clamp(content[`${key}_zoom`] ?? 1,0.5,2)
+    };
+  }
+
+  function applyStaticImage(selector, content, key, alt) {
+    const imageUrl = content[`${key}_url`];
+    if (!imageUrl) return;
     const img = document.querySelector(selector);
     if (!img) return;
+
     const fallbackSrc = img.getAttribute('src');
     img.onerror = () => {
       img.onerror = null;
       if (fallbackSrc) img.src = fallbackSrc;
     };
-    img.src = url;
+
+    const s = mediaSettings(content,key,key==='about'?'50% 0%':'50% 50%');
+    img.src = imageUrl;
     if (alt) img.alt = alt;
-    if (position) img.style.objectPosition = position;
+
+    img.style.setProperty('object-fit', fitCss(s.fit), 'important');
+    img.style.setProperty('object-position', `${s.x}% ${s.y}%`, 'important');
+    img.style.setProperty('transform', `scale(${s.zoom})`, 'important');
+    img.style.setProperty('transform-origin', `${s.x}% ${s.y}%`, 'important');
+
+    const parent=img.parentElement;
+    if(parent){
+      parent.style.overflow='hidden';
+      if(s.fit!=='cover') parent.style.background='#ece8dd';
+    }
   }
 
   function applyHero(content) {
     if (!content.hero_url) return;
     const layer = document.getElementById('heroBg');
     if (!layer) return;
+    const s = mediaSettings(content,'hero','50% 50%');
+
     const test = new Image();
     test.onload = () => {
       layer.style.backgroundImage =
         `linear-gradient(180deg,rgba(8,39,32,.48),rgba(8,39,32,.86)),url("${content.hero_url}")`;
-      layer.style.backgroundSize = 'cover';
-      layer.style.backgroundPosition = content.hero_position || 'center center';
+      layer.style.setProperty('background-size',
+        s.fit==='contain' ? 'contain' : s.fit==='original' ? 'auto' : 'cover',
+        'important');
+      layer.style.setProperty('background-position', `${s.x}% ${s.y}%`, 'important');
+      layer.style.setProperty('background-repeat', 'no-repeat', 'important');
+      layer.style.setProperty('transform', `scale(${s.zoom})`, 'important');
+      layer.style.setProperty('transform-origin', `${s.x}% ${s.y}%`, 'important');
     };
     test.src = content.hero_url;
+  }
+
+  function gallerySettings(item){
+    const legacy=String(item.position||'center center');
+    let x=Number(item.x),y=Number(item.y);
+    if(!Number.isFinite(x)) x=/left/i.test(legacy)?0:/right/i.test(legacy)?100:50;
+    if(!Number.isFinite(y)) y=/top/i.test(legacy)?0:/bottom/i.test(legacy)?100:50;
+    return {
+      fit:item.fit||'contain',
+      x:clamp(x,0,100),
+      y:clamp(y,0,100),
+      zoom:clamp(item.zoom??1,0.5,2)
+    };
   }
 
   function applyWsopGallery(content) {
@@ -52,118 +113,93 @@
 
     const ordered = [...gallery].sort((a,b)=>(a.order ?? 0)-(b.order ?? 0));
 
-    slidesWrap.innerHTML = ordered.map((item,i)=>`
+    slidesWrap.innerHTML = ordered.map((item,i)=>{
+      const s=gallerySettings(item);
+      return `
       <figure class="wsop-slide${i===0?' is-active':''}" data-wsop-slide="${i}" aria-hidden="${i===0?'false':'true'}">
         <img src="${esc(item.url)}"
-             alt="${esc(item.alt || `WSOP Las Vegas ${item.year || ''}`)}"
+             alt="${esc(item.alt || `Foto ${item.year || ''}`)}"
              loading="${i===0?'eager':'lazy'}"
              decoding="async"
-             style="object-position:${esc(item.position || 'center center')}">
+             style="object-fit:${fitCss(s.fit)}!important;object-position:${s.x}% ${s.y}%!important;transform:scale(${s.zoom})!important;transform-origin:${s.x}% ${s.y}%!important">
         <figcaption>
           <span class="wsop-year">${esc(item.year || '')}</span>
-          <span>${esc(item.caption || 'WSOP Las Vegas')}</span>
+          <span>${esc(item.caption || '')}</span>
         </figcaption>
-      </figure>`).join('');
+      </figure>`;
+    }).join('');
 
     dotsWrap.innerHTML = ordered.map((_,i)=>
       `<button type="button" class="wsop-dot${i===0?' is-active':''}" data-wsop-dot="${i}"
                aria-label="Ir para foto ${i+1}"${i===0?' aria-current="true"':''}></button>`
     ).join('');
 
-    if (counter) {
-      counter.innerHTML = `<span id="wsopCurrent">01</span> / ${String(ordered.length).padStart(2,'0')}`;
-    }
+    if (counter) counter.innerHTML =
+      `<span id="wsopCurrent">01</span> / ${String(ordered.length).padStart(2,'0')}`;
 
-    // Lightweight carousel controller for CMS-managed photos.
-    const slides = [...carousel.querySelectorAll('[data-wsop-slide]')];
-    const dots = [...carousel.querySelectorAll('[data-wsop-dot]')];
-    const prev = carousel.querySelector('[data-wsop-prev]');
-    const next = carousel.querySelector('[data-wsop-next]');
-    let index = 0;
-    let timer = null;
-    let touchStartX = null;
+    const slides=[...carousel.querySelectorAll('[data-wsop-slide]')];
+    const dots=[...carousel.querySelectorAll('[data-wsop-dot]')];
+    const prev=carousel.querySelector('[data-wsop-prev]');
+    const next=carousel.querySelector('[data-wsop-next]');
+    let index=0,timer=null,touchStartX=null;
 
-    const show = newIndex => {
-      index = (newIndex + slides.length) % slides.length;
+    const show=n=>{
+      index=(n+slides.length)%slides.length;
       slides.forEach((slide,i)=>{
-        const active = i === index;
-        slide.classList.toggle('is-active', active);
-        slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+        const active=i===index;
+        slide.classList.toggle('is-active',active);
+        slide.setAttribute('aria-hidden',active?'false':'true');
       });
       dots.forEach((dot,i)=>{
-        const active = i === index;
-        dot.classList.toggle('is-active', active);
-        if (active) dot.setAttribute('aria-current','true');
-        else dot.removeAttribute('aria-current');
+        const active=i===index;
+        dot.classList.toggle('is-active',active);
+        if(active)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');
       });
-      const current = document.getElementById('wsopCurrent');
-      if (current) current.textContent = String(index+1).padStart(2,'0');
+      const current=document.getElementById('wsopCurrent');
+      if(current)current.textContent=String(index+1).padStart(2,'0');
     };
+    const schedule=()=>{clearInterval(timer);timer=setInterval(()=>show(index+1),10000)};
+    const manual=n=>{show(n);schedule()};
 
-    const schedule = () => {
-      clearInterval(timer);
-      timer = setInterval(()=>show(index+1), 10000);
-    };
-    const manual = n => { show(n); schedule(); };
+    prev?.addEventListener('click',e=>{e.stopImmediatePropagation();manual(index-1)},true);
+    next?.addEventListener('click',e=>{e.stopImmediatePropagation();manual(index+1)},true);
+    dots.forEach((dot,i)=>dot.addEventListener('click',e=>{e.stopImmediatePropagation();manual(i)},true));
+    carousel.addEventListener('keydown',e=>{
+      if(e.key==='ArrowLeft'){e.preventDefault();manual(index-1)}
+      if(e.key==='ArrowRight'){e.preventDefault();manual(index+1)}
+    },true);
+    carousel.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].clientX},{passive:true});
+    carousel.addEventListener('touchend',e=>{
+      if(touchStartX===null)return;
+      const d=e.changedTouches[0].clientX-touchStartX;touchStartX=null;
+      if(Math.abs(d)>=45)manual(d>0?index-1:index+1);
+    },{passive:true});
 
-    prev?.addEventListener('click', e => { e.stopImmediatePropagation(); manual(index-1); }, true);
-    next?.addEventListener('click', e => { e.stopImmediatePropagation(); manual(index+1); }, true);
-    dots.forEach((dot,i)=>dot.addEventListener('click', e => {
-      e.stopImmediatePropagation(); manual(i);
-    }, true));
-
-    carousel.addEventListener('keydown', e => {
-      if (e.key === 'ArrowLeft') { e.preventDefault(); manual(index-1); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); manual(index+1); }
-    }, true);
-
-    carousel.addEventListener('touchstart', e => {
-      touchStartX = e.changedTouches[0].clientX;
-    }, {passive:true});
-
-    carousel.addEventListener('touchend', e => {
-      if (touchStartX === null) return;
-      const delta = e.changedTouches[0].clientX - touchStartX;
-      touchStartX = null;
-      if (Math.abs(delta) < 45) return;
-      manual(delta > 0 ? index-1 : index+1);
-    }, {passive:true});
-
-    show(0);
-    schedule();
+    show(0);schedule();
   }
 
   async function loadMedia() {
     try {
       const { data: project, error: projectError } = await cms
-        .from('projects')
-        .select('id')
-        .eq('slug', projectSlug)
-        .eq('is_published', true)
-        .maybeSingle();
-
+        .from('projects').select('id').eq('slug', projectSlug).eq('is_published', true).maybeSingle();
       if (projectError) throw projectError;
 
       if (project) {
         const { data: row, error: mediaError } = await cms
-          .from('site_content')
-          .select('content')
-          .eq('project_id', project.id)
-          .eq('section_key', 'media')
-          .maybeSingle();
-
+          .from('site_content').select('content')
+          .eq('project_id', project.id).eq('section_key', 'media').maybeSingle();
         if (mediaError) throw mediaError;
 
         if (row?.content) {
           const c = row.content;
           applyHero(c);
-          applyStaticImage('.about-photo img', c.about_url, c.about_alt, c.about_position);
-          applyStaticImage('.contact-photo img', c.contact_url, c.contact_alt, c.contact_position);
+          applyStaticImage('.about-photo img', c, 'about', c.about_alt);
+          applyStaticImage('.contact-photo img', c, 'contact', c.contact_alt);
           applyWsopGallery(c);
         }
       }
     } catch (error) {
-      console.warn('Vitrine Pro Media: mídia gerenciada indisponível.', error);
+      console.warn('WebAppCap Media: mídia gerenciada indisponível.', error);
     } finally {
       document.dispatchEvent(new CustomEvent('vitrine:tenant-media-ready'));
     }
