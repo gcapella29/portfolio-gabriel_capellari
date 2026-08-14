@@ -3,8 +3,20 @@
 
   const cfg = window.VITRINE_SUPABASE;
   const host = location.hostname.toLowerCase();
+
+  /*
+   * Domínios principais:
+   * - deployment original da Vercel
+   * - domínio oficial WebAppCap
+   * - www do domínio oficial
+   *
+   * Nesses hosts, NÃO usamos resolução multi-cliente.
+   * O index.html principal é exibido normalmente.
+   */
   const primaryHosts = new Set([
     'portfolio-gabriel-capellari.vercel.app',
+    'webappcap.com.br',
+    'www.webappcap.com.br',
     'localhost',
     '127.0.0.1'
   ]);
@@ -31,6 +43,7 @@
 
   const findProject = async () => {
     try {
+      // 1. Domínio próprio exato.
       let q = await sb.from('projects')
         .select('slug')
         .eq('custom_domain', host)
@@ -40,8 +53,10 @@
       if (q.error) throw q.error;
       let slug = q.data?.slug;
 
+      // 2. Subdomínio wildcard.
       if (!slug) {
         const firstLabel = host.split('.')[0];
+
         if (firstLabel && firstLabel !== 'www') {
           q = await sb.from('projects')
             .select('slug')
@@ -59,10 +74,11 @@
         return;
       }
 
-      // Same route used by the regular public project URL.
+      // Mesma rota pública usada pelos projetos.
       location.replace(`/p/${encodeURIComponent(slug)}`);
+
     } catch (error) {
-      console.error('Vitrine domain resolver', error);
+      console.error('WebAppCap domain resolver', error);
       fail('Não foi possível resolver o domínio. Tente novamente em instantes.');
     }
   };
