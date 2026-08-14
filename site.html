@@ -2276,19 +2276,23 @@ html.vitrine-tenant-loading #vitrineTenantLoader{
 
     const flags=document.querySelector('.hero-flags');
     if(flags){
-      if(Array.isArray(c.languages) && c.languages.length){
-        flags.innerHTML=c.languages.map(item=>{
-          const parts=[item.flag,item.language,item.level].filter(Boolean);
-          return `<span class="chip">${esc(parts.join(' ' + (item.level ? '—' : '') + ' ').replace(/\s+—\s+—/g,' — '))}</span>`;
-        }).join('');
-        // Rebuild cleanly to avoid odd separators.
-        flags.innerHTML=c.languages.map(item=>{
-          const left=[item.flag,item.language].filter(Boolean).join(' ');
-          const text=item.level ? `${left} — ${item.level}` : left;
-          return `<span class="chip">${esc(text)}</span>`;
-        }).join('');
-        flags.hidden=false;
+      // O campo languages do CMS é sempre a fonte de verdade.
+      // [] significa explicitamente "não exibir idiomas".
+      if(Array.isArray(c.languages)){
+        if(c.languages.length){
+          flags.innerHTML=c.languages.map(item=>{
+            const left=[item.flag,item.language].filter(Boolean).join(' ');
+            const text=item.level ? `${left} — ${item.level}` : left;
+            return `<span class="chip">${esc(text)}</span>`;
+          }).join('');
+          flags.hidden=false;
+        }else{
+          flags.innerHTML='';
+          flags.hidden=true;
+        }
       }else if(isTenantProject){
+        // Compatibilidade com projetos antigos que ainda não possuem
+        // o campo languages no conteúdo publicado.
         flags.innerHTML='';
         flags.hidden=true;
       }
