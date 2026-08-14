@@ -44,14 +44,22 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 </div>
 </main>
 <div class="toast" id="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script><script src="../project-context.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script>
+<script src="/admin/route-guard.js"></script><script src="../project-context.js"></script>
 <script>
 (() => {
  const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
  let user=null,project=null,myRole=null;const $=id=>document.getElementById(id);
  function toast(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2400)}
  const slug=()=>window.VITRINE_PROJECT_CONTEXT?.slug||cfg.projectSlug;
- async function loadProject(){
+ 
+  async function loadPlanLimits(){
+    const q=await sb.from('project_commercial').select('plan_code,limits,status').eq('project_id',project.id).maybeSingle();
+    if(q.error){console.warn('Plano comercial indisponível:',q.error.message);return {plan_code:'pro',status:'active',limits:{client_users:1,custom_domain:true,templates:true,advanced_theme:true,media_gallery:20}}}
+    return q.data||{plan_code:'pro',status:'active',limits:{client_users:1,custom_domain:true,templates:true,advanced_theme:true,media_gallery:20}};
+  }
+
+async function loadProject(){
    const q=await sb.from('projects').select('*').eq('slug',slug()).maybeSingle();
    if(q.error||!q.data)throw q.error||new Error('Projeto não encontrado');
    project=q.data;$('projectLabel').textContent=`${project.name} · ${project.slug}`;
@@ -77,6 +85,11 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
    $('members').querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>{if(confirm('Remover esta pessoa do projeto?'))memberAction('remove',btn.dataset.remove)});
  }
  async function invoke(body){
+  if(body?.action==='invite' && ['editor','viewer'].includes(body.role||'editor')){
+    const max=Number(commercialPlan?.limits?.client_users??1);
+    const q=await sb.from('project_members').select('user_id,role',{count:'exact',head:true}).eq('project_id',project.id).in('role',['editor','viewer']);
+    if(!q.error && Number(q.count||0)>=max)throw new Error(`Seu plano permite até ${max} usuário(s) cliente.`);
+  }
    const {data,error}=await sb.functions.invoke('manage-project-member',{body:{project_id:project.id,...body}});
    if(error)throw error;if(data?.error)throw new Error(data.error);return data;
  }
@@ -97,4 +110,4 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script><script id="webappcapClientRouteGuard">(async()=>{const cfg=window.VITRINE_SUPABASE;if(!window.supabase||!cfg)return;const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}),s=(await sb.auth.getSession()).data.session;if(!s)return;const slug=new URLSearchParams(location.search).get('project')||cfg.projectSlug,p=(await sb.from('projects').select('id,owner_id').eq('slug',slug).maybeSingle()).data;if(!p)return;const m=(await sb.from('project_members').select('role').eq('project_id',p.id).eq('user_id',s.user.id).maybeSingle()).data,role=m?.role||(p.owner_id===s.user.id?'owner':null);if(role&& !["owner"].includes(role))location.replace('/admin/client.html?project='+encodeURIComponent(slug));})();</script></body></html>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script></body></html>
