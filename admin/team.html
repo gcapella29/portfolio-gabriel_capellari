@@ -35,7 +35,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 <form class="form" id="inviteForm">
 <div class="field"><label>E-mail</label><input id="inviteEmail" type="email" placeholder="cliente@email.com" required></div>
 <div class="field"><label>Permissão</label><select id="inviteRole">
-<option value="admin">Admin</option><option value="editor">Editor</option><option value="viewer">Viewer</option>
+<option value="admin">Admin</option><option value="editor">Cliente</option><option value="viewer">Visualizador</option>
 </select></div>
 <div class="permission"><strong>Admin</strong>: conteúdo, fotos, SEO, preview e publicação.<br><strong>Editor</strong>: edita conteúdo/fotos e rascunhos, mas não administra equipe.<br><strong>Viewer</strong>: visualização do painel, preview e histórico.</div>
 <button class="btn gold" id="inviteButton">Enviar convite</button>
@@ -70,9 +70,9 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
    $('inviteForm').style.display=canManage?'grid':'none';
    if(canManage){
      $('inviteRole').innerHTML=
-       '<option value="admin">Admin</option><option value="editor">Editor</option><option value="viewer">Viewer</option>';
+       '<option value="admin">Admin</option><option value="editor">Cliente</option><option value="viewer">Visualizador</option>';
    }
-   $('members').innerHTML=q.data.map(m=>`<article class="member"><div class="meta"><strong>${m.email||'Usuário'}</strong><span>${m.user_id===user.id?'Você · ':''}${new Date(m.created_at).toLocaleDateString('pt-BR')}</span><div class="role">${m.role}</div></div><div class="actions">${canManage&&m.role!=='owner'&&m.user_id!==user.id?`<select data-role="${m.user_id}" style="padding:.55rem;border:1px solid var(--line);border-radius:9px"><option ${m.role==='admin'?'selected':''} value="admin">Admin</option><option ${m.role==='editor'?'selected':''} value="editor">Editor</option><option ${m.role==='viewer'?'selected':''} value="viewer">Viewer</option></select><button class="btn danger" data-remove="${m.user_id}">Remover</button>`:''}</div></article>`).join('');
+   $('members').innerHTML=q.data.map(m=>`<article class="member"><div class="meta"><strong>${m.email||'Usuário'}</strong><span>${m.user_id===user.id?'Você · ':''}${new Date(m.created_at).toLocaleDateString('pt-BR')}</span><div class="role">${m.role}</div></div><div class="actions">${canManage&&m.role!=='owner'&&m.user_id!==user.id?`<select data-role="${m.user_id}" style="padding:.55rem;border:1px solid var(--line);border-radius:9px"><option ${m.role==='admin'?'selected':''} value="admin">Admin</option><option ${m.role==='editor'?'selected':''} value="editor">Cliente</option><option ${m.role==='viewer'?'selected':''} value="viewer">Visualizador</option></select><button class="btn danger" data-remove="${m.user_id}">Remover</button>`:''}</div></article>`).join('');
    $('members').querySelectorAll('[data-role]').forEach(sel=>sel.onchange=()=>memberAction('update_role',sel.dataset.role,sel.value));
    $('members').querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>{if(confirm('Remover esta pessoa do projeto?'))memberAction('remove',btn.dataset.remove)});
  }
@@ -97,4 +97,4 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script></body></html>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script><script id="webappcapClientRouteGuard">(async()=>{const cfg=window.VITRINE_SUPABASE;if(!window.supabase||!cfg)return;const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}),s=(await sb.auth.getSession()).data.session;if(!s)return;const slug=new URLSearchParams(location.search).get('project')||cfg.projectSlug,p=(await sb.from('projects').select('id,owner_id').eq('slug',slug).maybeSingle()).data;if(!p)return;const m=(await sb.from('project_members').select('role').eq('project_id',p.id).eq('user_id',s.user.id).maybeSingle()).data,role=m?.role||(p.owner_id===s.user.id?'owner':null);if(role&& !["owner"].includes(role))location.replace('/admin/client.html?project='+encodeURIComponent(slug));})();</script></body></html>

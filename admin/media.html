@@ -127,7 +127,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   }
 
   function applyRoleUI(){
-    if($('teamLink')) $('teamLink').style.display=canManageTeam()?'block':'none';
+    if($('teamLink')) $('teamLink').style.display=canManageTeam()?'block':'none';const ds=document.getElementById('dashboardShortcut');if(ds&&['editor','viewer'].includes(myRole)){ds.textContent='Meu site';ds.href=`/admin/client.html?project=${encodeURIComponent(project.slug)}`;}
     if(!canEdit()){
       document.querySelectorAll('[data-upload],[data-reset],[data-pos],[data-alt],[data-f],[data-move],[data-replace],[data-del],#galleryInput').forEach(el=>el.disabled=true);
       const dz=$('dropZone');
@@ -152,6 +152,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       const snapshot={};
       for(const r of q.data||[])snapshot[r.section_key]={content:r.content||{},is_visible:r.is_visible!==false};
       if(!snapshot.media)snapshot.media={content:defaults,is_visible:true};
+      if(myRole==='editor')throw new Error('Rascunho ainda não inicializado. Contate o responsável.');
       const i=await sb.from('project_drafts').insert({project_id:project.id,snapshot,updated_by:user.id}).select().single();
       if(i.error)throw i.error;draftRow=i.data;
     }else draftRow=d.data;
@@ -164,13 +165,13 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   async function save(){
     if(!canEdit())throw new Error('Acesso somente leitura.');
     draftSnapshot.media={content:structuredClone(content),is_visible:true};
-    const u=await sb.from('project_drafts').update({
-      snapshot:draftSnapshot,
-      updated_by:user.id,
-      updated_at:new Date().toISOString()
-    }).eq('project_id',project.id).select().single();
-    if(u.error)throw u.error;
-    draftRow=u.data;
+    if(myRole==='editor'){
+      const result=await sb.functions.invoke('client-update-draft',{body:{project_id:project.id,section_key:'media',section:draftSnapshot.media}});
+      if(result.error)throw result.error;if(result.data?.error)throw new Error(result.data.error);draftRow={...(draftRow||{}),updated_at:result.data.updated_at};
+    }else{
+      const u=await sb.from('project_drafts').update({snapshot:draftSnapshot,updated_by:user.id,updated_at:new Date().toISOString()}).eq('project_id',project.id).select().single();
+      if(u.error)throw u.error;draftRow=u.data;
+    }
   }
 
   async function upload(file,folder){
@@ -277,7 +278,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
         notify('Enviando…');const u=await upload(file,key);
         content[`${key}_url`]=u.url;content[`${key}_path`]=u.path;
         ensureFrameDefaults(key);
-        await save();if(old)await remove(old).catch(()=>{});render();
+        await save();if(old&&myRole!=='editor')await remove(old).catch(()=>{});render();
         notify('Imagem salva no rascunho — ajuste o enquadramento e publique ✓')
       }catch(e){console.error(e);notify(e.message||'Erro no upload')}
     });
@@ -286,7 +287,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       const key=btn.dataset.reset,old=content[`${key}_path`];
       if(!confirm('Voltar à imagem original?'))return;
       content[`${key}_url`]='';content[`${key}_path`]='';
-      try{await save();if(old)await remove(old).catch(()=>{});render();notify('Imagem original restaurada ✓')}catch(e){notify('Erro ao restaurar')}
+      try{await save();if(old&&myRole!=='editor')await remove(old).catch(()=>{});render();notify('Imagem original restaurada ✓')}catch(e){notify('Erro ao restaurar')}
     });
   }
 
@@ -325,7 +326,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       try{await save();renderGallery();notify('Enquadramento restaurado ✓')}catch(e){notify('Erro ao salvar')}
     });
     document.querySelectorAll('[data-move]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id),j=i+Number(btn.dataset.move);if(j<0||j>=g.length)return;[g[i],g[j]]=[g[j],g[i]];g.forEach((x,k)=>x.order=k);content.wsop_gallery=g;try{await save();renderGallery();notify('Ordem atualizada ✓')}catch(e){notify('Erro ao reordenar')}});
-    document.querySelectorAll('[data-replace]').forEach(inp=>inp.onchange=async()=>{const x=g.find(v=>v.id===inp.dataset.replace),file=inp.files?.[0];if(!x||!file)return;const old=x.path;try{const u=await upload(file,'wsop');x.url=u.url;x.path=u.path;content.wsop_gallery=g;await save();if(old)await remove(old).catch(()=>{});renderGallery();notify('Foto substituída no rascunho — publique para colocá-la no site ✓')}catch(e){notify(e.message||'Erro no upload')}});
+    document.querySelectorAll('[data-replace]').forEach(inp=>inp.onchange=async()=>{const x=g.find(v=>v.id===inp.dataset.replace),file=inp.files?.[0];if(!x||!file)return;const old=x.path;try{const u=await upload(file,'wsop');x.url=u.url;x.path=u.path;content.wsop_gallery=g;await save();if(old&&myRole!=='editor')await remove(old).catch(()=>{});renderGallery();notify('Foto substituída no rascunho — publique para colocá-la no site ✓')}catch(e){notify(e.message||'Erro no upload')}});
     document.querySelectorAll('[data-del]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id);if(i<0||!confirm('Excluir esta foto?'))return;const [x]=g.splice(i,1);g.forEach((v,k)=>v.order=k);content.wsop_gallery=g;try{await save();if(x.path)await remove(x.path).catch(()=>{});renderGallery();notify('Foto excluída ✓')}catch(e){notify('Erro ao excluir')}});
   }
 

@@ -115,4 +115,4 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-</body></html>
+<script id="webappcapClientRouteGuard">(async()=>{const cfg=window.VITRINE_SUPABASE;if(!window.supabase||!cfg)return;const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}),s=(await sb.auth.getSession()).data.session;if(!s)return;const slug=new URLSearchParams(location.search).get('project')||cfg.projectSlug,p=(await sb.from('projects').select('id,owner_id').eq('slug',slug).maybeSingle()).data;if(!p)return;const m=(await sb.from('project_members').select('role').eq('project_id',p.id).eq('user_id',s.user.id).maybeSingle()).data,role=m?.role||(p.owner_id===s.user.id?'owner':null);if(role&& !["owner", "admin"].includes(role))location.replace('/admin/client.html?project='+encodeURIComponent(slug));})();</script></body></html>

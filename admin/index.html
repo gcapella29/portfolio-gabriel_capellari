@@ -327,10 +327,10 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
   function applyRoleUI(){
     const roleLabel={
-      owner:'Owner',admin:'Admin',editor:'Editor',viewer:'Viewer'
+      owner:'Owner',admin:'Admin',editor:'Cliente',viewer:'Visualizador'
     }[myRole]||'Sem acesso';
 
-    $('statusText').textContent=`${roleLabel} · ${isViewer()?'somente leitura':canPublish()?'edição e publicação':'edição de rascunho'}`;
+    $('statusText').textContent=`${roleLabel} · ${isViewer()?'somente leitura':myRole==='editor'?'conteúdo e fotos em rascunho':canPublish()?'edição e publicação':'edição de rascunho'}`;
 
     $('saveButton').classList.toggle('hidden',!canEdit());
     $('publishButton').classList.toggle('hidden',!canPublish());
@@ -367,7 +367,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     const newProjectItem=canCreateProject()
       ? `<a class="nav-link" href="/admin/new-project.html">Novo projeto</a>`
       : '';
-    const pages=`
+    const ownerPages=`
       <a class="nav-link" href="/admin/dashboard.html${q}">Dashboard</a>
       <a class="nav-link" href="/admin/media.html${q}">Fotos</a>
       <a class="nav-link" href="/admin/history.html${q}">Histórico</a>
@@ -379,7 +379,11 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
       ${teamItem}
       ${domainItem}
       <a class="nav-link" href="/admin/projects.html">Projetos</a>`;
-    $('nav').innerHTML=sections+pages;
+    const clientPages=`
+      <a class="nav-link" href="/admin/client.html${q}">Meu site</a>
+      <a class="nav-link" href="/admin/media.html${q}">Fotos</a>
+      <a class="nav-link" href="/preview.html?preview=draft&project=${encodeURIComponent(slug)}" target="_blank">Preview ↗</a>`;
+    $('nav').innerHTML=sections+(['editor','viewer'].includes(myRole)?clientPages:ownerPages);
     $('nav').querySelectorAll('[data-key]').forEach(b=>b.onclick=()=>{
       captureCurrentEditor();
       currentKey=b.dataset.key;
@@ -538,12 +542,15 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     captureCurrentEditor();
     const btn=$('saveButton');btn.disabled=true;btn.textContent='Salvando…';
     try{
-      const u=await sb.from('project_drafts').update({
-        snapshot:draftSnapshot,updated_by:user.id,updated_at:new Date().toISOString()
-      }).eq('project_id',project.id).select().single();
-      if(u.error)throw u.error;
-      draftRow=u.data;markDirty(false);
-      $('lastSaved').textContent='Rascunho: '+new Date(u.data.updated_at).toLocaleString('pt-BR');
+      let savedAt;
+      if(myRole==='editor'){
+        const result=await sb.functions.invoke('client-update-draft',{body:{project_id:project.id,section_key:currentKey,section:draftSnapshot[currentKey]}});
+        if(result.error)throw result.error;if(result.data?.error)throw new Error(result.data.error);savedAt=result.data.updated_at;
+      }else{
+        const u=await sb.from('project_drafts').update({snapshot:draftSnapshot,updated_by:user.id,updated_at:new Date().toISOString()}).eq('project_id',project.id).select().single();
+        if(u.error)throw u.error;draftRow=u.data;savedAt=u.data.updated_at;
+      }
+      markDirty(false);$('lastSaved').textContent='Rascunho: '+new Date(savedAt).toLocaleString('pt-BR');
       notify('Rascunho salvo ✓');
     }catch(e){console.error(e);notify('Erro ao salvar rascunho.')}
     finally{btn.disabled=false;btn.textContent='Salvar rascunho'}
