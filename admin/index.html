@@ -99,7 +99,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
-    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 8.3</div></div>
+    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 8.4</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="sidebar-bottom">
       <div class="email" id="userEmail"></div>
@@ -310,6 +310,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   const canManageDomains = () => myRole === 'owner';
   const canManageStructure = () => ['owner','admin'].includes(myRole);
   const canManageTheme = () => ['owner','admin'].includes(myRole);
+  const canManageTemplates = () => ['owner','admin'].includes(myRole);
   const isViewer = () => myRole === 'viewer';
 
   async function loadMyRole(){
@@ -359,11 +360,15 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     const themeItem=canManageTheme()
       ? `<a class="nav-link" href="/admin/theme.html${q}">Aparência</a>`
       : '';
+    const templatesItem=canManageTemplates()
+      ? `<a class="nav-link" href="/admin/templates.html${q}">Templates</a>`
+      : '';
     const pages=`
       <a class="nav-link" href="/admin/media.html${q}">Fotos</a>
       <a class="nav-link" href="/admin/history.html${q}">Histórico</a>
       ${structureItem}
       ${themeItem}
+      ${templatesItem}
       ${teamItem}
       ${domainItem}
       <a class="nav-link" href="/admin/projects.html">Projetos</a>`;
