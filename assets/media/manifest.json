@@ -1,0 +1,98 @@
+[
+  {
+    "file": "/assets/media/hero-gabriel.jpg",
+    "sha256": "2abd1a7d6ecc3a5b6144e9a0b642bf35228a6234cabea5630d8c06b350cef1e0",
+    "bytes": 78625,
+    "width": 1200,
+    "height": 800,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/about-gabriel.jpg",
+    "sha256": "6d7726d9b80fe613a77a46bff3b4850e217471811156a0c40af4ab227e788db8",
+    "bytes": 131653,
+    "width": 1400,
+    "height": 933,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/wsop-01.jpg",
+    "sha256": "007bd3d4930a89f2e4e793bde63e59b7cf70799cd926329080af3bc9d0ab5189",
+    "bytes": 643932,
+    "width": 1532,
+    "height": 2048,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/wsop-02.jpg",
+    "sha256": "e5327b328e38e5b034920bfe81a1ae73c7c90c091f7580d96f4008647cfaa7e7",
+    "bytes": 275490,
+    "width": 1364,
+    "height": 1364,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/wsop-03.png",
+    "sha256": "3946238a159e59b28bda84c780124f265f6c3bfd5bd87603c92cc9a957ce9802",
+    "bytes": 406552,
+    "width": 457,
+    "height": 356,
+    "format": "PNG"
+  },
+  {
+    "file": "/assets/media/wsop-04.jpg",
+    "sha256": "9b09eb02c1784d1deb666db9cd43003059aa95958177a6667a3989b5ad1f647b",
+    "bytes": 341312,
+    "width": 1440,
+    "height": 960,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/wsop-05.jpg",
+    "sha256": "b5362a4d402c4e51c6b32ac96bb82992dd71588e33f2a249f843186b9837c387",
+    "bytes": 242100,
+    "width": 1200,
+    "height": 800,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/wsop-06.jpg",
+    "sha256": "cded67990455836a5a11ec737529e4c189af489a8d8111d3a456520037dd83db",
+    "bytes": 209585,
+    "width": 1280,
+    "height": 720,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/wsop-07.jpg",
+    "sha256": "dce816f5e09f87cc9aea3cd450fdca5c910e29d7209d1c596ede1377addf2f9c",
+    "bytes": 374224,
+    "width": 900,
+    "height": 1600,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/portfolio-gabriel.jpg",
+    "sha256": "fb469a5af8faf0caa23ebf313c391e88bc7912adef0bdba52b4bcfd2b1f38ae6",
+    "bytes": 43365,
+    "width": 600,
+    "height": 537,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/instagram-gabriel.jpg",
+    "sha256": "63645216d7d54f1ff1dbbe8ada871e6cae78bb9b2d7e28d5acef07dc357abafc",
+    "bytes": 108656,
+    "width": 1400,
+    "height": 933,
+    "format": "JPEG"
+  },
+  {
+    "file": "/assets/media/contact-gabriel.jpg",
+    "sha256": "2620c7cd22d38347d19478011ccabea487efbb7b9fdb3765d4d0940d851bb7ae",
+    "bytes": 139176,
+    "width": 1400,
+    "height": 933,
+    "format": "JPEG"
+  }
+]
