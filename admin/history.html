@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vitrine Pro — Histórico</title>
+<title>WebAppCap — Histórico</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,15 +16,15 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
 .shell{max-width:1050px;margin:auto;padding:2rem 1rem 4rem}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}.top h1{font-family:Fraunces,serif;font-size:clamp(2rem,5vw,3.2rem);margin:0}.list{display:grid;gap:.8rem}.version{background:#fff;border:1px solid var(--line);border-radius:15px;padding:1rem;display:flex;justify-content:space-between;gap:1rem;align-items:center}.meta strong{display:block;margin-bottom:.3rem}.meta span{font-size:.78rem;color:var(--muted)}.actions{display:flex;gap:.5rem;flex-wrap:wrap}.empty{background:#fff;border:1px solid var(--line);border-radius:15px;padding:1.2rem;color:var(--muted)}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.8rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
 @media(max-width:650px){.top,.version{flex-direction:column}.actions{width:100%}.actions .btn{flex:1;justify-content:center}}
 </style>
-</head>
-<body>
+<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style></head>
+<body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a>
 <section class="login" id="loginView"><div class="login-card">
   <h1 style="font-family:Fraunces,serif;margin:0">Vitrine <span style="color:#c9a227">Pro</span></h1>
   <p style="color:var(--muted)">Entre para consultar o histórico.</p>
   <form id="loginForm"><div class="field"><label>E-mail</label><input id="email" type="email" required></div><div class="field"><label>Senha</label><input id="password" type="password" required></div><div id="err" style="color:#a83c2e;font-size:.8rem"></div><button class="btn gold">Entrar</button></form>
 </div></section>
 <main class="shell hidden" id="app">
-  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · FASE 7</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" id="teamLink" href="/admin/team.html">Equipe</a><a class="btn ghost" href="/admin/projects.html">Projetos</a><a class="btn ghost" id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
+  <div class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">CMS · CMS</div><h1>Histórico</h1><p style="color:var(--muted)">Cada publicação salva automaticamente a versão anterior.</p></div><div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" id="teamLink" href="/admin/team.html">Equipe</a><a class="btn ghost" href="/admin/projects.html">Projetos</a><a class="btn ghost" id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a></div></div>
   <div class="list" id="list"></div>
 </main>
 <div class="toast" id="toast"></div>
@@ -54,4 +54,4 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-</body></html>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script></body></html>

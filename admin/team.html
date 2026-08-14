@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vitrine Pro — Equipe</title>
+<title>WebAppCap — Equipe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -16,8 +16,8 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1.2rem}.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:1.1rem;box-shadow:var(--shadow)}.members{display:grid;gap:.75rem}.member{border:1px solid var(--line);border-radius:14px;padding:1rem;display:flex;justify-content:space-between;gap:1rem;align-items:center}.meta strong{display:block}.meta span{display:block;margin-top:.2rem;color:var(--muted);font:500 .7rem "IBM Plex Mono",monospace}.role{display:inline-flex;margin-top:.5rem;padding:.32rem .52rem;border-radius:999px;background:#f2efe6;font-size:.7rem;text-transform:uppercase}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.form{display:grid;gap:.9rem}.help{font-size:.76rem;color:var(--muted);line-height:1.5}.permission{padding:.75rem;border-radius:12px;background:#f3f0e7;font-size:.76rem;color:var(--muted);line-height:1.5}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.85rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.top,.member{flex-direction:column;align-items:stretch}.actions .btn{flex:1}}
 </style>
-</head>
-<body>
+<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style></head>
+<body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a>
 <section class="login" id="loginView"><div class="login-card">
 <h1 style="margin:0">Vitrine <span style="color:#c9a227">Pro</span></h1><p class="help">Entre para gerenciar a equipe do projeto.</p>
 <form id="loginForm" class="form"><div class="field"><label>E-mail</label><input id="email" type="email" required></div><div class="field"><label>Senha</label><input id="password" type="password" required></div><div id="err" style="color:var(--danger);font-size:.8rem"></div><button class="btn gold">Entrar</button></form>
@@ -25,7 +25,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 
 <main class="shell hidden" id="app">
 <header class="top">
-<div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">VITRINE PRO · FASE 6</div><h1>Equipe</h1><p id="projectLabel">Gerencie quem pode acessar este projeto.</p></div>
+<div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">WEBAPPCAP · CMS</div><h1>Equipe</h1><p id="projectLabel">Gerencie quem pode acessar este projeto.</p></div>
 <div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" href="/admin/projects.html">Projetos</a></div>
 </header>
 <div class="grid">
@@ -61,12 +61,16 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
    const q=await sb.from('project_members').select('user_id,email,role,created_at').eq('project_id',project.id).order('created_at',{ascending:true});
    if(q.error)throw q.error;
    const me=q.data.find(x=>x.user_id===user.id);myRole=me?.role||null;
-   const canManage=['owner','admin'].includes(myRole);
+   if(myRole!=='owner'){
+     toast('A equipe é gerenciada somente pelo Owner.');
+     setTimeout(()=>location.href=`/admin/?project=${encodeURIComponent(project.slug)}`,700);
+     return;
+   }
+   const canManage=myRole==='owner';
    $('inviteForm').style.display=canManage?'grid':'none';
    if(canManage){
-     $('inviteRole').innerHTML=myRole==='owner'
-       ? '<option value="admin">Admin</option><option value="editor">Editor</option><option value="viewer">Viewer</option>'
-       : '<option value="editor">Editor</option><option value="viewer">Viewer</option>';
+     $('inviteRole').innerHTML=
+       '<option value="admin">Admin</option><option value="editor">Editor</option><option value="viewer">Viewer</option>';
    }
    $('members').innerHTML=q.data.map(m=>`<article class="member"><div class="meta"><strong>${m.email||'Usuário'}</strong><span>${m.user_id===user.id?'Você · ':''}${new Date(m.created_at).toLocaleDateString('pt-BR')}</span><div class="role">${m.role}</div></div><div class="actions">${canManage&&m.role!=='owner'&&m.user_id!==user.id?`<select data-role="${m.user_id}" style="padding:.55rem;border:1px solid var(--line);border-radius:9px"><option ${m.role==='admin'?'selected':''} value="admin">Admin</option><option ${m.role==='editor'?'selected':''} value="editor">Editor</option><option ${m.role==='viewer'?'selected':''} value="viewer">Viewer</option></select><button class="btn danger" data-remove="${m.user_id}">Remover</button>`:''}</div></article>`).join('');
    $('members').querySelectorAll('[data-role]').forEach(sel=>sel.onchange=()=>memberAction('update_role',sel.dataset.role,sel.value));
@@ -93,4 +97,4 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-</body></html>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script></body></html>

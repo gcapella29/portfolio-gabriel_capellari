@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vitrine Pro — Estrutura</title>
+<title>WebAppCap — Estrutura</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -83,8 +83,8 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
 }
 </style>
 
-</head>
-<body>
+<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style></head>
+<body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a>
 <section class="login" id="loginView"><div class="login-card">
 <h1 style="margin:0">Vitrine <span style="color:#c9a227">Pro</span></h1>
 <p class="help">Entre para editar a estrutura do projeto.</p>
@@ -92,7 +92,7 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
 </div></section>
 
 <main class="shell hidden" id="app">
-<header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">VITRINE PRO · FASE 8.4</div><h1>Estrutura do site</h1><p id="projectLabel">Organize os blocos do projeto.</p></div>
+<header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">WEBAPPCAP · CMS</div><h1>Estrutura do site</h1><p id="projectLabel">Organize os blocos do projeto.</p></div>
 <div class="actions"><a class="btn ghost" id="contentLink" href="/admin/">← Conteúdo</a><a class="btn ghost" id="previewLink" target="_blank">Preview ↗</a></div></header>
 
 <section class="card">
@@ -350,4 +350,4 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-</body></html>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script></body></html>

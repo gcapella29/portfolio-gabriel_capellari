@@ -35,8 +35,8 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 @media(max-width:950px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.media-layout,.gallery{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.main{padding:1rem}.top{flex-direction:column}.media-layout,.gallery{grid-template-columns:1fr}}
 </style>
-</head>
-<body>
+<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style></head>
+<body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a>
 <section class="login-wrap" id="loginView">
   <div class="login">
     <h1>Vitrine <em>Pro</em></h1>
@@ -366,5 +366,5 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-</body>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script></body>
 </html>
