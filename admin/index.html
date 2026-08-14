@@ -579,6 +579,21 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
       const u=await sb.from('site_content').upsert(payload,{onConflict:'project_id,section_key'});
       if(u.error)throw u.error;
 
+      // A primeira publicação de um projeto novo também precisa torná-lo público.
+      if(project.is_published !== true){
+        const pub=await sb.from('projects')
+          .update({
+            is_published:true,
+            updated_at:new Date().toISOString()
+          })
+          .eq('id',project.id)
+          .select()
+          .single();
+
+        if(pub.error)throw pub.error;
+        project=pub.data;
+      }
+
       publishedSnapshot=deepClone(draftSnapshot);
 
       const d=await sb.from('project_drafts').update({
@@ -593,7 +608,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
       $('publishModal').classList.remove('show');
       notify('Site publicado com sucesso ✓');
       $('statusText').textContent='Publicado agora · rascunho sincronizado';
-    }catch(e){console.error(e);notify('Erro ao publicar. Confira a migração da Fase 4.')}
+    }catch(e){console.error(e);notify(e?.message ? `Erro ao publicar: ${e.message}` : 'Erro ao publicar.')}
     finally{btn.disabled=false;btn.textContent='Publicar agora'}
   }
 
