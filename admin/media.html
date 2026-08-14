@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vitrine Pro Admin — Fotos</title>
+<title>WebAppCap Admin — Fotos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -52,7 +52,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 <div class="shell hidden" id="app">
   <aside class="sidebar">
-    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 9 · Enquadramento avançado</div>
+    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · CMS · Enquadramento avançado</div>
     <div class="side-links">
       <a id="contentLink" href="/admin/">Conteúdo</a>
       <a class="active" id="mediaLink" href="/admin/media.html">Fotos</a>
@@ -136,10 +136,11 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   }
 
   async function ensureProject(){
-    const q=await sb.from('projects').select('*').eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug)).maybeSingle();
-    if(q.error)throw q.error;if(q.data)return q.data;
-    const i=await sb.from('projects').insert({owner_id:user.id,slug:(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug),name:'Gabriel Capellari',site_type:'portfolio',is_published:true}).select().single();
-    if(i.error)throw i.error;return i.data;
+    const slug=window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug;
+    const q=await sb.from('projects').select('*').eq('slug',slug).maybeSingle();
+    if(q.error)throw q.error;
+    if(!q.data)throw new Error('Projeto não encontrado. Crie-o pelo fluxo “Novo projeto”.');
+    return q.data;
   }
 
   async function loadMedia(){

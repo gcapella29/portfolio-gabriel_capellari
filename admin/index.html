@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>Vitrine Pro Admin — Fase 5</title>
+<title>WebAppCap Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -99,7 +99,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
-    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 9.1</div></div>
+    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · CMS</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="sidebar-bottom">
       <div class="email" id="userEmail"></div>
@@ -373,6 +373,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
       ${structureItem}
       ${themeItem}
       ${templatesItem}
+      <a class="nav-link" href="/admin/footer.html${q}">Rodapé</a>
       ${newProjectItem}
       ${teamItem}
       ${domainItem}
@@ -480,14 +481,11 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   }
 
   async function ensureProject(){
-    const q=await sb.from('projects').select('*').eq('slug',(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug)).maybeSingle();
+    const slug=window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug;
+    const q=await sb.from('projects').select('*').eq('slug',slug).maybeSingle();
     if(q.error)throw q.error;
-    if(q.data)return q.data;
-    const i=await sb.from('projects').insert({
-      owner_id:user.id,slug:(window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug),name:'Gabriel Capellari',site_type:'portfolio',is_published:true
-    }).select().single();
-    if(i.error)throw i.error;
-    return i.data;
+    if(!q.data)throw new Error('Projeto não encontrado. Crie-o pelo fluxo “Novo projeto”.');
+    return q.data;
   }
 
   async function loadPublishedSnapshot(){
