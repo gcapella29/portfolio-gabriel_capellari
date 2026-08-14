@@ -1,5 +1,5 @@
 (() => {
-  if (!window.supabase || !window.VITRINE_SUPABASE) return;
+  if (!window.WebAppCapData?.ready) return;
 
   const cfg = window.VITRINE_SUPABASE;
   const ctx = window.VITRINE_PROJECT_CONTEXT;
@@ -57,7 +57,7 @@
         text-align:center;
       }
 
-      [data-vitrine-module="ticker"][data-vitrine-variant="static"] .ticker-track{
+      [data-vitrine-module="ticker"][data-vitrine-variant="static"] .ticker{
         animation:none!important;
         transform:none!important;
       }
@@ -144,37 +144,10 @@
 
   async function loadLayout() {
     try {
-      const {data:project,error:projectError}=await sb
-        .from('projects')
-        .select('id')
-        .eq('slug',slug)
-        .maybeSingle();
-
-      if (projectError || !project) return;
-
-      if (isDraftPreview) {
-        const {data:draft,error}=await sb
-          .from('project_drafts')
-          .select('snapshot')
-          .eq('project_id',project.id)
-          .maybeSingle();
-
-        if (error) throw error;
-        applyLayout(draft?.snapshot?.layout?.content);
-        return;
-      }
-
-      const {data:row,error}=await sb
-        .from('site_content')
-        .select('content')
-        .eq('project_id',project.id)
-        .eq('section_key','layout')
-        .maybeSingle();
-
-      if (error) throw error;
-      applyLayout(row?.content);
+      const data=await window.WebAppCapData.ready;
+      applyLayout(data.snapshot?.layout?.content);
     } catch (error) {
-      console.warn('Vitrine Pro Layout: usando ordem padrão.', error);
+      console.warn('WebAppCap Layout: usando ordem padrão.', error);
     }
   }
 

@@ -1,5 +1,5 @@
 (() => {
-  if (!window.supabase || !window.VITRINE_SUPABASE) return;
+  if (!window.WebAppCapData?.ready) return;
 
   const cfg = window.VITRINE_SUPABASE;
   const ctx = window.VITRINE_PROJECT_CONTEXT;
@@ -63,8 +63,24 @@
     return style;
   }
 
+  function loadThemeFonts(t){
+    const families=[t.typography.heading,t.typography.body,t.typography.mono]
+      .filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i);
+    const builtIn=new Set(['Inter','Fraunces','IBM Plex Mono']);
+    const extra=families.filter(f=>!builtIn.has(f));
+    if(!extra.length)return;
+    const id='webappcap-dynamic-fonts';
+    const href='https://fonts.googleapis.com/css2?'+extra
+      .map(f=>'family='+encodeURIComponent(f).replace(/%20/g,'+')+':wght@400;500;600;700')
+      .join('&')+'&display=swap';
+    let link=document.getElementById(id);
+    if(!link){link=document.createElement('link');link.id=id;link.rel='stylesheet';document.head.appendChild(link)}
+    if(link.href!==href)link.href=href;
+  }
+
   function applyTheme(raw){
     const t=mergeTheme(raw);
+    loadThemeFonts(t);
     const root=document.documentElement;
     const isDefaultProject = slug === cfg.projectSlug;
     root.dataset.vitrineThemeScope = isDefaultProject ? 'default' : 'tenant';
@@ -181,34 +197,10 @@
 
   async function loadTheme(){
     try{
-      const {data:project,error:projectError}=await sb
-        .from('projects')
-        .select('id')
-        .eq('slug',slug)
-        .maybeSingle();
-      if(projectError || !project) return;
-
-      if(isDraftPreview){
-        const {data:draft,error}=await sb
-          .from('project_drafts')
-          .select('snapshot')
-          .eq('project_id',project.id)
-          .maybeSingle();
-        if(error) throw error;
-        applyTheme(draft?.snapshot?.theme?.content);
-        return;
-      }
-
-      const {data:row,error}=await sb
-        .from('site_content')
-        .select('content')
-        .eq('project_id',project.id)
-        .eq('section_key','theme')
-        .maybeSingle();
-      if(error) throw error;
-      applyTheme(row?.content);
+      const data=await window.WebAppCapData.ready;
+      applyTheme(data.snapshot?.theme?.content);
     }catch(error){
-      console.warn('Vitrine Pro Theme: usando tema padrão.',error);
+      console.warn('WebAppCap Theme: usando tema padrão.',error);
       applyTheme(null);
     }
   }

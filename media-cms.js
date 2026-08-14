@@ -1,5 +1,5 @@
 (() => {
-  if (!window.supabase || !window.VITRINE_SUPABASE) return;
+  if (!window.WebAppCapData?.ready) return;
 
   const { url, publishableKey, projectSlug: defaultProjectSlug } = window.VITRINE_SUPABASE;
   const projectSlug = window.VITRINE_PROJECT_CONTEXT?.slug || defaultProjectSlug;
@@ -180,24 +180,12 @@
 
   async function loadMedia() {
     try {
-      const { data: project, error: projectError } = await cms
-        .from('projects').select('id').eq('slug', projectSlug).eq('is_published', true).maybeSingle();
-      if (projectError) throw projectError;
-
-      if (project) {
-        const { data: row, error: mediaError } = await cms
-          .from('site_content').select('content')
-          .eq('project_id', project.id).eq('section_key', 'media').maybeSingle();
-        if (mediaError) throw mediaError;
-
-        if (row?.content) {
-          const c = row.content;
-          applyHero(c);
-          applyStaticImage('.about-photo img', c, 'about', c.about_alt);
-          applyStaticImage('.contact-photo img', c, 'contact', c.contact_alt);
-          applyWsopGallery(c);
-        }
-      }
+      const data = await window.WebAppCapData.ready;
+      const c = data.snapshot?.media?.content || {};
+      applyHero(c);
+      applyStaticImage('.about-photo img', c, 'about', c.about_alt);
+      applyStaticImage('.contact-photo img', c, 'contact', c.contact_alt);
+      applyWsopGallery(c);
     } catch (error) {
       console.warn('WebAppCap Media: mídia gerenciada indisponível.', error);
     } finally {
