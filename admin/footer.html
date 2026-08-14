@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Rodapé — WebAppCap</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--dark:#082720;--paper:#f7f4ec;--ink:#171310;--gold:#e3bb3d;--muted:#728078;--line:#ded8c8}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}
+.shell{max-width:1000px;margin:auto;padding:2rem 1rem 4rem}h1,h2{font-family:Fraunces,serif}
+.top{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}.top h1{font-size:clamp(2.2rem,5vw,3.4rem);margin:.2rem 0}
+.kicker,label{font:600 .65rem "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1.2rem;margin-top:1rem}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}.field{display:grid;gap:.4rem}.wide{grid-column:1/-1}
+input{padding:.85rem;border:1px solid var(--line);border-radius:10px;font:inherit}.toggle{display:flex;gap:.6rem;align-items:center}
+.preview{margin-top:1rem;background:var(--dark);color:#fff;padding:1.2rem;border-radius:12px;font:500 .75rem "IBM Plex Mono",monospace;letter-spacing:.05em}
+.actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1rem}.btn{border:0;border-radius:999px;padding:.75rem 1rem;font:600 .68rem "IBM Plex Mono",monospace;cursor:pointer}.gold{background:var(--gold);color:var(--dark)}.ghost{background:#fff;border:1px solid var(--line)}
+.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.8rem 1rem;border-radius:12px;display:none}.toast.show{display:block}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.top{display:block}}
+</style></head>
+<body><main class="shell">
+<header class="top"><div><div class="kicker">WEBAPPCAP · RODAPÉ</div><h1>Rodapé</h1><p>Configure ou desative o rodapé deste projeto.</p></div><a class="btn ghost" id="back" href="/admin/">← Conteúdo</a></header>
+<section class="card">
+<div class="grid">
+<div class="field wide"><label class="toggle"><input id="visible" type="checkbox" checked> Rodapé visível</label></div>
+<div class="field"><label>Nome / Marca</label><input id="brand" placeholder="Fábio Ferrari"></div>
+<div class="field"><label>Descrição / profissão</label><input id="description" placeholder="Personal Trainer"></div>
+<div class="field"><label>Localização</label><input id="location" placeholder="Ibitinga, SP — Brasil"></div>
+<div class="field"><label class="toggle"><input id="copyright" type="checkbox"> Exibir copyright automático</label></div>
+</div>
+<div class="preview" id="preview">Rodapé desativado</div>
+<div class="actions"><button class="btn gold" id="save">Salvar rascunho</button></div>
+</section></main><div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script>
+(async()=>{
+ const $=id=>document.getElementById(id),cfg=window.VITRINE_SUPABASE;
+ const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
+ const params=new URLSearchParams(location.search),slug=params.get('project')||cfg.projectSlug;
+ $('back').href=`/admin/?project=${encodeURIComponent(slug)}`;
+ const toast=m=>{$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)};
+ const {data:{session}}=await sb.auth.getSession();if(!session){location.href='/admin/';return}
+ const {data:project,error:pe}=await sb.from('projects').select('id,name').eq('slug',slug).maybeSingle();
+ if(pe||!project){toast('Projeto não encontrado');return}
+ const {data:draft}=await sb.from('project_drafts').select('snapshot').eq('project_id',project.id).maybeSingle();
+ const c=draft?.snapshot?.footer?.content||{is_visible:false,brand:project.name||'',description:'',location:'',show_copyright:false};
+ $('visible').checked=c.is_visible!==false;$('brand').value=c.brand||'';$('description').value=c.description||'';$('location').value=c.location||'';$('copyright').checked=!!c.show_copyright;
+ function render(){if(!$('visible').checked){$('preview').textContent='Rodapé desativado';return}const p=[$('brand').value,$('description').value,$('location').value].map(x=>x.trim()).filter(Boolean);if($('copyright').checked)p.push(`© ${new Date().getFullYear()}${$('brand').value.trim()?' '+$('brand').value.trim():''}`);$('preview').textContent=p.join(' · ')||'Rodapé vazio'}
+ ['visible','brand','description','location','copyright'].forEach(id=>$(id).addEventListener('input',render));render();
+ $('save').onclick=async()=>{
+   const {data:row,error:re}=await sb.from('project_drafts').select('snapshot').eq('project_id',project.id).maybeSingle();if(re)return toast(re.message);
+   const snapshot=structuredClone(row?.snapshot||{});
+   snapshot.footer={is_visible:$('visible').checked,content:{is_visible:$('visible').checked,brand:$('brand').value.trim(),description:$('description').value.trim(),location:$('location').value.trim(),show_copyright:$('copyright').checked}};
+   const {error}=await sb.from('project_drafts').upsert({project_id:project.id,snapshot,updated_by:session.user.id,updated_at:new Date().toISOString()},{onConflict:'project_id'});
+   if(error)return toast(error.message);toast('Rodapé salvo no rascunho ✓');
+ };
+})();
+</script></body></html>
