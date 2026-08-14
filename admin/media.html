@@ -21,7 +21,14 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 .side-links{display:grid;gap:.4rem;margin-top:1.5rem}.side-links a{padding:.72rem .8rem;border-radius:11px;color:rgba(243,238,226,.7);text-decoration:none}.side-links a.active{background:rgba(227,187,61,.13);color:var(--gold2)}
 .main{padding:2rem clamp(1rem,4vw,4rem) 4rem}.top{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}.top h1{font-family:Fraunces,serif;margin:0;font-size:clamp(2rem,4vw,3rem)}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:1.2rem;margin-bottom:1.2rem}
-.media-layout,.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.slot,.gallery-card{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#fbfaf6}.preview{aspect-ratio:16/10;background:#ebe7dc;display:grid;place-items:center;overflow:hidden}.preview.portrait{aspect-ratio:4/5}.preview img{width:100%;height:100%;object-fit:cover}.meta{padding:.9rem;display:grid;gap:.7rem}.help{font-size:.76rem;color:var(--muted);line-height:1.5}
+.media-layout,.gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.slot,.gallery-card{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#fbfaf6}.preview{aspect-ratio:16/10;background:#ebe7dc;display:grid;place-items:center;overflow:hidden}.preview.portrait{aspect-ratio:4/5}.preview img{width:100%;height:100%;object-fit:cover;transition:transform .18s ease}
+.preview{position:relative}
+.preview::after{content:"Preview";position:absolute;right:.45rem;top:.45rem;background:rgba(8,39,32,.72);color:#fff;border-radius:999px;padding:.25rem .4rem;font:500 .55rem "IBM Plex Mono",monospace;pointer-events:none}
+.range-line{display:grid;grid-template-columns:74px 1fr 46px;gap:.45rem;align-items:center}
+.range-line input[type=range]{padding:0;border:0}
+.range-value{font:600 .62rem "IBM Plex Mono",monospace;color:var(--muted);text-align:right}
+.frame-actions{display:flex;gap:.4rem;flex-wrap:wrap}
+.meta{padding:.9rem;display:grid;gap:.7rem}.help{font-size:.76rem;color:var(--muted);line-height:1.5}
 .upload-label{display:inline-flex;justify-content:center;border:1px solid var(--line);background:#fff;border-radius:999px;padding:.65rem .8rem;font:600 .68rem/1 "IBM Plex Mono",monospace;cursor:pointer}.upload-label input{display:none}
 .upload-zone{display:block;border:1px dashed #b9af96;border-radius:15px;padding:1.2rem;text-align:center;cursor:pointer;background:#fff;margin-bottom:1rem}.upload-zone.drag{border-color:var(--gold);background:#fffaf0}
 .actions{display:flex;gap:.4rem;flex-wrap:wrap}.row2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.8rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
@@ -45,11 +52,11 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 <div class="shell hidden" id="app">
   <aside class="sidebar">
-    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 7</div>
+    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · Fase 9 · Enquadramento avançado</div>
     <div class="side-links">
       <a id="contentLink" href="/admin/">Conteúdo</a>
       <a class="active" id="mediaLink" href="/admin/media.html">Fotos</a>
-      <a id="historyLink" href="/admin/history.html">Histórico</a>
+      <a id="historyLink" href="/admin/history.html">Histórico</a><a id="structureLink" href="/admin/structure.html">Estrutura</a><a id="themeLink" href="/admin/theme.html">Aparência</a><a id="templatesLink" href="/admin/templates.html">Templates</a>
       <a id="teamLink" href="/admin/team.html">Equipe</a><a href="/admin/projects.html">Projetos</a>
       <a id="previewLink" href="/preview.html?preview=draft" target="_blank">Preview ↗</a>
       <a id="siteLink" href="/" target="_blank">Visualizar site ↗</a>
@@ -98,9 +105,9 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
   const $=id=>document.getElementById(id),toast=$('toast');
   const defaults={
-    hero_url:'',hero_path:'',hero_position:'center center',
-    about_url:'',about_path:'',about_alt:'Gabriel Capellari',about_position:'top center',
-    contact_url:'',contact_path:'',contact_alt:'Gabriel Capellari em cobertura de poker',contact_position:'center center',
+    hero_url:'',hero_path:'',hero_position:'center center',hero_fit:'cover',hero_x:50,hero_y:50,hero_zoom:1,
+    about_url:'',about_path:'',about_alt:'',about_position:'top center',about_fit:'cover',about_x:50,about_y:0,about_zoom:1,
+    contact_url:'',contact_path:'',contact_alt:'',contact_position:'center center',contact_fit:'cover',contact_x:50,contact_y:50,contact_zoom:1,
     wsop_gallery:[]
   };
 
@@ -176,11 +183,44 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
   }
   async function remove(path){ /* Phase 4: keep old files to protect published versions. Cleanup comes later. */ }
 
-  function img(url){return url?`<img src="${url}" alt="">`:'<span class="help">Imagem original do site</span>'}
+  const clamp=(n,min,max)=>Math.max(min,Math.min(max,Number(n)));
+  const fitCss=fit=>fit==='contain'?'contain':fit==='original'?'scale-down':'cover';
+
+  function ensureFrameDefaults(key){
+    if(!content[`${key}_fit`])content[`${key}_fit`]='cover';
+    if(!Number.isFinite(Number(content[`${key}_x`])))content[`${key}_x`]=50;
+    if(!Number.isFinite(Number(content[`${key}_y`])))content[`${key}_y`]=key==='about'?0:50;
+    if(!Number.isFinite(Number(content[`${key}_zoom`])))content[`${key}_zoom`]=1;
+  }
+
+  function img(url,key){
+    if(!url)return '<span class="help">Imagem original do site</span>';
+    ensureFrameDefaults(key);
+    const fit=fitCss(content[`${key}_fit`]),x=content[`${key}_x`],y=content[`${key}_y`],z=content[`${key}_zoom`];
+    return `<img src="${url}" alt="" style="object-fit:${fit};object-position:${x}% ${y}%;transform:scale(${z});transform-origin:${x}% ${y}%">`;
+  }
+
+  function framingControls(key){
+    ensureFrameDefaults(key);
+    const fit=content[`${key}_fit`],x=content[`${key}_x`],y=content[`${key}_y`],z=content[`${key}_zoom`];
+    return `
+      <div class="field"><label>Modo de ajuste</label>
+        <select data-fit="${key}">
+          <option value="cover" ${fit==='cover'?'selected':''}>Cover · preencher/cortar</option>
+          <option value="contain" ${fit==='contain'?'selected':''}>Contain · imagem inteira</option>
+          <option value="original" ${fit==='original'?'selected':''}>Original · sem ampliar</option>
+        </select>
+      </div>
+      <div class="range-line"><label>Horizontal</label><input data-frame="${key}" data-prop="x" type="range" min="0" max="100" step="1" value="${x}"><span class="range-value">${x}%</span></div>
+      <div class="range-line"><label>Vertical</label><input data-frame="${key}" data-prop="y" type="range" min="0" max="100" step="1" value="${y}"><span class="range-value">${y}%</span></div>
+      <div class="range-line"><label>Zoom</label><input data-frame="${key}" data-prop="zoom" type="range" min="0.5" max="2" step="0.05" value="${z}"><span class="range-value">${Math.round(z*100)}%</span></div>
+      <div class="frame-actions"><button class="btn ghost" type="button" data-frame-reset="${key}">Resetar enquadramento</button></div>`;
+  }
+
   function slot(key,title,portrait=false){
-    const url=content[`${key}_url`],pos=content[`${key}_position`]||'center center',alt=content[`${key}_alt`]||'';
-    return `<article class="slot"><div class="preview${portrait?' portrait':''}">${img(url)}</div><div class="meta"><strong>${title}</strong>
-      <div class="field"><label>Enquadramento</label><select data-pos="${key}">${['center center','top center','bottom center','center left','center right'].map(p=>`<option ${p===pos?'selected':''}>${p}</option>`).join('')}</select></div>
+    const url=content[`${key}_url`],alt=content[`${key}_alt`]||'';
+    return `<article class="slot"><div class="preview${portrait?' portrait':''}" data-preview="${key}">${img(url,key)}</div><div class="meta"><strong>${title}</strong>
+      ${framingControls(key)}
       ${key==='hero'?'':`<div class="field"><label>Texto alternativo</label><input data-alt="${key}" value="${alt.replaceAll('"','&quot;')}"></div>`}
       <label class="upload-label">Trocar imagem<input data-upload="${key}" type="file" accept="image/*"></label>
       ${url?`<button class="btn danger" data-reset="${key}">Usar imagem original</button>`:''}
@@ -189,34 +229,107 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
   function render(){
     $('slots').innerHTML=slot('hero','Hero / capa')+slot('about','Foto do Sobre',true)+slot('contact','Foto de Contato');
-    bindSlots();renderGallery();
+    bindSlots();renderGallery();applyRoleUI();
+  }
+
+  function updateSlotPreview(key){
+    ensureFrameDefaults(key);
+    const img=$('slots').querySelector(`[data-preview="${key}"] img`);
+    if(!img)return;
+    const fit=fitCss(content[`${key}_fit`]),x=content[`${key}_x`],y=content[`${key}_y`],z=content[`${key}_zoom`];
+    img.style.objectFit=fit;
+    img.style.objectPosition=`${x}% ${y}%`;
+    img.style.transform=`scale(${z})`;
+    img.style.transformOrigin=`${x}% ${y}%`;
   }
 
   function bindSlots(){
-    document.querySelectorAll('[data-pos]').forEach(el=>el.onchange=async()=>{content[`${el.dataset.pos}_position`]=el.value;try{await save();notify('Enquadramento salvo ✓')}catch(e){notify('Erro ao salvar')}});
-    document.querySelectorAll('[data-alt]').forEach(el=>el.onchange=async()=>{content[`${el.dataset.alt}_alt`]=el.value.trim();try{await save();notify('Texto alternativo salvo ✓')}catch(e){notify('Erro ao salvar')}});
-    document.querySelectorAll('[data-upload]').forEach(el=>el.onchange=async()=>{const key=el.dataset.upload,file=el.files?.[0],old=content[`${key}_path`];if(!file)return;try{notify('Enviando…');const u=await upload(file,key);content[`${key}_url`]=u.url;content[`${key}_path`]=u.path;await save();if(old)await remove(old).catch(()=>{});render();notify('Imagem salva no rascunho — publique para colocá-la no site ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}});
-    document.querySelectorAll('[data-reset]').forEach(btn=>btn.onclick=async()=>{const key=btn.dataset.reset,old=content[`${key}_path`];if(!confirm('Voltar à imagem original?'))return;content[`${key}_url`]='';content[`${key}_path`]='';try{await save();if(old)await remove(old).catch(()=>{});render();notify('Imagem original restaurada ✓')}catch(e){notify('Erro ao restaurar')}});
+    document.querySelectorAll('[data-fit]').forEach(el=>el.onchange=async()=>{
+      const key=el.dataset.fit;content[`${key}_fit`]=el.value;updateSlotPreview(key);
+      try{await save();notify('Modo de ajuste salvo ✓')}catch(e){notify('Erro ao salvar')}
+    });
+
+    document.querySelectorAll('[data-frame]').forEach(el=>{
+      el.oninput=()=>{
+        const key=el.dataset.frame,prop=el.dataset.prop;
+        content[`${key}_${prop}`]=prop==='zoom'?Number(el.value):Number(el.value);
+        el.nextElementSibling.textContent=prop==='zoom'?`${Math.round(Number(el.value)*100)}%`:`${el.value}%`;
+        updateSlotPreview(key);
+      };
+      el.onchange=async()=>{try{await save();notify('Enquadramento salvo ✓')}catch(e){notify('Erro ao salvar')}};
+    });
+
+    document.querySelectorAll('[data-frame-reset]').forEach(btn=>btn.onclick=async()=>{
+      const key=btn.dataset.frameReset;
+      content[`${key}_fit`]='cover';content[`${key}_x`]=50;content[`${key}_y`]=key==='about'?0:50;content[`${key}_zoom`]=1;
+      try{await save();render();notify('Enquadramento restaurado ✓')}catch(e){notify('Erro ao restaurar')}
+    });
+
+    document.querySelectorAll('[data-alt]').forEach(el=>el.onchange=async()=>{
+      content[`${el.dataset.alt}_alt`]=el.value.trim();
+      try{await save();notify('Texto alternativo salvo ✓')}catch(e){notify('Erro ao salvar')}
+    });
+
+    document.querySelectorAll('[data-upload]').forEach(el=>el.onchange=async()=>{
+      const key=el.dataset.upload,file=el.files?.[0],old=content[`${key}_path`];if(!file)return;
+      try{
+        notify('Enviando…');const u=await upload(file,key);
+        content[`${key}_url`]=u.url;content[`${key}_path`]=u.path;
+        ensureFrameDefaults(key);
+        await save();if(old)await remove(old).catch(()=>{});render();
+        notify('Imagem salva no rascunho — ajuste o enquadramento e publique ✓')
+      }catch(e){console.error(e);notify(e.message||'Erro no upload')}
+    });
+
+    document.querySelectorAll('[data-reset]').forEach(btn=>btn.onclick=async()=>{
+      const key=btn.dataset.reset,old=content[`${key}_path`];
+      if(!confirm('Voltar à imagem original?'))return;
+      content[`${key}_url`]='';content[`${key}_path`]='';
+      try{await save();if(old)await remove(old).catch(()=>{});render();notify('Imagem original restaurada ✓')}catch(e){notify('Erro ao restaurar')}
+    });
   }
 
   function renderGallery(){
     const g=(content.wsop_gallery||[]).sort((a,b)=>(a.order??0)-(b.order??0));
     if(!g.length){$('gallery').innerHTML='<div class="help">Nenhuma foto gerenciada ainda. O carrossel original continua ativo.</div>';return}
-    $('gallery').innerHTML=g.map((x,i)=>`<article class="gallery-card"><div class="preview"><img src="${x.url}" alt=""></div><div class="meta">
-      <div class="row2"><div class="field"><label>Ano</label><input data-f="year" data-id="${x.id}" value="${x.year||''}"></div><div class="field"><label>Enquadramento</label><select data-f="position" data-id="${x.id}">${['center center','top center','bottom center','center left','center right'].map(p=>`<option ${p===x.position?'selected':''}>${p}</option>`).join('')}</select></div></div>
+    $('gallery').innerHTML=g.map((x,i)=>{
+      if(!x.fit)x.fit='contain';
+      if(!Number.isFinite(Number(x.x)))x.x=50;
+      if(!Number.isFinite(Number(x.y)))x.y=50;
+      if(!Number.isFinite(Number(x.zoom)))x.zoom=1;
+      return `<article class="gallery-card"><div class="preview"><img src="${x.url}" alt="" style="object-fit:${fitCss(x.fit)};object-position:${x.x}% ${x.y}%;transform:scale(${x.zoom});transform-origin:${x.x}% ${x.y}%"></div><div class="meta">
+      <div class="row2"><div class="field"><label>Ano</label><input data-f="year" data-id="${x.id}" value="${x.year||''}"></div><div class="field"><label>Ajuste</label><select data-f="fit" data-id="${x.id}"><option value="cover" ${x.fit==='cover'?'selected':''}>Cover</option><option value="contain" ${x.fit==='contain'?'selected':''}>Contain</option><option value="original" ${x.fit==='original'?'selected':''}>Original</option></select></div></div>
+      <div class="range-line"><label>Horizontal</label><input data-gframe="x" data-id="${x.id}" type="range" min="0" max="100" value="${x.x}"><span class="range-value">${x.x}%</span></div>
+      <div class="range-line"><label>Vertical</label><input data-gframe="y" data-id="${x.id}" type="range" min="0" max="100" value="${x.y}"><span class="range-value">${x.y}%</span></div>
+      <div class="range-line"><label>Zoom</label><input data-gframe="zoom" data-id="${x.id}" type="range" min="0.5" max="2" step="0.05" value="${x.zoom}"><span class="range-value">${Math.round(x.zoom*100)}%</span></div>
       <div class="field"><label>Legenda</label><input data-f="caption" data-id="${x.id}" value="${(x.caption||'').replaceAll('"','&quot;')}"></div>
       <div class="field"><label>Texto alternativo</label><input data-f="alt" data-id="${x.id}" value="${(x.alt||'').replaceAll('"','&quot;')}"></div>
-      <div class="actions"><button class="btn ghost" data-move="-1" data-id="${x.id}" ${i===0?'disabled':''}>←</button><button class="btn ghost" data-move="1" data-id="${x.id}" ${i===g.length-1?'disabled':''}>→</button><label class="btn ghost" style="cursor:pointer">Trocar<input type="file" hidden accept="image/*" data-replace="${x.id}"></label><button class="btn danger" data-del="${x.id}">Excluir</button></div>
-    </div></article>`).join('');
+      <div class="actions"><button class="btn ghost" data-move="-1" data-id="${x.id}" ${i===0?'disabled':''}>←</button><button class="btn ghost" data-move="1" data-id="${x.id}" ${i===g.length-1?'disabled':''}>→</button><button class="btn ghost" data-greset="${x.id}" type="button">Resetar corte</button><label class="btn ghost" style="cursor:pointer">Trocar<input type="file" hidden accept="image/*" data-replace="${x.id}"></label><button class="btn danger" data-del="${x.id}">Excluir</button></div>
+    </div></article>`;
+    }).join('');
 
     document.querySelectorAll('[data-f]').forEach(el=>el.onchange=async()=>{const x=g.find(v=>v.id===el.dataset.id);if(!x)return;x[el.dataset.f]=el.value;content.wsop_gallery=g;try{await save();notify('Foto atualizada ✓')}catch(e){notify('Erro ao salvar')}});
+    document.querySelectorAll('[data-gframe]').forEach(el=>{
+      el.oninput=()=>{
+        const x=g.find(v=>v.id===el.dataset.id);if(!x)return;
+        const prop=el.dataset.gframe;x[prop]=Number(el.value);
+        el.nextElementSibling.textContent=prop==='zoom'?`${Math.round(Number(el.value)*100)}%`:`${el.value}%`;
+        const img=el.closest('.gallery-card').querySelector('.preview img');
+        img.style.objectPosition=`${x.x}% ${x.y}%`;img.style.transform=`scale(${x.zoom})`;img.style.transformOrigin=`${x.x}% ${x.y}%`;
+      };
+      el.onchange=async()=>{content.wsop_gallery=g;try{await save();notify('Enquadramento salvo ✓')}catch(e){notify('Erro ao salvar')}};
+    });
+    document.querySelectorAll('[data-greset]').forEach(btn=>btn.onclick=async()=>{
+      const x=g.find(v=>v.id===btn.dataset.greset);if(!x)return;x.fit='contain';x.x=50;x.y=50;x.zoom=1;content.wsop_gallery=g;
+      try{await save();renderGallery();notify('Enquadramento restaurado ✓')}catch(e){notify('Erro ao salvar')}
+    });
     document.querySelectorAll('[data-move]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id),j=i+Number(btn.dataset.move);if(j<0||j>=g.length)return;[g[i],g[j]]=[g[j],g[i]];g.forEach((x,k)=>x.order=k);content.wsop_gallery=g;try{await save();renderGallery();notify('Ordem atualizada ✓')}catch(e){notify('Erro ao reordenar')}});
     document.querySelectorAll('[data-replace]').forEach(inp=>inp.onchange=async()=>{const x=g.find(v=>v.id===inp.dataset.replace),file=inp.files?.[0];if(!x||!file)return;const old=x.path;try{const u=await upload(file,'wsop');x.url=u.url;x.path=u.path;content.wsop_gallery=g;await save();if(old)await remove(old).catch(()=>{});renderGallery();notify('Foto substituída no rascunho — publique para colocá-la no site ✓')}catch(e){notify(e.message||'Erro no upload')}});
     document.querySelectorAll('[data-del]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id);if(i<0||!confirm('Excluir esta foto?'))return;const [x]=g.splice(i,1);g.forEach((v,k)=>v.order=k);content.wsop_gallery=g;try{await save();if(x.path)await remove(x.path).catch(()=>{});renderGallery();notify('Foto excluída ✓')}catch(e){notify('Erro ao excluir')}});
   }
 
   async function addGallery(file){
-    try{notify('Enviando…');const u=await upload(file,'wsop');const g=content.wsop_gallery||[];g.push({id:crypto.randomUUID(),path:u.path,url:u.url,year:'2025',caption:'WSOP Las Vegas',alt:'Cobertura da WSOP Las Vegas',position:'center center',order:g.length});content.wsop_gallery=g;await save();renderGallery();notify('Foto adicionada ao rascunho — publique para colocá-la no site ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}
+    try{notify('Enviando…');const u=await upload(file,'wsop');const g=content.wsop_gallery||[];g.push({id:crypto.randomUUID(),path:u.path,url:u.url,year:'2025',caption:'WSOP Las Vegas',alt:'Cobertura da WSOP Las Vegas',position:'center center',fit:'contain',x:50,y:50,zoom:1,order:g.length});content.wsop_gallery=g;await save();renderGallery();notify('Foto adicionada ao rascunho — publique para colocá-la no site ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}
   }
 
   $('dropZone').onclick=()=>$('galleryInput').click();
@@ -237,6 +350,9 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       $('backContentLink').href=`/admin/${q}`;
       $('mediaLink').href=`/admin/media.html${q}`;
       $('historyLink').href=`/admin/history.html${q}`;
+      $('structureLink').href=`/admin/structure.html${q}`;
+      $('themeLink').href=`/admin/theme.html${q}`;
+      $('templatesLink').href=`/admin/templates.html${q}`;
       $('teamLink').href=`/admin/team.html${q}`;
       $('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;
       $('siteLink').href=project.custom_domain
