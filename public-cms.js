@@ -53,6 +53,11 @@
     const flags=document.querySelector('.hero-flags');
     if(flags){flags.innerHTML='';flags.hidden=true}
     document.querySelectorAll('.ticker-group').forEach(g=>g.innerHTML='');
+
+    // Personal-only links from the original Gabriel shell never leak to clients.
+    document.querySelectorAll('a[href*="CV-Gabriel-Capellari.pdf"]').forEach(a=>a.hidden=true);
+    const portfolioSocial=document.querySelector('#portfolio .social-row');
+    if(portfolioSocial)portfolioSocial.hidden=true;
   }
 
   function renderHero(map,isTenant){

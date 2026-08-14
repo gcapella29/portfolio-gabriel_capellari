@@ -1,0 +1,6 @@
+# WebAppCap — deployment hygiene
+*.sql
+README-*.txt
+VALIDACAO-*.json
+supabase/
+draft-preview.js
