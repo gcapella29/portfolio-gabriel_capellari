@@ -2186,12 +2186,29 @@ button,a{touch-action:manipulation;}
     const name = document.querySelector('.hero-name');
     if (name && c.name_html) name.innerHTML = c.name_html;
     if (role) role.textContent = pick(c,'role');
-    if (badge && c.location) badge.textContent = c.location;
+    if (badge) badge.textContent = c.location || '';
+
+    const flags=document.querySelector('.hero-flags');
+    if(flags){
+      if(Array.isArray(c.languages) && c.languages.length){
+        flags.innerHTML=c.languages.map(item=>{
+          const left=[item.flag,item.language].filter(Boolean).join(' ');
+          const text=item.level ? `${left} — ${item.level}` : left;
+          return `<span class="chip">${esc(text)}</span>`;
+        }).join('');
+        flags.hidden=false;
+      }else{
+        flags.innerHTML='';
+        flags.hidden=true;
+      }
+    }
 
     if (Array.isArray(c.ticker) && c.ticker.length) {
       document.querySelectorAll('.ticker-group').forEach(group => {
         group.innerHTML = c.ticker.map(x => `<span>${esc(x)}</span>`).join('');
       });
+    } else {
+      document.querySelectorAll('.ticker-group').forEach(group => group.innerHTML='');
     }
   }
 
