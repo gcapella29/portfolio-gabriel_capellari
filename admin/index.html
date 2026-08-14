@@ -334,6 +334,17 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
     $('saveButton').classList.toggle('hidden',!canEdit());
     $('publishButton').classList.toggle('hidden',!canPublish());
+    let clientPublishNotice=document.getElementById('clientPublishNotice');
+    if(myRole==='editor'){
+      if(!clientPublishNotice){
+        clientPublishNotice=document.createElement('div');
+        clientPublishNotice.id='clientPublishNotice';
+        clientPublishNotice.style.cssText='margin:.7rem 0;padding:.75rem .9rem;border:1px solid #ead9a0;background:#fff8df;border-radius:12px;font-size:.76rem;color:#6d5a1e;line-height:1.45';
+        clientPublishNotice.innerHTML='<strong>Rascunho salvo.</strong> A publicação final é feita pelo responsável WebAppCap após revisão.';
+        const main=document.querySelector('.main')||document.querySelector('main');
+        main?.prepend(clientPublishNotice);
+      }
+    }else if(clientPublishNotice){clientPublishNotice.remove();}
 
     host.querySelectorAll('input,textarea,select,button[data-add],button[data-remove]').forEach(el=>{
       if(isViewer()) el.disabled=true;
