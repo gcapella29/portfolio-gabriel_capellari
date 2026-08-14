@@ -679,6 +679,11 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     const {data,error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
     $('loginButton').disabled=false;$('loginButton').textContent='Entrar no painel';
     if(error){$('loginError').textContent='Não foi possível entrar. Verifique e-mail e senha.';return}
+    const next=new URLSearchParams(location.search).get('next');
+    if(next && next.startsWith('/admin/')){
+      location.replace(next);
+      return;
+    }
     openApp(data.user);
   };
 
@@ -702,7 +707,15 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     e.preventDefault();e.returnValue='';
   });
 
-  sb.auth.getSession().then(({data})=>{if(data.session?.user)openApp(data.session.user)});
+  sb.auth.getSession().then(({data})=>{
+    if(!data.session?.user)return;
+    const next=new URLSearchParams(location.search).get('next');
+    if(next && next.startsWith('/admin/')){
+      location.replace(next);
+      return;
+    }
+    openApp(data.session.user);
+  });
 })();
 </script>
 </body>
