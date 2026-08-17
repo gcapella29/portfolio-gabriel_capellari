@@ -4,11 +4,17 @@
   if (!cfg || !resolver) return;
 
   const route = resolver.fromLocation(window.location);
-  const resolved = route.slug;
   const isAdmin = route.isAdmin;
+  // Compatibility guard for older admin pages that still contain
+  // `context.slug || cfg.projectSlug`. A missing admin selection must never
+  // resolve to Gabriel, so legacy consumers receive an explicit non-project
+  // sentinel while modern consumers reject it through resolver.cleanSlug().
+  const NO_ADMIN_PROJECT = '__no_project_selected__';
+  const resolved = isAdmin && !route.slug ? NO_ADMIN_PROJECT : route.slug;
 
   window.VITRINE_PROJECT_CONTEXT = {
     slug: resolved,
+    hasProject: !!route.slug,
     defaultSlug: null,
     legacyPrimarySlug: cfg.projectSlug || null,
 
@@ -17,17 +23,24 @@
       if (!cleanSlug) return;
       localStorage.setItem('vitrine-current-project', cleanSlug);
       this.slug = cleanSlug;
+      this.hasProject = true;
     },
 
     clear() {
       localStorage.removeItem('vitrine-current-project');
       document.cookie = 'vitrine_project=; Max-Age=0; Path=/; SameSite=Lax';
-      this.slug = null;
+      this.slug = isAdmin ? NO_ADMIN_PROJECT : null;
+      this.hasProject = false;
+    },
+
+    selectedSlug() {
+      return this.hasProject ? resolver.cleanSlug(this.slug) : null;
     },
 
     withProject(path) {
       const url = new URL(path, window.location.origin);
-      if (this.slug) url.searchParams.set('project', this.slug);
+      const selected = this.selectedSlug();
+      if (selected) url.searchParams.set('project', selected);
       else url.searchParams.delete('project');
       return url.pathname + url.search + url.hash;
     }
@@ -41,7 +54,7 @@
     localStorage.removeItem('vitrine-current-project');
   }
 
-  if (!isAdmin && !resolved) {
+  if (!isAdmin && !route.slug) {
     if (window.location.pathname !== '/') window.location.replace('/');
     return;
   }
@@ -53,7 +66,8 @@
    * tenants therefore stay hidden until content/media/theme are applied.
    * This disappears when the public renderer becomes data-first.
    * ----------------------------------------------------- */
-  const isTenant = !isAdmin && resolved && resolved !== cfg.projectSlug;
+  const tenantSlug = route.slug;
+  const isTenant = !isAdmin && tenantSlug && tenantSlug !== cfg.projectSlug;
   if (!isTenant) return;
 
   const root = document.documentElement;
