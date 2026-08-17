@@ -50,9 +50,14 @@
     document.dispatchEvent(new CustomEvent('webappcap:data-error', { detail:error }));
   };
 
+  const canonicalType = (project, snapshot) => {
+    const templateKey = String(snapshot?.template?.content?.key || '').toLowerCase();
+    if (templateKey === 'fitness') return 'personal_trainer';
+    return schema?.normalizeType ? schema.normalizeType(project.site_type) : project.site_type;
+  };
+
   const load = async () => {
     if (!slug) throw new Error('Nenhum projeto foi informado para o renderer.');
-
     if (window.VITRINE_PROJECT_CONTEXT) window.VITRINE_PROJECT_CONTEXT.slug = slug;
 
     const projectQuery = client
@@ -67,16 +72,7 @@
     if (!project) throw new Error(isDraft
       ? 'Projeto não encontrado.'
       : 'Projeto não encontrado ou ainda não publicado.');
-
-    if (project.slug !== slug) {
-      throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
-    }
-
-    // One canonical project type for every consumer. Older projects created
-    // as "fitness" keep working as "personal_trainer" without data migration.
-    project.site_type = schema?.normalizeType
-      ? schema.normalizeType(project.site_type)
-      : project.site_type;
+    if (project.slug !== slug) throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
 
     let snapshot = {};
     if (isDraft) {
@@ -100,6 +96,8 @@
     if (!isDraft && Object.keys(snapshot).length === 0) {
       throw new Error('O projeto está publicado, mas ainda não possui conteúdo publicado.');
     }
+
+    project.site_type = canonicalType(project, snapshot);
 
     const result = {
       cfg, client, slug, isDraft, project, snapshot,
