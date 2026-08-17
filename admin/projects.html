@@ -17,7 +17,12 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 .form{display:grid;gap:.9rem}.help{font-size:.76rem;color:var(--muted);line-height:1.5}.empty{padding:1rem;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
 .toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.85rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.top,.project{flex-direction:column;align-items:stretch}.actions .btn{flex:1}}
-</style>
+
+.archive-tabs{display:flex;gap:.45rem;margin:.8rem 0 1rem}.archive-tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:.45rem .7rem;font:600 .64rem "IBM Plex Mono",monospace;cursor:pointer}.archive-tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+.project.archived{opacity:.78;background:#f5f2e9}.danger-link{color:#9b3e31!important;border-color:#e5c3bd!important}
+.life-menu{position:relative}.life-menu summary{list-style:none;cursor:pointer}.life-menu summary::-webkit-details-marker{display:none}.life-menu-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:20;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:.4rem;min-width:170px;display:grid;gap:.25rem}.life-menu-panel button{border:0;background:transparent;text-align:left;padding:.58rem .65rem;border-radius:8px;font:600 .64rem "IBM Plex Mono",monospace;cursor:pointer}.life-menu-panel button:hover{background:#f3f0e8}.life-menu-panel .danger{color:#9b3e31}
+.delete-confirm{position:fixed;inset:0;background:rgba(8,39,32,.64);z-index:30000;display:grid;place-items:center;padding:1rem}.delete-box{width:min(480px,100%);background:#fff;border-radius:18px;padding:1.2rem;box-shadow:0 30px 90px rgba(0,0,0,.28)}.delete-box h3{font-family:Fraunces,serif;margin:.1rem 0 .45rem}.delete-box p{color:var(--muted);font-size:.8rem;line-height:1.5}.delete-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
+
 <style>html.webappcap-route-checking body{visibility:hidden}</style>
 <script>document.documentElement.classList.add('webappcap-route-checking');</script>
 <link rel="stylesheet" href="/admin/ux.css">
@@ -31,7 +36,9 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 <main class="shell hidden" id="app">
 <header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">WEBAPPCAP · CMS</div><h1>Projetos</h1><p>Gerencie seus projetos e os projetos dos quais você faz parte. Cada projeto pode ter vários membros com permissões diferentes.</p></div><a class="btn ghost" href="/admin/">← Painel</a></header>
 <div class="grid">
-<section class="card"><h2 style="margin-top:0">Meus projetos</h2><div class="projects" id="projects"></div></section>
+<section class="card"><h2 style="margin-top:0">Meus projetos</h2>
+<div class="archive-tabs"><button class="archive-tab active" data-project-filter="active">Ativos</button><button class="archive-tab" data-project-filter="archived">Arquivados</button></div>
+<div class="projects" id="projects"></div></section>
 <aside class="card" id="createProjectCard"><h2 style="margin-top:0">Novo projeto</h2><form class="form" id="createForm">
 <div class="field"><label>Nome do projeto</label><input id="name" placeholder="Mariana Personal Trainer" required></div>
 <div class="field"><label>Slug</label><input id="slug" placeholder="mariana-personal" required pattern="[a-z0-9-]+"></div>
@@ -47,7 +54,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 <script>
 (() => {
  const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
- let user=null,isPlatformOwner=false;const $=id=>document.getElementById(id);
+ let user=null,isPlatformOwner=false,allProjects=[],projectFilter='active';const $=id=>document.getElementById(id);
  function toast(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2200)}
  function slugify(v){return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
  $('name').oninput=()=>{if(!$('slug').dataset.edited)$('slug').value=slugify($('name').value)};
@@ -58,29 +65,45 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
    isPlatformOwner=defaultProject.data?.owner_id===user.id;
    $('createProjectCard').style.display=isPlatformOwner?'block':'none';
 
-   const q=await sb.rpc('vitrine_my_projects');
+   const q=await sb.rpc('webappcap_my_projects',{include_archived:true});
    if(q.error){console.error(q.error);toast(q.error.message||'Não foi possível carregar os projetos.');return}
-   const projects=q.data||[];
+   allProjects=q.data||[];
+   renderProjects();
+ }
 
-   if(!projects.length){
-     $('projects').innerHTML='<div class="empty">Sua conta ainda não possui acesso a nenhum projeto.</div>';
+
+ function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
+
+ function renderProjects(){
+   document.querySelectorAll('[data-project-filter]').forEach(b=>b.classList.toggle('active',b.dataset.projectFilter===projectFilter));
+   const list=allProjects.filter(p=>projectFilter==='archived'?!!p.archived_at:!p.archived_at);
+   if(!list.length){
+     $('projects').innerHTML=`<div class="empty">${projectFilter==='archived'?'Nenhum projeto arquivado.':'Sua conta ainda não possui projetos ativos.'}</div>`;
      return;
    }
 
-   $('projects').innerHTML=projects.map(p=>`
-     <article class="project">
+   $('projects').innerHTML=list.map(p=>`
+     <article class="project ${p.archived_at?'archived':''}">
        <div class="meta">
-         <h3>${p.name}</h3>
-         <span>${p.slug}</span>
-         <div class="type">${p.site_type||'portfolio'} · ${p.role}</div>
+         <h3>${esc(p.name)}</h3>
+         <span>${esc(p.slug)}</span>
+         <div class="type">${esc(p.site_type||'portfolio')} · ${esc(p.role)}${p.archived_at?' · ARQUIVADO':''}${p.is_system?' · PROTEGIDO':''}</div>
        </div>
        <div class="actions">
-         <button class="btn gold" data-open="${p.slug}">Gerenciar</button>
-         ${p.role==='owner'
+         ${!p.archived_at?`<button class="btn gold" data-open="${esc(p.slug)}">Gerenciar</button>`:''}
+         ${!p.archived_at&&p.role==='owner'
            ? `<a class="btn ghost" href="/admin/team.html?project=${encodeURIComponent(p.slug)}">Equipe</a><a class="btn ghost" href="/admin/domains.html?project=${encodeURIComponent(p.slug)}">Domínio</a>`
            : ''}
-         <a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a>
-         <a class="btn ghost" href="${p.custom_domain?`https://${p.custom_domain}/`:(p.slug===cfg.projectSlug?'/':`/p/${encodeURIComponent(p.slug)}`)}" target="_blank" title="Abrir o site deste projeto">Site</a>
+         ${!p.archived_at?`<a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a>`:''}
+         ${p.role==='owner'&&!p.is_system?`
+         <details class="life-menu">
+           <summary class="btn ghost">•••</summary>
+           <div class="life-menu-panel">
+             ${p.archived_at
+               ? `<button data-restore="${p.id}">Restaurar</button><button class="danger" data-delete="${p.id}">Excluir permanentemente</button>`
+               : `<button data-archive="${p.id}">Arquivar projeto</button>`}
+           </div>
+         </details>`:''}
        </div>
      </article>`).join('');
 
@@ -88,7 +111,69 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
      window.VITRINE_PROJECT_CONTEXT.set(b.dataset.open);
      location.href=`/admin/dashboard.html?project=${encodeURIComponent(b.dataset.open)}`;
    });
+   $('projects').querySelectorAll('[data-archive]').forEach(b=>b.onclick=()=>archiveProject(b.dataset.archive));
+   $('projects').querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>restoreProject(b.dataset.restore));
+   $('projects').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteProject(b.dataset.delete));
  }
+
+ async function lifecycle(action,project,confirmation=''){
+   const r=await sb.functions.invoke('project-lifecycle',{body:{action,project_id:project.id,confirmation}});
+   if(r.error)throw r.error;
+   if(r.data?.error)throw new Error(r.data.error);
+   return r.data;
+ }
+
+ async function archiveProject(id){
+   const p=allProjects.find(x=>x.id===id);if(!p)return;
+   const ok=await window.WebAppCapUX.confirm({
+     title:'Arquivar projeto?',
+     message:`${esc(p.name)} ficará fora da lista de ativos e o site deixará de ser publicado. Você poderá restaurá-lo depois.`,
+     confirmText:'Arquivar projeto',
+     danger:true
+   });
+   if(!ok)return;
+   try{await lifecycle('archive',p);toast('Projeto arquivado ✓');await load()}
+   catch(e){console.error(e);toast(window.WebAppCapUX?.friendlyError(e)||e.message)}
+ }
+
+ async function restoreProject(id){
+   const p=allProjects.find(x=>x.id===id);if(!p)return;
+   try{await lifecycle('restore',p);toast('Projeto restaurado ✓');await load()}
+   catch(e){console.error(e);toast(window.WebAppCapUX?.friendlyError(e)||e.message)}
+ }
+
+ async function deleteProject(id){
+   const p=allProjects.find(x=>x.id===id);if(!p)return;
+   const overlay=document.createElement('div');
+   overlay.className='delete-confirm';
+   overlay.innerHTML=`<div class="delete-box">
+     <div class="sub" style="color:var(--danger)">EXCLUSÃO PERMANENTE</div>
+     <h3>Excluir ${esc(p.name)}?</h3>
+     <p>Esta operação remove definitivamente conteúdo, rascunhos, histórico, membros, plano comercial e arquivos de mídia. Não poderá ser desfeita.</p>
+     <p>Digite <strong>${esc(p.slug)}</strong> para confirmar:</p>
+     <input id="deleteProjectConfirm" autocomplete="off" placeholder="${esc(p.slug)}">
+     <div class="delete-actions"><button class="btn ghost" data-cancel>Cancelar</button><button class="btn danger" data-confirm disabled>Excluir permanentemente</button></div>
+   </div>`;
+   document.body.appendChild(overlay);
+   const input=overlay.querySelector('#deleteProjectConfirm');
+   const confirm=overlay.querySelector('[data-confirm]');
+   input.oninput=()=>confirm.disabled=input.value!==p.slug;
+   overlay.querySelector('[data-cancel]').onclick=()=>overlay.remove();
+   confirm.onclick=async()=>{
+     confirm.disabled=true;confirm.textContent='Excluindo…';
+     try{
+       await lifecycle('delete',p,input.value);
+       overlay.remove();toast('Projeto excluído permanentemente ✓');await load();
+     }catch(e){
+       console.error(e);confirm.disabled=false;confirm.textContent='Excluir permanentemente';
+       toast(window.WebAppCapUX?.friendlyError(e)||e.message);
+     }
+   };
+ }
+
+ document.querySelectorAll('[data-project-filter]').forEach(b=>b.onclick=()=>{
+   projectFilter=b.dataset.projectFilter;renderProjects();
+ });
 
  $('createForm').onsubmit=async e=>{
    e.preventDefault();if(!isPlatformOwner){toast('Sua conta não pode criar novos projetos.');return;}const name=$('name').value.trim(),slug=$('slug').value.trim(),site_type=$('type').value;if(!name||!slug)return;
