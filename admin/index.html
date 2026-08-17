@@ -85,9 +85,9 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 <body>
 <section class="login-wrap" id="loginView">
   <div class="login">
-    <h1>Vitrine <em>Pro</em></h1>
+    <h1>WebApp<em>Cap</em></h1>
     <p style="color:var(--muted);line-height:1.55">
-      Fase 5: edite em rascunho, visualize antes e publique quando estiver pronto.
+      Gerencie seus projetos, revise alterações e publique quando estiver pronto.
     </p>
     <form class="form" id="loginForm">
       <div class="field"><label for="email">E-mail</label><input id="email" type="email" autocomplete="username" required></div>
@@ -100,7 +100,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
 <div class="shell hidden" id="appView">
   <aside class="sidebar">
-    <div><div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · CMS</div></div>
+    <div><div class="brand">WebApp<em>Cap</em></div><div class="sub">CMS · PROJETOS</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="sidebar-bottom">
       <div class="email" id="userEmail"></div>
@@ -265,7 +265,8 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     badge.classList.toggle('clean',!flag);
     badge.textContent=flag?'Alterações não salvas':'Rascunho salvo';
     $('saveHint').textContent=flag?'Existem alterações locais não salvas.':'Rascunho salvo no Supabase.';
-  ;window.WebAppCapUX?.markDirty(!!flag=true)}
+    window.WebAppCapUX?.markDirty(!!flag);
+  }
 
   function deepClone(v){return JSON.parse(JSON.stringify(v));}
 
@@ -671,7 +672,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
       markDirty(false);renderNav();renderEditor();applyRoleUI();
     }catch(e){
       console.error(e);$('statusText').textContent='Erro de conexão';
-      notify('Execute o SQL da Fase 4 antes de usar este painel.');
+      notify(e?.message ? `Erro ao carregar projeto: ${e.message}` : 'Não foi possível carregar este projeto.');
     }
   }
 
