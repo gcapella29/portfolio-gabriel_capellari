@@ -1,27 +1,11 @@
 (() => {
-  if (!window.supabase || !window.VITRINE_SUPABASE) return;
+  if (!window.supabase || !window.VITRINE_SUPABASE || !window.WebAppCapTenantResolver) return;
 
   const cfg = window.VITRINE_SUPABASE;
+  const resolver = window.WebAppCapTenantResolver;
   const host = location.hostname.toLowerCase();
 
-  /*
-   * Domínios principais:
-   * - deployment original da Vercel
-   * - domínio oficial WebAppCap
-   * - www do domínio oficial
-   *
-   * Nesses hosts, NÃO usamos resolução multi-cliente.
-   * O index.html principal é exibido normalmente.
-   */
-  const primaryHosts = new Set([
-    'portfolio-gabriel-capellari.vercel.app',
-    'webappcap.com.br',
-    'www.webappcap.com.br',
-    'localhost',
-    '127.0.0.1'
-  ]);
-
-  if (primaryHosts.has(host) || host.endsWith('.vercel.app')) {
+  if (resolver.isPrimaryHost(host)) {
     document.documentElement.classList.remove('vitrine-domain-resolving');
     return;
   }
@@ -43,7 +27,6 @@
 
   const findProject = async () => {
     try {
-      // 1. Domínio próprio exato.
       let q = await sb.from('projects')
         .select('slug')
         .eq('custom_domain', host)
@@ -51,21 +34,19 @@
         .maybeSingle();
 
       if (q.error) throw q.error;
-      let slug = q.data?.slug;
+      let slug = resolver.cleanSlug(q.data?.slug);
 
-      // 2. Subdomínio wildcard.
       if (!slug) {
-        const firstLabel = host.split('.')[0];
-
-        if (firstLabel && firstLabel !== 'www') {
+        const subdomain = resolver.subdomainFromHost(host);
+        if (subdomain) {
           q = await sb.from('projects')
             .select('slug')
-            .eq('subdomain', firstLabel)
+            .eq('subdomain', subdomain)
             .eq('is_published', true)
             .maybeSingle();
 
           if (q.error) throw q.error;
-          slug = q.data?.slug;
+          slug = resolver.cleanSlug(q.data?.slug);
         }
       }
 
@@ -74,8 +55,9 @@
         return;
       }
 
-      // Mesma rota pública usada pelos projetos.
-      location.replace(`/p/${encodeURIComponent(slug)}`);
+      const path = resolver.publicPath(slug);
+      if (!path) throw new Error('Slug de projeto inválido.');
+      location.replace(path);
 
     } catch (error) {
       console.error('WebAppCap domain resolver', error);
