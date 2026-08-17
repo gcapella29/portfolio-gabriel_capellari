@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>WebAppCap Admin</title>
+<!-- WEBAPPCAP_INDEX_BUILD_9413_FINAL -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -377,8 +378,11 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     const templatesItem=canManageTemplates()
       ? `<a class="nav-link" href="/admin/templates.html${q}">Templates</a>`
       : '';
-    const newProjectItem='';
-const ownerPages=`
+    const newProjectItem=canCreateProject()
+      ? `
+`
+      : '';
+    const ownerPages=`
       <a class="nav-link" href="/admin/dashboard.html${q}">Dashboard</a>
       <a class="nav-link" href="/admin/plan.html${q}">Plano comercial</a>
       <a class="nav-link" href="/admin/media.html${q}">Fotos</a>
@@ -387,6 +391,7 @@ const ownerPages=`
       ${themeItem}
       ${templatesItem}
       <a class="nav-link" href="/admin/footer.html${q}">Rodapé</a>
+      
       ${teamItem}
       ${domainItem}
       <a class="nav-link" href="/admin/projects.html">Projetos</a>`;
