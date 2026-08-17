@@ -24,7 +24,15 @@
     },
     {
       "source": "/p/:slug",
-      "destination": "/site.html?project=:slug"
+      "destination": "/public-shell.html?project=:slug"
+    },
+    {
+      "source": "/preview.html",
+      "destination": "/public-shell.html"
+    },
+    {
+      "source": "/",
+      "destination": "/public-shell.html"
     }
   ],
   "headers": [
