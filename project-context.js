@@ -59,6 +59,12 @@
     return;
   }
 
+  /* Data-first shells start empty and reveal themselves through
+   * data-webappcap-state. They must never use the legacy tenant cloak. */
+  if (!isAdmin && document.documentElement.dataset.webappcapShell === 'data-first') {
+    return;
+  }
+
   /* -------------------------------------------------------
    * TENANT CLOAK (temporary compatibility layer)
    * -------------------------------------------------------
