@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Projetos — WebAppCap</title>
-<!-- WEBAPPCAP_PROJECTS_BUILD_9413_FINAL -->
+<!-- WEBAPPCAP_PROJECTS_BUILD_9413_CREATE_OWNER -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -60,7 +60,7 @@ h1,h2,h3{font-family:Fraunces,serif}.shell{max-width:1180px;margin:auto;padding:
   </div>
 </div>
 
-<div class="version">Projetos UI · 9.4.1.3b</div>
+<div class="version">Projetos UI · 9.4.1.3c</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
@@ -184,45 +184,31 @@ h1,h2,h3{font-family:Fraunces,serif}.shell{max-width:1180px;margin:auto;padding:
  $('createForm').onsubmit=async e=>{
    e.preventDefault();
    if(!isPlatformOwner){toast('Sua conta não pode criar projetos.','error');return}
-   const name=$('projectName').value.trim(),slug=$('projectSlug').value.trim(),site_type=$('projectType').value;
+   const name=$('projectName').value.trim();
+   const slug=$('projectSlug').value.trim();
+   const site_type=$('projectType').value;
    if(!name||!slug)return;
-   const btn=$('createButton');window.WebAppCapUX.setButtonBusy(btn,true,{busyText:'Criando…'});
+
+   const btn=$('createButton');
+   window.WebAppCapUX.setButtonBusy(btn,true,{busyText:'Criando…'});
+
    try{
-     const r=await sb.from('projects').insert({owner_id:user.id,name,slug,site_type,is_published:false}).select().single();
-     if(r.error)throw r.error;
-     const project=r.data;
+     const result=await sb.functions.invoke('create-project',{
+       body:{name,slug,site_type}
+     });
 
-     // Ensure Owner membership exists.
-     const mem=await sb.from('project_members').upsert({project_id:project.id,user_id:user.id,role:'owner'},{onConflict:'project_id,user_id'});
-     if(mem.error)console.warn('Membership:',mem.error.message);
+     if(result.error)throw result.error;
+     if(result.data?.error)throw new Error(result.data.error);
 
-     const snapshot={
-       hero:{content:{name_html:name,location:'',role_pt:'',role_en:'',ticker:[]},is_visible:true},
-       stats:{content:{items:[]},is_visible:true},
-       about:{content:{eyebrow_pt:'Sobre',eyebrow_en:'About',title_pt:'Sobre',title_en:'About',paragraph1_pt:'',paragraph1_en:'',paragraph2_pt:'',paragraph2_en:''},is_visible:true},
-       wsop:{content:{eyebrow_pt:'Destaque',eyebrow_en:'Featured',title_pt:'',title_en:'',description_pt:'',description_en:'',points:[]},is_visible:false},
-       coverage:{content:{eyebrow_pt:'Destaques',eyebrow_en:'Highlights',title_pt:'Projetos',title_en:'Projects',items:[]},is_visible:false},
-       portfolio:{content:{eyebrow_pt:'Portfólio',eyebrow_en:'Portfolio',title_pt:'Trabalhos',title_en:'Work',profile_name:name,bio_pt:'',bio_en:'',items:[]},is_visible:true},
-       experience:{content:{eyebrow_pt:'Experiência',eyebrow_en:'Experience',title_pt:'Experiência profissional',title_en:'Professional experience',items:[]},is_visible:true},
-       education:{content:{eyebrow_pt:'Formação',eyebrow_en:'Education',title_pt:'Formação & ferramentas',title_en:'Education & tools',skills_title_pt:'Ferramentas',skills_title_en:'Tools',items:[],skills:[]},is_visible:true},
-       instagram:{content:{eyebrow_pt:'Redes',eyebrow_en:'Social',title_pt:'Instagram',title_en:'Instagram',text_pt:'',text_en:'',user:'',reel_url:''},is_visible:false},
-       contact:{content:{title_pt:'Contato',title_en:'Contact',email1:'',email2:'',whatsapp_number:'',whatsapp_display:'',instagram_user:'',linkedin_url:''},is_visible:true},
-       media:{content:{hero_url:'',hero_path:'',hero_position:'center center',hero_fit:'cover',hero_x:50,hero_y:50,hero_zoom:1,about_url:'',about_path:'',about_alt:name,about_position:'top center',about_fit:'cover',about_x:50,about_y:0,about_zoom:1,contact_url:'',contact_path:'',contact_alt:name,contact_position:'center center',contact_fit:'cover',contact_x:50,contact_y:50,contact_zoom:1,wsop_gallery:[]},is_visible:true},
-       seo:{content:{title_pt:name,title_en:name,description_pt:'',description_en:'',canonical_url:'',og_image_url:'',schema_type:'Person'},is_visible:true}
-     };
-     const d=await sb.from('project_drafts').insert({project_id:project.id,snapshot,updated_by:user.id});
-     if(d.error)throw d.error;
+     closeCreate();
+     toast('Projeto criado ✓','success');
+     await load();
 
-     // New projects start on Pro / implementation. Limits are already enforced centrally.
-     const commercial=await sb.from('project_commercial').upsert({
-       project_id:project.id,plan_code:'pro',status:'trial',billing_cycle:'manual',
-       price_cents:null,currency:'BRL',
-       limits:{client_users:1,custom_domain:true,templates:true,advanced_theme:true,media_gallery:20},
-       updated_by:user.id,updated_at:new Date().toISOString()
-     },{onConflict:'project_id'});
-     if(commercial.error)console.warn('Commercial:',commercial.error.message);
-
-     closeCreate();toast('Projeto criado ✓','success');await load();
+     const created=result.data?.project;
+     if(created?.slug){
+       window.VITRINE_PROJECT_CONTEXT?.set?.(created.slug);
+       location.href=`/admin/dashboard.html?project=${encodeURIComponent(created.slug)}`;
+     }
    }catch(err){
      console.error(err);
      toast(window.WebAppCapUX.friendlyError(err),'error');
