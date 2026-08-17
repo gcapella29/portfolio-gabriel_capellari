@@ -3,8 +3,14 @@
   if (!window.supabase || !window.VITRINE_SUPABASE) return;
 
   const cfg = window.VITRINE_SUPABASE;
-  const slug = window.VITRINE_PROJECT_CONTEXT?.slug || null;
   const params = new URLSearchParams(location.search);
+  const querySlug = params.get('project')?.trim() || null;
+  const pathSlug = location.pathname.match(/^\/p\/([a-z0-9-]+)\/?$/i)?.[1] || null;
+  const contextSlug = window.VITRINE_PROJECT_CONTEXT?.slug || null;
+
+  // Public route is authoritative. This prevents stale context/config values
+  // from ever selecting a different customer's project.
+  const slug = querySlug || pathSlug || contextSlug || null;
   const isDraft = params.get('preview') === 'draft';
 
   const client = window.WebAppCapSupabase || (
@@ -44,6 +50,11 @@
       throw new Error('Nenhum projeto foi informado para o renderer.');
     }
 
+    // Keep context synchronized with the actual route selected above.
+    if (window.VITRINE_PROJECT_CONTEXT) {
+      window.VITRINE_PROJECT_CONTEXT.slug = slug;
+    }
+
     const projectQuery = client
       .from('projects')
       .select('id,slug,name,site_type,subdomain,custom_domain,is_published,owner_id')
@@ -56,6 +67,11 @@
     if (!project) throw new Error(isDraft
       ? 'Projeto não encontrado.'
       : 'Projeto não encontrado ou ainda não publicado.');
+
+    // Defense in depth: a route must never render data from another slug.
+    if (project.slug !== slug) {
+      throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
+    }
 
     let snapshot = {};
     if (isDraft) {
