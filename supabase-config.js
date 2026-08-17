@@ -1,11 +1,12 @@
 window.VITRINE_SUPABASE = Object.freeze({
   url: "https://ownoyzpjiqbzgaeaoyzl.supabase.co",
   publishableKey: "sb_publishable_q1UwNCcinl7S6KN-oCU1rA_99_17BXw",
-  // Legacy identity only. Never use this as an implicit tenant fallback.
+  // Primary public entry only. Never use this as a generic tenant fallback.
   projectSlug: "gabriel-capellari"
 });
 
 window.WebAppCapTenantResolver = Object.freeze({
+  primaryProjectSlug: 'gabriel-capellari',
   primaryHosts: Object.freeze([
     'portfolio-gabriel-capellari.vercel.app',
     'webappcap.com.br',
@@ -24,11 +25,15 @@ window.WebAppCapTenantResolver = Object.freeze({
     const querySlug = this.cleanSlug(params.get('project'));
     const pathMatch = loc.pathname.match(/^\/p\/([a-z0-9-]+)\/?$/i);
     const pathSlug = this.cleanSlug(pathMatch?.[1]);
+    const isPrimaryRoot = !admin && loc.pathname === '/' && this.isPrimaryHost(loc.hostname);
+    const rootSlug = isPrimaryRoot ? this.primaryProjectSlug : null;
 
     return {
-      slug: admin ? querySlug : (querySlug || pathSlug || null),
+      slug: admin ? querySlug : (querySlug || pathSlug || rootSlug || null),
       querySlug,
       pathSlug,
+      rootSlug,
+      isPrimaryRoot,
       isAdmin: admin
     };
   },
