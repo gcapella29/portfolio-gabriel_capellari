@@ -17,15 +17,19 @@
       is_active:row.is_active!==false
     };
   }
+  async function queryDatabase(sb){
+    const q=await sb.from('platform_templates').select('key,name,site_type,description,visual,color,chips,layout,theme,version,is_active').eq('is_active',true).order('key');
+    if(q.error)throw q.error;
+    return q.data||[];
+  }
   async function load(sb,{refresh=false}={}){
     if(cache&&!refresh)return clone(cache);
     const fallback=window.WebAppCapTemplateRegistry?.all?.()||{};
     if(!sb){cache=fallback;source='static';return clone(cache)}
     try{
-      const q=await sb.from('platform_templates').select('key,name,site_type,description,visual,color,chips,layout,theme,version,is_active').eq('is_active',true).order('key');
-      if(q.error)throw q.error;
-      if(!q.data?.length){cache=fallback;source='static-empty-db';return clone(cache)}
-      cache=Object.fromEntries(q.data.map(r=>{const t=normalize(r);return[t.key,t]}));
+      const rows=await queryDatabase(sb);
+      if(!rows.length){cache=fallback;source='static-empty-db';return clone(cache)}
+      cache=Object.fromEntries(rows.map(r=>{const t=normalize(r);return[t.key,t]}));
       source='database';
       return clone(cache);
     }catch(e){
@@ -34,14 +38,14 @@
     }
   }
   async function seedIfEmpty(sb,userId){
-    const current=await load(sb,{refresh:true});
-    if(source==='database')return{seeded:false,source};
     try{
-      const rows=Object.values(window.WebAppCapTemplateRegistry.all()).map(t=>({...t,description:t.description||'',version:1,is_active:true,updated_by:userId}));
-      const q=await sb.from('platform_templates').upsert(rows,{onConflict:'key'});
+      const existing=await queryDatabase(sb);
+      if(existing.length){await load(sb,{refresh:true});return{seeded:false,source:'database',count:existing.length}}
+      const rows=Object.values(window.WebAppCapTemplateRegistry.all()).map(t=>({...t,description:t.description||'',version:Number(t.version)||1,is_active:true,updated_by:userId}));
+      const q=await sb.from('platform_templates').upsert(rows,{onConflict:'key'}).select('key');
       if(q.error)throw q.error;
       await load(sb,{refresh:true});
-      return{seeded:true,source};
+      return{seeded:true,source,count:q.data?.length||rows.length};
     }catch(e){return{seeded:false,source,error:e}}
   }
   async function save(sb,template,userId){
