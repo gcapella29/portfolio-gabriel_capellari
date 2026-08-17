@@ -179,6 +179,12 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
   const defaults = {
     hero:{name_html:'Gabriel<br><em>Capellari</em>',location:'IBITINGA · SP · BR',role_pt:'JORNALISTA DE POKER · REPÓRTER DE TORNEIOS AO VIVO · REDATOR SEO · APRENDIZ .·.',role_en:'POKER JOURNALIST · LIVE TOURNAMENT REPORTER · SEO WRITER · LEARNER .·.',ticker:['WSOP LAS VEGAS','WSOP BRASIL','BSOP MILLIONS','LAPT PANAMÁ','BSOP/LAPT RIO','LAPT MONTEVIDÉU','WPT WORLD CHAMPIONSHIP']},
+    fitness_videos:{eyebrow_pt:'Em movimento',eyebrow_en:'In motion',title_pt:'Treino na prática',title_en:'Training in action',subtitle_pt:'Conheça meu trabalho em vídeos curtos.',subtitle_en:'See my work in short videos.',items:[
+      {title_pt:'',title_en:'',url:'',path:'',kind:''},
+      {title_pt:'',title_en:'',url:'',path:'',kind:''},
+      {title_pt:'',title_en:'',url:'',path:'',kind:''}
+    ]},
+    fitness_schedule:{eyebrow_pt:'Agenda',eyebrow_en:'Schedule',title_pt:'Horários disponíveis',title_en:'Available times',subtitle_pt:'Consulte os horários e fale comigo para reservar.',subtitle_en:'Check available times and contact me to book.',cta_label_pt:'Quero reservar um horário',cta_label_en:'Book a time',schedule_url:'',slots:[]},
     stats:{items:[
       {num:'4+',label_pt:'anos de cobertura de poker ao vivo',label_en:'years covering live poker'},
       {num:'4',label_pt:'países cobertos — Brasil · EUA · Panamá · Uruguai',label_en:'countries covered — Brazil · USA · Panama · Uruguay'},
@@ -272,7 +278,11 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     window.WebAppCapUX?.markDirty(!!flag);
   }
 
-  function deepClone(v){return JSON.parse(JSON.stringify(v));}
+  function deepClone(v){
+    if(v===undefined)return {};
+    if(v===null)return null;
+    return JSON.parse(JSON.stringify(v));
+  }
 
   function fieldValue(content,key){
     if(sharedKeys.includes(key)) return content?.[key]??'';
@@ -671,9 +681,16 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
       $('statusText').textContent='Modo rascunho ativo';
       const ctx=window.VITRINE_PROJECT_CONTEXT;
       $('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(project.slug)}`;
-      $('publishedLink').href=project.custom_domain
-        ? `https://${project.custom_domain}/`
-        : (project.slug===ctx.defaultSlug ? '/' : `/p/${encodeURIComponent(project.slug)}`);
+      const primaryDomains=new Set(['webappcap.com.br','www.webappcap.com.br']);
+      const customHost=String(project.custom_domain||'').toLowerCase().replace(/^https?:\/\//,'').replace(/\/$/,'');
+      $('publishedLink').href=
+        project.slug===ctx.defaultSlug
+          ? '/'
+          : (customHost && !primaryDomains.has(customHost))
+            ? `https://${customHost}/`
+            : project.subdomain
+              ? `https://${project.subdomain}.webappcap.com.br/`
+              : `/site.html?project=${encodeURIComponent(project.slug)}`;
       markDirty(false);renderNav();renderEditor();applyRoleUI();
     }catch(e){
       console.error(e);$('statusText').textContent='Erro de conexão';
