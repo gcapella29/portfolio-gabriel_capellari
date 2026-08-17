@@ -1,10 +1,14 @@
 (() => {
   if (window.WebAppCapData?.ready) return;
-  if (!window.supabase || !window.VITRINE_SUPABASE) return;
+  if (!window.supabase || !window.VITRINE_SUPABASE || !window.WebAppCapTenantResolver) return;
 
   const cfg = window.VITRINE_SUPABASE;
-  const slug = window.VITRINE_PROJECT_CONTEXT?.slug || cfg.projectSlug;
+  const resolver = window.WebAppCapTenantResolver;
+  const schema = window.WebAppCapProjectSchema;
   const params = new URLSearchParams(location.search);
+  const route = resolver.fromLocation(window.location, { admin:false });
+  const contextSlug = resolver.cleanSlug(window.VITRINE_PROJECT_CONTEXT?.slug);
+  const slug = route.slug || contextSlug || null;
   const isDraft = params.get('preview') === 'draft';
 
   const client = window.WebAppCapSupabase || (
@@ -39,7 +43,23 @@
     ])
   );
 
+  const failClosed = error => {
+    document.documentElement.dataset.webappcapState = 'error';
+    document.documentElement.removeAttribute('data-webappcap-project');
+    if (typeof window.WebAppCapTenantFail === 'function') window.WebAppCapTenantFail(error);
+    document.dispatchEvent(new CustomEvent('webappcap:data-error', { detail:error }));
+  };
+
+  const canonicalType = (project, snapshot) => {
+    const templateKey = String(snapshot?.template?.content?.key || '').toLowerCase();
+    if (templateKey === 'fitness') return 'personal_trainer';
+    return schema?.normalizeType ? schema.normalizeType(project.site_type) : project.site_type;
+  };
+
   const load = async () => {
+    if (!slug) throw new Error('Nenhum projeto foi informado para o renderer.');
+    if (window.VITRINE_PROJECT_CONTEXT) window.VITRINE_PROJECT_CONTEXT.slug = slug;
+
     const projectQuery = client
       .from('projects')
       .select('id,slug,name,site_type,subdomain,custom_domain,is_published,owner_id')
@@ -52,6 +72,7 @@
     if (!project) throw new Error(isDraft
       ? 'Projeto não encontrado.'
       : 'Projeto não encontrado ou ainda não publicado.');
+    if (project.slug !== slug) throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
 
     let snapshot = {};
     if (isDraft) {
@@ -72,6 +93,12 @@
       snapshot = rowsToSnapshot(rows);
     }
 
+    if (!isDraft && Object.keys(snapshot).length === 0) {
+      throw new Error('O projeto está publicado, mas ainda não possui conteúdo publicado.');
+    }
+
+    project.site_type = canonicalType(project, snapshot);
+
     const result = {
       cfg, client, slug, isDraft, project, snapshot,
       contentMap: snapshotToMap(snapshot)
@@ -79,7 +106,9 @@
 
     window.WebAppCapData.data = result;
     document.documentElement.dataset.webappcapProject = slug;
+    document.documentElement.dataset.webappcapProjectType = project.site_type || '';
     document.documentElement.dataset.webappcapMode = isDraft ? 'draft' : 'published';
+    document.documentElement.dataset.webappcapState = 'ready';
     document.dispatchEvent(new CustomEvent('webappcap:data-ready', { detail: result }));
     return result;
   };
@@ -88,7 +117,7 @@
     data: null,
     ready: load().catch(error => {
       window.WebAppCapData.error = error;
-      document.dispatchEvent(new CustomEvent('webappcap:data-error', { detail:error }));
+      failClosed(error);
       throw error;
     })
   };
