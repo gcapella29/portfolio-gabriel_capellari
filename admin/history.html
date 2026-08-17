@@ -46,12 +46,12 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
    $('list').innerHTML=q.data.map((v,i)=>`<article class="version"><div class="meta"><strong>${v.label||'Versão publicada'}</strong><span>${new Date(v.created_at).toLocaleString('pt-BR')} · ${Object.keys(v.snapshot||{}).length} seções</span></div><div class="actions">${['owner','admin'].includes(myRole)?`<button class="btn ghost" data-restore="${v.id}">Restaurar como rascunho</button>`:''}</div></article>`).join('');
    $('list').querySelectorAll('[data-restore]').forEach(btn=>btn.onclick=async()=>{
      const version=q.data.find(v=>v.id===btn.dataset.restore);if(!version)return;
-     if(!confirm('Substituir o rascunho atual por esta versão? O site público não será alterado até você publicar.'))return;
+     const ok=await window.WebAppCapUX.confirm({title:'Restaurar esta versão?',message:'O rascunho atual será substituído por esta versão. O site público não muda até uma nova publicação.',confirmText:'Restaurar versão',danger:true});if(!ok)return;
      const u=await sb.from('project_drafts').upsert({project_id:project.id,snapshot:version.snapshot,updated_by:user.id,updated_at:new Date().toISOString()},{onConflict:'project_id'});if(u.error){toast('Erro ao restaurar');return}
      toast('Versão restaurada como rascunho ✓');
    });
  }
- async function open(u){user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');try{project=await projectForUser();const mr=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',user.id).maybeSingle();myRole=mr.data?.role||null;const slug=project.slug;$('contentLink').href=`/admin/?project=${encodeURIComponent(slug)}`;$('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;$('teamLink').href=`/admin/team.html?project=${encodeURIComponent(slug)}`;await load()}catch(e){console.error(e);toast('Execute a migração da Fase 4.')}}
+ async function open(u){user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');try{project=await projectForUser();const mr=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',user.id).maybeSingle();myRole=mr.data?.role||null;const slug=project.slug;$('contentLink').href=`/admin/?project=${encodeURIComponent(slug)}`;$('previewLink').href=`/preview.html?preview=draft&project=${encodeURIComponent(slug)}`;$('teamLink').href=`/admin/team.html?project=${encodeURIComponent(slug)}`;await load()}catch(e){console.error(e);toast(e?.message||'Não foi possível carregar o histórico.')}}
  $('loginForm').onsubmit=async e=>{e.preventDefault();const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(r.error){$('err').textContent='E-mail ou senha inválidos.';return}open(r.data.user)};
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();

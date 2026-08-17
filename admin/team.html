@@ -83,7 +83,7 @@ async function loadProject(){
    }
    $('members').innerHTML=q.data.map(m=>`<article class="member"><div class="meta"><strong>${m.email||'Usuário'}</strong><span>${m.user_id===user.id?'Você · ':''}${new Date(m.created_at).toLocaleDateString('pt-BR')}</span><div class="role">${m.role}</div></div><div class="actions">${canManage&&m.role!=='owner'&&m.user_id!==user.id?`<select data-role="${m.user_id}" style="padding:.55rem;border:1px solid var(--line);border-radius:9px"><option ${m.role==='admin'?'selected':''} value="admin">Admin</option><option ${m.role==='editor'?'selected':''} value="editor">Cliente</option><option ${m.role==='viewer'?'selected':''} value="viewer">Visualizador</option></select><button class="btn danger" data-remove="${m.user_id}">Remover</button>`:''}</div></article>`).join('');
    $('members').querySelectorAll('[data-role]').forEach(sel=>sel.onchange=()=>memberAction('update_role',sel.dataset.role,sel.value));
-   $('members').querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>{if(confirm('Remover esta pessoa do projeto?'))memberAction('remove',btn.dataset.remove)});
+   $('members').querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>memberAction('remove',btn.dataset.remove));
  }
  async function invoke(body){
   if(body?.action==='invite' && ['editor','viewer'].includes(body.role||'editor')){

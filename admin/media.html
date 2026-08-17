@@ -40,7 +40,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 <body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a>
 <section class="login-wrap" id="loginView">
   <div class="login">
-    <h1>Vitrine <em>Pro</em></h1>
+    <h1>WebApp<em>Cap</em></h1>
     <p class="help">Entre com o mesmo usuário administrador do painel.</p>
     <form id="loginForm" style="display:grid;gap:1rem;margin-top:1rem">
       <div class="field"><label>E-mail</label><input id="email" type="email" required></div>
@@ -53,7 +53,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
 <div class="shell hidden" id="app">
   <aside class="sidebar">
-    <div class="brand">Vitrine <em>Pro</em></div><div class="sub">CMS · CMS · Enquadramento avançado</div>
+    <div class="brand">WebApp<em>Cap</em></div><div class="sub">CMS · MÍDIA</div>
     <div class="side-links">
       <a id="contentLink" href="/admin/">Conteúdo</a>
       <a class="active" id="mediaLink" href="/admin/media.html">Fotos</a>
@@ -293,7 +293,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
 
     document.querySelectorAll('[data-reset]').forEach(btn=>btn.onclick=async()=>{
       const key=btn.dataset.reset,old=content[`${key}_path`];
-      if(!confirm('Voltar à imagem original?'))return;
+      const ok=await window.WebAppCapUX.confirm({title:'Restaurar imagem original?',message:'A imagem personalizada deste bloco será removida do rascunho.',confirmText:'Restaurar original',danger:true});if(!ok)return;
       content[`${key}_url`]='';content[`${key}_path`]='';
       try{await save();if(old&&myRole!=='editor')await remove(old).catch(()=>{});render();notify('Imagem original restaurada ✓')}catch(e){notify('Erro ao restaurar')}
     });
@@ -335,7 +335,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
     });
     document.querySelectorAll('[data-move]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id),j=i+Number(btn.dataset.move);if(j<0||j>=g.length)return;[g[i],g[j]]=[g[j],g[i]];g.forEach((x,k)=>x.order=k);content.wsop_gallery=g;try{await save();renderGallery();notify('Ordem atualizada ✓')}catch(e){notify('Erro ao reordenar')}});
     document.querySelectorAll('[data-replace]').forEach(inp=>inp.onchange=async()=>{const x=g.find(v=>v.id===inp.dataset.replace),file=inp.files?.[0];if(!x||!file)return;const old=x.path;try{const u=await upload(file,'wsop');x.url=u.url;x.path=u.path;content.wsop_gallery=g;await save();if(old&&myRole!=='editor')await remove(old).catch(()=>{});renderGallery();notify('Foto substituída no rascunho — publique para colocá-la no site ✓')}catch(e){notify(e.message||'Erro no upload')}});
-    document.querySelectorAll('[data-del]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id);if(i<0||!confirm('Excluir esta foto?'))return;const [x]=g.splice(i,1);g.forEach((v,k)=>v.order=k);content.wsop_gallery=g;try{await save();if(x.path)await remove(x.path).catch(()=>{});renderGallery();notify('Foto excluída ✓')}catch(e){notify('Erro ao excluir')}});
+    document.querySelectorAll('[data-del]').forEach(btn=>btn.onclick=async()=>{const i=g.findIndex(x=>x.id===btn.dataset.id);if(i<0)return;const ok=await window.WebAppCapUX.confirm({title:'Excluir foto?',message:'A foto será removida do rascunho. O site público só muda após a publicação.',confirmText:'Excluir foto',danger:true});if(!ok)return;const [x]=g.splice(i,1);g.forEach((v,k)=>v.order=k);content.wsop_gallery=g;try{await save();if(x.path)await remove(x.path).catch(()=>{});renderGallery();notify('Foto excluída ✓')}catch(e){notify('Erro ao excluir')}});
   }
 
   async function addGallery(file){

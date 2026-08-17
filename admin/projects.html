@@ -59,7 +59,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
    $('createProjectCard').style.display=isPlatformOwner?'block':'none';
 
    const q=await sb.rpc('vitrine_my_projects');
-   if(q.error){toast('Execute o hotfix SQL da Fase 6.');return}
+   if(q.error){console.error(q.error);toast(q.error.message||'Não foi possível carregar os projetos.');return}
    const projects=q.data||[];
 
    if(!projects.length){

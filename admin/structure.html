@@ -318,8 +318,8 @@ h1,h2{font-family:Fraunces,serif}.btn{border:0;border-radius:999px;padding:.72re
  }
 
 
- $('resetButton').onclick=()=>{
-   if(!confirm('Restaurar a ordem e os layouts padrão desta página?'))return;
+ $('resetButton').onclick=async()=>{
+   const ok=await window.WebAppCapUX.confirm({title:'Restaurar estrutura padrão?',message:'A ordem e os layouts atuais do rascunho serão substituídos.',confirmText:'Restaurar estrutura',danger:true});if(!ok)return;
    modules=definitions.map((d,i)=>({
      key:d.key,
      visible:true,

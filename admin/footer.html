@@ -42,7 +42,7 @@ input{padding:.85rem;border:1px solid var(--line);border-radius:10px;font:inheri
  const params=new URLSearchParams(location.search),slug=params.get('project')||cfg.projectSlug;
  $('back').href=`/admin/?project=${encodeURIComponent(slug)}`;
  const toast=m=>{$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)};
- const {data:{session}}=await sb.auth.getSession();if(!session){location.href='/admin/';return}
+ const {data:{session}}=await sb.auth.getSession();if(!session){const next=location.pathname+location.search;location.href='/admin/?next='+encodeURIComponent(next);return}
  const {data:project,error:pe}=await sb.from('projects').select('id,name').eq('slug',slug).maybeSingle();
  if(pe||!project){toast('Projeto não encontrado');return}
  const {data:draft}=await sb.from('project_drafts').select('snapshot').eq('project_id',project.id).maybeSingle();
