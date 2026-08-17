@@ -1,208 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>WebAppCap — Projetos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--dark:#082720;--felt:#0e3b2e;--paper:#f7f4ec;--ink:#171310;--gold:#e3bb3d;--muted:#728078;--line:#ded8c8;--danger:#a83c2e;--shadow:0 18px 55px rgba(8,39,32,.11)}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}.hidden{display:none!important}
-.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(145deg,var(--dark),var(--felt));padding:1rem}.login-card{width:min(430px,100%);background:#fff;padding:2rem;border-radius:22px}
-h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font:600 .66rem "IBM Plex Mono",monospace;color:var(--muted);text-transform:uppercase}.field input,.field select{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px;background:#fff}
-.btn{border:0;border-radius:999px;padding:.72rem .92rem;font:600 .68rem "IBM Plex Mono",monospace;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.gold{background:var(--gold);color:var(--dark)}.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.danger{background:#fff;border:1px solid #e4c0ba;color:var(--danger)}
-.shell{max-width:1150px;margin:auto;padding:2rem 1rem 4rem}.top{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1.5rem}.top h1{font-size:clamp(2.2rem,5vw,3.4rem);margin:0}.top p{color:var(--muted);max-width:65ch}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:1.2rem}.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:1.1rem;box-shadow:var(--shadow)}.projects{display:grid;gap:.8rem}.project{border:1px solid var(--line);border-radius:14px;padding:1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}.meta h3{margin:0 0 .28rem}.meta span{font:500 .68rem "IBM Plex Mono",monospace;color:var(--muted)}.actions{display:flex;gap:.45rem;flex-wrap:wrap}.type{display:inline-flex;margin-top:.45rem;padding:.3rem .5rem;border-radius:999px;background:#f2efe6;font-size:.7rem;color:var(--muted)}
-.form{display:grid;gap:.9rem}.help{font-size:.76rem;color:var(--muted);line-height:1.5}.empty{padding:1rem;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
-.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.85rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
-@media(max-width:850px){.grid{grid-template-columns:1fr}.top,.project{flex-direction:column;align-items:stretch}.actions .btn{flex:1}}
-
-.archive-tabs{display:flex;gap:.45rem;margin:.8rem 0 1rem}.archive-tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:.45rem .7rem;font:600 .64rem "IBM Plex Mono",monospace;cursor:pointer}.archive-tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-.project.archived{opacity:.78;background:#f5f2e9}.danger-link{color:#9b3e31!important;border-color:#e5c3bd!important}
-.life-menu{position:relative}.life-menu summary{list-style:none;cursor:pointer}.life-menu summary::-webkit-details-marker{display:none}.life-menu-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:20;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:.4rem;min-width:170px;display:grid;gap:.25rem}.life-menu-panel button{border:0;background:transparent;text-align:left;padding:.58rem .65rem;border-radius:8px;font:600 .64rem "IBM Plex Mono",monospace;cursor:pointer}.life-menu-panel button:hover{background:#f3f0e8}.life-menu-panel .danger{color:#9b3e31}
-.delete-confirm{position:fixed;inset:0;background:rgba(8,39,32,.64);z-index:30000;display:grid;place-items:center;padding:1rem}.delete-box{width:min(480px,100%);background:#fff;border-radius:18px;padding:1.2rem;box-shadow:0 30px 90px rgba(0,0,0,.28)}.delete-box h3{font-family:Fraunces,serif;margin:.1rem 0 .45rem}.delete-box p{color:var(--muted);font-size:.8rem;line-height:1.5}.delete-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem}
-
-<style>html.webappcap-route-checking body{visibility:hidden}</style>
-<script>document.documentElement.classList.add('webappcap-route-checking');</script>
+<title>Projetos — WebAppCap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/admin/ux.css">
+<style>
+:root{--dark:#082720;--felt:#0e3b2e;--paper:#f7f4ec;--ink:#171310;--gold:#e3bb3d;--muted:#728078;--line:#ded8c8;--danger:#a83c2e;--shadow:0 18px 55px rgba(8,39,32,.10)}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,sans-serif}.hidden{display:none!important}
+h1,h2,h3{font-family:Fraunces,serif}.shell{max-width:1180px;margin:auto;padding:2rem 1rem 5rem}
+.top{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1.4rem}.top h1{font-size:clamp(2.5rem,6vw,4.5rem);margin:.15rem 0}.top p{color:var(--muted);max-width:680px;line-height:1.55}
+.kicker{font:600 .64rem "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.06em}.actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn{border:0;border-radius:999px;padding:.74rem .95rem;font:600 .67rem "IBM Plex Mono",monospace;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.gold{background:var(--gold);color:var(--dark)}.dark{background:var(--dark);color:#fff}.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.danger-btn{background:#fff;border:1px solid #e4c0ba;color:var(--danger)}
+.toolbar{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1rem}.tabs{display:flex;gap:.45rem}.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:.48rem .72rem;font:600 .64rem "IBM Plex Mono",monospace;cursor:pointer}.tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
+.projects{display:grid;gap:.8rem}.project{background:#fff;border:1px solid var(--line);border-radius:17px;padding:1rem 1.05rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:var(--shadow)}
+.project.archived{background:#f3f0e8;opacity:.85}.meta h3{margin:0 0 .28rem;font-size:1.25rem}.slug{font:500 .66rem "IBM Plex Mono",monospace;color:var(--muted)}.badges{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.45rem}.badge{padding:.3rem .48rem;border-radius:999px;background:#f2efe6;font-size:.68rem;color:var(--muted)}.badge.protected{background:#e8f1ec;color:#245f46}.badge.archived{background:#fff0d2;color:#7d5810}
+.project-actions{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap}.empty{background:#fff;border:1px dashed var(--line);border-radius:17px;padding:2rem;text-align:center;color:var(--muted)}
+.life{position:relative}.life summary{list-style:none}.life summary::-webkit-details-marker{display:none}.life-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:50;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 55px rgba(8,39,32,.16);padding:.4rem;min-width:185px;display:grid;gap:.2rem}.life-panel button{border:0;background:transparent;text-align:left;padding:.6rem .65rem;border-radius:8px;font:600 .63rem "IBM Plex Mono",monospace;cursor:pointer}.life-panel button:hover{background:#f2efe6}.life-panel .danger{color:var(--danger)}
+.modal-back{position:fixed;inset:0;background:rgba(8,39,32,.63);backdrop-filter:blur(5px);display:grid;place-items:center;padding:1rem;z-index:25000}.modal{width:min(560px,100%);max-height:calc(100vh - 2rem);overflow:auto;background:var(--paper);border-radius:20px;border:1px solid var(--line);padding:1.25rem;box-shadow:0 35px 100px rgba(0,0,0,.28)}.modal h2{font-size:2rem;margin:.1rem 0 .35rem}.modal p{color:var(--muted);font-size:.8rem;line-height:1.5}.form{display:grid;gap:.85rem;margin-top:1rem}.field{display:grid;gap:.38rem}.field label{font:600 .61rem "IBM Plex Mono",monospace;text-transform:uppercase;color:var(--muted)}.field input,.field select{width:100%;padding:.8rem .85rem;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit}.modal-actions{display:flex;justify-content:flex-end;gap:.5rem;margin-top:1rem}
+.version{position:fixed;left:10px;bottom:8px;font:500 .52rem "IBM Plex Mono",monospace;color:rgba(114,128,120,.55)}
+@media(max-width:760px){.top,.project,.toolbar{flex-direction:column;align-items:stretch}.project-actions .btn{flex:1}.toolbar .actions{width:100%}.toolbar .actions .btn{flex:1}.tabs{overflow:auto}.life-panel{left:0;right:auto}.modal-actions{flex-direction:column-reverse}.modal-actions .btn{width:100%}}
+</style>
 </head>
 <body>
-<section class="login" id="loginView"><div class="login-card">
-<h1 style="margin:0">Vitrine <span style="color:#c9a227">Pro</span></h1><p class="help">Entre para gerenciar seus projetos.</p>
-<form id="loginForm" class="form"><div class="field"><label>E-mail</label><input id="email" type="email" required></div><div class="field"><label>Senha</label><input id="password" type="password" required></div><div id="err" style="color:var(--danger);font-size:.8rem"></div><button class="btn gold">Entrar</button></form>
-</div></section>
-
 <main class="shell hidden" id="app">
-<header class="top"><div><div style="font:600 .65rem 'IBM Plex Mono',monospace;color:var(--muted)">WEBAPPCAP · CMS</div><h1>Projetos</h1><p>Gerencie seus projetos e os projetos dos quais você faz parte. Cada projeto pode ter vários membros com permissões diferentes.</p></div><a class="btn ghost" href="/admin/">← Painel</a></header>
-<div class="grid">
-<section class="card"><h2 style="margin-top:0">Meus projetos</h2>
-<div class="archive-tabs"><button class="archive-tab active" data-project-filter="active">Ativos</button><button class="archive-tab" data-project-filter="archived">Arquivados</button></div>
-<div class="projects" id="projects"></div></section>
-<aside class="card" id="createProjectCard"><h2 style="margin-top:0">Novo projeto</h2><form class="form" id="createForm">
-<div class="field"><label>Nome do projeto</label><input id="name" placeholder="Mariana Personal Trainer" required></div>
-<div class="field"><label>Slug</label><input id="slug" placeholder="mariana-personal" required pattern="[a-z0-9-]+"></div>
-<div class="field"><label>Tipo</label><select id="type"><option value="portfolio">Portfólio profissional</option><option value="personal_trainer">Personal trainer</option><option value="language_teacher">Professor de idiomas</option><option value="local_business">Comércio local</option><option value="journalist">Jornalista</option><option value="other">Outro</option></select></div>
-<div class="help">O novo projeto nasce com estrutura vazia baseada no CMS atual. Depois você pode preencher pelo painel.</div>
-<button class="btn gold">Criar projeto</button>
-</form></aside>
+<header class="top">
+  <div><div class="kicker">WEBAPPCAP · GESTÃO</div><h1>Projetos</h1><p>Crie, organize e gerencie todos os sites em um único lugar. Projetos arquivados podem ser restaurados ou excluídos definitivamente.</p></div>
+  <div class="actions"><a class="btn ghost" href="/admin/">← Painel</a></div>
+</header>
+
+<div class="toolbar">
+  <div class="tabs">
+    <button class="tab active" data-filter="active">Ativos <span id="activeCount"></span></button>
+    <button class="tab" data-filter="archived">Arquivados <span id="archivedCount"></span></button>
+  </div>
+  <div class="actions"><button class="btn gold hidden" id="newProjectButton">+ Novo projeto</button></div>
 </div>
+
+<section class="projects" id="projects"></section>
 </main>
-<div class="toast" id="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script>
-<script src="/admin/route-guard.js"></script><script src="../project-context.js"></script>
+
+<div class="modal-back hidden" id="newProjectModal">
+  <div class="modal">
+    <div class="kicker">NOVO PROJETO</div>
+    <h2>Criar projeto</h2>
+    <p>O projeto nasce como rascunho, não publicado, no plano Pro em implantação.</p>
+    <form class="form" id="createForm">
+      <div class="field"><label>Nome do projeto</label><input id="projectName" placeholder="Mariana Personal Trainer" required></div>
+      <div class="field"><label>Slug</label><input id="projectSlug" placeholder="mariana-personal-trainer" required pattern="[a-z0-9-]+"></div>
+      <div class="field"><label>Tipo</label><select id="projectType"><option value="portfolio">Portfólio profissional</option><option value="personal_trainer">Personal trainer</option><option value="language_teacher">Professor de idiomas</option><option value="local_business">Comércio local</option><option value="journalist">Jornalista</option><option value="other">Outro</option></select></div>
+      <div class="modal-actions"><button class="btn ghost" type="button" data-close-create>Cancelar</button><button class="btn gold" id="createButton">Criar projeto</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="version">Projetos UI · 9.4.1.3b</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script src="../project-context.js"></script>
+<script src="/admin/ux.js"></script>
 <script>
-(() => {
- const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
- let user=null,isPlatformOwner=false,allProjects=[],projectFilter='active';const $=id=>document.getElementById(id);
- function toast(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2200)}
- function slugify(v){return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
- $('name').oninput=()=>{if(!$('slug').dataset.edited)$('slug').value=slugify($('name').value)};
- $('slug').oninput=()=>{$('slug').dataset.edited='1';$('slug').value=slugify($('slug').value)};
+(async()=>{
+ const cfg=window.VITRINE_SUPABASE;
+ const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
+ const $=id=>document.getElementById(id);
+ let user=null,allProjects=[],filter='active',isPlatformOwner=false;
 
- async function load(){
-   const defaultProject=await sb.from('projects').select('id,owner_id').eq('slug',cfg.projectSlug).maybeSingle();
-   isPlatformOwner=defaultProject.data?.owner_id===user.id;
-   $('createProjectCard').style.display=isPlatformOwner?'block':'none';
+ const esc=v=>String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+ const slugify=v=>v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 
-   const q=await sb.rpc('webappcap_my_projects',{include_archived:true});
-   if(q.error){console.error(q.error);toast(q.error.message||'Não foi possível carregar os projetos.');return}
-   allProjects=q.data||[];
-   renderProjects();
+ function toast(m,type='info'){window.WebAppCapUX?.toast(m,{type})}
+ function counts(){
+   $('activeCount').textContent=`(${allProjects.filter(p=>!p.archived_at).length})`;
+   $('archivedCount').textContent=`(${allProjects.filter(p=>p.archived_at).length})`;
  }
-
-
- function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
-
- function renderProjects(){
-   document.querySelectorAll('[data-project-filter]').forEach(b=>b.classList.toggle('active',b.dataset.projectFilter===projectFilter));
-   const list=allProjects.filter(p=>projectFilter==='archived'?!!p.archived_at:!p.archived_at);
+ function publicUrl(p){
+   if(p.custom_domain)return `https://${p.custom_domain}/`;
+   if(p.subdomain)return `https://${p.subdomain}.webappcap.com.br/`;
+   return p.slug===cfg.projectSlug?'/':`/p/${encodeURIComponent(p.slug)}`;
+ }
+ function render(){
+   counts();
+   document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+   const list=allProjects.filter(p=>filter==='archived'?!!p.archived_at:!p.archived_at);
    if(!list.length){
-     $('projects').innerHTML=`<div class="empty">${projectFilter==='archived'?'Nenhum projeto arquivado.':'Sua conta ainda não possui projetos ativos.'}</div>`;
+     $('projects').innerHTML=`<div class="empty">${filter==='archived'?'Nenhum projeto arquivado.':'Nenhum projeto ativo.'}</div>`;
      return;
    }
-
    $('projects').innerHTML=list.map(p=>`
-     <article class="project ${p.archived_at?'archived':''}">
-       <div class="meta">
-         <h3>${esc(p.name)}</h3>
-         <span>${esc(p.slug)}</span>
-         <div class="type">${esc(p.site_type||'portfolio')} · ${esc(p.role)}${p.archived_at?' · ARQUIVADO':''}${p.is_system?' · PROTEGIDO':''}</div>
-       </div>
-       <div class="actions">
-         ${!p.archived_at?`<button class="btn gold" data-open="${esc(p.slug)}">Gerenciar</button>`:''}
-         ${!p.archived_at&&p.role==='owner'
-           ? `<a class="btn ghost" href="/admin/team.html?project=${encodeURIComponent(p.slug)}">Equipe</a><a class="btn ghost" href="/admin/domains.html?project=${encodeURIComponent(p.slug)}">Domínio</a>`
-           : ''}
-         ${!p.archived_at?`<a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a>`:''}
-         ${p.role==='owner'&&!p.is_system?`
-         <details class="life-menu">
-           <summary class="btn ghost">•••</summary>
-           <div class="life-menu-panel">
-             ${p.archived_at
-               ? `<button data-restore="${p.id}">Restaurar</button><button class="danger" data-delete="${p.id}">Excluir permanentemente</button>`
-               : `<button data-archive="${p.id}">Arquivar projeto</button>`}
-           </div>
-         </details>`:''}
-       </div>
-     </article>`).join('');
+   <article class="project ${p.archived_at?'archived':''}">
+    <div class="meta">
+      <h3>${esc(p.name)}</h3>
+      <div class="slug">${esc(p.slug)}</div>
+      <div class="badges">
+        <span class="badge">${esc(p.site_type||'portfolio')}</span>
+        <span class="badge">${esc(p.role)}</span>
+        ${p.is_system?'<span class="badge protected">PROTEGIDO</span>':''}
+        ${p.archived_at?'<span class="badge archived">ARQUIVADO</span>':''}
+      </div>
+    </div>
+    <div class="project-actions">
+      ${!p.archived_at?`<button class="btn gold" data-open="${esc(p.slug)}">Gerenciar</button>`:''}
+      ${!p.archived_at?`<a class="btn ghost" href="/preview.html?preview=draft&project=${encodeURIComponent(p.slug)}" target="_blank">Preview</a>`:''}
+      ${!p.archived_at&&p.is_published?`<a class="btn ghost" href="${publicUrl(p)}" target="_blank">Site</a>`:''}
+      ${p.role==='owner'&&!p.is_system?`
+      <details class="life"><summary class="btn ghost">•••</summary><div class="life-panel">
+       ${p.archived_at
+        ? `<button data-restore="${p.id}">Restaurar projeto</button><button class="danger" data-delete="${p.id}">Excluir permanentemente</button>`
+        : `<button data-archive="${p.id}">Arquivar projeto</button>`}
+      </div></details>`:''}
+    </div>
+   </article>`).join('');
 
-   $('projects').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{
-     window.VITRINE_PROJECT_CONTEXT.set(b.dataset.open);
+   document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{
+     window.VITRINE_PROJECT_CONTEXT?.set?.(b.dataset.open);
      location.href=`/admin/dashboard.html?project=${encodeURIComponent(b.dataset.open)}`;
    });
-   $('projects').querySelectorAll('[data-archive]').forEach(b=>b.onclick=()=>archiveProject(b.dataset.archive));
-   $('projects').querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>restoreProject(b.dataset.restore));
-   $('projects').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteProject(b.dataset.delete));
+   document.querySelectorAll('[data-archive]').forEach(b=>b.onclick=()=>archiveProject(b.dataset.archive));
+   document.querySelectorAll('[data-restore]').forEach(b=>b.onclick=()=>restoreProject(b.dataset.restore));
+   document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteProject(b.dataset.delete));
  }
 
- async function lifecycle(action,project,confirmation=''){
-   const r=await sb.functions.invoke('project-lifecycle',{body:{action,project_id:project.id,confirmation}});
+ async function load(){
+   const q=await sb.rpc('webappcap_my_projects',{include_archived:true});
+   if(q.error)throw q.error;
+   allProjects=q.data||[];
+   const defaultProject=allProjects.find(p=>p.slug===cfg.projectSlug);
+   isPlatformOwner=defaultProject?.role==='owner';
+   $('newProjectButton').classList.toggle('hidden',!isPlatformOwner);
+   render();
+ }
+
+ async function lifecycle(action,p,confirmation=''){
+   const r=await sb.functions.invoke('project-lifecycle',{body:{action,project_id:p.id,confirmation}});
    if(r.error)throw r.error;
    if(r.data?.error)throw new Error(r.data.error);
-   return r.data;
  }
 
  async function archiveProject(id){
    const p=allProjects.find(x=>x.id===id);if(!p)return;
-   const ok=await window.WebAppCapUX.confirm({
-     title:'Arquivar projeto?',
-     message:`${esc(p.name)} ficará fora da lista de ativos e o site deixará de ser publicado. Você poderá restaurá-lo depois.`,
-     confirmText:'Arquivar projeto',
-     danger:true
-   });
+   const ok=await window.WebAppCapUX.confirm({title:'Arquivar projeto?',message:`"${p.name}" sairá da lista de ativos e ficará indisponível publicamente. Você poderá restaurá-lo depois.`,confirmText:'Arquivar',danger:true});
    if(!ok)return;
-   try{await lifecycle('archive',p);toast('Projeto arquivado ✓');await load()}
-   catch(e){console.error(e);toast(window.WebAppCapUX?.friendlyError(e)||e.message)}
+   try{await lifecycle('archive',p);toast('Projeto arquivado ✓','success');await load()}catch(e){toast(window.WebAppCapUX.friendlyError(e),'error')}
  }
-
  async function restoreProject(id){
    const p=allProjects.find(x=>x.id===id);if(!p)return;
-   try{await lifecycle('restore',p);toast('Projeto restaurado ✓');await load()}
-   catch(e){console.error(e);toast(window.WebAppCapUX?.friendlyError(e)||e.message)}
+   try{await lifecycle('restore',p);toast('Projeto restaurado ✓','success');await load()}catch(e){toast(window.WebAppCapUX.friendlyError(e),'error')}
  }
-
  async function deleteProject(id){
    const p=allProjects.find(x=>x.id===id);if(!p)return;
-   const overlay=document.createElement('div');
-   overlay.className='delete-confirm';
-   overlay.innerHTML=`<div class="delete-box">
-     <div class="sub" style="color:var(--danger)">EXCLUSÃO PERMANENTE</div>
-     <h3>Excluir ${esc(p.name)}?</h3>
-     <p>Esta operação remove definitivamente conteúdo, rascunhos, histórico, membros, plano comercial e arquivos de mídia. Não poderá ser desfeita.</p>
-     <p>Digite <strong>${esc(p.slug)}</strong> para confirmar:</p>
-     <input id="deleteProjectConfirm" autocomplete="off" placeholder="${esc(p.slug)}">
-     <div class="delete-actions"><button class="btn ghost" data-cancel>Cancelar</button><button class="btn danger" data-confirm disabled>Excluir permanentemente</button></div>
-   </div>`;
-   document.body.appendChild(overlay);
-   const input=overlay.querySelector('#deleteProjectConfirm');
-   const confirm=overlay.querySelector('[data-confirm]');
+   const wrap=document.createElement('div');
+   wrap.className='modal-back';
+   wrap.innerHTML=`<div class="modal"><div class="kicker" style="color:var(--danger)">EXCLUSÃO PERMANENTE</div><h2>Excluir ${esc(p.name)}?</h2><p>Conteúdo, rascunhos, histórico, membros, plano comercial e mídia serão removidos. Esta ação não pode ser desfeita.</p><div class="field"><label>Digite exatamente ${esc(p.slug)}</label><input id="deleteConfirmInput" autocomplete="off"></div><div class="modal-actions"><button class="btn ghost" data-cancel>Cancelar</button><button class="btn danger-btn" data-confirm disabled>Excluir permanentemente</button></div></div>`;
+   document.body.appendChild(wrap);
+   const input=wrap.querySelector('#deleteConfirmInput'),confirm=wrap.querySelector('[data-confirm]');
    input.oninput=()=>confirm.disabled=input.value!==p.slug;
-   overlay.querySelector('[data-cancel]').onclick=()=>overlay.remove();
+   wrap.querySelector('[data-cancel]').onclick=()=>wrap.remove();
    confirm.onclick=async()=>{
-     confirm.disabled=true;confirm.textContent='Excluindo…';
-     try{
-       await lifecycle('delete',p,input.value);
-       overlay.remove();toast('Projeto excluído permanentemente ✓');await load();
-     }catch(e){
-       console.error(e);confirm.disabled=false;confirm.textContent='Excluir permanentemente';
-       toast(window.WebAppCapUX?.friendlyError(e)||e.message);
-     }
+     window.WebAppCapUX.setButtonBusy(confirm,true,{busyText:'Excluindo…'});
+     try{await lifecycle('delete',p,input.value);wrap.remove();toast('Projeto excluído permanentemente ✓','success');await load()}
+     catch(e){toast(window.WebAppCapUX.friendlyError(e),'error');window.WebAppCapUX.setButtonBusy(confirm,false)}
    };
  }
 
- document.querySelectorAll('[data-project-filter]').forEach(b=>b.onclick=()=>{
-   projectFilter=b.dataset.projectFilter;renderProjects();
- });
+ function openCreate(){
+   $('createForm').reset();$('projectSlug').dataset.edited='';
+   $('newProjectModal').classList.remove('hidden');$('projectName').focus();
+ }
+ function closeCreate(){$('newProjectModal').classList.add('hidden')}
+ $('newProjectButton').onclick=openCreate;
+ document.querySelectorAll('[data-close-create]').forEach(b=>b.onclick=closeCreate);
+ $('newProjectModal').onclick=e=>{if(e.target===$('newProjectModal'))closeCreate()};
+ $('projectName').oninput=()=>{if(!$('projectSlug').dataset.edited)$('projectSlug').value=slugify($('projectName').value)};
+ $('projectSlug').oninput=()=>{$('projectSlug').dataset.edited='1';$('projectSlug').value=slugify($('projectSlug').value)};
 
  $('createForm').onsubmit=async e=>{
-   e.preventDefault();if(!isPlatformOwner){toast('Sua conta não pode criar novos projetos.');return;}const name=$('name').value.trim(),slug=$('slug').value.trim(),site_type=$('type').value;if(!name||!slug)return;
-   const r=await sb.from('projects').insert({owner_id:user.id,name,slug,site_type,is_published:true}).select().single();
-   if(r.error){toast(r.error.message.includes('duplicate')?'Esse slug já existe.':'Erro ao criar projeto.');return}
-   // Seed a draft with empty/general starting sections. Published content remains empty until first publish.
-   const snapshot={
-     hero:{content:{name_html:name,location:'',role_pt:'',role_en:'',ticker:[]},is_visible:true},
-     stats:{content:{items:[]},is_visible:true},
-     about:{content:{eyebrow_pt:'Sobre',eyebrow_en:'About',title_pt:'Sobre',title_en:'About',paragraph1_pt:'',paragraph1_en:'',paragraph2_pt:'',paragraph2_en:''},is_visible:true},
-     wsop:{content:{eyebrow_pt:'Destaque',eyebrow_en:'Featured',title_pt:'',title_en:'',description_pt:'',description_en:'',points:[]},is_visible:false},
-     coverage:{content:{eyebrow_pt:'Destaques',eyebrow_en:'Highlights',title_pt:'Projetos',title_en:'Projects',items:[]},is_visible:false},
-     portfolio:{content:{eyebrow_pt:'Portfólio',eyebrow_en:'Portfolio',title_pt:'Trabalhos',title_en:'Work',profile_name:name,bio_pt:'',bio_en:'',items:[]},is_visible:true},
-     experience:{content:{eyebrow_pt:'Experiência',eyebrow_en:'Experience',title_pt:'Experiência profissional',title_en:'Professional experience',items:[]},is_visible:true},
-     education:{content:{eyebrow_pt:'Formação',eyebrow_en:'Education',title_pt:'Formação & ferramentas',title_en:'Education & tools',skills_title_pt:'Ferramentas',skills_title_en:'Tools',items:[],skills:[]},is_visible:true},
-     instagram:{content:{eyebrow_pt:'Redes',eyebrow_en:'Social',title_pt:'Instagram',title_en:'Instagram',text_pt:'',text_en:'',user:'',reel_url:''},is_visible:false},
-     contact:{content:{title_pt:'Contato',title_en:'Contact',email1:'',email2:'',whatsapp_number:'',whatsapp_display:'',instagram_user:'',linkedin_url:''},is_visible:true},
-     media:{content:{hero_url:'',hero_path:'',hero_position:'center center',about_url:'',about_path:'',about_alt:name,about_position:'top center',contact_url:'',contact_path:'',contact_alt:name,contact_position:'center center',wsop_gallery:[]},is_visible:true},
-     seo:{content:{title_pt:name,title_en:name,description_pt:'',description_en:'',canonical_url:'',og_image_url:'',schema_type:'Person'},is_visible:true}
-   };
-   const d=await sb.from('project_drafts').insert({project_id:r.data.id,snapshot,updated_by:user.id});
-   if(d.error){toast('Projeto criado, mas houve erro ao criar o rascunho.');return}
-   toast('Projeto criado ✓');$('createForm').reset();$('slug').dataset.edited='';load();
+   e.preventDefault();
+   if(!isPlatformOwner){toast('Sua conta não pode criar projetos.','error');return}
+   const name=$('projectName').value.trim(),slug=$('projectSlug').value.trim(),site_type=$('projectType').value;
+   if(!name||!slug)return;
+   const btn=$('createButton');window.WebAppCapUX.setButtonBusy(btn,true,{busyText:'Criando…'});
+   try{
+     const r=await sb.from('projects').insert({owner_id:user.id,name,slug,site_type,is_published:false}).select().single();
+     if(r.error)throw r.error;
+     const project=r.data;
+
+     // Ensure Owner membership exists.
+     const mem=await sb.from('project_members').upsert({project_id:project.id,user_id:user.id,role:'owner'},{onConflict:'project_id,user_id'});
+     if(mem.error)console.warn('Membership:',mem.error.message);
+
+     const snapshot={
+       hero:{content:{name_html:name,location:'',role_pt:'',role_en:'',ticker:[]},is_visible:true},
+       stats:{content:{items:[]},is_visible:true},
+       about:{content:{eyebrow_pt:'Sobre',eyebrow_en:'About',title_pt:'Sobre',title_en:'About',paragraph1_pt:'',paragraph1_en:'',paragraph2_pt:'',paragraph2_en:''},is_visible:true},
+       wsop:{content:{eyebrow_pt:'Destaque',eyebrow_en:'Featured',title_pt:'',title_en:'',description_pt:'',description_en:'',points:[]},is_visible:false},
+       coverage:{content:{eyebrow_pt:'Destaques',eyebrow_en:'Highlights',title_pt:'Projetos',title_en:'Projects',items:[]},is_visible:false},
+       portfolio:{content:{eyebrow_pt:'Portfólio',eyebrow_en:'Portfolio',title_pt:'Trabalhos',title_en:'Work',profile_name:name,bio_pt:'',bio_en:'',items:[]},is_visible:true},
+       experience:{content:{eyebrow_pt:'Experiência',eyebrow_en:'Experience',title_pt:'Experiência profissional',title_en:'Professional experience',items:[]},is_visible:true},
+       education:{content:{eyebrow_pt:'Formação',eyebrow_en:'Education',title_pt:'Formação & ferramentas',title_en:'Education & tools',skills_title_pt:'Ferramentas',skills_title_en:'Tools',items:[],skills:[]},is_visible:true},
+       instagram:{content:{eyebrow_pt:'Redes',eyebrow_en:'Social',title_pt:'Instagram',title_en:'Instagram',text_pt:'',text_en:'',user:'',reel_url:''},is_visible:false},
+       contact:{content:{title_pt:'Contato',title_en:'Contact',email1:'',email2:'',whatsapp_number:'',whatsapp_display:'',instagram_user:'',linkedin_url:''},is_visible:true},
+       media:{content:{hero_url:'',hero_path:'',hero_position:'center center',hero_fit:'cover',hero_x:50,hero_y:50,hero_zoom:1,about_url:'',about_path:'',about_alt:name,about_position:'top center',about_fit:'cover',about_x:50,about_y:0,about_zoom:1,contact_url:'',contact_path:'',contact_alt:name,contact_position:'center center',contact_fit:'cover',contact_x:50,contact_y:50,contact_zoom:1,wsop_gallery:[]},is_visible:true},
+       seo:{content:{title_pt:name,title_en:name,description_pt:'',description_en:'',canonical_url:'',og_image_url:'',schema_type:'Person'},is_visible:true}
+     };
+     const d=await sb.from('project_drafts').insert({project_id:project.id,snapshot,updated_by:user.id});
+     if(d.error)throw d.error;
+
+     // New projects start on Pro / implementation. Limits are already enforced centrally.
+     const commercial=await sb.from('project_commercial').upsert({
+       project_id:project.id,plan_code:'pro',status:'trial',billing_cycle:'manual',
+       price_cents:null,currency:'BRL',
+       limits:{client_users:1,custom_domain:true,templates:true,advanced_theme:true,media_gallery:20},
+       updated_by:user.id,updated_at:new Date().toISOString()
+     },{onConflict:'project_id'});
+     if(commercial.error)console.warn('Commercial:',commercial.error.message);
+
+     closeCreate();toast('Projeto criado ✓','success');await load();
+   }catch(err){
+     console.error(err);
+     toast(window.WebAppCapUX.friendlyError(err),'error');
+   }finally{
+     window.WebAppCapUX.setButtonBusy(btn,false);
+   }
  };
 
- async function open(u){user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');load()}
- $('loginForm').onsubmit=async e=>{e.preventDefault();const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(r.error){$('err').textContent='E-mail ou senha inválidos.';return}open(r.data.user)};
- sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
+ document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;render()});
+
+ const session=(await sb.auth.getSession()).data.session;
+ if(!session){location.replace('/admin/?next='+encodeURIComponent('/admin/projects.html'));return}
+ user=session.user;
+ $('app').classList.remove('hidden');
+ try{await load()}catch(e){console.error(e);toast(window.WebAppCapUX.friendlyError(e),'error')}
 })();
 </script>
-<script src="/admin/ux.js"></script>
-</body></html>
+</body>
+</html>
