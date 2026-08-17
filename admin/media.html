@@ -85,7 +85,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
     </section>
 
     <section class="card">
-      <h2 style="font-family:Fraunces,serif;margin-top:0">Carrossel WSOP</h2>
+      <h2 style="font-family:Fraunces,serif;margin-top:0">Galeria editorial</h2>
       <p class="help">Ao adicionar a primeira foto aqui, o carrossel público passa a usar a galeria do CMS. Envie todas as fotos que deseja manter.</p>
       <label class="upload-zone" id="dropZone"><strong>+ Adicionar foto</strong><div class="help">JPG, PNG ou WebP · até 8 MB</div><input id="galleryInput" type="file" accept="image/*" hidden></label>
       <div class="gallery" id="gallery"></div>
@@ -343,7 +343,7 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       const max=Number(commercialPlan?.limits?.media_gallery??20);
       const current=(content.wsop_gallery||[]).length;
       if(current>=max)throw new Error(`Seu plano permite até ${max} fotos na galeria.`);
-      notify('Enviando…');const u=await upload(file,'wsop');const g=content.wsop_gallery||[];g.push({id:crypto.randomUUID(),path:u.path,url:u.url,year:'2025',caption:'WSOP Las Vegas',alt:'Cobertura da WSOP Las Vegas',position:'center center',fit:'contain',x:50,y:50,zoom:1,order:g.length});content.wsop_gallery=g;await save();renderGallery();notify('Foto adicionada ao rascunho — publique para colocá-la no site ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}
+      notify('Enviando…');const u=await upload(file,'wsop');const g=content.wsop_gallery||[];g.push({id:crypto.randomUUID(),path:u.path,url:u.url,year:'2025',caption:'Trabalho / cobertura',alt:'Imagem de trabalho ou cobertura',position:'center center',fit:'contain',x:50,y:50,zoom:1,order:g.length});content.wsop_gallery=g;await save();renderGallery();notify('Foto adicionada ao rascunho — publique para colocá-la no site ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}
   }
 
   $('dropZone').onclick=()=>$('galleryInput').click();
