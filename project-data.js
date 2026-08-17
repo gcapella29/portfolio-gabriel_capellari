@@ -1,16 +1,13 @@
 (() => {
   if (window.WebAppCapData?.ready) return;
-  if (!window.supabase || !window.VITRINE_SUPABASE) return;
+  if (!window.supabase || !window.VITRINE_SUPABASE || !window.WebAppCapTenantResolver) return;
 
   const cfg = window.VITRINE_SUPABASE;
+  const resolver = window.WebAppCapTenantResolver;
   const params = new URLSearchParams(location.search);
-  const querySlug = params.get('project')?.trim() || null;
-  const pathSlug = location.pathname.match(/^\/p\/([a-z0-9-]+)\/?$/i)?.[1] || null;
-  const contextSlug = window.VITRINE_PROJECT_CONTEXT?.slug || null;
-
-  // Public route is authoritative. This prevents stale context/config values
-  // from ever selecting a different customer's project.
-  const slug = querySlug || pathSlug || contextSlug || null;
+  const route = resolver.fromLocation(window.location, { admin:false });
+  const contextSlug = resolver.cleanSlug(window.VITRINE_PROJECT_CONTEXT?.slug);
+  const slug = route.slug || contextSlug || null;
   const isDraft = params.get('preview') === 'draft';
 
   const client = window.WebAppCapSupabase || (
@@ -48,24 +45,14 @@
   const failClosed = error => {
     document.documentElement.dataset.webappcapState = 'error';
     document.documentElement.removeAttribute('data-webappcap-project');
-
-    // Never reveal the legacy static shell after a tenant/data failure.
-    if (typeof window.WebAppCapTenantFail === 'function') {
-      window.WebAppCapTenantFail(error);
-    }
-
+    if (typeof window.WebAppCapTenantFail === 'function') window.WebAppCapTenantFail(error);
     document.dispatchEvent(new CustomEvent('webappcap:data-error', { detail:error }));
   };
 
   const load = async () => {
-    if (!slug) {
-      throw new Error('Nenhum projeto foi informado para o renderer.');
-    }
+    if (!slug) throw new Error('Nenhum projeto foi informado para o renderer.');
 
-    // Keep context synchronized with the actual route selected above.
-    if (window.VITRINE_PROJECT_CONTEXT) {
-      window.VITRINE_PROJECT_CONTEXT.slug = slug;
-    }
+    if (window.VITRINE_PROJECT_CONTEXT) window.VITRINE_PROJECT_CONTEXT.slug = slug;
 
     const projectQuery = client
       .from('projects')
@@ -80,7 +67,6 @@
       ? 'Projeto não encontrado.'
       : 'Projeto não encontrado ou ainda não publicado.');
 
-    // Defense in depth: a route must never render data from another slug.
     if (project.slug !== slug) {
       throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
     }
@@ -104,8 +90,6 @@
       snapshot = rowsToSnapshot(rows);
     }
 
-    // A published tenant with zero content is not a valid render target.
-    // Failing here is safer than ever exposing the legacy Gabriel shell.
     if (!isDraft && Object.keys(snapshot).length === 0) {
       throw new Error('O projeto está publicado, mas ainda não possui conteúdo publicado.');
     }
