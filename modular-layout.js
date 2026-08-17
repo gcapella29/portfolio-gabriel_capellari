@@ -12,6 +12,8 @@
 
   const moduleMap = {
     ticker: () => document.querySelector('.ticker-wrap'),
+    fitness_videos: () => document.getElementById('fitness-videos'),
+    fitness_schedule: () => document.getElementById('fitness-schedule'),
     stats: () => document.getElementById('destaques'),
     about: () => document.getElementById('sobre'),
     wsop: () => document.getElementById('wsop-featured'),
@@ -227,6 +229,46 @@
           padding-top:4.5rem!important;
           padding-bottom:3.2rem!important;
         }
+      }
+
+
+      /* Personal Trainer Signature */
+      .fitness-wrap{width:min(var(--vp-content-width,1200px),calc(100% - 2rem));margin-inline:auto}
+      .fitness-videos{padding:clamp(2.8rem,6vw,5.5rem) 0;background:#101312;color:#fff}
+      .fitness-section-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(240px,.7fr);gap:1rem;align-items:end;margin-bottom:1.4rem}
+      .fitness-section-head h2{font-size:clamp(2.2rem,5vw,4.8rem);line-height:.95;margin:.35rem 0}
+      .fitness-section-head p{color:rgba(255,255,255,.62);max-width:38ch;justify-self:end}
+      .fitness-video-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+      .fitness-video-card{background:#191d1b;border:1px solid rgba(255,255,255,.09);border-radius:var(--vp-radius,22px);overflow:hidden}
+      .fitness-video-frame{aspect-ratio:9/16;max-height:560px;background:#080909;overflow:hidden}
+      .fitness-video-frame iframe,.fitness-video-frame video{width:100%;height:100%;border:0;object-fit:cover;display:block}
+      .fitness-video-title{padding:.8rem .9rem;font:700 .7rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.04em}
+
+      .fitness-schedule{padding:clamp(3rem,7vw,6rem) 0;background:var(--vp-accent,#d9ff43);color:#101312}
+      .fitness-schedule .fitness-wrap{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,1.4fr);gap:clamp(2rem,5vw,5rem);align-items:start}
+      .fitness-schedule h2{font-size:clamp(2.5rem,5.5vw,5rem);line-height:.92;margin:.35rem 0 .7rem;max-width:9ch}
+      .fitness-schedule-copy p{max-width:40ch;line-height:1.55}
+      .fitness-book-btn{display:inline-flex;margin-top:1rem;background:#101312;color:#fff!important;text-decoration:none;border-radius:999px;padding:.78rem 1rem;font:700 .68rem "IBM Plex Mono",monospace}
+      .fitness-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
+      .fitness-slot{background:rgba(255,255,255,.68);border:1px solid rgba(16,19,18,.12);border-radius:16px;padding:.9rem 1rem;display:grid;grid-template-columns:1fr auto;gap:.3rem .8rem;align-items:center}
+      .fitness-day{font:700 .65rem "IBM Plex Mono",monospace;text-transform:uppercase}
+      .fitness-slot strong{font-size:1.1rem}.fitness-slot small{grid-column:1/-1;color:#545a56}
+
+      [data-vitrine-module="stats"][data-vitrine-variant="fitness-proof"] .stat{background:#fff;border-radius:20px!important;border:1px solid rgba(20,22,21,.08)!important;box-shadow:0 14px 45px rgba(16,19,18,.08)}
+      [data-vitrine-module="about"][data-vitrine-variant="fitness-profile"] h2{font-size:clamp(2.5rem,5vw,5rem);line-height:.95}
+      [data-vitrine-module="coverage"][data-vitrine-variant="fitness-services"] .board-row{border-radius:18px!important;margin-bottom:.55rem;background:rgba(255,255,255,.06)}
+      [data-vitrine-module="wsop"][data-vitrine-variant="fitness-method"] h2{font-size:clamp(2.5rem,5vw,5rem)}
+      [data-vitrine-module="portfolio"][data-vitrine-variant="fitness-results"] .press-card{border-radius:22px!important}
+      [data-vitrine-module="experience"][data-vitrine-variant="fitness-experience"] .log-entry{border-left:3px solid var(--vp-accent,#d9ff43);padding-left:1.2rem!important}
+      [data-vitrine-module="contact"][data-vitrine-variant="fitness-contact"] h2{font-size:clamp(3rem,7vw,6.5rem);line-height:.9}
+
+      @media(max-width:760px){
+        .fitness-section-head,.fitness-schedule .fitness-wrap{grid-template-columns:1fr}
+        .fitness-section-head p{justify-self:start}
+        .fitness-video-grid{grid-template-columns:1fr;grid-auto-flow:column;grid-auto-columns:minmax(78vw,1fr);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.5rem}
+        .fitness-video-card{scroll-snap-align:start}
+        .fitness-video-frame{max-height:520px}
+        .fitness-slots{grid-template-columns:1fr}
       }
 
       @media(max-width:760px){

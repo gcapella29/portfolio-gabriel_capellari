@@ -227,6 +227,8 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 
   const defs = {
     hero:{title:'Hero',fields:[['name_html','Nome (HTML)','text'],['location','Localização','text'],['role','Cargo / posicionamento','textarea']],lists:[['languages','Idiomas habilitados',['flag','language','level']],['ticker','Faixa editorial / destaques',['value']]]},
+    fitness_videos:{title:'Vídeos',fields:[['eyebrow','Etiqueta','text'],['title','Título','text'],['subtitle','Subtítulo','textarea']]},
+    fitness_schedule:{title:'Agenda',fields:[['eyebrow','Etiqueta','text'],['title','Título','text'],['subtitle','Subtítulo','textarea'],['cta_label','Texto do botão','text'],['schedule_url','Link para agendamento','text']],lists:[['slots','Horários disponíveis',['day','time','note']]]},
     stats:{title:'Números',lists:[['items','Estatísticas',['num','label']]]},
     about:{title:'Sobre',fields:[['eyebrow','Etiqueta','text'],['title','Título','text'],['paragraph1','Primeiro parágrafo','textarea'],['paragraph2','Segundo parágrafo','textarea']]},
     wsop:{title:'Trabalho em destaque',fields:[['eyebrow','Etiqueta','text'],['title','Título','text'],['description','Descrição','textarea']],lists:[['points','Marcadores / fatos-chave',['value']]]},
@@ -245,14 +247,15 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     ]}
   };
 
-  const order=['hero','stats','about','wsop','coverage','portfolio','experience','education','instagram','contact','seo'];
+  const order=['hero','fitness_videos','fitness_schedule','stats','about','wsop','coverage','portfolio','experience','education','instagram','contact','seo'];
+  const activeOrder=()=>project?.site_type==='personal_trainer'?order:order.filter(k=>!['fitness_videos','fitness_schedule'].includes(k));
   let user=null, project=null, myRole=null, publishedSnapshot={}, draftSnapshot={}, currentKey='hero', locale='pt';
   let draftRow=null, localDirty=false;
 
   const $=id=>document.getElementById(id);
   const host=$('editorHost'), toast=$('toast');
   const localeKey=base=>`${base}_${locale}`;
-  const sharedKeys=['name_html','location','profile_name','user','reel_url','email1','email2','whatsapp_number','whatsapp_display','instagram_user','linkedin_url','canonical_url','og_image_url','schema_type'];
+  const sharedKeys=['name_html','location','profile_name','user','reel_url','email1','email2','whatsapp_number','whatsapp_display','instagram_user','linkedin_url','canonical_url','og_image_url','schema_type','schedule_url'];
 
   function notify(msg){
     toast.textContent=msg;toast.classList.add('show');
@@ -281,13 +284,13 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     markDirty();
   }
   function labelsFor(prop){
-    const m={num:'Número',label:'Legenda',event:'Evento',years:'Ano(s)',name:'Nome',desc:'Descrição',url:'URL',role:'Cargo',org:'Empresa / organização',note:'Descrição',degree:'Formação',institution:'Instituição / detalhes',value:'Item',flag:'Bandeira / emoji',language:'Idioma',level:'Nível'};
+    const m={num:'Número',label:'Legenda',event:'Serviço / especialidade',years:'Detalhe',name:'Nome',desc:'Descrição',url:'URL',role:'Cargo',org:'Empresa / organização',note:'Descrição',degree:'Formação',institution:'Instituição / detalhes',value:'Item',flag:'Bandeira / emoji',language:'Idioma',level:'Nível',day:'Dia',time:'Horário',note:'Observação'};
     return m[prop]||prop;
   }
   function h(value){return String(value??'').replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;')}
 
   function ensureSnapshotShape(snapshot){
-    for(const key of order){
+    for(const key of activeOrder()){
       if(!snapshot[key]){
         snapshot[key]={content:deepClone(defaults[key]),is_visible:true};
       }
@@ -362,7 +365,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   function renderNav(){
     const slug=project?.slug || window.VITRINE_PROJECT_CONTEXT?.slug || config.projectSlug;
     const q=`?project=${encodeURIComponent(slug)}`;
-    const sections=order.map(k=>`<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`).join('');
+    const sections=activeOrder().map(k=>`<button data-key="${k}" class="${k===currentKey?'active':''}">${defs[k].title}</button>`).join('');
     const teamItem=canManageTeam()
       ? `<a class="nav-link" href="/admin/team.html${q}">Equipe</a>`
       : '';

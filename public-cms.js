@@ -45,6 +45,10 @@
     switch(key){
       case 'hero':
         return nonEmpty(c.name_html);
+      case 'fitness_videos':
+        return Array.isArray(c.items)&&c.items.some(i=>nonEmpty(i?.url));
+      case 'fitness_schedule':
+        return Array.isArray(c.slots)&&c.slots.some(i=>nonEmpty(i?.day)||nonEmpty(i?.time));
       case 'stats':
         return Array.isArray(c.items) && c.items.some(i=>nonEmpty(i?.num)||nonEmpty(i?.label_pt)||nonEmpty(i?.label_en));
       case 'about':
@@ -166,6 +170,81 @@
     });
     const tickerWrap=document.querySelector('.ticker-wrap');
     if(tickerWrap) tickerWrap.hidden=ticker.length===0;
+  }
+
+
+  function instagramEmbedUrl(url){
+    try{
+      const u=new URL(url,location.origin);
+      if(!/(^|\.)instagram\.com$/i.test(u.hostname))return '';
+      const m=u.pathname.match(/\/(reel|p)\/([^/]+)/i);
+      return m?`https://www.instagram.com/${m[1]}/${m[2]}/embed`:'';
+    }catch{return ''}
+  }
+
+  function ensureFitnessSections(project){
+    if(project?.site_type!=='personal_trainer')return;
+    const hero=document.querySelector('.hero');
+    if(!hero)return;
+
+    let videos=document.getElementById('fitness-videos');
+    if(!videos){
+      videos=document.createElement('section');
+      videos.id='fitness-videos';
+      videos.className='fitness-videos';
+      videos.dataset.vitrineModule='fitness_videos';
+      videos.innerHTML='<div class="fitness-wrap"><div class="fitness-section-head"><div class="eyebrow"></div><h2></h2><p></p></div><div class="fitness-video-grid"></div></div>';
+      hero.parentNode.insertBefore(videos,hero.nextSibling);
+    }
+
+    let schedule=document.getElementById('fitness-schedule');
+    if(!schedule){
+      schedule=document.createElement('section');
+      schedule.id='fitness-schedule';
+      schedule.className='fitness-schedule';
+      schedule.dataset.vitrineModule='fitness_schedule';
+      schedule.innerHTML='<div class="fitness-wrap"><div class="fitness-schedule-copy"><div class="eyebrow"></div><h2></h2><p></p><a class="fitness-book-btn" target="_blank" rel="noopener"></a></div><div class="fitness-slots"></div></div>';
+      videos.parentNode.insertBefore(schedule,videos.nextSibling);
+    }
+  }
+
+  function renderFitnessVideos(map,isTenant,project){
+    ensureFitnessSections(project);
+    const root=document.getElementById('fitness-videos'); if(!root)return;
+    const row=map.get('fitness_videos');
+    const show=project?.site_type==='personal_trainer'&&hasSectionContent('fitness_videos',row);
+    root.hidden=!show;if(!show||!row)return;
+    const c=row.content||{};
+    setText(root.querySelector('.eyebrow'),pick(c,'eyebrow'));
+    setText(root.querySelector('h2'),pick(c,'title'));
+    setText(root.querySelector('.fitness-section-head p'),pick(c,'subtitle'));
+    const items=(c.items||[]).slice(0,3).filter(i=>nonEmpty(i?.url));
+    root.querySelector('.fitness-video-grid').innerHTML=items.map((item,i)=>{
+      const url=safeUrl(item.url);
+      const insta=instagramEmbedUrl(item.url);
+      const title=pick(item,'title')||`Vídeo ${i+1}`;
+      if(insta)return `<article class="fitness-video-card"><div class="fitness-video-frame"><iframe src="${esc(insta)}" loading="lazy" allowtransparency="true" allowfullscreen title="${esc(title)}"></iframe></div><div class="fitness-video-title">${esc(title)}</div></article>`;
+      if(url)return `<article class="fitness-video-card"><div class="fitness-video-frame"><video src="${esc(url)}" controls muted playsinline preload="metadata"></video></div><div class="fitness-video-title">${esc(title)}</div></article>`;
+      return '';
+    }).join('');
+  }
+
+  function renderFitnessSchedule(map,isTenant,project){
+    ensureFitnessSections(project);
+    const root=document.getElementById('fitness-schedule');if(!root)return;
+    const row=map.get('fitness_schedule');
+    const show=project?.site_type==='personal_trainer'&&hasSectionContent('fitness_schedule',row);
+    root.hidden=!show;if(!show||!row)return;
+    const c=row.content||{};
+    setText(root.querySelector('.eyebrow'),pick(c,'eyebrow'));
+    setText(root.querySelector('h2'),pick(c,'title'));
+    setText(root.querySelector('.fitness-schedule-copy p'),pick(c,'subtitle'));
+    const slots=(c.slots||[]).filter(s=>nonEmpty(s?.day)||nonEmpty(s?.time));
+    root.querySelector('.fitness-slots').innerHTML=slots.map(s=>`<div class="fitness-slot"><span class="fitness-day">${esc(s.day||'')}</span><strong>${esc(s.time||'')}</strong>${pick(s,'note')?`<small>${esc(pick(s,'note'))}</small>`:''}</div>`).join('');
+    const btn=root.querySelector('.fitness-book-btn');
+    const href=safeUrl(c.schedule_url);
+    btn.hidden=!href;
+    if(href){btn.href=href;btn.textContent=pick(c,'cta_label')||(lang()==='en'?'Book a time':'Reservar horário')}
   }
 
   function renderStats(map,isTenant){
@@ -370,6 +449,9 @@
 
       if(isTenant)prepareTenant();
 
+      ensureFitnessSections(data.project);
+      try{renderFitnessVideos(map,isTenant,data.project)}catch(e){console.warn('renderFitnessVideos',e)}
+      try{renderFitnessSchedule(map,isTenant,data.project)}catch(e){console.warn('renderFitnessSchedule',e)}
       [renderHero,renderStats,renderAbout,renderWsop,renderCoverage,
        renderPortfolio,renderExperience,renderEducation,renderInstagram,renderContact]
        .forEach(fn=>{try{fn(map,isTenant)}catch(e){console.warn(fn.name,e)}});

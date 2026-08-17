@@ -83,12 +83,27 @@
     };
     return {...(modes[mode]||modes.signature),accent:a};
   }
+
+  function fitnessPalette(accent,mode='performance'){
+    const a=safeAccent(accent);
+    const modes={
+      performance:{primary:'#101312',secondary:'#1d2420',background:'#f4f4ef',surface:'#ffffff',text:'#141615',muted:'#6d746f'},
+      redline:{primary:'#111111',secondary:'#271515',background:'#f5f2ed',surface:'#ffffff',text:'#171313',muted:'#736969'},
+      fresh:{primary:'#10251d',secondary:'#18372a',background:'#f3f5ef',surface:'#ffffff',text:'#142019',muted:'#68766e'}
+    };
+    return {...(modes[mode]||modes.performance),accent:a};
+  }
+
   function guardTheme(t,project){
-    if(project?.site_type!=='journalist')return t;
-    const mode=t.guardrails?.palette_mode||'signature';
-    const palette=editorialPalette(t.colors?.accent,mode);
-    t.colors={...t.colors,...palette};
-    t.guardrails={...(t.guardrails||{}),enabled:true,palette_mode:mode};
+    if(project?.site_type==='journalist'){
+      const mode=t.guardrails?.palette_mode||'signature';
+      t.colors={...t.colors,...editorialPalette(t.colors?.accent,mode)};
+      t.guardrails={...(t.guardrails||{}),enabled:true,palette_mode:mode};
+    }else if(project?.site_type==='personal_trainer'){
+      const mode=t.guardrails?.palette_mode||'performance';
+      t.colors={...t.colors,...fitnessPalette(t.colors?.accent,mode)};
+      t.guardrails={...(t.guardrails||{}),enabled:true,palette_mode:mode};
+    }
     return t;
   }
 

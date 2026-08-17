@@ -93,7 +93,12 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
       <label class="upload-zone" id="dropZone"><strong>+ Adicionar foto</strong><div class="help">JPG, PNG ou WebP · até 8 MB</div><input id="galleryInput" type="file" accept="image/*" hidden></label>
       <div class="gallery" id="gallery"></div>
     </section>
-  </main>
+      <section class="card hidden" id="fitnessVideoManager">
+      <h2 style="font-family:Fraunces,serif;margin-top:0">Vídeos do Personal</h2>
+      <p class="help">Até 3 vídeos logo após o hero. Cole a URL de um Reel do Instagram ou envie MP4/WebM (até 60 MB).</p>
+      <div class="video-manager" id="fitnessVideoSlots"></div>
+    </section>
+</main>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -240,9 +245,65 @@ input,select{width:100%;padding:.76rem .8rem;border:1px solid var(--line);border
     </div></article>`;
   }
 
+
+  function fitnessVideoSection(){
+    if(!draftSnapshot.fitness_videos){
+      draftSnapshot.fitness_videos={content:{eyebrow_pt:'Em movimento',eyebrow_en:'In motion',title_pt:'Treino na prática',title_en:'Training in action',subtitle_pt:'Conheça meu trabalho em vídeos curtos.',subtitle_en:'See my work in short videos.',items:[]},is_visible:true};
+    }
+    const c=draftSnapshot.fitness_videos.content||(draftSnapshot.fitness_videos.content={});
+    c.items=Array.isArray(c.items)?c.items:[];
+    while(c.items.length<3)c.items.push({title_pt:'',title_en:'',url:'',path:'',kind:''});
+    c.items=c.items.slice(0,3);
+    return c;
+  }
+  function instaEmbed(url){
+    try{const u=new URL(url);const m=u.pathname.match(/\/(reel|p)\/([^/]+)/i);return /(^|\.)instagram\.com$/i.test(u.hostname)&&m?`https://www.instagram.com/${m[1]}/${m[2]}/embed`:''}catch{return ''}
+  }
+  async function uploadVideo(file,index){
+    if(!canEdit())throw new Error('Acesso somente leitura.');
+    if(!['video/mp4','video/webm','video/quicktime'].includes(file.type))throw new Error('Envie MP4, WebM ou MOV.');
+    if(file.size>60*1024*1024)throw new Error('Máximo de 60 MB por vídeo.');
+    const ext=(file.name.split('.').pop()||'mp4').toLowerCase();
+    const path=`${project.id}/fitness-videos/video-${index+1}-${Date.now()}.${ext}`;
+    const u=await sb.storage.from(BUCKET).upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+    if(u.error)throw u.error;
+    return {path,url:sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl};
+  }
+  async function saveFullDraft(){
+    if(myRole==='editor'){
+      const result=await sb.functions.invoke('client-update-draft',{body:{project_id:project.id,snapshot:draftSnapshot}});
+      if(result.error)throw result.error;if(result.data?.error)throw new Error(result.data.error);
+    }else{
+      const u=await sb.from('project_drafts').update({snapshot:draftSnapshot,updated_by:user.id,updated_at:new Date().toISOString()}).eq('project_id',project.id).select().single();
+      if(u.error)throw u.error;draftRow=u.data;
+    }
+  }
+  function renderFitnessVideos(){
+    const wrap=$('fitnessVideoManager');
+    if(project?.site_type!=='personal_trainer'){wrap.classList.add('hidden');return}
+    wrap.classList.remove('hidden');
+    const c=fitnessVideoSection();
+    $('fitnessVideoSlots').innerHTML=c.items.map((v,i)=>{
+      const embed=instaEmbed(v.url);
+      const preview=v.url?(embed?`<iframe src="${embed}" loading="lazy"></iframe>`:`<video src="${v.url}" controls muted playsinline></video>`):'<span>Vídeo '+(i+1)+'</span>';
+      return `<article class="video-slot"><div class="video-preview">${preview}</div>
+        <strong>Vídeo ${i+1}</strong>
+        <div class="field"><label>Título PT</label><input data-vtitle="${i}" data-lang="pt" value="${(v.title_pt||'').replaceAll('"','&quot;')}"></div>
+        <div class="field"><label>URL do Reel / vídeo</label><input data-vurl="${i}" value="${(v.url||'').replaceAll('"','&quot;')}" placeholder="https://www.instagram.com/reel/..."></div>
+        <label class="upload-label">Enviar vídeo<input data-vupload="${i}" type="file" accept="video/mp4,video/webm,video/quicktime"></label>
+        ${v.url?`<button class="btn danger" type="button" data-vclear="${i}">Remover vídeo</button>`:''}
+      </article>`;
+    }).join('');
+
+    document.querySelectorAll('[data-vtitle]').forEach(el=>el.onchange=async()=>{c.items[+el.dataset.vtitle].title_pt=el.value.trim();try{await saveFullDraft();notify('Título salvo ✓')}catch(e){notify(e.message||'Erro ao salvar')}});
+    document.querySelectorAll('[data-vurl]').forEach(el=>el.onchange=async()=>{const v=c.items[+el.dataset.vurl];v.url=el.value.trim();v.path='';v.kind=v.url.includes('instagram.com')?'instagram':'external';try{await saveFullDraft();renderFitnessVideos();notify('Vídeo salvo ✓')}catch(e){notify(e.message||'Erro ao salvar')}});
+    document.querySelectorAll('[data-vupload]').forEach(el=>el.onchange=async()=>{const i=+el.dataset.vupload,file=el.files?.[0];if(!file)return;try{notify('Enviando vídeo…');const u=await uploadVideo(file,i);c.items[i].url=u.url;c.items[i].path=u.path;c.items[i].kind='upload';await saveFullDraft();renderFitnessVideos();notify('Vídeo salvo no rascunho ✓')}catch(e){console.error(e);notify(e.message||'Erro no upload')}});
+    document.querySelectorAll('[data-vclear]').forEach(btn=>btn.onclick=async()=>{const i=+btn.dataset.vclear;c.items[i]={title_pt:'',title_en:'',url:'',path:'',kind:''};try{await saveFullDraft();renderFitnessVideos();notify('Vídeo removido ✓')}catch(e){notify('Erro ao remover')}});
+  }
+
   function render(){
     $('slots').innerHTML=slot('hero','Hero / capa')+slot('about','Foto do Sobre',true)+slot('contact','Foto de Contato');
-    bindSlots();renderGallery();applyRoleUI();
+    bindSlots();renderGallery();renderFitnessVideos();applyRoleUI();
   }
 
   function updateSlotPreview(key){

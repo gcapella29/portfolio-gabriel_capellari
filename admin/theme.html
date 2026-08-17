@@ -39,7 +39,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 <div class="field"><label>Assinatura</label><select id="paletteMode">
 <option value="signature">Signature — verde editorial</option>
 <option value="ink">Ink — preto editorial</option>
-<option value="navy">Navy — azul editorial</option>
+<option value="navy">Navy — azul editorial</option><option value="performance">Performance — carvão + lima</option><option value="redline">Redline — carvão + vermelho</option><option value="fresh">Fresh — verde + lima</option>
 </select></div>
 <div class="field"><label>Cor de destaque</label><div class="color-row"><input id="editorialAccent" value="#e3bb3d"><input id="editorialAccentColor" type="color" value="#e3bb3d"></div></div>
 </div>
@@ -123,13 +123,17 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
   const modes={
    signature:{primary:'#082720',secondary:'#0e3b2e',background:'#f7f4ec',surface:'#ffffff',text:'#171310',muted:'#6f7c75'},
    ink:{primary:'#151515',secondary:'#292929',background:'#f5f1e8',surface:'#ffffff',text:'#171310',muted:'#6f6b63'},
-   navy:{primary:'#10283b',secondary:'#173d58',background:'#f4f1e9',surface:'#ffffff',text:'#17202a',muted:'#69747c'}
+   navy:{primary:'#10283b',secondary:'#173d58',background:'#f4f1e9',surface:'#ffffff',text:'#17202a',muted:'#69747c'},
+   performance:{primary:'#101312',secondary:'#1d2420',background:'#f4f4ef',surface:'#ffffff',text:'#141615',muted:'#6d746f'},
+   redline:{primary:'#111111',secondary:'#271515',background:'#f5f2ed',surface:'#ffffff',text:'#171313',muted:'#736969'},
+   fresh:{primary:'#10251d',secondary:'#18372a',background:'#f3f5ef',surface:'#ffffff',text:'#142019',muted:'#68766e'}
   };
   return {...(modes[mode]||modes.signature),accent:/^#[0-9a-f]{6}$/i.test(accent||'')?accent:'#e3bb3d'};
  }
  function applyEditorialGuardrails(){
-  if(project?.site_type!=='journalist')return;
-  const mode=$('paletteMode')?.value||theme.guardrails?.palette_mode||'signature';
+  if(!['journalist','personal_trainer'].includes(project?.site_type))return;
+  const fallback=project?.site_type==='personal_trainer'?'performance':'signature';
+  const mode=$('paletteMode')?.value||theme.guardrails?.palette_mode||fallback;
   const accent=$('editorialAccent')?.value||theme.colors.accent||'#e3bb3d';
   theme.colors={...theme.colors,...editorialPalette(accent,mode)};
   theme.guardrails={enabled:true,palette_mode:mode};
@@ -197,10 +201,12 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
   draftRow=d.data;snapshot=structuredClone(d.data.snapshot||{});
   theme=merge(snapshot?.theme?.content);
 
-  if(project.site_type==='journalist'){
+  if(['journalist','personal_trainer'].includes(project.site_type)){
     $('editorialGuardrails').style.display='';
+    $('editorialGuardrails').querySelector('h2').textContent=project.site_type==='personal_trainer'?'Identidade Fitness':'Identidade Editorial';
     $('advancedColors').style.display='none';
-    theme.guardrails={enabled:true,palette_mode:theme.guardrails?.palette_mode||'signature'};
+    const fallbackMode=project.site_type==='personal_trainer'?'performance':'signature';
+    theme.guardrails={enabled:true,palette_mode:theme.guardrails?.palette_mode||fallbackMode};
     $('paletteMode').value=theme.guardrails.palette_mode;
     $('editorialAccent').value=theme.colors.accent||'#e3bb3d';
     $('editorialAccentColor').value=/^#[0-9a-f]{6}$/i.test(theme.colors.accent||'')?theme.colors.accent:'#e3bb3d';
