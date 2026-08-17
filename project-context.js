@@ -3,39 +3,51 @@
   if (!cfg) return;
 
   const params = new URLSearchParams(window.location.search);
-  const querySlug = params.get('project');
+  const querySlug = params.get('project')?.trim() || null;
 
   const cleanPathMatch = window.location.pathname.match(/^\/p\/([a-z0-9-]+)\/?$/i);
-  const cleanPathSlug = cleanPathMatch ? decodeURIComponent(cleanPathMatch[1]) : null;
-
-  const cookieMatch = document.cookie.match(/(?:^|;\s*)vitrine_project=([^;]+)/);
-  const cookieSlug = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
+  const cleanPathSlug = cleanPathMatch ? decodeURIComponent(cleanPathMatch[1]).trim() : null;
 
   const isAdmin = window.location.pathname.startsWith('/admin');
 
+  /*
+   * Project resolution must be explicit.
+   *
+   * Public pages:
+   *   ?project=slug -> /p/slug -> no project
+   *
+   * Admin pages:
+   *   ?project=slug -> no project
+   *
+   * IMPORTANT: cfg.projectSlug is intentionally NOT used as a fallback.
+   * Gabriel remains a valid project, but only when explicitly requested.
+   */
   const resolved = isAdmin
-    ? (querySlug || cfg.projectSlug)
-    : (querySlug || cleanPathSlug || cookieSlug || cfg.projectSlug);
+    ? querySlug
+    : (querySlug || cleanPathSlug || null);
 
   window.VITRINE_PROJECT_CONTEXT = {
     slug: resolved,
-    defaultSlug: cfg.projectSlug,
+    defaultSlug: null,
+    legacyPrimarySlug: cfg.projectSlug || null,
 
     set(slug) {
-      if (!slug) return;
-      localStorage.setItem('vitrine-current-project', slug);
-      this.slug = slug;
+      const cleanSlug = String(slug || '').trim();
+      if (!cleanSlug) return;
+      localStorage.setItem('vitrine-current-project', cleanSlug);
+      this.slug = cleanSlug;
     },
 
     clear() {
       localStorage.removeItem('vitrine-current-project');
       document.cookie = 'vitrine_project=; Max-Age=0; Path=/; SameSite=Lax';
-      this.slug = cfg.projectSlug;
+      this.slug = null;
     },
 
     withProject(path) {
       const url = new URL(path, window.location.origin);
-      url.searchParams.set('project', this.slug);
+      if (this.slug) url.searchParams.set('project', this.slug);
+      else url.searchParams.delete('project');
       return url.pathname + url.search + url.hash;
     }
   };
@@ -48,13 +60,25 @@
     localStorage.removeItem('vitrine-current-project');
   }
 
+  /*
+   * site.html is the renderer, not a project by itself.
+   * If it is reached without an explicit project, never expose Gabriel's
+   * static shell as an accidental fallback. Return to the platform root.
+   */
+  if (!isAdmin && !resolved) {
+    if (window.location.pathname !== '/') {
+      window.location.replace('/');
+    }
+    return;
+  }
+
   /* -------------------------------------------------------
-   * TENANT CLOAK
+   * TENANT CLOAK (temporary compatibility layer)
    * -------------------------------------------------------
-   * The public HTML is Gabriel's static shell. On tenant
-   * projects we hide that shell BEFORE <body> is parsed and
-   * reveal only after tenant content + media are applied.
-   * This prevents a 1-frame flash of Gabriel's photos/data.
+   * The renderer still contains Gabriel's legacy static shell. Until the
+   * renderer becomes data-first, non-Gabriel projects stay hidden while
+   * their content/media/theme are applied. This layer can be removed once
+   * site.html no longer contains project-specific markup.
    * ----------------------------------------------------- */
   const isTenant = !isAdmin && resolved && resolved !== cfg.projectSlug;
   if (!isTenant) return;
