@@ -341,12 +341,24 @@
     const work=document.querySelector('[data-event="hero_portfolio"]');
     const contact=document.querySelector('[data-event="hero_contact"]');
     const cv=document.querySelector('[data-event="hero_cv"]');
+    const share=document.querySelector('[data-event="hero_share"]');
+
     if(work)work.hidden=!portfolioVisible;
     if(contact)contact.hidden=!contactVisible;
+
     if(cv){
       const url=safeUrl(c.cv_url);
       cv.hidden=!url;
       if(url)cv.href=url;else cv.removeAttribute('href');
+    }
+
+    // Sharing an empty shell is not a meaningful primary CTA.
+    if(share)share.hidden=!(portfolioVisible||contactVisible);
+
+    const actions=document.querySelector('.hero-actions');
+    if(actions){
+      const visible=[...actions.children].some(el=>!el.hidden);
+      actions.hidden=!visible;
     }
   }
 
@@ -363,6 +375,20 @@
        .forEach(fn=>{try{fn(map,isTenant)}catch(e){console.warn(fn.name,e)}});
 
       reconcileHeroActions(map,isTenant);
+
+      if(isTenant){
+        const languages=Array.isArray(map.get('hero')?.content?.languages)
+          ? map.get('hero').content.languages.filter(x=>nonEmpty(x?.language)||nonEmpty(x?.flag))
+          : [];
+        const toggle=document.getElementById('languageToggle');
+        if(toggle)toggle.hidden=languages.length<2;
+
+        const actions=document.querySelector('.hero-actions');
+        if(actions){
+          const visible=[...actions.children].some(el=>!el.hidden);
+          actions.hidden=!visible;
+        }
+      }
 
       document.dispatchEvent(new CustomEvent('vitrine:tenant-content-ready',{detail:data}));
       document.dispatchEvent(new CustomEvent('webappcap:content-rendered',{detail:data}));

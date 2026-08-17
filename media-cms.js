@@ -84,15 +84,18 @@
   function applyHero(content,isTenant=false) {
     const layer = document.getElementById('heroBg');
     if (!layer) return;
+    const hero=document.querySelector('.hero');
     if (!content.hero_url) {
       if(isTenant){
-        layer.style.backgroundImage='radial-gradient(circle at 72% 22%,rgba(227,187,61,.14),transparent 24%),linear-gradient(145deg,#082720 0%,#0e3b2e 58%,#164b3c 100%)';
+        hero?.classList.add('webappcap-hero-no-image');
+        layer.style.backgroundImage='radial-gradient(circle at 72% 22%,rgba(227,187,61,.14),transparent 24%),radial-gradient(circle at 18% 80%,rgba(255,255,255,.035),transparent 24%),linear-gradient(145deg,#082720 0%,#0e3b2e 58%,#164b3c 100%)';
         layer.style.backgroundSize='cover';
         layer.style.backgroundPosition='center';
         layer.style.transform='none';
       }
       return;
     }
+    hero?.classList.remove('webappcap-hero-no-image');
     const s = mediaSettings(content,'hero','50% 50%');
 
     const test = new Image();

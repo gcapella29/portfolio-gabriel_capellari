@@ -194,6 +194,41 @@
           #eee9dc;
       }
 
+      
+      /* WebAppCap tenant UI state.
+         Author CSS in the legacy shell uses display:flex/inline-flex, which can
+         override the browser's default [hidden] rule. Keep hidden authoritative. */
+      [hidden]{display:none!important}
+
+      /* Editorial hero without photography: intentionally typographic, not an empty
+         photographic frame. */
+      .hero.webappcap-hero-no-image{
+        min-height:clamp(500px,66vh,620px)!important;
+      }
+      .hero.webappcap-hero-no-image .hero-content{
+        min-height:inherit!important;
+        padding-top:clamp(5rem,10vh,7.5rem)!important;
+        padding-bottom:clamp(3.4rem,7vh,5.5rem)!important;
+      }
+      .hero.webappcap-hero-no-image .hero-main{
+        max-width:980px;
+      }
+      .hero.webappcap-hero-no-image .hero-name{
+        max-width:12ch;
+      }
+      .hero.webappcap-hero-no-image .hero-actions[hidden]{
+        margin:0!important;
+      }
+      @media(max-width:700px){
+        .hero.webappcap-hero-no-image{
+          min-height:500px!important;
+        }
+        .hero.webappcap-hero-no-image .hero-content{
+          padding-top:4.5rem!important;
+          padding-bottom:3.2rem!important;
+        }
+      }
+
       @media(max-width:760px){
         [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner,
         [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid{
