@@ -43,6 +43,55 @@
     }
   };
 
+
+  const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
+
+  function hexToRgb(hex){
+    const m=String(hex||'').trim().match(/^#?([0-9a-f]{6})$/i);
+    if(!m)return null;
+    const n=parseInt(m[1],16);
+    return {r:(n>>16)&255,g:(n>>8)&255,b:n&255};
+  }
+  function rgbToHex({r,g,b}){
+    return '#'+[r,g,b].map(v=>clamp(Math.round(v),0,255).toString(16).padStart(2,'0')).join('');
+  }
+  function mix(a,b,amount){
+    const A=hexToRgb(a),B=hexToRgb(b); if(!A||!B)return a;
+    const t=clamp(amount,0,1);
+    return rgbToHex({r:A.r+(B.r-A.r)*t,g:A.g+(B.g-A.g)*t,b:A.b+(B.b-A.b)*t});
+  }
+  function luminance(hex){
+    const c=hexToRgb(hex); if(!c)return 0;
+    const f=v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};
+    return .2126*f(c.r)+.7152*f(c.g)+.0722*f(c.b);
+  }
+  function contrast(a,b){
+    const x=luminance(a),y=luminance(b);
+    return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);
+  }
+  function safeAccent(accent){
+    const a=/^#[0-9a-f]{6}$/i.test(String(accent||''))?accent:'#e3bb3d';
+    // Accent must support dark button text.
+    return contrast(a,'#082720')>=4.2?a:mix(a,'#ffffff',.28);
+  }
+  function editorialPalette(accent,mode='signature'){
+    const a=safeAccent(accent);
+    const modes={
+      signature:{primary:'#082720',secondary:'#0e3b2e',background:'#f7f4ec',surface:'#ffffff',text:'#171310',muted:'#6f7c75'},
+      ink:{primary:'#151515',secondary:'#292929',background:'#f5f1e8',surface:'#ffffff',text:'#171310',muted:'#6f6b63'},
+      navy:{primary:'#10283b',secondary:'#173d58',background:'#f4f1e9',surface:'#ffffff',text:'#17202a',muted:'#69747c'}
+    };
+    return {...(modes[mode]||modes.signature),accent:a};
+  }
+  function guardTheme(t,project){
+    if(project?.site_type!=='journalist')return t;
+    const mode=t.guardrails?.palette_mode||'signature';
+    const palette=editorialPalette(t.colors?.accent,mode);
+    t.colors={...t.colors,...palette};
+    t.guardrails={...(t.guardrails||{}),enabled:true,palette_mode:mode};
+    return t;
+  }
+
   function mergeTheme(raw){
     const t = structuredClone(defaults);
     if(!raw) return t;
@@ -51,6 +100,7 @@
         Object.assign(t[group], raw[group]);
       }
     }
+    if(raw?.guardrails)t.guardrails={...raw.guardrails};
     return t;
   }
 
@@ -78,8 +128,8 @@
     if(link.href!==href)link.href=href;
   }
 
-  function applyTheme(raw){
-    const t=mergeTheme(raw);
+  function applyTheme(raw,project=null){
+    const t=guardTheme(mergeTheme(raw),project);
     loadThemeFonts(t);
     const root=document.documentElement;
     const isDefaultProject = slug === cfg.projectSlug;
@@ -190,6 +240,30 @@
       [data-vitrine-module]{
         --vp-density-factor:var(--vp-density);
       }
+
+      /* Editorial guardrails: semantic surfaces, never rainbow sections. */
+      html[data-vitrine-theme-scope="tenant"] body{
+        min-height:100vh;
+        background:var(--vp-background)!important;
+      }
+      html[data-vitrine-theme-scope="tenant"] :where(#sobre,#portfolio,#formacao){
+        background:var(--vp-background)!important;
+        color:var(--vp-text)!important;
+      }
+      html[data-vitrine-theme-scope="tenant"] :where(#experiencia,#contato,#instagram){
+        background:var(--vp-primary)!important;
+        color:#fff!important;
+      }
+      html[data-vitrine-theme-scope="tenant"] :where(#cobertura,#wsop-featured){
+        background:var(--vp-secondary)!important;
+        color:#fff!important;
+      }
+      html[data-vitrine-theme-scope="tenant"] :where(.press-card,.mock-card,.card){
+        background:var(--vp-surface);
+      }
+      html[data-vitrine-theme-scope="tenant"] footer{
+        background:var(--vp-primary)!important;
+      }
     `;
 
     document.dispatchEvent(new CustomEvent('vitrine:theme-ready',{detail:t}));
@@ -198,7 +272,7 @@
   async function loadTheme(){
     try{
       const data=await window.WebAppCapData.ready;
-      applyTheme(data.snapshot?.theme?.content);
+      applyTheme(data.snapshot?.theme?.content,data.project);
     }catch(error){
       console.warn('WebAppCap Theme: usando tema padrão.',error);
       applyTheme(null);
