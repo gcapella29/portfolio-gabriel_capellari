@@ -45,6 +45,18 @@
     ])
   );
 
+  const failClosed = error => {
+    document.documentElement.dataset.webappcapState = 'error';
+    document.documentElement.removeAttribute('data-webappcap-project');
+
+    // Never reveal the legacy static shell after a tenant/data failure.
+    if (typeof window.WebAppCapTenantFail === 'function') {
+      window.WebAppCapTenantFail(error);
+    }
+
+    document.dispatchEvent(new CustomEvent('webappcap:data-error', { detail:error }));
+  };
+
   const load = async () => {
     if (!slug) {
       throw new Error('Nenhum projeto foi informado para o renderer.');
@@ -92,6 +104,12 @@
       snapshot = rowsToSnapshot(rows);
     }
 
+    // A published tenant with zero content is not a valid render target.
+    // Failing here is safer than ever exposing the legacy Gabriel shell.
+    if (!isDraft && Object.keys(snapshot).length === 0) {
+      throw new Error('O projeto está publicado, mas ainda não possui conteúdo publicado.');
+    }
+
     const result = {
       cfg, client, slug, isDraft, project, snapshot,
       contentMap: snapshotToMap(snapshot)
@@ -100,6 +118,7 @@
     window.WebAppCapData.data = result;
     document.documentElement.dataset.webappcapProject = slug;
     document.documentElement.dataset.webappcapMode = isDraft ? 'draft' : 'published';
+    document.documentElement.dataset.webappcapState = 'ready';
     document.dispatchEvent(new CustomEvent('webappcap:data-ready', { detail: result }));
     return result;
   };
@@ -108,7 +127,7 @@
     data: null,
     ready: load().catch(error => {
       window.WebAppCapData.error = error;
-      document.dispatchEvent(new CustomEvent('webappcap:data-error', { detail:error }));
+      failClosed(error);
       throw error;
     })
   };
