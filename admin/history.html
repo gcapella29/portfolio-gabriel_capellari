@@ -16,7 +16,8 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
 .shell{max-width:1050px;margin:auto;padding:2rem 1rem 4rem}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}.top h1{font-family:Fraunces,serif;font-size:clamp(2rem,5vw,3.2rem);margin:0}.list{display:grid;gap:.8rem}.version{background:#fff;border:1px solid var(--line);border-radius:15px;padding:1rem;display:flex;justify-content:space-between;gap:1rem;align-items:center}.meta strong{display:block;margin-bottom:.3rem}.meta span{font-size:.78rem;color:var(--muted)}.actions{display:flex;gap:.5rem;flex-wrap:wrap}.empty{background:#fff;border:1px solid var(--line);border-radius:15px;padding:1.2rem;color:var(--muted)}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.8rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
 @media(max-width:650px){.top,.version{flex-direction:column}.actions{width:100%}.actions .btn{flex:1;justify-content:center}}
 </style>
-<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style></head>
+<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style><link rel="stylesheet" href="/admin/ux.css">
+</head>
 <body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a>
 <section class="login" id="loginView"><div class="login-card">
   <h1 style="font-family:Fraunces,serif;margin:0">Vitrine <span style="color:#c9a227">Pro</span></h1>
@@ -29,6 +30,7 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
 </main>
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script>
+<script src="/admin/route-guard.js"></script>
 <script src="../project-context.js"></script>
 <script>
 (() => {
@@ -54,4 +56,5 @@ input{width:100%;padding:.8rem;border:1px solid var(--line);border-radius:10px}.
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script><script id="webappcapClientRouteGuard">(async()=>{const cfg=window.VITRINE_SUPABASE;if(!window.supabase||!cfg)return;const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}),s=(await sb.auth.getSession()).data.session;if(!s)return;const slug=new URLSearchParams(location.search).get('project')||cfg.projectSlug,p=(await sb.from('projects').select('id,owner_id').eq('slug',slug).maybeSingle()).data;if(!p)return;const m=(await sb.from('project_members').select('role').eq('project_id',p.id).eq('user_id',s.user.id).maybeSingle()).data,role=m?.role||(p.owner_id===s.user.id?'owner':null);if(role&& !["owner", "admin"].includes(role))location.replace('/admin/client.html?project='+encodeURIComponent(slug));})();</script></body></html>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script><script src="/admin/ux.js"></script>
+</body></html>

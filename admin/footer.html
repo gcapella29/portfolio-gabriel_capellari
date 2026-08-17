@@ -17,7 +17,8 @@ input{padding:.85rem;border:1px solid var(--line);border-radius:10px;font:inheri
 .actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1rem}.btn{border:0;border-radius:999px;padding:.75rem 1rem;font:600 .68rem "IBM Plex Mono",monospace;cursor:pointer}.gold{background:var(--gold);color:var(--dark)}.ghost{background:#fff;border:1px solid var(--line)}
 .toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.8rem 1rem;border-radius:12px;display:none}.toast.show{display:block}
 @media(max-width:650px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.top{display:block}}
-</style><style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style></head>
+</style><style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style><link rel="stylesheet" href="/admin/ux.css">
+</head>
 <body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a><main class="shell">
 <header class="top"><div><div class="kicker">WEBAPPCAP · RODAPÉ</div><h1>Rodapé</h1><p>Configure ou desative o rodapé deste projeto.</p></div><a class="btn ghost" id="back" href="/admin/">← Conteúdo</a></header>
 <section class="card">
@@ -33,6 +34,7 @@ input{padding:.85rem;border:1px solid var(--line);border-radius:10px;font:inheri
 </section></main><div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../supabase-config.js"></script>
+<script src="/admin/route-guard.js"></script>
 <script>
 (async()=>{
  const $=id=>document.getElementById(id),cfg=window.VITRINE_SUPABASE;
@@ -56,4 +58,5 @@ input{padding:.85rem;border:1px solid var(--line);border-radius:10px;font:inheri
    if(error)return toast(error.message);toast('Rodapé salvo no rascunho ✓');
  };
 })();
-</script><script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script><script id="webappcapClientRouteGuard">(async()=>{const cfg=window.VITRINE_SUPABASE;if(!window.supabase||!cfg)return;const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}),s=(await sb.auth.getSession()).data.session;if(!s)return;const slug=new URLSearchParams(location.search).get('project')||cfg.projectSlug,p=(await sb.from('projects').select('id,owner_id').eq('slug',slug).maybeSingle()).data;if(!p)return;const m=(await sb.from('project_members').select('role').eq('project_id',p.id).eq('user_id',s.user.id).maybeSingle()).data,role=m?.role||(p.owner_id===s.user.id?'owner':null);if(role&& !["owner", "admin"].includes(role))location.replace('/admin/client.html?project='+encodeURIComponent(slug));})();</script></body></html>
+</script><script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script><script src="/admin/ux.js"></script>
+</body></html>

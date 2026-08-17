@@ -16,7 +16,8 @@ h1,h2,h3{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{f
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:1.2rem}.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:1.15rem;box-shadow:var(--shadow)}.form{display:grid;gap:1rem}.help{font-size:.76rem;color:var(--muted);line-height:1.55}.urlbox{display:flex;gap:.55rem;align-items:center;padding:.85rem;border:1px solid var(--line);border-radius:12px;background:#fbfaf6;margin:.7rem 0}.urlbox code{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;font-size:.78rem}.steps{display:grid;gap:.75rem}.step{padding:.9rem;border:1px solid var(--line);border-radius:12px}.step strong{display:block;margin-bottom:.3rem}.badge{display:inline-flex;padding:.35rem .55rem;border-radius:999px;background:#f2efe6;font:600 .66rem "IBM Plex Mono",monospace;color:var(--muted)}.actions{display:flex;gap:.5rem;flex-wrap:wrap}.toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.85rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.top{flex-direction:column}.urlbox{align-items:stretch;flex-direction:column}.urlbox .btn{width:100%}}
 </style>
-<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style></head>
+<style id="dashboard-shortcut-style">.dashboard-shortcut{position:fixed;right:16px;top:16px;z-index:9999;background:#082720;color:#fff!important;text-decoration:none;border-radius:999px;padding:.58rem .75rem;font:600 .62rem "IBM Plex Mono",monospace;box-shadow:0 8px 25px rgba(8,39,32,.18)}@media(max-width:620px){.dashboard-shortcut{top:auto;bottom:14px;right:14px}}</style><link rel="stylesheet" href="/admin/ux.css">
+</head>
 <body><a class="dashboard-shortcut" id="dashboardShortcut" href="/admin/dashboard.html">Dashboard</a>
 <section class="login" id="loginView"><div class="login-card">
 <h1 style="margin:0">Vitrine <span style="color:#c9a227">Pro</span></h1>
@@ -202,7 +203,7 @@ h1,h2,h3{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{f
    }
  };
 
- $('markActive').onclick=async()=>{
+ $('markActive').onclick=async()=>{const ok=await window.WebAppCapUX.confirm({title:'Marcar domínio como conectado?',message:'Use esta opção apenas depois de confirmar que DNS e Vercel estão corretos.',confirmText:'Marcar como conectado'});if(!ok)return;
    const u=await sb.from('projects').update({
      domain_status:'active',
      updated_at:new Date().toISOString()
@@ -232,4 +233,5 @@ h1,h2,h3{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{f
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script></body></html>
+<script>(()=>{const a=document.getElementById('dashboardShortcut');if(!a)return;const p=new URLSearchParams(location.search).get('project');if(p)a.href='/admin/dashboard.html?project='+encodeURIComponent(p)})();</script><script src="/admin/ux.js"></script>
+</body></html>

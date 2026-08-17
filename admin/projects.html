@@ -18,6 +18,9 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 .toast{position:fixed;right:1rem;bottom:1rem;background:var(--dark);color:#fff;padding:.85rem 1rem;border-radius:12px;opacity:0;transform:translateY(130%);transition:.25s}.toast.show{opacity:1;transform:none}
 @media(max-width:850px){.grid{grid-template-columns:1fr}.top,.project{flex-direction:column;align-items:stretch}.actions .btn{flex:1}}
 </style>
+<style>html.webappcap-route-checking body{visibility:hidden}</style>
+<script>document.documentElement.classList.add('webappcap-route-checking');</script>
+<link rel="stylesheet" href="/admin/ux.css">
 </head>
 <body>
 <section class="login" id="loginView"><div class="login-card">
@@ -39,7 +42,8 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 </div>
 </main>
 <div class="toast" id="toast"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script><script src="../project-context.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../supabase-config.js"></script>
+<script src="/admin/route-guard.js"></script><script src="../project-context.js"></script>
 <script>
 (() => {
  const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
@@ -115,4 +119,5 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
 </script>
-<script id="webappcapClientRouteGuard">(async()=>{const cfg=window.VITRINE_SUPABASE;if(!window.supabase||!cfg)return;const sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}),s=(await sb.auth.getSession()).data.session;if(!s)return;const slug=new URLSearchParams(location.search).get('project')||cfg.projectSlug,p=(await sb.from('projects').select('id,owner_id').eq('slug',slug).maybeSingle()).data;if(!p)return;const m=(await sb.from('project_members').select('role').eq('project_id',p.id).eq('user_id',s.user.id).maybeSingle()).data,role=m?.role||(p.owner_id===s.user.id?'owner':null);if(role&& !["owner", "admin"].includes(role))location.replace('/admin/client.html?project='+encodeURIComponent(slug));})();</script></body></html>
+<script src="/admin/ux.js"></script>
+</body></html>

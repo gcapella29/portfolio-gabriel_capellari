@@ -79,6 +79,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
 }
 </style>
 
+<link rel="stylesheet" href="/admin/ux.css">
 </head>
 
 <body>
@@ -107,7 +108,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     </div>
   </aside>
 
-  <main class="main">
+  <main class="main"><div class="ux-save-state" data-ux-dirty-indicator style="margin:.6rem 0 0">Tudo salvo</div>
     <header class="top">
       <div>
         <div class="sub" style="color:var(--muted)" id="projectIdentity">Projeto</div>
@@ -264,7 +265,7 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
     badge.classList.toggle('clean',!flag);
     badge.textContent=flag?'Alterações não salvas':'Rascunho salvo';
     $('saveHint').textContent=flag?'Existem alterações locais não salvas.':'Rascunho salvo no Supabase.';
-  }
+  ;window.WebAppCapUX?.markDirty(!!flag=true)}
 
   function deepClone(v){return JSON.parse(JSON.stringify(v));}
 
@@ -718,5 +719,6 @@ input,textarea{width:100%;padding:.82rem .9rem;border:1px solid var(--line);bord
   });
 })();
 </script>
+<script src="/admin/ux.js"></script>
 </body>
 </html>
