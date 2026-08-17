@@ -4,6 +4,7 @@
 
   const cfg = window.VITRINE_SUPABASE;
   const resolver = window.WebAppCapTenantResolver;
+  const schema = window.WebAppCapProjectSchema;
   const params = new URLSearchParams(location.search);
   const route = resolver.fromLocation(window.location, { admin:false });
   const contextSlug = resolver.cleanSlug(window.VITRINE_PROJECT_CONTEXT?.slug);
@@ -71,6 +72,12 @@
       throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
     }
 
+    // One canonical project type for every consumer. Older projects created
+    // as "fitness" keep working as "personal_trainer" without data migration.
+    project.site_type = schema?.normalizeType
+      ? schema.normalizeType(project.site_type)
+      : project.site_type;
+
     let snapshot = {};
     if (isDraft) {
       const { data: draft, error } = await client
@@ -101,6 +108,7 @@
 
     window.WebAppCapData.data = result;
     document.documentElement.dataset.webappcapProject = slug;
+    document.documentElement.dataset.webappcapProjectType = project.site_type || '';
     document.documentElement.dataset.webappcapMode = isDraft ? 'draft' : 'published';
     document.documentElement.dataset.webappcapState = 'ready';
     document.dispatchEvent(new CustomEvent('webappcap:data-ready', { detail: result }));
