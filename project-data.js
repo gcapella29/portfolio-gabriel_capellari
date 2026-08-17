@@ -93,3 +93,34 @@
     })
   };
 })();
+;(() => {
+  function currentSlug(){
+    return window.VITRINE_PROJECT_CONTEXT?.slug ||
+      new URLSearchParams(location.search).get('project') ||
+      window.VITRINE_SUPABASE?.projectSlug || '';
+  }
+
+  window.WebAppCapNeutralizeLegacyFallbacks = function(snapshot){
+    try{
+      const slug=currentSlug();
+      const defaultSlug=window.VITRINE_SUPABASE?.projectSlug;
+      if(!slug || slug===defaultSlug || !snapshot)return snapshot;
+
+      const media=snapshot.media?.content||{};
+      // If a non-default project has no explicit media in its snapshot,
+      // never allow static Gabriel assets to be treated as project media.
+      for(const key of ['hero_url','hero_path','about_url','about_path','contact_url','contact_path','profile_url','profile_path']){
+        if(media[key]==null)media[key]='';
+      }
+
+      const contact=snapshot.contact?.content||{};
+      for(const key of ['email1','email2','whatsapp_number','whatsapp_display','instagram_user','linkedin_url','cv_url']){
+        if(contact[key]==null)contact[key]='';
+      }
+      return snapshot;
+    }catch(e){
+      console.warn('Neutral fallback:',e);
+      return snapshot;
+    }
+  };
+})();

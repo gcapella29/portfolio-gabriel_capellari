@@ -1,4 +1,39 @@
 (() => {
+  const WebAppCapContentRules = {
+    nonEmpty(v){
+      if(Array.isArray(v)) return v.some(x=>this.nonEmpty(x));
+      if(v && typeof v==='object') return Object.values(v).some(x=>this.nonEmpty(x));
+      return String(v??'').trim().length>0;
+    },
+    sectionHasContent(key,section){
+      const c=section?.content||{};
+      if(section?.is_visible===false)return false;
+      if(key==='hero') return this.nonEmpty(c.name_html);
+      if(key==='stats') return Array.isArray(c.items)&&c.items.some(x=>this.nonEmpty(x));
+      if(key==='about') return [c.title_pt,c.title_en,c.paragraph1_pt,c.paragraph1_en,c.paragraph2_pt,c.paragraph2_en].some(x=>this.nonEmpty(x));
+      if(key==='wsop') return [c.title_pt,c.title_en,c.description_pt,c.description_en].some(x=>this.nonEmpty(x)) || (Array.isArray(c.points)&&c.points.some(x=>this.nonEmpty(x)));
+      if(key==='coverage') return Array.isArray(c.items)&&c.items.some(x=>this.nonEmpty(x));
+      if(key==='portfolio') return (Array.isArray(c.items)&&c.items.some(x=>this.nonEmpty(x))) || this.nonEmpty(c.bio_pt)||this.nonEmpty(c.bio_en);
+      if(key==='experience') return Array.isArray(c.items)&&c.items.some(x=>this.nonEmpty(x));
+      if(key==='education') return (Array.isArray(c.items)&&c.items.some(x=>this.nonEmpty(x))) || (Array.isArray(c.skills)&&c.skills.some(x=>this.nonEmpty(x)));
+      if(key==='instagram') return this.nonEmpty(c.user)||this.nonEmpty(c.reel_url)||this.nonEmpty(c.text_pt)||this.nonEmpty(c.text_en);
+      if(key==='contact') return [c.email1,c.email2,c.whatsapp_number,c.instagram_user,c.linkedin_url,c.cv_url].some(x=>this.nonEmpty(x));
+      if(key==='media') return true;
+      if(key==='seo') return true;
+      return this.nonEmpty(c);
+    },
+    enabledLanguages(snapshot){
+      const langs=snapshot?.hero?.content?.languages;
+      if(Array.isArray(langs)&&langs.length){
+        return langs.filter(x=>this.nonEmpty(x?.language));
+      }
+      const hero=snapshot?.hero?.content||{};
+      const hasEn=this.nonEmpty(hero.role_en);
+      return hasEn?[{language:'Português'},{language:'Inglês'}]:[{language:'Português'}];
+    }
+  };
+  window.WebAppCapContentRules=WebAppCapContentRules;
+
   if (!window.WebAppCapData?.ready) return;
 
   const esc = value => String(value ?? '')
@@ -256,4 +291,39 @@
   );
 
   render();
+
+  function webappcapApplyEmptyStateRules(snapshot){
+    try{
+      const rules=window.WebAppCapContentRules;
+      if(!rules)return;
+
+      document.querySelectorAll('[data-vitrine-module]').forEach(el=>{
+        const key=el.getAttribute('data-vitrine-module');
+        if(!key)return;
+        if(['ticker'].includes(key)){
+          const ticker=snapshot?.hero?.content?.ticker||[];
+          el.hidden=!(Array.isArray(ticker)&&ticker.some(x=>rules.nonEmpty(x)));
+          return;
+        }
+        const section=snapshot?.[key];
+        if(section && !rules.sectionHasContent(key,section)) el.hidden=true;
+      });
+
+      const langs=rules.enabledLanguages(snapshot);
+      const langControls=[
+        ...document.querySelectorAll('.lang-switch,.language-switch,[data-language-switch],.locale-switch')
+      ];
+      langControls.forEach(el=>{el.hidden=langs.length<2});
+    }catch(e){console.warn('WebAppCap empty-state rules:',e)}
+  }
+  window.webappcapApplyEmptyStateRules=webappcapApplyEmptyStateRules;
+
+  if(!window.__webappcapEmptyObserver){
+    window.__webappcapEmptyObserver=true;
+    const run=()=>{if(window.__VITRINE_ACTIVE_SNAPSHOT)window.webappcapApplyEmptyStateRules?.(window.__VITRINE_ACTIVE_SNAPSHOT)};
+    new MutationObserver(()=>run()).observe(document.documentElement,{childList:true,subtree:true});
+    document.addEventListener('DOMContentLoaded',run,{once:true});
+    setTimeout(run,250);
+    setTimeout(run,900);
+  }
 })();

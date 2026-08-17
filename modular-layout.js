@@ -179,6 +179,21 @@
         max-width:12ch;
       }
 
+      
+      /* Neutral Editorial placeholders: new projects never borrow another project's photography. */
+      body:not([data-default-project="true"]) .hero:not(.has-project-image),
+      [data-vitrine-module="hero"]:not(.has-project-image){
+        background-image:
+          radial-gradient(circle at 75% 25%,rgba(227,187,61,.16),transparent 22%),
+          linear-gradient(145deg,#082720 0%,#0e3b2e 58%,#164b3c 100%)!important;
+      }
+      body:not([data-default-project="true"]) .about-photo:empty,
+      body:not([data-default-project="true"]) .contact-photo:empty{
+        background:
+          linear-gradient(145deg,rgba(8,39,32,.05),rgba(227,187,61,.10)),
+          #eee9dc;
+      }
+
       @media(max-width:760px){
         [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner,
         [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid{
