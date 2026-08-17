@@ -24,7 +24,7 @@
     },
     {
       "source": "/p/:slug",
-      "destination": "/site.html?project=:slug"
+      "destination": "/public-shell.html?project=:slug"
     }
   ],
   "headers": [
