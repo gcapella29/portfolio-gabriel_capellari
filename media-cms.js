@@ -39,16 +39,31 @@
     };
   }
 
-  function applyStaticImage(selector, content, key, alt) {
+  function applyStaticImage(selector, content, key, alt, isTenant=false) {
     const imageUrl = content[`${key}_url`];
-    if (!imageUrl) return;
     const img = document.querySelector(selector);
     if (!img) return;
 
-    const fallbackSrc = img.getAttribute('src');
+    if (!imageUrl) {
+      if (isTenant) {
+        img.hidden=true;
+        img.removeAttribute('src');
+        img.removeAttribute('srcset');
+        const parent=img.parentElement;
+        if(parent){parent.hidden=true;parent.classList.add('webappcap-media-empty')}
+      }
+      return;
+    }
+
+    const fallbackSrc = isTenant ? '' : img.getAttribute('src');
+    img.hidden=false;
+    const parent=img.parentElement;
+    if(parent){parent.hidden=false;parent.classList.remove('webappcap-media-empty')}
+
     img.onerror = () => {
       img.onerror = null;
       if (fallbackSrc) img.src = fallbackSrc;
+      else { img.hidden=true; if(parent)parent.hidden=true; }
     };
 
     const s = mediaSettings(content,key,key==='about'?'50% 0%':'50% 50%');
@@ -60,17 +75,24 @@
     img.style.setProperty('transform', `scale(${s.zoom})`, 'important');
     img.style.setProperty('transform-origin', `${s.x}% ${s.y}%`, 'important');
 
-    const parent=img.parentElement;
     if(parent){
       parent.style.overflow='hidden';
       if(s.fit!=='cover') parent.style.background='#ece8dd';
     }
   }
 
-  function applyHero(content) {
-    if (!content.hero_url) return;
+  function applyHero(content,isTenant=false) {
     const layer = document.getElementById('heroBg');
     if (!layer) return;
+    if (!content.hero_url) {
+      if(isTenant){
+        layer.style.backgroundImage='radial-gradient(circle at 72% 22%,rgba(227,187,61,.14),transparent 24%),linear-gradient(145deg,#082720 0%,#0e3b2e 58%,#164b3c 100%)';
+        layer.style.backgroundSize='cover';
+        layer.style.backgroundPosition='center';
+        layer.style.transform='none';
+      }
+      return;
+    }
     const s = mediaSettings(content,'hero','50% 50%');
 
     const test = new Image();
@@ -101,15 +123,26 @@
     };
   }
 
-  function applyWsopGallery(content) {
+  function applyWsopGallery(content,isTenant=false) {
     const gallery = content.wsop_gallery;
-    if (!Array.isArray(gallery) || !gallery.length) return;
+    if (!Array.isArray(gallery) || !gallery.length) {
+      if(isTenant){
+        const carousel=document.getElementById('wsopCarousel');
+        if(carousel){
+          const slides=carousel.querySelector('.wsop-slides');if(slides)slides.innerHTML='';
+          const dots=carousel.querySelector('.wsop-dots');if(dots)dots.innerHTML='';
+          carousel.hidden=true;
+        }
+      }
+      return;
+    }
 
     const carousel = document.getElementById('wsopCarousel');
     const slidesWrap = carousel?.querySelector('.wsop-slides');
     const dotsWrap = carousel?.querySelector('.wsop-dots');
     const counter = carousel?.querySelector('.wsop-counter');
     if (!carousel || !slidesWrap || !dotsWrap) return;
+    carousel.hidden=false;
 
     const ordered = [...gallery].sort((a,b)=>(a.order ?? 0)-(b.order ?? 0));
 
@@ -182,10 +215,18 @@
     try {
       const data = await window.WebAppCapData.ready;
       const c = data.snapshot?.media?.content || {};
-      applyHero(c);
-      applyStaticImage('.about-photo img', c, 'about', c.about_alt);
-      applyStaticImage('.contact-photo img', c, 'contact', c.contact_alt);
-      applyWsopGallery(c);
+      const isTenant=data.slug!==data.cfg.projectSlug;
+
+      if(isTenant){
+        // The portfolio portrait is part of Gabriel's static shell and has no tenant media field.
+        const portfolioPhoto=document.querySelector('#portfolio .media-bio-photo');
+        if(portfolioPhoto)portfolioPhoto.hidden=true;
+      }
+
+      applyHero(c,isTenant);
+      applyStaticImage('.about-photo img', c, 'about', c.about_alt,isTenant);
+      applyStaticImage('.contact-photo img', c, 'contact', c.contact_alt,isTenant);
+      applyWsopGallery(c,isTenant);
     } catch (error) {
       console.warn('WebAppCap Media: mídia gerenciada indisponível.', error);
     } finally {
