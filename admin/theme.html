@@ -81,9 +81,7 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 (() => {
  const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
  const $=id=>document.getElementById(id);
- let user=null,project=null,myRole=null,draftRow=null,snapshot=null;
-      commercialPlan=await loadPlanLimits();
-      if(commercialPlan?.limits?.advanced_theme===false){location.replace(`/admin/plan.html?project=${encodeURIComponent(project.slug)}`);return}
+ let user=null,project=null,myRole=null,draftRow=null,snapshot=null,commercialPlan=null;
 
 
   async function loadPlanLimits(){
@@ -153,6 +151,11 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
   const p=await sb.from('projects').select('*').eq('slug',slug()).maybeSingle();
   if(p.error||!p.data)throw p.error||new Error('Projeto não encontrado');
   project=p.data;
+  commercialPlan=await loadPlanLimits();
+  if(commercialPlan?.limits?.advanced_theme===false){
+    location.replace(`/admin/plan.html?project=${encodeURIComponent(project.slug)}`);
+    return;
+  }
 
   const m=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',user.id).maybeSingle();
   if(m.error)throw m.error;
