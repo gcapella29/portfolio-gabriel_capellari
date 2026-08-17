@@ -98,6 +98,87 @@
         text-align:center;
       }
 
+
+      /* Editorial / Jornalista Signature
+         Uses the existing DOM and content model, so current projects remain compatible. */
+      [data-vitrine-module="ticker"][data-vitrine-variant="editorial-marquee"]{
+        border-block:1px solid color-mix(in srgb,var(--vp-accent,#e3bb3d) 32%,transparent);
+      }
+      [data-vitrine-module="ticker"][data-vitrine-variant="editorial-marquee"] .ticker{
+        letter-spacing:.08em;
+        text-transform:uppercase;
+      }
+
+      [data-vitrine-module="stats"][data-vitrine-variant="editorial-metrics"]{
+        position:relative;
+      }
+      [data-vitrine-module="stats"][data-vitrine-variant="editorial-metrics"] .stat{
+        box-shadow:none!important;
+        border-radius:0!important;
+        border-top:1px solid color-mix(in srgb,var(--vp-text,#171310) 16%,transparent)!important;
+        background:transparent!important;
+      }
+
+      [data-vitrine-module="about"][data-vitrine-variant="editorial-profile"] .about-inner,
+      [data-vitrine-module="about"][data-vitrine-variant="editorial-profile"] .about-grid{
+        align-items:center;
+        gap:clamp(2rem,5vw,5.5rem);
+      }
+      [data-vitrine-module="about"][data-vitrine-variant="editorial-profile"] h2{
+        max-width:12ch;
+      }
+
+      [data-vitrine-module="wsop"][data-vitrine-variant="editorial-feature"]{
+        position:relative;
+        overflow:hidden;
+      }
+      [data-vitrine-module="wsop"][data-vitrine-variant="editorial-feature"] h2{
+        max-width:11ch;
+      }
+
+      [data-vitrine-module="coverage"][data-vitrine-variant="editorial-board"] .board-row{
+        border-radius:0!important;
+        border-inline:0!important;
+        transition:padding-left .18s ease,background .18s ease;
+      }
+      [data-vitrine-module="coverage"][data-vitrine-variant="editorial-board"] .board-row:hover{
+        padding-left:.65rem;
+      }
+
+      [data-vitrine-module="portfolio"][data-vitrine-variant="editorial-press"] .press-cards{
+        align-items:stretch;
+      }
+      [data-vitrine-module="portfolio"][data-vitrine-variant="editorial-press"] .press-card{
+        position:relative;
+        overflow:hidden;
+      }
+      [data-vitrine-module="portfolio"][data-vitrine-variant="editorial-press"] .press-card::before{
+        content:"";
+        position:absolute;left:0;top:0;bottom:0;width:3px;
+        background:var(--vp-accent,#e3bb3d);
+        opacity:.9;
+      }
+
+      [data-vitrine-module="experience"][data-vitrine-variant="editorial-timeline"] .log-entry{
+        border-left:1px solid color-mix(in srgb,var(--vp-accent,#e3bb3d) 55%,transparent);
+        padding-left:clamp(1rem,2vw,1.6rem)!important;
+      }
+
+      [data-vitrine-module="education"][data-vitrine-variant="editorial-foundations"] .edu-grid{
+        gap:clamp(1.2rem,3vw,2.8rem);
+      }
+
+      [data-vitrine-module="instagram"][data-vitrine-variant="editorial-social"] .insta-grid{
+        align-items:center;
+      }
+
+      [data-vitrine-module="contact"][data-vitrine-variant="editorial-contact"]{
+        position:relative;
+      }
+      [data-vitrine-module="contact"][data-vitrine-variant="editorial-contact"] h2{
+        max-width:12ch;
+      }
+
       @media(max-width:760px){
         [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner,
         [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid{
