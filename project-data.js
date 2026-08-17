@@ -3,7 +3,7 @@
   if (!window.supabase || !window.VITRINE_SUPABASE) return;
 
   const cfg = window.VITRINE_SUPABASE;
-  const slug = window.VITRINE_PROJECT_CONTEXT?.slug || cfg.projectSlug;
+  const slug = window.VITRINE_PROJECT_CONTEXT?.slug || null;
   const params = new URLSearchParams(location.search);
   const isDraft = params.get('preview') === 'draft';
 
@@ -40,6 +40,10 @@
   );
 
   const load = async () => {
+    if (!slug) {
+      throw new Error('Nenhum projeto foi informado para o renderer.');
+    }
+
     const projectQuery = client
       .from('projects')
       .select('id,slug,name,site_type,subdomain,custom_domain,is_published,owner_id')
