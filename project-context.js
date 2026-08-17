@@ -1,30 +1,11 @@
 (() => {
   const cfg = window.VITRINE_SUPABASE;
-  if (!cfg) return;
+  const resolver = window.WebAppCapTenantResolver;
+  if (!cfg || !resolver) return;
 
-  const params = new URLSearchParams(window.location.search);
-  const querySlug = params.get('project')?.trim() || null;
-
-  const cleanPathMatch = window.location.pathname.match(/^\/p\/([a-z0-9-]+)\/?$/i);
-  const cleanPathSlug = cleanPathMatch ? decodeURIComponent(cleanPathMatch[1]).trim() : null;
-
-  const isAdmin = window.location.pathname.startsWith('/admin');
-
-  /*
-   * Project resolution must be explicit.
-   *
-   * Public pages:
-   *   ?project=slug -> /p/slug -> no project
-   *
-   * Admin pages:
-   *   ?project=slug -> no project
-   *
-   * IMPORTANT: cfg.projectSlug is intentionally NOT used as a fallback.
-   * Gabriel remains a valid project, but only when explicitly requested.
-   */
-  const resolved = isAdmin
-    ? querySlug
-    : (querySlug || cleanPathSlug || null);
+  const route = resolver.fromLocation(window.location);
+  const resolved = route.slug;
+  const isAdmin = route.isAdmin;
 
   window.VITRINE_PROJECT_CONTEXT = {
     slug: resolved,
@@ -32,7 +13,7 @@
     legacyPrimarySlug: cfg.projectSlug || null,
 
     set(slug) {
-      const cleanSlug = String(slug || '').trim();
+      const cleanSlug = resolver.cleanSlug(slug);
       if (!cleanSlug) return;
       localStorage.setItem('vitrine-current-project', cleanSlug);
       this.slug = cleanSlug;
@@ -52,33 +33,25 @@
     }
   };
 
-  if (querySlug && isAdmin) {
-    localStorage.setItem('vitrine-current-project', querySlug);
+  if (route.querySlug && isAdmin) {
+    localStorage.setItem('vitrine-current-project', route.querySlug);
   }
 
-  if (isAdmin && !querySlug) {
+  if (isAdmin && !route.querySlug) {
     localStorage.removeItem('vitrine-current-project');
   }
 
-  /*
-   * site.html is the renderer, not a project by itself.
-   * If it is reached without an explicit project, never expose Gabriel's
-   * static shell as an accidental fallback. Return to the platform root.
-   */
   if (!isAdmin && !resolved) {
-    if (window.location.pathname !== '/') {
-      window.location.replace('/');
-    }
+    if (window.location.pathname !== '/') window.location.replace('/');
     return;
   }
 
   /* -------------------------------------------------------
    * TENANT CLOAK (temporary compatibility layer)
    * -------------------------------------------------------
-   * The renderer still contains Gabriel's legacy static shell. Until the
-   * renderer becomes data-first, non-Gabriel projects stay hidden while
-   * their content/media/theme are applied. This layer can be removed once
-   * site.html no longer contains project-specific markup.
+   * site.html still contains Gabriel's legacy static shell. Non-Gabriel
+   * tenants therefore stay hidden until content/media/theme are applied.
+   * This disappears when the public renderer becomes data-first.
    * ----------------------------------------------------- */
   const isTenant = !isAdmin && resolved && resolved !== cfg.projectSlug;
   if (!isTenant) return;
@@ -89,53 +62,25 @@
   const style = document.createElement('style');
   style.id = 'webappcap-tenant-cloak-style';
   style.textContent = `
-    html.webappcap-tenant-pending body{
-      background:#082720!important;
-      min-height:100vh;
-    }
-    html.webappcap-tenant-pending body > *{
-      visibility:hidden!important;
-    }
+    html.webappcap-tenant-pending body{background:#082720!important;min-height:100vh}
+    html.webappcap-tenant-pending body > *{visibility:hidden!important}
     html.webappcap-tenant-pending::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      z-index:2147483646;
-      background:
-        radial-gradient(circle at 72% 22%,rgba(227,187,61,.12),transparent 24%),
-        linear-gradient(145deg,#082720 0%,#0e3b2e 58%,#164b3c 100%);
-      pointer-events:none;
+      content:"";position:fixed;inset:0;z-index:2147483646;
+      background:radial-gradient(circle at 72% 22%,rgba(227,187,61,.12),transparent 24%),linear-gradient(145deg,#082720 0%,#0e3b2e 58%,#164b3c 100%);
+      pointer-events:none
     }
     html.webappcap-tenant-pending::after{
-      content:"";
-      position:fixed;
-      left:50%;
-      top:50%;
-      width:28px;
-      height:28px;
-      margin:-14px 0 0 -14px;
-      z-index:2147483647;
-      border:2px solid rgba(255,255,255,.22);
-      border-top-color:#e3bb3d;
-      border-radius:50%;
-      animation:webappcapTenantSpin .7s linear infinite;
-      pointer-events:none;
+      content:"";position:fixed;left:50%;top:50%;width:28px;height:28px;margin:-14px 0 0 -14px;z-index:2147483647;
+      border:2px solid rgba(255,255,255,.22);border-top-color:#e3bb3d;border-radius:50%;animation:webappcapTenantSpin .7s linear infinite;pointer-events:none
     }
     html.webappcap-tenant-failed::after{
-      content:"Não foi possível carregar o site.";
-      width:auto;height:auto;margin:0;
-      transform:translate(-50%,-50%);
-      border:0;
-      animation:none;
-      color:#f7f4ec;
-      font:600 12px/1.4 "IBM Plex Mono",monospace;
-      white-space:nowrap;
+      content:"Não foi possível carregar o site.";width:auto;height:auto;margin:0;transform:translate(-50%,-50%);border:0;animation:none;
+      color:#f7f4ec;font:600 12px/1.4 "IBM Plex Mono",monospace;white-space:nowrap
     }
     @keyframes webappcapTenantSpin{to{transform:rotate(360deg)}}
   `;
   document.head.appendChild(style);
 
-  // Prevent a tenant from needlessly preloading Gabriel's static hero image.
   const removeGabrielPreload = () => {
     document.querySelectorAll('link[rel="preload"][href*="hero-gabriel"]').forEach(el=>el.remove());
   };
@@ -156,9 +101,7 @@
     });
   }
 
-  function maybeReveal(){
-    if(ready.content && ready.media && ready.theme) reveal();
-  }
+  function maybeReveal(){ if(ready.content && ready.media && ready.theme) reveal(); }
 
   window.WebAppCapTenantReveal = reveal;
   window.WebAppCapTenantFail = () => {
@@ -166,30 +109,10 @@
     root.classList.add('webappcap-tenant-failed');
   };
 
-  document.addEventListener('webappcap:content-rendered',()=>{
-    ready.content=true;
-    maybeReveal();
-  },{once:true});
+  document.addEventListener('webappcap:content-rendered',()=>{ready.content=true;maybeReveal()},{once:true});
+  document.addEventListener('vitrine:tenant-media-ready',()=>{ready.media=true;maybeReveal()},{once:true});
+  document.addEventListener('vitrine:theme-ready',()=>{ready.theme=true;maybeReveal()},{once:true});
 
-  document.addEventListener('vitrine:tenant-media-ready',()=>{
-    ready.media=true;
-    maybeReveal();
-  },{once:true});
-
-  document.addEventListener('vitrine:theme-ready',()=>{
-    ready.theme=true;
-    maybeReveal();
-  },{once:true});
-
-  // Theme should normally be ready as well, but content+media are the
-  // critical anti-flash gates. Do not keep a fast page hidden for a
-  // non-critical theme event.
-  setTimeout(()=>{
-    if(!revealed && ready.content && ready.media) reveal();
-  },1800);
-
-  // Never expose the static Gabriel shell on a failed tenant load.
-  setTimeout(()=>{
-    if(!revealed) window.WebAppCapTenantFail();
-  },8000);
+  setTimeout(()=>{ if(!revealed && ready.content && ready.media) reveal(); },1800);
+  setTimeout(()=>{ if(!revealed) window.WebAppCapTenantFail(); },8000);
 })();
