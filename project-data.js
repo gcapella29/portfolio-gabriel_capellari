@@ -57,7 +57,7 @@
   };
 
   async function resolveProject() {
-    const fields = 'id,slug,name,site_type,subdomain,custom_domain,is_published,owner_id';
+    const fields = 'id,slug,name,site_type,subdomain,custom_domain,domain_status,is_published,owner_id';
     let query = client.from('projects').select(fields);
 
     if (initialSlug) {
@@ -68,7 +68,7 @@
       const subdomain = resolver.subdomainFromHost(host);
       const clauses = [`custom_domain.eq.${host}`];
       if (subdomain) clauses.push(`subdomain.eq.${subdomain}`);
-      query = query.or(clauses.join(','));
+      query = query.or(clauses.join(',')).eq('domain_status','active');
     }
 
     if (!isDraft) query = query.eq('is_published', true);
@@ -84,6 +84,20 @@
     const slug = resolver.cleanSlug(project.slug);
     if (!slug) throw new Error('Projeto retornado com slug inválido.');
     if (initialSlug && slug !== initialSlug) throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
+
+    const host = String(location.hostname || '').toLowerCase();
+    const hostIsPrimary = resolver.isPrimaryHost(host);
+    if (!isDraft && !hostIsPrimary) {
+      const status = String(project.domain_status || '').toLowerCase();
+      const custom = String(project.custom_domain || '').toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/\.$/,'');
+      const subdomain = resolver.subdomainFromHost(host);
+      const subMatches = !!subdomain && String(project.subdomain || '').toLowerCase() === subdomain;
+      const customMatches = !!custom && custom === host;
+      if (status !== 'active' || (!customMatches && !subMatches)) {
+        throw new Error('Este domínio ainda não está ativo para este projeto.');
+      }
+    }
+
     if (window.VITRINE_PROJECT_CONTEXT) {
       window.VITRINE_PROJECT_CONTEXT.slug = slug;
       window.VITRINE_PROJECT_CONTEXT.hasProject = true;

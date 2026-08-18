@@ -30,6 +30,7 @@
       let q = await sb.from('projects')
         .select('slug')
         .eq('custom_domain', host)
+        .eq('domain_status', 'active')
         .eq('is_published', true)
         .maybeSingle();
 
@@ -42,6 +43,7 @@
           q = await sb.from('projects')
             .select('slug')
             .eq('subdomain', subdomain)
+            .eq('domain_status', 'active')
             .eq('is_published', true)
             .maybeSingle();
 
@@ -51,7 +53,7 @@
       }
 
       if (!slug) {
-        fail('Este domínio ainda não está associado a um projeto publicado.');
+        fail('Este domínio ainda não está ativo para um projeto publicado.');
         return;
       }
 
