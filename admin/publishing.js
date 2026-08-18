@@ -4,7 +4,7 @@
   const pub = window.WebAppCapPublishing;
   const sb = window.supabase.createClient(cfg.url, cfg.publishableKey, {auth:{persistSession:true,autoRefreshToken:true}});
   const $ = id => document.getElementById(id);
-  let user = null, project = null, draft = null, published = {}, role = null, state = null;
+  let user = null, project = null, draft = null, published = {}, role = null, state = null, versionCount = 0, latestVersionAt = null;
 
   const fmt = value => value ? new Date(value).toLocaleString('pt-BR') : '—';
   const rowsToSnapshot = rows => Object.fromEntries((rows || []).map(row => [row.section_key, {
@@ -28,6 +28,23 @@
     navigator.clipboard.writeText(value);
   }
 
+  function renderHistoryEvent() {
+    const timeline = document.querySelector('.timeline');
+    if (!timeline) return;
+    let event = document.getElementById('versionEvent');
+    if (!event) {
+      event = document.createElement('div');
+      event.className = 'event';
+      event.id = 'versionEvent';
+      event.innerHTML = '<strong>Histórico / rollback</strong><span id="versionEventText">—</span>';
+      timeline.appendChild(event);
+    }
+    const text = document.getElementById('versionEventText');
+    text.textContent = versionCount
+      ? `${versionCount} versão(ões) salva(s) · mais recente ${fmt(latestVersionAt)}`
+      : 'Nenhuma versão salva ainda';
+  }
+
   async function load() {
     const slug = resolver.cleanSlug(window.VITRINE_PROJECT_CONTEXT?.slug);
     if (!slug) throw new Error('Abra esta tela a partir de um projeto.');
@@ -41,13 +58,18 @@
     role = member.data?.role || null;
     if (!role) throw new Error('Sem acesso ao projeto.');
 
-    const d = await sb.from('project_drafts').select('snapshot,updated_at,last_published_at').eq('project_id', project.id).maybeSingle();
+    const [d,c,v] = await Promise.all([
+      sb.from('project_drafts').select('snapshot,updated_at,last_published_at').eq('project_id', project.id).maybeSingle(),
+      sb.from('site_content').select('section_key,content,is_visible,sort_order').eq('project_id', project.id),
+      sb.from('project_versions').select('created_at',{count:'exact'}).eq('project_id',project.id).order('created_at',{ascending:false}).limit(1)
+    ]);
     if (d.error) throw d.error;
-    draft = d.data || {snapshot:{}};
-
-    const c = await sb.from('site_content').select('section_key,content,is_visible,sort_order').eq('project_id', project.id);
     if (c.error) throw c.error;
+    if (v.error) throw v.error;
+    draft = d.data || {snapshot:{}};
     published = rowsToSnapshot(c.data);
+    versionCount = v.count || 0;
+    latestVersionAt = v.data?.[0]?.created_at || null;
     render();
   }
 
@@ -83,6 +105,7 @@
     $('updatedAt').textContent = fmt(state.updatedAt);
     $('publishedAt').textContent = fmt(state.publishedAt);
     $('projectMeta').textContent = `${project.site_type || '—'} · ${project.is_published ? 'ativo' : 'rascunho'}`;
+    renderHistoryEvent();
     $('publishCallout').className = `callout ${state.hasUnpublishedChanges ? 'warn' : 'ok'}`;
     $('publishCalloutText').textContent = state.hasUnpublishedChanges
       ? 'O Preview contém alterações que ainda não estão na produção.'
@@ -100,7 +123,10 @@
 
   async function publishNow() {
     if (!state?.hasUnpublishedChanges || !['owner','admin','editor'].includes(role)) return;
-    if (!window.confirm('Publicar o rascunho atual? A versão pública anterior será salva no histórico.')) return;
+    const ok = window.WebAppCapUX?.confirm
+      ? await window.WebAppCapUX.confirm({title:'Publicar alterações?',message:'O rascunho atual irá para produção e a versão pública anterior ficará disponível no Histórico.',confirmText:'Publicar agora'})
+      : window.confirm('Publicar o rascunho atual? A versão pública anterior será salva no histórico.');
+    if (!ok) return;
     const button = $('publishNow');
     button.disabled = true;
     button.textContent = 'Publicando…';
@@ -109,13 +135,15 @@
       if (result.error) throw result.error;
       await load();
       button.textContent = 'Publicado ✓';
+      window.WebAppCapUX?.toast?.('Publicação concluída e versão anterior salva ✓',{type:'success'});
       setTimeout(() => { button.textContent = 'Publicar agora'; render(); }, 1200);
     } catch (error) {
       console.error(error);
       const missing = /publish_project_atomic|schema cache|function/i.test(error.message || '');
-      alert(missing
+      const message = missing
         ? 'A função de publicação da Fase 4 ainda não foi instalada no Supabase.'
-        : (error.message || 'Não foi possível publicar.'));
+        : (error.message || 'Não foi possível publicar.');
+      window.WebAppCapUX?.toast ? window.WebAppCapUX.toast(message,{type:'error',duration:4200}) : alert(message);
       button.disabled = false;
       button.textContent = 'Publicar agora';
     }
