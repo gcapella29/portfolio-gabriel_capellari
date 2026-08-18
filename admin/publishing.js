@@ -4,7 +4,7 @@
   const pub = window.WebAppCapPublishing;
   const sb = window.supabase.createClient(cfg.url, cfg.publishableKey, {auth:{persistSession:true,autoRefreshToken:true}});
   const $ = id => document.getElementById(id);
-  let user = null, project = null, draft = null, published = {}, role = null;
+  let user = null, project = null, draft = null, published = {}, role = null, state = null;
 
   const fmt = value => value ? new Date(value).toLocaleString('pt-BR') : '—';
   const rowsToSnapshot = rows => Object.fromEntries((rows || []).map(row => [row.section_key, {
@@ -52,14 +52,13 @@
   }
 
   function render() {
-    const state = pub.publicationState({project, draft, published});
+    state = pub.publicationState({project, draft, published});
     const q = `?project=${encodeURIComponent(project.slug)}`;
     $('projectLabel').textContent = `${project.name} · ${project.slug}`;
     $('roleLabel').textContent = `Acesso: ${role}`;
     $('content').href = `/admin/index.html${q}`;
     $('domains').href = `/admin/domains.html${q}`;
     $('history').href = `/admin/history.html${q}`;
-    $('publishAction').href = `/admin/index.html${q}`;
 
     paint('pubStatus', state.isPublished ? 'Publicado' : 'Não publicado', state.isPublished ? 'ok' : 'warn');
     paint('draftStatus', state.hasUnpublishedChanges ? 'Alterações pendentes' : 'Sincronizado', state.hasUnpublishedChanges ? 'warn' : 'ok');
@@ -84,15 +83,42 @@
     $('updatedAt').textContent = fmt(state.updatedAt);
     $('publishedAt').textContent = fmt(state.publishedAt);
     $('projectMeta').textContent = `${project.site_type || '—'} · ${project.is_published ? 'ativo' : 'rascunho'}`;
-    $('publishAction').textContent = state.hasUnpublishedChanges ? 'Revisar e publicar alterações' : 'Abrir editor';
     $('publishCallout').className = `callout ${state.hasUnpublishedChanges ? 'warn' : 'ok'}`;
     $('publishCalloutText').textContent = state.hasUnpublishedChanges
       ? 'O Preview contém alterações que ainda não estão na produção.'
       : 'Rascunho e produção estão sincronizados.';
 
+    const canPublish = ['owner','admin','editor'].includes(role);
+    $('publishNow').classList.toggle('hidden', !canPublish || !state.hasUnpublishedChanges);
+    $('publishNow').disabled = !canPublish || !state.hasUnpublishedChanges;
+    $('openEditor').href = `/admin/index.html${q}`;
+
     $('copyPreview').onclick = () => copy(state.previewUrl);
     $('copyPublic').onclick = () => copy(state.publicUrl);
     $('copyConfigured').onclick = () => copy(state.configuredUrl);
+  }
+
+  async function publishNow() {
+    if (!state?.hasUnpublishedChanges || !['owner','admin','editor'].includes(role)) return;
+    if (!window.confirm('Publicar o rascunho atual? A versão pública anterior será salva no histórico.')) return;
+    const button = $('publishNow');
+    button.disabled = true;
+    button.textContent = 'Publicando…';
+    try {
+      const result = await sb.rpc('publish_project_atomic', {p_project_id:project.id});
+      if (result.error) throw result.error;
+      await load();
+      button.textContent = 'Publicado ✓';
+      setTimeout(() => { button.textContent = 'Publicar agora'; render(); }, 1200);
+    } catch (error) {
+      console.error(error);
+      const missing = /publish_project_atomic|schema cache|function/i.test(error.message || '');
+      alert(missing
+        ? 'A função de publicação da Fase 4 ainda não foi instalada no Supabase.'
+        : (error.message || 'Não foi possível publicar.'));
+      button.disabled = false;
+      button.textContent = 'Publicar agora';
+    }
   }
 
   async function open(userValue) {
@@ -103,6 +129,7 @@
     catch (error) { console.error(error); alert(error.message || 'Erro ao carregar'); }
   }
 
+  $('publishNow').onclick = publishNow;
   $('loginForm').onsubmit = async event => {
     event.preventDefault();
     const result = await sb.auth.signInWithPassword({email:$('email').value.trim(), password:$('password').value});
