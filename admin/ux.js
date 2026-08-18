@@ -20,6 +20,9 @@
    const initialSlug=currentEditorSlug();
    if(publishedLink&&initialSlug){publishedLink.href=safeEditorRoute(initialSlug);publishedLink.dataset.domainGuard='safe-route'}
    const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});let project;try{project=await editorProject(sb);if(publishedLink){publishedLink.href=editorPublicUrl(project);publishedLink.dataset.domainGuard=String(project.domain_status||'unconfigured').toLowerCase()==='active'?'active-domain':'safe-route'}}catch(error){console.warn('[WebAppCap publishing]',error);return}
+
+   document.addEventListener('click',async event=>{const link=event.target.closest?.('#publishedLink');if(!link)return;event.preventDefault();event.stopImmediatePropagation();try{const fresh=await editorProject(sb);const target=editorPublicUrl(fresh);if(!target)throw new Error('Endereço público indisponível.');link.href=target;link.dataset.domainGuard=String(fresh.domain_status||'unconfigured').toLowerCase()==='active'?'active-domain':'safe-route';window.open(target,'_blank','noopener,noreferrer')}catch(error){console.error('[WebAppCap published link]',error);toast(friendlyError(error),{type:'error',duration:3800})}},true);
+
    document.addEventListener('click',async event=>{if(event.target!==confirmButton)return;event.preventDefault();event.stopImmediatePropagation();if(confirmButton.dataset.atomicBusy==='1')return;confirmButton.dataset.atomicBusy='1';setButtonBusy(confirmButton,true,{busyText:'Publicando…'});try{
      if(state.dirty){const save=document.getElementById('saveButton');if(!save)throw new Error('Não foi possível salvar o rascunho antes de publicar.');save.click();await waitFor(()=>state.dirty===false)}
      const result=await sb.rpc('publish_project_atomic',{p_project_id:project.id});if(result.error)throw result.error;
