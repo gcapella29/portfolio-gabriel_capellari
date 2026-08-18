@@ -5,10 +5,6 @@
 
   const route = resolver.fromLocation(window.location);
   const isAdmin = route.isAdmin;
-  // Compatibility guard for older admin pages that still contain
-  // `context.slug || cfg.projectSlug`. A missing admin selection must never
-  // resolve to Gabriel, so legacy consumers receive an explicit non-project
-  // sentinel while modern consumers reject it through resolver.cleanSlug().
   const NO_ADMIN_PROJECT = '__no_project_selected__';
   const resolved = isAdmin && !route.slug ? NO_ADMIN_PROJECT : route.slug;
 
@@ -46,16 +42,19 @@
     }
   };
 
-  if (route.querySlug && isAdmin) {
-    localStorage.setItem('vitrine-current-project', route.querySlug);
-  }
+  if (route.querySlug && isAdmin) localStorage.setItem('vitrine-current-project', route.querySlug);
+  if (isAdmin && !route.querySlug) localStorage.removeItem('vitrine-current-project');
 
-  if (isAdmin && !route.querySlug) {
-    localStorage.removeItem('vitrine-current-project');
-  }
-
+  // Public custom domains/subdomains are intentionally allowed to continue
+  // without a slug here. project-data.js resolves the host against the projects
+  // table before any tenant UI is rendered. Never fall back to the primary project.
   if (!isAdmin && !route.slug) {
+    const host = String(window.location.hostname || '').toLowerCase();
+    const isCustomTenantHost = !resolver.isPrimaryHost(host);
+    if (isCustomTenantHost) {
+      window.VITRINE_PROJECT_CONTEXT.pendingHost = host;
+      return;
+    }
     if (window.location.pathname !== '/') window.location.replace('/');
-    return;
   }
 })();

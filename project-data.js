@@ -8,7 +8,7 @@
   const params = new URLSearchParams(location.search);
   const route = resolver.fromLocation(window.location, { admin:false });
   const contextSlug = resolver.cleanSlug(window.VITRINE_PROJECT_CONTEXT?.slug);
-  const slug = route.slug || contextSlug || null;
+  const initialSlug = route.slug || contextSlug || null;
   const isDraft = params.get('preview') === 'draft';
 
   const client = window.WebAppCapSupabase || (
@@ -56,23 +56,38 @@
     return schema?.normalizeType ? schema.normalizeType(project.site_type) : project.site_type;
   };
 
+  async function resolveProject() {
+    const fields = 'id,slug,name,site_type,subdomain,custom_domain,is_published,owner_id';
+    let query = client.from('projects').select(fields);
+
+    if (initialSlug) {
+      query = query.eq('slug', initialSlug);
+    } else {
+      const host = String(location.hostname || '').toLowerCase();
+      if (resolver.isPrimaryHost(host)) throw new Error('Nenhum projeto foi informado para o renderer.');
+      const subdomain = resolver.subdomainFromHost(host);
+      const clauses = [`custom_domain.eq.${host}`];
+      if (subdomain) clauses.push(`subdomain.eq.${subdomain}`);
+      query = query.or(clauses.join(','));
+    }
+
+    if (!isDraft) query = query.eq('is_published', true);
+    const { data, error } = await query.limit(2);
+    if (error) throw error;
+    if (!data?.length) throw new Error(isDraft ? 'Projeto não encontrado.' : 'Projeto não encontrado ou ainda não publicado.');
+    if (data.length > 1) throw new Error('O domínio solicitado corresponde a mais de um projeto.');
+    return data[0];
+  }
+
   const load = async () => {
-    if (!slug) throw new Error('Nenhum projeto foi informado para o renderer.');
-    if (window.VITRINE_PROJECT_CONTEXT) window.VITRINE_PROJECT_CONTEXT.slug = slug;
-
-    const projectQuery = client
-      .from('projects')
-      .select('id,slug,name,site_type,subdomain,custom_domain,is_published,owner_id')
-      .eq('slug', slug);
-
-    if (!isDraft) projectQuery.eq('is_published', true);
-
-    const { data: project, error: projectError } = await projectQuery.maybeSingle();
-    if (projectError) throw projectError;
-    if (!project) throw new Error(isDraft
-      ? 'Projeto não encontrado.'
-      : 'Projeto não encontrado ou ainda não publicado.');
-    if (project.slug !== slug) throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
+    const project = await resolveProject();
+    const slug = resolver.cleanSlug(project.slug);
+    if (!slug) throw new Error('Projeto retornado com slug inválido.');
+    if (initialSlug && slug !== initialSlug) throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
+    if (window.VITRINE_PROJECT_CONTEXT) {
+      window.VITRINE_PROJECT_CONTEXT.slug = slug;
+      window.VITRINE_PROJECT_CONTEXT.hasProject = true;
+    }
 
     let snapshot = {};
     if (isDraft) {
