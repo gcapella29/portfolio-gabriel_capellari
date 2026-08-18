@@ -11,7 +11,7 @@
  document.addEventListener('click',async e=>{const a=e.target.closest('a[href]');if(!a||!state.dirty||a.target==='_blank'||a.dataset.uxIgnoreDirty!==undefined)return;const u=new URL(a.href,location.href);if(u.origin!==location.origin)return;e.preventDefault();const ok=await confirmAction({title:'Sair sem salvar?',message:'Existem alterações não salvas nesta página.',confirmText:'Sair mesmo assim',danger:true});if(ok){state.dirty=false;location.href=a.href}},true);
 
  const isContentEditor=()=>location.pathname==='/admin/'||location.pathname==='/admin/index.html';
- const waitFor=(predicate,{timeout=8000,interval=80}={})=>new Promise((resolve,reject)=>{const started=Date.now();const tick=()=>{if(predicate())return resolve(true);if(Date.now()-started>=timeout)return reject(new Error('Tempo esgotado ao salvar o rascunho.'));setTimeout(tick,interval)};tick()});
+ const waitFor=(predicate,{timeout=8000,interval=80,errorMessage='Tempo esgotado ao concluir a operação.'}={})=>new Promise((resolve,reject)=>{const started=Date.now();const tick=()=>{try{if(predicate())return resolve(true)}catch{}if(Date.now()-started>=timeout)return reject(new Error(errorMessage));setTimeout(tick,interval)};tick()});
  const currentEditorSlug=()=>window.WebAppCapTenantResolver?.cleanSlug(new URLSearchParams(location.search).get('project')||window.VITRINE_PROJECT_CONTEXT?.slug);
  const safeEditorRoute=slug=>slug?new URL(`/p/${encodeURIComponent(slug)}`,location.origin).href:null;
  async function editorProject(sb){const slug=currentEditorSlug();if(!slug)throw new Error('Projeto não selecionado.');const q=await sb.from('projects').select('id,slug,subdomain,custom_domain,domain_status,is_published').eq('slug',slug).maybeSingle();if(q.error)throw q.error;if(!q.data)throw new Error('Projeto não encontrado.');return q.data}
@@ -24,12 +24,13 @@
    document.addEventListener('click',async event=>{const link=event.target.closest?.('#publishedLink');if(!link)return;event.preventDefault();event.stopImmediatePropagation();try{const fresh=await editorProject(sb);const target=editorPublicUrl(fresh);if(!target)throw new Error('Endereço público indisponível.');link.href=target;link.dataset.domainGuard=String(fresh.domain_status||'unconfigured').toLowerCase()==='active'?'active-domain':'safe-route';window.open(target,'_blank','noopener,noreferrer')}catch(error){console.error('[WebAppCap published link]',error);toast(friendlyError(error),{type:'error',duration:3800})}},true);
 
    document.addEventListener('click',async event=>{if(event.target!==confirmButton)return;event.preventDefault();event.stopImmediatePropagation();if(confirmButton.dataset.atomicBusy==='1')return;confirmButton.dataset.atomicBusy='1';setButtonBusy(confirmButton,true,{busyText:'Publicando…'});try{
-     if(state.dirty){const save=document.getElementById('saveButton');if(!save)throw new Error('Não foi possível salvar o rascunho antes de publicar.');save.click();await waitFor(()=>state.dirty===false)}
+     if(state.dirty){const save=document.getElementById('saveButton');if(!save)throw new Error('Não foi possível salvar o rascunho antes de publicar.');save.click();await waitFor(()=>state.dirty===false,{timeout:8000,errorMessage:'Tempo esgotado ao salvar o rascunho.'})}
      const result=await sb.rpc('publish_project_atomic',{p_project_id:project.id});if(result.error)throw result.error;
      markDirty(false);document.getElementById('publishModal')?.classList.remove('show');const status=document.getElementById('statusText');if(status)status.textContent='Publicado agora · transação concluída';toast('Site publicado com segurança ✓',{type:'success',duration:3200});
      setTimeout(()=>location.reload(),650);
    }catch(error){console.error('[WebAppCap atomic publish]',error);toast(friendlyError(error)||'Erro ao publicar.',{type:'error',duration:4200})}finally{delete confirmButton.dataset.atomicBusy;setButtonBusy(confirmButton,false)}} ,true);
  }
- setTimeout(installAtomicPublishing,0);
+ function bootstrapPhase4Editor(){if(!isContentEditor())return;waitFor(()=>{const status=document.getElementById('statusText');const identity=document.getElementById('projectIdentity');if(!status||!identity)return false;const statusText=String(status.textContent||'').trim();const identityText=String(identity.textContent||'').trim();if(statusText==='Erro')throw new Error('Admin não conseguiu carregar o projeto.');return identityText!=='Projeto'&&statusText!==''&&!/^Conectando/i.test(statusText)},{timeout:12000,interval:100,errorMessage:'Admin não concluiu o carregamento do projeto.'}).then(installAtomicPublishing).catch(error=>console.warn('[WebAppCap phase 4 bootstrap]',error))}
+ setTimeout(bootstrapPhase4Editor,0);
  window.WebAppCapUX={toast,setButtonBusy,confirm:confirmAction,markDirty,friendlyError,state};
 })();
