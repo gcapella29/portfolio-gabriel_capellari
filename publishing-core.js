@@ -10,15 +10,26 @@
     .replace(/[^a-z0-9-]/g, '')
     .replace(/^-+|-+$/g, '');
 
-  function publicUrl(project, origin = window.location.origin) {
+  function routeUrl(project, origin = window.location.origin) {
+    const slug = window.WebAppCapTenantResolver?.cleanSlug(project?.slug);
+    return slug ? new URL(`/p/${encodeURIComponent(slug)}`, origin).href : null;
+  }
+
+  function configuredUrl(project) {
     if (!project) return null;
     const custom = cleanHost(project.custom_domain);
     if (custom) return `https://${custom}/`;
     const subdomain = cleanSubdomain(project.subdomain);
     if (subdomain) return `https://${subdomain}.webappcap.com.br/`;
-    const slug = window.WebAppCapTenantResolver?.cleanSlug(project.slug);
-    if (!slug) return null;
-    return new URL(`/p/${encodeURIComponent(slug)}`, origin).href;
+    return null;
+  }
+
+  function publicUrl(project, origin = window.location.origin) {
+    const route = routeUrl(project, origin);
+    if (!project) return route;
+    return String(project.domain_status || '').toLowerCase() === 'active'
+      ? (configuredUrl(project) || route)
+      : route;
   }
 
   function previewUrl(project, origin = window.location.origin) {
@@ -28,11 +39,6 @@
     url.searchParams.set('preview', 'draft');
     url.searchParams.set('project', slug);
     return url.href;
-  }
-
-  function routeUrl(project, origin = window.location.origin) {
-    const slug = window.WebAppCapTenantResolver?.cleanSlug(project?.slug);
-    return slug ? new URL(`/p/${encodeURIComponent(slug)}`, origin).href : null;
   }
 
   function stable(value) {
@@ -57,25 +63,30 @@
     const hasPublishedContent = Object.keys(publishedSnapshot).length > 0;
     const hasDraft = Object.keys(draftSnapshot).length > 0;
     const changed = hasDraft && fingerprint(draftSnapshot) !== fingerprint(publishedSnapshot);
-    const publishedAt = draft?.last_published_at || null;
-    const updatedAt = draft?.updated_at || null;
+    const domainStatus = project?.domain_status || 'unconfigured';
+    const route = routeUrl(project);
+    const configured = configuredUrl(project);
+    const publicAddress = publicUrl(project);
     return {
       isPublished: project?.is_published === true && hasPublishedContent,
       hasDraft,
       hasPublishedContent,
       hasUnpublishedChanges: changed,
-      publishedAt,
-      updatedAt,
-      domainStatus: project?.domain_status || 'unconfigured',
-      publicUrl: publicUrl(project),
+      publishedAt: draft?.last_published_at || null,
+      updatedAt: draft?.updated_at || null,
+      domainStatus,
+      domainIsActive: String(domainStatus).toLowerCase() === 'active',
+      configuredUrl: configured,
+      publicUrl: publicAddress,
       previewUrl: previewUrl(project),
-      routeUrl: routeUrl(project)
+      routeUrl: route
     };
   }
 
   window.WebAppCapPublishing = Object.freeze({
     cleanHost,
     cleanSubdomain,
+    configuredUrl,
     publicUrl,
     previewUrl,
     routeUrl,
