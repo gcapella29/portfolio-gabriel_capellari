@@ -8,8 +8,12 @@
   const params = new URLSearchParams(location.search);
   const route = resolver.fromLocation(window.location, { admin:false });
   const contextSlug = resolver.cleanSlug(window.VITRINE_PROJECT_CONTEXT?.slug);
-  const initialSlug = route.slug || contextSlug || null;
+  const validationSlug = resolver.cleanSlug(params.get('webappcap_validate'));
   const isDraft = params.get('preview') === 'draft';
+  const host = String(location.hostname || '').toLowerCase();
+  const hostIsPrimary = resolver.isPrimaryHost(host);
+  const isDomainValidation = !isDraft && !hostIsPrimary && !!validationSlug;
+  const initialSlug = route.slug || (isDomainValidation ? validationSlug : null) || contextSlug || null;
 
   const client = window.WebAppCapSupabase || (
     window.WebAppCapSupabase = window.supabase.createClient(
@@ -56,6 +60,14 @@
     return schema?.normalizeType ? schema.normalizeType(project.site_type) : project.site_type;
   };
 
+  const configuredHostMatches = project => {
+    const custom = String(project?.custom_domain || '').toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/\.$/,'');
+    const subdomain = resolver.subdomainFromHost(host);
+    const subMatches = !!subdomain && String(project?.subdomain || '').toLowerCase() === subdomain;
+    const customMatches = !!custom && custom === host;
+    return customMatches || subMatches;
+  };
+
   async function resolveProject() {
     const fields = 'id,slug,name,site_type,subdomain,custom_domain,domain_status,is_published,owner_id';
     let query = client.from('projects').select(fields);
@@ -63,8 +75,7 @@
     if (initialSlug) {
       query = query.eq('slug', initialSlug);
     } else {
-      const host = String(location.hostname || '').toLowerCase();
-      if (resolver.isPrimaryHost(host)) throw new Error('Nenhum projeto foi informado para o renderer.');
+      if (hostIsPrimary) throw new Error('Nenhum projeto foi informado para o renderer.');
       const subdomain = resolver.subdomainFromHost(host);
       const clauses = [`custom_domain.eq.${host}`];
       if (subdomain) clauses.push(`subdomain.eq.${subdomain}`);
@@ -85,15 +96,12 @@
     if (!slug) throw new Error('Projeto retornado com slug inválido.');
     if (initialSlug && slug !== initialSlug) throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
 
-    const host = String(location.hostname || '').toLowerCase();
-    const hostIsPrimary = resolver.isPrimaryHost(host);
     if (!isDraft && !hostIsPrimary) {
       const status = String(project.domain_status || '').toLowerCase();
-      const custom = String(project.custom_domain || '').toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/\.$/,'');
-      const subdomain = resolver.subdomainFromHost(host);
-      const subMatches = !!subdomain && String(project.subdomain || '').toLowerCase() === subdomain;
-      const customMatches = !!custom && custom === host;
-      if (status !== 'active' || (!customMatches && !subMatches)) {
+      const hostMatches = configuredHostMatches(project);
+      const validationAllowed = isDomainValidation && validationSlug === slug && status === 'pending' && hostMatches;
+      const activeAllowed = status === 'active' && hostMatches;
+      if (!validationAllowed && !activeAllowed) {
         throw new Error('Este domínio ainda não está ativo para este projeto.');
       }
     }
@@ -129,15 +137,16 @@
     project.site_type = canonicalType(project, snapshot);
 
     const result = {
-      cfg, client, slug, isDraft, project, snapshot,
+      cfg, client, slug, isDraft, isDomainValidation, project, snapshot,
       contentMap: snapshotToMap(snapshot)
     };
 
     window.WebAppCapData.data = result;
     document.documentElement.dataset.webappcapProject = slug;
     document.documentElement.dataset.webappcapProjectType = project.site_type || '';
-    document.documentElement.dataset.webappcapMode = isDraft ? 'draft' : 'published';
+    document.documentElement.dataset.webappcapMode = isDraft ? 'draft' : (isDomainValidation ? 'domain-validation' : 'published');
     document.documentElement.dataset.webappcapState = 'ready';
+    if (isDomainValidation) document.documentElement.dataset.webappcapDomainValidation = 'true';
     document.dispatchEvent(new CustomEvent('webappcap:data-ready', { detail: result }));
     return result;
   };
