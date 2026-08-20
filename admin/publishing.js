@@ -2,6 +2,7 @@
   const cfg = window.VITRINE_SUPABASE;
   const resolver = window.WebAppCapTenantResolver;
   const pub = window.WebAppCapPublishing;
+  const access = window.WebAppCapAccess;
   const sb = window.supabase.createClient(cfg.url, cfg.publishableKey, {auth:{persistSession:true,autoRefreshToken:true}});
   const $ = id => document.getElementById(id);
   let user = null, project = null, draft = null, published = {}, role = null, state = null, versionCount = 0, latestVersionAt = null;
@@ -55,8 +56,9 @@
 
     const member = await sb.from('project_members').select('role').eq('project_id', project.id).eq('user_id', user.id).maybeSingle();
     if (member.error) throw member.error;
-    role = member.data?.role || null;
+    role = access?.normalizeRole(member.data?.role) || null;
     if (!role) throw new Error('Sem acesso ao projeto.');
+    access?.requireCapability(role, 'history', 'Você não tem acesso ao estado operacional deste projeto.');
 
     const [d,c,v] = await Promise.all([
       sb.from('project_drafts').select('snapshot,updated_at,last_published_at').eq('project_id', project.id).maybeSingle(),
@@ -77,10 +79,12 @@
     state = pub.publicationState({project, draft, published});
     const q = `?project=${encodeURIComponent(project.slug)}`;
     $('projectLabel').textContent = `${project.name} · ${project.slug}`;
-    $('roleLabel').textContent = `Acesso: ${role}`;
+    $('roleLabel').textContent = `Acesso: ${access?.label(role) || role}`;
     $('content').href = `/admin/index.html${q}`;
     $('domains').href = `/admin/domains.html${q}`;
     $('history').href = `/admin/history.html${q}`;
+    $('domains').classList.toggle('hidden', !access?.can(role, 'domains'));
+    $('history').classList.toggle('hidden', !access?.can(role, 'history'));
 
     paint('pubStatus', state.isPublished ? 'Publicado' : 'Não publicado', state.isPublished ? 'ok' : 'warn');
     paint('draftStatus', state.hasUnpublishedChanges ? 'Alterações pendentes' : 'Sincronizado', state.hasUnpublishedChanges ? 'warn' : 'ok');
@@ -111,7 +115,7 @@
       ? 'O Preview contém alterações que ainda não estão na produção.'
       : 'Rascunho e produção estão sincronizados.';
 
-    const canPublish = ['owner','admin','editor'].includes(role);
+    const canPublish = access?.can(role, 'publish') === true;
     $('publishNow').classList.toggle('hidden', !canPublish || !state.hasUnpublishedChanges);
     $('publishNow').disabled = !canPublish || !state.hasUnpublishedChanges;
     $('openEditor').href = `/admin/index.html${q}`;
@@ -122,7 +126,7 @@
   }
 
   async function publishNow() {
-    if (!state?.hasUnpublishedChanges || !['owner','admin','editor'].includes(role)) return;
+    if (!state?.hasUnpublishedChanges || !access?.can(role, 'publish')) return;
     const ok = window.WebAppCapUX?.confirm
       ? await window.WebAppCapUX.confirm({title:'Publicar alterações?',message:'O rascunho atual irá para produção e a versão pública anterior ficará disponível no Histórico.',confirmText:'Publicar agora'})
       : window.confirm('Publicar o rascunho atual? A versão pública anterior será salva no histórico.');
