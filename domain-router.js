@@ -39,16 +39,24 @@
     return customMatches || subMatches;
   };
 
-  const redirectToProject = (slug, validation = false) => {
-    const path = resolver.publicPath(slug);
-    if (!path) throw new Error('Slug de projeto inválido.');
-    if (!validation) {
-      location.replace(path);
-      return;
+  const adoptProjectInPlace = (slug) => {
+    const clean = resolver.cleanSlug(slug);
+    if (!clean) throw new Error('Slug de projeto inválido.');
+
+    if (window.VITRINE_PROJECT_CONTEXT?.set) {
+      window.VITRINE_PROJECT_CONTEXT.set(clean);
+    } else {
+      window.VITRINE_PROJECT_CONTEXT = window.VITRINE_PROJECT_CONTEXT || {};
+      window.VITRINE_PROJECT_CONTEXT.slug = clean;
+      window.VITRINE_PROJECT_CONTEXT.hasProject = true;
     }
-    const url = new URL(path, location.origin);
-    url.searchParams.set('webappcap_validate', slug);
-    location.replace(url.pathname + url.search);
+
+    if (window.VITRINE_PROJECT_CONTEXT) {
+      window.VITRINE_PROJECT_CONTEXT.pendingHost = host;
+    }
+
+    document.documentElement.classList.remove('vitrine-domain-resolving');
+    document.getElementById('vitrineDomainLoader')?.remove();
   };
 
   const findValidationProject = async () => {
@@ -73,7 +81,7 @@
       return true;
     }
 
-    redirectToProject(validationSlug, true);
+    adoptProjectInPlace(validationSlug);
     return true;
   };
 
@@ -108,7 +116,7 @@
       return;
     }
 
-    redirectToProject(slug, false);
+    adoptProjectInPlace(slug);
   };
 
   const findProject = async () => {
