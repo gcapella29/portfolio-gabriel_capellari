@@ -1,47 +1,81 @@
 (() => {
+  if (window.WebAppCapRouteGuardStarted) return;
+  window.WebAppCapRouteGuardStarted = true;
   if (!window.supabase || !window.VITRINE_SUPABASE) return;
   const cfg=window.VITRINE_SUPABASE;
   const path=location.pathname.toLowerCase();
-  const safe=new Set(['/admin/client.html','/admin/index.html','/admin/','/admin/media.html']);
-  if(!path.startsWith('/admin/')||safe.has(path))return;
+  if(!path.startsWith('/admin/'))return;
+
+  const capabilityByPath={
+    '/admin/dashboard.html':'projects',
+    '/admin/media.html':'media',
+    '/admin/history.html':'history',
+    '/admin/structure.html':'structure',
+    '/admin/theme.html':'theme',
+    '/admin/templates.html':'templates',
+    '/admin/footer.html':'footer',
+    '/admin/domains.html':'domains',
+    '/admin/team.html':'team',
+    '/admin/projects.html':'projects',
+    '/admin/new-project.html':'projects',
+    '/admin/publishing.html':'publish'
+  };
+  const safe=new Set(['/admin/client.html','/admin/index.html','/admin/']);
+  if(safe.has(path))return;
+  const capability=capabilityByPath[path];
+  if(!capability)return;
+
+  let style=document.getElementById('webappcapRouteGuardStyle');
+  const setChecking=()=>{
+    document.documentElement.classList.add('webappcap-route-checking');
+    if(!style){style=document.createElement('style');style.id='webappcapRouteGuardStyle';style.textContent='html.webappcap-route-checking body{visibility:hidden!important}';document.head.appendChild(style)}
+  };
+  setChecking();
 
   const sb=window.WebAppCapRouteGuardSupabase||(window.WebAppCapRouteGuardSupabase=
     window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}));
+  const normalizeRole=role=>String(role||'').trim().toLowerCase();
+  const matrix={
+    owner:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true},
+    admin:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true},
+    editor:{editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false},
+    viewer:{editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false}
+  };
+  const can=(role,cap)=>matrix[normalizeRole(role)]?.[cap]===true;
+  const params=new URLSearchParams(location.search);
+  const slugFromUrl=()=>window.WebAppCapTenantResolver?.cleanSlug?.(params.get('project')||window.VITRINE_PROJECT_CONTEXT?.slug)||params.get('project');
+  const fallback=slug=>`/admin/${slug?`?project=${encodeURIComponent(slug)}`:''}`;
+  const allow=()=>{document.documentElement.classList.remove('webappcap-route-checking');style?.remove();style=null;window.WebAppCapRouteGuardAllowed=true;window.WebAppCapRouteGuardBlocked=false};
+  const deny=slug=>{window.WebAppCapRouteGuardBlocked=true;location.replace(fallback(slug))};
 
+  let running=false;
   async function run(){
-    const {data:{session}}=await sb.auth.getSession();
-    if(!session){document.documentElement.classList.remove('webappcap-route-checking');return}
+    if(running)return;
+    running=true;
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(!session){allow();return}
+      setChecking();
+      let slug=slugFromUrl();
 
-    const {data:memberships,error}=await sb.from('project_members')
-      .select('project_id,role').eq('user_id',session.user.id);
-
-    if(error){document.documentElement.classList.remove('webappcap-route-checking');return}
-
-    const roles=(memberships||[]).map(x=>x.role);
-    if(roles.some(r=>r==='owner'||r==='admin')){
-      document.documentElement.classList.remove('webappcap-route-checking');
-      return;
-    }
-    if(!roles.some(r=>r==='editor'||r==='viewer')){
-      document.documentElement.classList.remove('webappcap-route-checking');
-      return;
-    }
-
-    const requested=new URLSearchParams(location.search).get('project');
-    if(requested){
-      location.replace(`/admin/client.html?project=${encodeURIComponent(requested)}`);
-      return;
-    }
-
-    const first=memberships?.find(x=>x.role==='editor'||x.role==='viewer')?.project_id;
-    if(first){
-      const {data:p}=await sb.from('projects').select('slug').eq('id',first).maybeSingle();
-      if(p?.slug){
-        location.replace(`/admin/client.html?project=${encodeURIComponent(p.slug)}`);
-        return;
+      if(capability==='projects'){
+        const {data:memberships,error}=await sb.from('project_members').select('role').eq('user_id',session.user.id);
+        if(error){deny(slug);return}
+        if((memberships||[]).some(m=>can(m.role,'projects'))){allow();return}
+        deny(slug);return;
       }
-    }
-    location.replace('/admin/client.html');
+
+      if(!slug){deny(null);return}
+      const {data:project,error:pError}=await sb.from('projects').select('id,slug').eq('slug',slug).maybeSingle();
+      if(pError||!project){deny(null);return}
+      const {data:member,error:mError}=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',session.user.id).maybeSingle();
+      if(mError||!member||!can(member.role,capability)){deny(project.slug);return}
+      allow();
+    } finally { running=false }
   }
-  run();
+
+  window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
+  sb.auth.onAuthStateChange((event)=>{
+    if(event==='SIGNED_IN') window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
+  });
 })();
