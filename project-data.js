@@ -90,11 +90,31 @@
     return data[0];
   }
 
+  async function requireDraftMembership(project) {
+    const { data:{ session }, error:sessionError } = await client.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!session?.user) throw new Error('Entre no painel para visualizar este rascunho.');
+    const { data:member, error } = await client
+      .from('project_members')
+      .select('role')
+      .eq('project_id', project.id)
+      .eq('user_id', session.user.id)
+      .maybeSingle();
+    if (error) throw error;
+    const role = String(member?.role || '').toLowerCase();
+    if (!['owner','admin','editor','viewer'].includes(role)) {
+      throw new Error('Você não tem acesso ao Preview deste projeto.');
+    }
+    return role;
+  }
+
   const load = async () => {
     const project = await resolveProject();
     const slug = resolver.cleanSlug(project.slug);
     if (!slug) throw new Error('Projeto retornado com slug inválido.');
     if (initialSlug && slug !== initialSlug) throw new Error('O projeto retornado não corresponde ao endereço solicitado.');
+
+    if (isDraft) await requireDraftMembership(project);
 
     if (!isDraft && !hostIsPrimary) {
       const status = String(project.domain_status || '').toLowerCase();
