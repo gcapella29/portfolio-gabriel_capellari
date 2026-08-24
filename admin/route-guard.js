@@ -15,6 +15,7 @@
     '/admin/templates.html':'templates',
     '/admin/footer.html':'footer',
     '/admin/domains.html':'domains',
+    '/admin/team.html':'team',
     '/admin/projects.html':'projects',
     '/admin/publishing.html':'publish'
   };
@@ -34,10 +35,10 @@
     window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}));
   const normalizeRole=role=>String(role||'').trim().toLowerCase();
   const matrix={
-    owner:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,projects:true},
-    admin:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:false,projects:true},
-    editor:{editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,projects:false},
-    viewer:{editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,projects:false}
+    owner:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true},
+    admin:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:false,team:false,projects:true},
+    editor:{editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false},
+    viewer:{editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false}
   };
   const can=(role,cap)=>matrix[normalizeRole(role)]?.[cap]===true;
   const params=new URLSearchParams(location.search);
@@ -74,8 +75,6 @@
 
   window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
   sb.auth.onAuthStateChange((event)=>{
-    if(event==='SIGNED_IN'){
-      window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
-    }
+    if(event==='SIGNED_IN') window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
   });
 })();
