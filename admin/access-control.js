@@ -13,7 +13,9 @@
       templates:true,
       footer:true,
       domains:true,
-      projects:true
+      projects:true,
+      preview:true,
+      publicSite:true
     }),
     admin: Object.freeze({
       editContent:true,
@@ -26,7 +28,9 @@
       templates:true,
       footer:true,
       domains:false,
-      projects:true
+      projects:true,
+      preview:true,
+      publicSite:true
     }),
     editor: Object.freeze({
       editContent:true,
@@ -39,12 +43,30 @@
       templates:false,
       footer:false,
       domains:false,
-      projects:false
+      projects:false,
+      preview:true,
+      publicSite:true
+    }),
+    viewer: Object.freeze({
+      editContent:false,
+      publish:false,
+      media:false,
+      history:false,
+      restoreVersion:false,
+      structure:false,
+      theme:false,
+      templates:false,
+      footer:false,
+      domains:false,
+      projects:false,
+      preview:true,
+      publicSite:true
     })
   });
 
+  const empty = Object.freeze({});
   function permissions(role) {
-    return matrix[normalizeRole(role)] || Object.freeze({});
+    return matrix[normalizeRole(role)] || empty;
   }
 
   function can(role, capability) {
@@ -57,7 +79,7 @@
   }
 
   function label(role) {
-    return ({owner:'Owner',admin:'Administrador',editor:'Editor'})[normalizeRole(role)] || 'Sem acesso';
+    return ({owner:'Owner',admin:'Administrador',editor:'Editor',viewer:'Visualizador'})[normalizeRole(role)] || 'Sem acesso';
   }
 
   window.WebAppCapAccess = Object.freeze({ normalizeRole, permissions, can, requireCapability, label, matrix });
