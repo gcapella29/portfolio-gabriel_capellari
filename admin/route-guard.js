@@ -17,6 +17,7 @@
     '/admin/domains.html':'domains',
     '/admin/team.html':'team',
     '/admin/projects.html':'projects',
+    '/admin/new-project.html':'projects',
     '/admin/publishing.html':'publish'
   };
   const safe=new Set(['/admin/client.html','/admin/index.html','/admin/']);
