@@ -50,17 +50,18 @@ h1,h2{font-family:Fraunces,serif}.field{display:grid;gap:.4rem}.field label{font
 <script>
 (() => {
  const cfg=window.VITRINE_SUPABASE,sb=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
- let user=null,project=null,myRole=null;const $=id=>document.getElementById(id);
+ let user=null,project=null,myRole=null,commercialPlan=null;const $=id=>document.getElementById(id);
  function toast(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2400)}
  const slug=()=>window.VITRINE_PROJECT_CONTEXT?.slug||cfg.projectSlug;
  
-  async function loadPlanLimits(){
-    const q=await sb.from('project_commercial').select('plan_code,limits,status').eq('project_id',project.id).maybeSingle();
-    if(q.error){console.warn('Plano comercial indisponível:',q.error.message);return {plan_code:'pro',status:'active',limits:{client_users:1,custom_domain:true,templates:true,advanced_theme:true,media_gallery:20}}}
-    return q.data||{plan_code:'pro',status:'active',limits:{client_users:1,custom_domain:true,templates:true,advanced_theme:true,media_gallery:20}};
-  }
+ async function loadPlanLimits(){
+   const fallback={plan_code:'pro',status:'active',limits:{client_users:1,custom_domain:true,templates:true,advanced_theme:true,media_gallery:20}};
+   const q=await sb.from('project_commercial').select('plan_code,limits,status').eq('project_id',project.id).maybeSingle();
+   if(q.error){console.warn('Plano comercial indisponível:',q.error.message);return fallback}
+   return q.data||fallback;
+ }
 
-async function loadProject(){
+ async function loadProject(){
    const q=await sb.from('projects').select('*').eq('slug',slug()).maybeSingle();
    if(q.error||!q.data)throw q.error||new Error('Projeto não encontrado');
    project=q.data;$('projectLabel').textContent=`${project.name} · ${project.slug}`;
@@ -78,19 +79,18 @@ async function loadProject(){
    const canManage=myRole==='owner';
    $('inviteForm').style.display=canManage?'grid':'none';
    if(canManage){
-     $('inviteRole').innerHTML=
-       '<option value="admin">Admin</option><option value="editor">Cliente</option><option value="viewer">Visualizador</option>';
+     $('inviteRole').innerHTML='<option value="admin">Admin</option><option value="editor">Cliente</option><option value="viewer">Visualizador</option>';
    }
    $('members').innerHTML=q.data.map(m=>`<article class="member"><div class="meta"><strong>${m.email||'Usuário'}</strong><span>${m.user_id===user.id?'Você · ':''}${new Date(m.created_at).toLocaleDateString('pt-BR')}</span><div class="role">${m.role}</div></div><div class="actions">${canManage&&m.role!=='owner'&&m.user_id!==user.id?`<select data-role="${m.user_id}" style="padding:.55rem;border:1px solid var(--line);border-radius:9px"><option ${m.role==='admin'?'selected':''} value="admin">Admin</option><option ${m.role==='editor'?'selected':''} value="editor">Cliente</option><option ${m.role==='viewer'?'selected':''} value="viewer">Visualizador</option></select><button class="btn danger" data-remove="${m.user_id}">Remover</button>`:''}</div></article>`).join('');
    $('members').querySelectorAll('[data-role]').forEach(sel=>sel.onchange=()=>memberAction('update_role',sel.dataset.role,sel.value));
    $('members').querySelectorAll('[data-remove]').forEach(btn=>btn.onclick=()=>memberAction('remove',btn.dataset.remove));
  }
  async function invoke(body){
-  if(body?.action==='invite' && ['editor','viewer'].includes(body.role||'editor')){
-    const max=Number(commercialPlan?.limits?.client_users??1);
-    const q=await sb.from('project_members').select('user_id,role',{count:'exact',head:true}).eq('project_id',project.id).in('role',['editor','viewer']);
-    if(!q.error && Number(q.count||0)>=max)throw new Error(`Seu plano permite até ${max} usuário(s) cliente.`);
-  }
+   if(body?.action==='invite' && ['editor','viewer'].includes(body.role||'editor')){
+     const max=Number(commercialPlan?.limits?.client_users??1);
+     const q=await sb.from('project_members').select('user_id,role',{count:'exact',head:true}).eq('project_id',project.id).in('role',['editor','viewer']);
+     if(!q.error && Number(q.count||0)>=max)throw new Error(`Seu plano permite até ${max} usuário(s) cliente.`);
+   }
    const {data,error}=await sb.functions.invoke('manage-project-member',{body:{project_id:project.id,...body}});
    if(error)throw error;if(data?.error)throw new Error(data.error);return data;
  }
@@ -106,7 +106,10 @@ async function loadProject(){
    }catch(e){console.error(e);toast(e.message||'Erro ao convidar')}
    finally{btn.disabled=false;btn.textContent='Enviar convite'}
  };
- async function open(u){user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');try{await loadProject();await loadMembers()}catch(e){console.error(e);toast('Você não tem acesso a este projeto.')}}
+ async function open(u){
+   user=u;$('loginView').classList.add('hidden');$('app').classList.remove('hidden');
+   try{await loadProject();commercialPlan=await loadPlanLimits();await loadMembers()}catch(e){console.error(e);toast('Você não tem acesso a este projeto.')}
+ }
  $('loginForm').onsubmit=async e=>{e.preventDefault();const r=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(r.error){$('err').textContent='E-mail ou senha inválidos.';return}open(r.data.user)};
  sb.auth.getSession().then(({data})=>{if(data.session?.user)open(data.session.user)});
 })();
