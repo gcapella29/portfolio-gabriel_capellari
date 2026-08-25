@@ -86,3 +86,27 @@
  setTimeout(bootstrapPhase5Editor,0);
  window.WebAppCapUX={toast,setButtonBusy,confirm:confirmAction,markDirty,friendlyError,state,preflightRestrictedEditor,routeProjectlessAdminEntry};
 })();
+
+(() => {
+  if(location.pathname.toLowerCase()!=='/admin/dashboard.html'||!window.supabase||!window.VITRINE_SUPABASE)return;
+  const slug=new URLSearchParams(location.search).get('project');
+  if(!slug)return;
+  const labels={journalist:'Editorial / Jornalista',editorial:'Editorial / Jornalista',personal_trainer:'Personal Trainer / Fitness',language_teacher:'Professor / Consultor',educator:'Professor / Consultor',local_business:'Comércio Local',local:'Comércio Local',portfolio:'Portfólio'};
+  const cfg=window.VITRINE_SUPABASE;
+  const sb=window.WebAppCapDashboardTemplateSupabase||(window.WebAppCapDashboardTemplateSupabase=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}));
+  async function applyTemplateLabel(){
+    const chip=document.getElementById('templateChip');
+    if(!chip)return setTimeout(applyTemplateLabel,80);
+    try{
+      const q=await sb.from('projects').select('site_type').eq('slug',slug).maybeSingle();
+      if(q.error||!q.data)return;
+      const label=labels[String(q.data.site_type||'').toLowerCase()];
+      if(!label)return;
+      const expected=`Template: ${label}`;
+      const apply=()=>{if(chip.textContent!==expected)chip.textContent=expected};
+      apply();
+      new MutationObserver(apply).observe(chip,{childList:true,subtree:true,characterData:true});
+    }catch(error){console.warn('[WebAppCap dashboard template label]',error)}
+  }
+  setTimeout(applyTemplateLabel,0);
+})();
