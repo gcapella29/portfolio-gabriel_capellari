@@ -2,10 +2,10 @@
   const normalizeRole = role => String(role || '').trim().toLowerCase();
 
   const matrix = Object.freeze({
-    owner: Object.freeze({editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,preview:true,publicSite:true}),
-    admin: Object.freeze({editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,preview:true,publicSite:true}),
-    editor: Object.freeze({editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,preview:true,publicSite:true}),
-    viewer: Object.freeze({editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,preview:true,publicSite:true})
+    owner: Object.freeze({editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true,preview:true,publicSite:true}),
+    admin: Object.freeze({editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true,preview:true,publicSite:true}),
+    editor: Object.freeze({editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false,preview:true,publicSite:true}),
+    viewer: Object.freeze({editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false,preview:true,publicSite:true})
   });
 
   const empty = Object.freeze({});

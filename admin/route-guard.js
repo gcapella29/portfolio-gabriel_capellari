@@ -8,6 +8,7 @@
 
   const capabilityByPath={
     '/admin/dashboard.html':'projects',
+    '/admin/analytics.html':'analytics',
     '/admin/media.html':'media',
     '/admin/history.html':'history',
     '/admin/structure.html':'structure',
@@ -42,16 +43,51 @@
     window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}));
   const normalizeRole=role=>String(role||'').trim().toLowerCase();
   const matrix={
-    owner:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true},
-    admin:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true},
-    editor:{editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false},
-    viewer:{editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false}
+    owner:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true},
+    admin:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true},
+    editor:{editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false},
+    viewer:{editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false}
   };
   const can=(role,cap)=>matrix[normalizeRole(role)]?.[cap]===true;
   const params=new URLSearchParams(location.search);
   const slugFromUrl=()=>window.WebAppCapTenantResolver?.cleanSlug?.(params.get('project')||window.VITRINE_PROJECT_CONTEXT?.slug)||params.get('project');
   const fallback=slug=>`/admin/${slug?`?project=${encodeURIComponent(slug)}`:''}`;
-  const allow=()=>{clearChecking();window.WebAppCapRouteGuardAllowed=true;window.WebAppCapRouteGuardBlocked=false};
+
+  let analyticsObserver=null;
+  const injectAnalyticsCard=()=>{
+    if(path!=='/admin/dashboard.html')return;
+    const slug=slugFromUrl();
+    if(!slug)return;
+    const target=document.getElementById('optional');
+    if(!target)return;
+    if(!target.querySelector('[data-webappcap-analytics-link]')){
+      const a=document.createElement('a');
+      a.className='optional-card';
+      a.dataset.webappcapAnalyticsLink='1';
+      a.href=`/admin/analytics.html?project=${encodeURIComponent(slug)}`;
+      a.innerHTML='<strong>Analytics</strong><span>Visitas, conversões e origens de tráfego.</span>';
+      target.prepend(a);
+    }
+    if(!analyticsObserver){
+      analyticsObserver=new MutationObserver(()=>{
+        if(!target.querySelector('[data-webappcap-analytics-link]')){
+          queueMicrotask(injectAnalyticsCard);
+        }
+      });
+      analyticsObserver.observe(target,{childList:true});
+    }
+  };
+
+  const allow=()=>{
+    clearChecking();
+    window.WebAppCapRouteGuardAllowed=true;
+    window.WebAppCapRouteGuardBlocked=false;
+    if(path==='/admin/dashboard.html'){
+      setTimeout(injectAnalyticsCard,100);
+      setTimeout(injectAnalyticsCard,500);
+      setTimeout(injectAnalyticsCard,1200);
+    }
+  };
   const deny=slug=>{clearChecking();window.WebAppCapRouteGuardBlocked=true;location.replace(fallback(slug))};
 
   let running=false;
