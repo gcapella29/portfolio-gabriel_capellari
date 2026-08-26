@@ -155,6 +155,15 @@
     return role;
   }
 
+  const loadAnalytics = result => {
+    if(result.isDraft || !result.project?.is_published || document.querySelector('script[data-webappcap-analytics]')) return;
+    const script=document.createElement('script');
+    script.src='/public-analytics.js';
+    script.async=true;
+    script.dataset.webappcapAnalytics='1';
+    document.head.appendChild(script);
+  };
+
   const load = async () => {
     const project = await resolveProject();
     const slug = resolver.cleanSlug(project.slug);
@@ -210,6 +219,7 @@
     document.documentElement.dataset.webappcapState = 'ready';
     if (isDomainValidation) document.documentElement.dataset.webappcapDomainValidation = 'true';
     document.dispatchEvent(new CustomEvent('webappcap:data-ready', { detail: result }));
+    setTimeout(()=>loadAnalytics(result),0);
     return result;
   };
 
