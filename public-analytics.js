@@ -24,6 +24,14 @@
     try{const u=new URL(href,location.href);if(u.origin!==location.origin)return['external_click',text||u.hostname]}catch{}
     return null;
   };
+  const loadLeadCapture=()=>{
+    if(document.querySelector('script[data-webappcap-leads]'))return;
+    const script=document.createElement('script');
+    script.src='/lead-capture.js';
+    script.async=true;
+    script.dataset.webappcapLeads='1';
+    document.head.appendChild(script);
+  };
 
   window.WebAppCapData.ready.then(data=>{
     if(data.isDraft||!data.project?.id||!data.project?.is_published)return;
@@ -45,5 +53,6 @@
       if(mapped)track(mapped[0],mapped[1]);
     },{capture:true,passive:true});
     window.WebAppCapAnalytics=Object.freeze({track});
+    loadLeadCapture();
   }).catch(()=>{});
 })();
