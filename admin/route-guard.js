@@ -27,8 +27,14 @@
 
   let style=document.getElementById('webappcapRouteGuardStyle');
   const setChecking=()=>{
+    if(window.WebAppCapRouteGuardAllowed)return;
     document.documentElement.classList.add('webappcap-route-checking');
     if(!style){style=document.createElement('style');style.id='webappcapRouteGuardStyle';style.textContent='html.webappcap-route-checking body{visibility:hidden!important}';document.head.appendChild(style)}
+  };
+  const clearChecking=()=>{
+    document.documentElement.classList.remove('webappcap-route-checking');
+    style?.remove();
+    style=null;
   };
   setChecking();
 
@@ -45,8 +51,8 @@
   const params=new URLSearchParams(location.search);
   const slugFromUrl=()=>window.WebAppCapTenantResolver?.cleanSlug?.(params.get('project')||window.VITRINE_PROJECT_CONTEXT?.slug)||params.get('project');
   const fallback=slug=>`/admin/${slug?`?project=${encodeURIComponent(slug)}`:''}`;
-  const allow=()=>{document.documentElement.classList.remove('webappcap-route-checking');style?.remove();style=null;window.WebAppCapRouteGuardAllowed=true;window.WebAppCapRouteGuardBlocked=false};
-  const deny=slug=>{window.WebAppCapRouteGuardBlocked=true;location.replace(fallback(slug))};
+  const allow=()=>{clearChecking();window.WebAppCapRouteGuardAllowed=true;window.WebAppCapRouteGuardBlocked=false};
+  const deny=slug=>{clearChecking();window.WebAppCapRouteGuardBlocked=true;location.replace(fallback(slug))};
 
   let running=false;
   async function run(){
@@ -55,7 +61,6 @@
     try{
       const {data:{session}}=await sb.auth.getSession();
       if(!session){allow();return}
-      setChecking();
       let slug=slugFromUrl();
 
       if(capability==='projects'){
@@ -71,11 +76,16 @@
       const {data:member,error:mError}=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',session.user.id).maybeSingle();
       if(mError||!member||!can(member.role,capability)){deny(project.slug);return}
       allow();
-    } finally { running=false }
+    } finally {
+      running=false;
+      if(!window.WebAppCapRouteGuardBlocked) clearChecking();
+    }
   }
 
   window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
   sb.auth.onAuthStateChange((event)=>{
-    if(event==='SIGNED_IN') window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
+    if(event==='SIGNED_IN'&&!window.WebAppCapRouteGuardAllowed){
+      window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
+    }
   });
 })();
