@@ -55,9 +55,27 @@
     if(path!=='/admin/dashboard.html')return;
     const slug=slugFromUrl();if(!slug)return;
     const target=document.getElementById('optional');if(!target)return;
-    const cards=[['analytics','Analytics','Visitas, conversões e origens de tráfego.'],['leads','Leads','Contatos recebidos, status e acompanhamento comercial.']];
-    for(const [key,title,desc] of cards){if(target.querySelector(`[data-webappcap-${key}-link]`))continue;const a=document.createElement('a');a.className='optional-card';a.dataset[`webappcap${key[0].toUpperCase()+key.slice(1)}Link`]='1';a.setAttribute(`data-webappcap-${key}-link`,'1');a.href=`/admin/${key}.html?project=${encodeURIComponent(slug)}`;a.innerHTML=`<strong>${title}</strong><span>${desc}</span>`;target.prepend(a)}
-    if(!dashboardObserver){dashboardObserver=new MutationObserver(()=>{const missing=cards.some(([key])=>!target.querySelector(`[data-webappcap-${key}-link]`));if(missing)queueMicrotask(injectDashboardCards)});dashboardObserver.observe(target,{childList:true})}
+    const cards=[
+      {key:'lead-form',title:'Formulário',desc:'Campos, consentimento e mensagens.',href:'lead-form.html'},
+      {key:'leads',title:'Leads',desc:'Contatos recebidos, status e acompanhamento comercial.',href:'leads.html'},
+      {key:'analytics',title:'Analytics',desc:'Visitas, conversões e origens de tráfego.',href:'analytics.html'}
+    ];
+    for(const card of cards){
+      if(target.querySelector(`[data-webappcap-${card.key}-link]`))continue;
+      const a=document.createElement('a');
+      a.className='optional-card';
+      a.setAttribute(`data-webappcap-${card.key}-link`,'1');
+      a.href=`/admin/${card.href}?project=${encodeURIComponent(slug)}`;
+      a.innerHTML=`<strong>${card.title}</strong><span>${card.desc}</span>`;
+      target.prepend(a);
+    }
+    if(!dashboardObserver){
+      dashboardObserver=new MutationObserver(()=>{
+        const missing=cards.some(card=>!target.querySelector(`[data-webappcap-${card.key}-link]`));
+        if(missing)queueMicrotask(injectDashboardCards);
+      });
+      dashboardObserver.observe(target,{childList:true});
+    }
   };
 
   const allow=()=>{clearChecking();window.WebAppCapRouteGuardAllowed=true;window.WebAppCapRouteGuardBlocked=false;if(path==='/admin/dashboard.html'){setTimeout(injectDashboardCards,100);setTimeout(injectDashboardCards,500);setTimeout(injectDashboardCards,1200)}};
