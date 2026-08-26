@@ -54,9 +54,56 @@
     document.dispatchEvent(new CustomEvent('webappcap:data-error', { detail:error }));
   };
 
+  const templateKeyFromType = type => ({
+    editorial:'editorial',journalist:'editorial',portfolio:'editorial',other:'editorial',
+    personal_trainer:'fitness',fitness:'fitness',
+    educator:'educator',language_teacher:'educator',
+    local:'local',local_business:'local'
+  })[String(type||'').trim().toLowerCase()] || 'editorial';
+
+  const templateNameFromKey = key => ({
+    editorial:'Editorial / Jornalista',
+    fitness:'Personal Trainer / Fitness',
+    educator:'Professor / Consultor',
+    local:'Comércio Local'
+  })[key] || 'Personalizado';
+
+  const schemaTypeFromProject = project => ['local','local_business'].includes(String(project?.site_type||'').toLowerCase()) ? 'LocalBusiness' : 'Person';
+
+  const normalizeSnapshot = (project, input) => {
+    const snapshot = input && typeof input === 'object' ? structuredClone(input) : {};
+    const key = String(snapshot?.template?.content?.key || snapshot?.layout?.content?.template_key || templateKeyFromType(project?.site_type)).toLowerCase();
+    snapshot.template ||= { is_visible:true, content:{} };
+    snapshot.template.content ||= {};
+    snapshot.template.content.key ||= key;
+    snapshot.template.content.name ||= templateNameFromKey(key);
+    snapshot.template.content.version ||= 1;
+
+    snapshot.layout ||= { is_visible:true, content:{} };
+    snapshot.layout.content ||= {};
+    snapshot.layout.content.template_key ||= key;
+    snapshot.layout.content.project_type ||= project?.site_type || '';
+    if (!Array.isArray(snapshot.layout.content.modules)) snapshot.layout.content.modules = [];
+
+    snapshot.seo ||= { is_visible:true, content:{} };
+    snapshot.seo.content ||= {};
+    snapshot.seo.content.schema_type ||= schemaTypeFromProject(project);
+    snapshot.seo.content.title_pt ||= project?.name || '';
+
+    snapshot.footer ||= { is_visible:true, content:{} };
+    snapshot.footer.content ||= {};
+    snapshot.footer.content.brand ||= project?.name || '';
+    if (snapshot.footer.content.show_copyright === undefined) snapshot.footer.content.show_copyright = true;
+
+    return snapshot;
+  };
+
   const canonicalType = (project, snapshot) => {
     const templateKey = String(snapshot?.template?.content?.key || '').toLowerCase();
     if (templateKey === 'fitness') return 'personal_trainer';
+    if (templateKey === 'educator') return 'language_teacher';
+    if (templateKey === 'local') return 'local_business';
+    if (templateKey === 'editorial' && ['editorial','other'].includes(String(project.site_type||'').toLowerCase())) return 'journalist';
     return schema?.normalizeType ? schema.normalizeType(project.site_type) : project.site_type;
   };
 
@@ -121,9 +168,7 @@
       const hostMatches = configuredHostMatches(project);
       const validationAllowed = isDomainValidation && validationSlug === slug && status === 'pending' && hostMatches;
       const activeAllowed = status === 'active' && hostMatches;
-      if (!validationAllowed && !activeAllowed) {
-        throw new Error('Este domínio ainda não está ativo para este projeto.');
-      }
+      if (!validationAllowed && !activeAllowed) throw new Error('Este domínio ainda não está ativo para este projeto.');
     }
 
     if (window.VITRINE_PROJECT_CONTEXT) {
@@ -150,20 +195,17 @@
       snapshot = rowsToSnapshot(rows);
     }
 
-    if (!isDraft && Object.keys(snapshot).length === 0) {
-      throw new Error('O projeto está publicado, mas ainda não possui conteúdo publicado.');
-    }
+    if (!isDraft && Object.keys(snapshot).length === 0) throw new Error('O projeto está publicado, mas ainda não possui conteúdo publicado.');
 
+    snapshot = normalizeSnapshot(project, snapshot);
     project.site_type = canonicalType(project, snapshot);
 
-    const result = {
-      cfg, client, slug, isDraft, isDomainValidation, project, snapshot,
-      contentMap: snapshotToMap(snapshot)
-    };
+    const result = { cfg, client, slug, isDraft, isDomainValidation, project, snapshot, contentMap:snapshotToMap(snapshot) };
 
     window.WebAppCapData.data = result;
     document.documentElement.dataset.webappcapProject = slug;
     document.documentElement.dataset.webappcapProjectType = project.site_type || '';
+    document.documentElement.dataset.webappcapTemplate = snapshot.template?.content?.key || '';
     document.documentElement.dataset.webappcapMode = isDraft ? 'draft' : (isDomainValidation ? 'domain-validation' : 'published');
     document.documentElement.dataset.webappcapState = 'ready';
     if (isDomainValidation) document.documentElement.dataset.webappcapDomainValidation = 'true';
