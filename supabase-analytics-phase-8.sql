@@ -107,9 +107,14 @@ begin
     'page_views', count(*) filter (where event_type='page_view'),
     'unique_sessions', count(distinct session_id) filter (where event_type='page_view' and session_id is not null),
     'conversions', count(*) filter (where event_type<>'page_view'),
+    'converted_sessions', count(distinct session_id) filter (where event_type<>'page_view' and session_id is not null),
     'conversion_rate', case
-      when count(*) filter (where event_type='page_view') = 0 then 0
-      else round((count(*) filter (where event_type<>'page_view'))::numeric * 100 / (count(*) filter (where event_type='page_view')), 2)
+      when count(distinct session_id) filter (where event_type='page_view' and session_id is not null) = 0 then 0
+      else round(
+        (count(distinct session_id) filter (where event_type<>'page_view' and session_id is not null))::numeric * 100
+        / (count(distinct session_id) filter (where event_type='page_view' and session_id is not null)),
+        2
+      )
     end,
     'events', coalesce((
       select jsonb_agg(jsonb_build_object('event_type',event_type,'count',cnt) order by cnt desc)
@@ -146,7 +151,7 @@ begin
   from public.site_analytics_events
   where project_id=p_project_id and occurred_at>=v_since;
 
-  return coalesce(v_result, jsonb_build_object('days',v_days,'page_views',0,'unique_sessions',0,'conversions',0,'conversion_rate',0,'events','[]'::jsonb,'daily','[]'::jsonb,'referrers','[]'::jsonb));
+  return coalesce(v_result, jsonb_build_object('days',v_days,'page_views',0,'unique_sessions',0,'conversions',0,'converted_sessions',0,'conversion_rate',0,'events','[]'::jsonb,'daily','[]'::jsonb,'referrers','[]'::jsonb));
 end;
 $$;
 
