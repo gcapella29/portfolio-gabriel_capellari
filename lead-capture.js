@@ -8,7 +8,6 @@
   const contact = document.getElementById('contato');
   if (!contact || contact.querySelector('[data-webappcap-lead-form]')) return;
 
-  const esc = v => String(v ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
   const sessionKey = `webappcap-lead-session:${data.project.id}`;
   let sessionId = sessionStorage.getItem(sessionKey);
   if (!sessionId) {
@@ -97,14 +96,20 @@
       });
       if (result.error) throw result.error;
 
-      data.client.rpc('webappcap_track_event', {
-        p_project_id: data.project.id,
-        p_event_type: 'contact_click',
-        p_event_label: 'lead_form',
-        p_path: location.pathname + location.search,
-        p_referrer_host: document.referrer ? (()=>{try{return new URL(document.referrer).hostname}catch{return null}})() : null,
-        p_session_id: sessionId
-      }).catch(()=>{});
+      // Analytics is secondary: a tracking failure must never turn a successful lead into a form error.
+      try {
+        const tracking = await data.client.rpc('webappcap_track_event', {
+          p_project_id: data.project.id,
+          p_event_type: 'contact_click',
+          p_event_label: 'lead_form',
+          p_path: location.pathname + location.search,
+          p_referrer_host: document.referrer ? (()=>{try{return new URL(document.referrer).hostname}catch{return null}})() : null,
+          p_session_id: sessionId
+        });
+        if (tracking?.error) console.debug('[WebAppCap Leads Analytics]', tracking.error.message);
+      } catch (trackingError) {
+        console.debug('[WebAppCap Leads Analytics]', trackingError?.message || trackingError);
+      }
 
       form.reset();
       status.classList.add('ok');
