@@ -121,11 +121,11 @@ begin
       ) x
     ), '[]'::jsonb),
     'daily', coalesce((
-      select jsonb_agg(jsonb_build_object('day',day,'page_views',page_views,'conversions',conversions) order by day)
+      select jsonb_agg(jsonb_build_object('day',event_day,'page_views',page_views,'conversions',conversions) order by event_day)
       from (
-        select occurred_at::date day,
-               count(*) filter (where event_type='page_view') page_views,
-               count(*) filter (where event_type<>'page_view') conversions
+        select occurred_at::date as event_day,
+               count(*) filter (where event_type='page_view') as page_views,
+               count(*) filter (where event_type<>'page_view') as conversions
         from public.site_analytics_events
         where project_id=p_project_id and occurred_at>=v_since
         group by occurred_at::date
