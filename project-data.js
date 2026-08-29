@@ -164,6 +164,38 @@
     document.head.appendChild(script);
   };
 
+  const loadLeadCapture = () => {
+    if (document.querySelector('script[data-webappcap-leads]') || window.WebAppCapLeadCaptureStarted) return;
+    const script=document.createElement('script');
+    script.src='/lead-capture.js';
+    script.async=true;
+    script.dataset.webappcapLeads='1';
+    document.head.appendChild(script);
+  };
+
+  const stabilizeDraftInstagram = result => {
+    if (!result.isDraft) return;
+    const section = result.snapshot?.instagram;
+    if (!section || section.is_visible === false) return;
+    const content = section.content || {};
+    const reel = String(content.reel_url || '').trim();
+    if (!reel) return;
+
+    setTimeout(() => {
+      const frame = document.getElementById('reelFrame');
+      if (!frame) return;
+
+      const user = String(content.user || '').replace(/^@/,'').trim();
+      const link = user ? `https://www.instagram.com/${encodeURIComponent(user)}/` : reel;
+      const image = result.slug === result.cfg.projectSlug ? '/assets/media/instagram-gabriel.jpg' : '';
+
+      frame.innerHTML = image
+        ? `<a href="${link}" target="_blank" rel="noopener" style="display:block;width:100%;height:100%;position:relative;text-decoration:none;color:inherit;background:#082720"><img src="${image}" alt="Instagram" style="width:100%;height:100%;object-fit:cover;display:block"><span style="position:absolute;left:1rem;bottom:1rem;padding:.55rem .75rem;border-radius:999px;background:rgba(8,39,32,.86);color:#fff;font:600 .66rem/1 'IBM Plex Mono',monospace">Abrir no Instagram ↗</span></a>`
+        : `<a href="${link}" target="_blank" rel="noopener" style="display:grid;place-items:center;width:100%;height:100%;min-height:360px;padding:2rem;text-align:center;text-decoration:none;background:#082720;color:#fff;font:600 .75rem/1.5 'IBM Plex Mono',monospace">Prévia externa do Instagram<br>Abrir publicação ↗</a>`;
+      frame.hidden = false;
+    }, 1200);
+  };
+
   const load = async () => {
     const project = await resolveProject();
     const slug = resolver.cleanSlug(project.slug);
@@ -220,6 +252,8 @@
     if (isDomainValidation) document.documentElement.dataset.webappcapDomainValidation = 'true';
     document.dispatchEvent(new CustomEvent('webappcap:data-ready', { detail: result }));
     setTimeout(()=>loadAnalytics(result),0);
+    setTimeout(loadLeadCapture,0);
+    stabilizeDraftInstagram(result);
     return result;
   };
 

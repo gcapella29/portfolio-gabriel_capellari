@@ -10,6 +10,7 @@
     '/admin/dashboard.html':'projects',
     '/admin/analytics.html':'analytics',
     '/admin/leads.html':'leads',
+    '/admin/lead-form.html':'leads',
     '/admin/media.html':'media',
     '/admin/history.html':'history',
     '/admin/structure.html':'structure',
@@ -33,15 +34,10 @@
     document.documentElement.classList.add('webappcap-route-checking');
     if(!style){style=document.createElement('style');style.id='webappcapRouteGuardStyle';style.textContent='html.webappcap-route-checking body{visibility:hidden!important}';document.head.appendChild(style)}
   };
-  const clearChecking=()=>{
-    document.documentElement.classList.remove('webappcap-route-checking');
-    style?.remove();
-    style=null;
-  };
+  const clearChecking=()=>{document.documentElement.classList.remove('webappcap-route-checking');style?.remove();style=null};
   setChecking();
 
-  const sb=window.WebAppCapRouteGuardSupabase||(window.WebAppCapRouteGuardSupabase=
-    window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}));
+  const sb=window.WebAppCapRouteGuardSupabase||(window.WebAppCapRouteGuardSupabase=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}));
   const normalizeRole=role=>String(role||'').trim().toLowerCase();
   const matrix={
     owner:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true,leads:true},
@@ -57,77 +53,35 @@
   let dashboardObserver=null;
   const injectDashboardCards=()=>{
     if(path!=='/admin/dashboard.html')return;
-    const slug=slugFromUrl();
-    if(!slug)return;
-    const target=document.getElementById('optional');
-    if(!target)return;
+    const slug=slugFromUrl();if(!slug)return;
+    const target=document.getElementById('optional');if(!target)return;
     const cards=[
-      ['analytics','Analytics','Visitas, conversões e origens de tráfego.'],
-      ['leads','Leads','Contatos recebidos, status e acompanhamento comercial.']
+      {key:'lead-form',title:'Formulário',desc:'Campos, consentimento e mensagens.',href:'lead-form.html'},
+      {key:'leads',title:'Leads',desc:'Contatos recebidos, status e acompanhamento comercial.',href:'leads.html'},
+      {key:'analytics',title:'Analytics',desc:'Visitas, conversões e origens de tráfego.',href:'analytics.html'}
     ];
-    for(const [key,title,desc] of cards){
-      if(target.querySelector(`[data-webappcap-${key}-link]`))continue;
+    for(const card of cards){
+      if(target.querySelector(`[data-webappcap-${card.key}-link]`))continue;
       const a=document.createElement('a');
       a.className='optional-card';
-      a.dataset[`webappcap${key[0].toUpperCase()+key.slice(1)}Link`]='1';
-      a.setAttribute(`data-webappcap-${key}-link`,'1');
-      a.href=`/admin/${key}.html?project=${encodeURIComponent(slug)}`;
-      a.innerHTML=`<strong>${title}</strong><span>${desc}</span>`;
+      a.setAttribute(`data-webappcap-${card.key}-link`,'1');
+      a.href=`/admin/${card.href}?project=${encodeURIComponent(slug)}`;
+      a.innerHTML=`<strong>${card.title}</strong><span>${card.desc}</span>`;
       target.prepend(a);
     }
     if(!dashboardObserver){
       dashboardObserver=new MutationObserver(()=>{
-        const missing=cards.some(([key])=>!target.querySelector(`[data-webappcap-${key}-link]`));
+        const missing=cards.some(card=>!target.querySelector(`[data-webappcap-${card.key}-link]`));
         if(missing)queueMicrotask(injectDashboardCards);
       });
       dashboardObserver.observe(target,{childList:true});
     }
   };
 
-  const allow=()=>{
-    clearChecking();
-    window.WebAppCapRouteGuardAllowed=true;
-    window.WebAppCapRouteGuardBlocked=false;
-    if(path==='/admin/dashboard.html'){
-      setTimeout(injectDashboardCards,100);
-      setTimeout(injectDashboardCards,500);
-      setTimeout(injectDashboardCards,1200);
-    }
-  };
+  const allow=()=>{clearChecking();window.WebAppCapRouteGuardAllowed=true;window.WebAppCapRouteGuardBlocked=false;if(path==='/admin/dashboard.html'){setTimeout(injectDashboardCards,100);setTimeout(injectDashboardCards,500);setTimeout(injectDashboardCards,1200)}};
   const deny=slug=>{clearChecking();window.WebAppCapRouteGuardBlocked=true;location.replace(fallback(slug))};
-
   let running=false;
-  async function run(){
-    if(running)return;
-    running=true;
-    try{
-      const {data:{session}}=await sb.auth.getSession();
-      if(!session){allow();return}
-      let slug=slugFromUrl();
-
-      if(capability==='projects'){
-        const {data:memberships,error}=await sb.from('project_members').select('role').eq('user_id',session.user.id);
-        if(error){deny(slug);return}
-        if((memberships||[]).some(m=>can(m.role,'projects'))){allow();return}
-        deny(slug);return;
-      }
-
-      if(!slug){deny(null);return}
-      const {data:project,error:pError}=await sb.from('projects').select('id,slug').eq('slug',slug).maybeSingle();
-      if(pError||!project){deny(null);return}
-      const {data:member,error:mError}=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',session.user.id).maybeSingle();
-      if(mError||!member||!can(member.role,capability)){deny(project.slug);return}
-      allow();
-    } finally {
-      running=false;
-      if(!window.WebAppCapRouteGuardBlocked) clearChecking();
-    }
-  }
-
+  async function run(){if(running)return;running=true;try{const {data:{session}}=await sb.auth.getSession();if(!session){allow();return}let slug=slugFromUrl();if(capability==='projects'){const {data:memberships,error}=await sb.from('project_members').select('role').eq('user_id',session.user.id);if(error){deny(slug);return}if((memberships||[]).some(m=>can(m.role,'projects'))){allow();return}deny(slug);return}if(!slug){deny(null);return}const {data:project,error:pError}=await sb.from('projects').select('id,slug').eq('slug',slug).maybeSingle();if(pError||!project){deny(null);return}const {data:member,error:mError}=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',session.user.id).maybeSingle();if(mError||!member||!can(member.role,capability)){deny(project.slug);return}allow()}finally{running=false;if(!window.WebAppCapRouteGuardBlocked)clearChecking()}}
   window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
-  sb.auth.onAuthStateChange((event)=>{
-    if(event==='SIGNED_IN'&&!window.WebAppCapRouteGuardAllowed){
-      window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()));
-    }
-  });
+  sb.auth.onAuthStateChange((event)=>{if(event==='SIGNED_IN'&&!window.WebAppCapRouteGuardAllowed){window.WebAppCapRouteGuardPromise=run().catch(()=>deny(slugFromUrl()))}});
 })();

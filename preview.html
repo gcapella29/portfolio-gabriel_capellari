@@ -45,11 +45,12 @@
     return;
   }
 
-  const target = new URL('/public-shell.html', window.location.origin);
-  target.searchParams.set('preview', params.get('preview') === 'draft' ? 'draft' : 'draft');
+  // Preview must use the exact same visual shell, CSS, media and effects as the
+  // published site. The draft flag only changes the data source in project-data.js.
+  const target = new URL('/index.html', window.location.origin);
+  target.searchParams.set('preview', 'draft');
   target.searchParams.set('project', validSlug);
 
-  // Replace, rather than render, so this entry never contains tenant content.
   window.location.replace(target.pathname + target.search);
 })();
 </script>
