@@ -23,12 +23,12 @@
       "destination": "/api/social-preview"
     },
     {
-      "source": "/p/:slug",
-      "destination": "/public-shell.html?project=:slug"
+      "source": "/p/gabriel-capellari",
+      "destination": "/index.html?project=gabriel-capellari"
     },
     {
-      "source": "/preview.html",
-      "destination": "/public-shell.html"
+      "source": "/p/:slug",
+      "destination": "/public-shell.html?project=:slug"
     },
     {
       "source": "/",
