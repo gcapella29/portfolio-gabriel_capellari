@@ -5,11 +5,12 @@
   const access = window.WebAppCapAccess;
   const sb = window.supabase.createClient(cfg.url, cfg.publishableKey, {auth:{persistSession:true,autoRefreshToken:true}});
   const $ = id => document.getElementById(id);
-  let user = null, project = null, draft = null, published = {}, role = null, state = null, versionCount = 0, latestVersionAt = null;
+  let user = null, project = null, draft = null, published = {}, role = null, state = null, versionCount = 0, latestVersionAt = null, templateAssignment = null;
 
   const fmt = value => value ? new Date(value).toLocaleString('pt-BR') : '—';
   const rowsToSnapshot = rows => Object.fromEntries((rows || []).map(row => [row.section_key, {content:row.content || {}, is_visible:row.is_visible !== false, sort_order:row.sort_order ?? 0}]));
   const clientHome = slug => `/admin/client.html?project=${encodeURIComponent(slug)}`;
+  const templateLabel = value => ({editorial:'Editorial',fitness:'Fitness',personal_trainer:'Personal Trainer',educator:'Educador',local:'Negócio local'})[String(value||'').toLowerCase()] || String(value||'Template');
 
   function paint(id, text, kind='') { const el=$(id);el.className=`status ${kind}`.trim();el.querySelector('strong').innerHTML=`<span class="dot"></span>${text}`; }
   function setLink(id, href) { const el=$(id);el.href=href||'#';el.classList.toggle('disabled',!href); }
@@ -27,13 +28,14 @@
     const member=await sb.from('project_members').select('role').eq('project_id',project.id).eq('user_id',user.id).maybeSingle();if(member.error)throw member.error;
     role=access?.normalizeRole(member.data?.role)||null;if(!role)throw new Error('Sem acesso ao projeto.');
     if(!access?.can(role,'publish')){location.replace(clientHome(project.slug));return false}
-    const [d,c,v]=await Promise.all([
+    const [d,c,v,a]=await Promise.all([
       sb.from('project_drafts').select('snapshot,updated_at,last_published_at').eq('project_id',project.id).maybeSingle(),
       sb.from('site_content').select('section_key,content,is_visible,sort_order').eq('project_id',project.id),
-      sb.from('project_versions').select('created_at',{count:'exact'}).eq('project_id',project.id).order('created_at',{ascending:false}).limit(1)
+      sb.from('project_versions').select('created_at',{count:'exact'}).eq('project_id',project.id).order('created_at',{ascending:false}).limit(1),
+      sb.from('project_template_assignments').select('template_key,template_version').eq('project_id',project.id).maybeSingle()
     ]);
-    if(d.error)throw d.error;if(c.error)throw c.error;if(v.error)throw v.error;
-    draft=d.data||{snapshot:{}};published=rowsToSnapshot(c.data);versionCount=v.count||0;latestVersionAt=v.data?.[0]?.created_at||null;render();return true;
+    if(d.error)throw d.error;if(c.error)throw c.error;if(v.error)throw v.error;if(a.error&&a.error.code!=='42P01')throw a.error;
+    draft=d.data||{snapshot:{}};published=rowsToSnapshot(c.data);versionCount=v.count||0;latestVersionAt=v.data?.[0]?.created_at||null;templateAssignment=a.data||null;render();return true;
   }
 
   function render() {
@@ -42,7 +44,7 @@
     $('content').href=`/admin/index.html${q}`;$('domains').href=`/admin/domains.html${q}`;$('history').href=`/admin/history.html${q}`;
     $('domains').classList.toggle('hidden',!access?.can(role,'domains'));$('history').classList.toggle('hidden',!access?.can(role,'history'));
     paint('pubStatus',state.isPublished?'Publicado':'Não publicado',state.isPublished?'ok':'warn');paint('draftStatus',state.hasUnpublishedChanges?'Alterações pendentes':'Sincronizado',state.hasUnpublishedChanges?'warn':'ok');paint('domainStatus',state.domainIsActive?'Conectado':state.domainStatus==='pending'?'Pendente':'Rota padrão',state.domainIsActive?'ok':state.domainStatus==='pending'?'warn':'');
-    const tpl=draft.snapshot?.template?.content;paint('templateStatus',tpl?.key?`${tpl.key} · v${tpl.version||1}`:'Sem template',tpl?.key?'ok':'warn');
+    const legacyTpl=draft.snapshot?.template?.content;const tplKey=templateAssignment?.template_key||legacyTpl?.key;const tplVersion=templateAssignment?.template_version||legacyTpl?.version||1;paint('templateStatus',tplKey?`${templateLabel(tplKey)} · v${tplVersion}`:'Sem template',tplKey?'ok':'warn');
     $('previewUrl').textContent=state.previewUrl||'—';$('publicUrl').textContent=state.publicUrl||'—';$('routeUrl').textContent=state.routeUrl||'—';$('configuredUrl').textContent=state.configuredUrl||'Nenhum domínio/subdomínio configurado';
     $('configuredNote').textContent=state.configuredUrl?(state.domainIsActive?'Este endereço está ativo e é usado como produção.':'Endereço configurado e pendente. O botão abaixo abre uma validação segura antes de promover o domínio para produção.'):'A rota da plataforma é o endereço público atual.';
     setLink('openPreview',state.previewUrl);setLink('openPublic',state.publicUrl);setLink('openConfigured',state.domainIsActive?state.configuredUrl:state.validationUrl);$('openConfigured').classList.toggle('hidden',!state.configuredUrl);$('copyConfigured').classList.toggle('hidden',!state.configuredUrl);
