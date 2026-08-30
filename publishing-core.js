@@ -24,6 +24,15 @@
     return null;
   }
 
+  function validationUrl(project) {
+    const configured = configuredUrl(project);
+    const slug = window.WebAppCapTenantResolver?.cleanSlug(project?.slug);
+    if (!configured || !slug) return null;
+    const url = new URL(configured);
+    url.searchParams.set('webappcap_validate', slug);
+    return url.href;
+  }
+
   function publicUrl(project, origin = window.location.origin) {
     const route = routeUrl(project, origin);
     if (!project) return route;
@@ -67,6 +76,7 @@
     const route = routeUrl(project);
     const configured = configuredUrl(project);
     const publicAddress = publicUrl(project);
+    const validationAddress = validationUrl(project);
     return {
       isPublished: project?.is_published === true && hasPublishedContent,
       hasDraft,
@@ -77,6 +87,7 @@
       domainStatus,
       domainIsActive: String(domainStatus).toLowerCase() === 'active',
       configuredUrl: configured,
+      validationUrl: validationAddress,
       publicUrl: publicAddress,
       previewUrl: previewUrl(project),
       routeUrl: route
@@ -87,6 +98,7 @@
     cleanHost,
     cleanSubdomain,
     configuredUrl,
+    validationUrl,
     publicUrl,
     previewUrl,
     routeUrl,
