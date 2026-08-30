@@ -44,12 +44,13 @@
     paint('pubStatus',state.isPublished?'Publicado':'Não publicado',state.isPublished?'ok':'warn');paint('draftStatus',state.hasUnpublishedChanges?'Alterações pendentes':'Sincronizado',state.hasUnpublishedChanges?'warn':'ok');paint('domainStatus',state.domainIsActive?'Conectado':state.domainStatus==='pending'?'Pendente':'Rota padrão',state.domainIsActive?'ok':state.domainStatus==='pending'?'warn':'');
     const tpl=draft.snapshot?.template?.content;paint('templateStatus',tpl?.key?`${tpl.key} · v${tpl.version||1}`:'Sem template',tpl?.key?'ok':'warn');
     $('previewUrl').textContent=state.previewUrl||'—';$('publicUrl').textContent=state.publicUrl||'—';$('routeUrl').textContent=state.routeUrl||'—';$('configuredUrl').textContent=state.configuredUrl||'Nenhum domínio/subdomínio configurado';
-    $('configuredNote').textContent=state.configuredUrl?(state.domainIsActive?'Este endereço está ativo e é usado como produção.':'Endereço configurado, mas ainda não promovido para produção.'):'A rota da plataforma é o endereço público atual.';
-    setLink('openPreview',state.previewUrl);setLink('openPublic',state.publicUrl);setLink('openConfigured',state.configuredUrl);$('openConfigured').classList.toggle('hidden',!state.configuredUrl);$('copyConfigured').classList.toggle('hidden',!state.configuredUrl);
+    $('configuredNote').textContent=state.configuredUrl?(state.domainIsActive?'Este endereço está ativo e é usado como produção.':'Endereço configurado e pendente. O botão abaixo abre uma validação segura antes de promover o domínio para produção.'):'A rota da plataforma é o endereço público atual.';
+    setLink('openPreview',state.previewUrl);setLink('openPublic',state.publicUrl);setLink('openConfigured',state.domainIsActive?state.configuredUrl:state.validationUrl);$('openConfigured').classList.toggle('hidden',!state.configuredUrl);$('copyConfigured').classList.toggle('hidden',!state.configuredUrl);
+    if(state.configuredUrl&&!state.domainIsActive)$('openConfigured').textContent='Validar domínio ↗';else if($('openConfigured'))$('openConfigured').textContent='Abrir ↗';
     $('updatedAt').textContent=fmt(state.updatedAt);$('publishedAt').textContent=fmt(state.publishedAt);$('projectMeta').textContent=`${project.site_type||'—'} · ${project.is_published?'ativo':'rascunho'}`;renderHistoryEvent();
     $('publishCallout').className=`callout ${state.hasUnpublishedChanges?'warn':'ok'}`;$('publishCalloutText').textContent=state.hasUnpublishedChanges?'O Preview contém alterações que ainda não estão na produção.':'Rascunho e produção estão sincronizados.';
     const canPublish=access?.can(role,'publish')===true;$('publishNow').classList.toggle('hidden',!canPublish||!state.hasUnpublishedChanges);$('publishNow').disabled=!canPublish||!state.hasUnpublishedChanges;$('openEditor').href=`/admin/index.html${q}`;
-    $('copyPreview').onclick=()=>copy(state.previewUrl);$('copyPublic').onclick=()=>copy(state.publicUrl);$('copyConfigured').onclick=()=>copy(state.configuredUrl);
+    $('copyPreview').onclick=()=>copy(state.previewUrl);$('copyPublic').onclick=()=>copy(state.publicUrl);$('copyConfigured').onclick=()=>copy(state.domainIsActive?state.configuredUrl:state.validationUrl);
   }
 
   async function publishNow() {
