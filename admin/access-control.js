@@ -12,7 +12,7 @@
   function permissions(role) { return matrix[normalizeRole(role)] || empty; }
   function can(role, capability) { return permissions(role)[capability] === true; }
   function requireCapability(role, capability, message = 'Você não tem permissão para acessar esta função.') { if (!can(role, capability)) throw new Error(message); return true; }
-  function label(role) { return ({owner:'Owner',admin:'Administrador',editor:'Editor',viewer:'Visualizador'})[normalizeRole(role)] || 'Sem acesso'; }
+  function label(role) { return ({owner:'Owner',admin:'Admin',editor:'Cliente',viewer:'Visualizador'})[normalizeRole(role)] || 'Sem acesso'; }
 
   window.WebAppCapAccess = Object.freeze({ normalizeRole, permissions, can, requireCapability, label, matrix });
 })();
