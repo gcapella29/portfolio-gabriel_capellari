@@ -54,6 +54,20 @@
     exit.onclick = logout;
     actions.appendChild(exit);
 
+    const sectionTitles = [...document.querySelectorAll('.section-title')];
+    if (sectionTitles[0]) {
+      const h2 = sectionTitles[0].querySelector('h2');
+      const p = sectionTitles[0].querySelector('p');
+      if (h2) h2.textContent = 'Editar projeto';
+      if (p) p.textContent = 'Escolha uma área para configurar o site.';
+    }
+    if (sectionTitles[1]) {
+      const h2 = sectionTitles[1].querySelector('h2');
+      const p = sectionTitles[1].querySelector('p');
+      if (h2) h2.textContent = 'Gestão e recursos';
+      if (p) p.textContent = 'Configurações administrativas, métricas e ferramentas do projeto.';
+    }
+
     const banner = document.querySelector('.status-banner');
     const pulse = document.getElementById('draftPulse');
     const draftText = document.getElementById('draftText');
@@ -85,10 +99,64 @@
     el.style.display = 'none';
   }
 
+  function simplifyEditorSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const nav = document.getElementById('nav');
+    if (!sidebar || !nav || nav.dataset.simpleSidebarApplying === '1') return;
+    nav.dataset.simpleSidebarApplying = '1';
+
+    sidebar.removeAttribute('aria-hidden');
+    sidebar.classList.add('webappcap-simple-sidebar');
+    const brand = sidebar.querySelector('.brand');
+    const subtitle = sidebar.querySelector('.sub');
+    const bottom = sidebar.querySelector('.sidebar-bottom');
+    if (brand) brand.innerHTML = 'WebApp<span style="color:#e3bb3d">Cap</span>';
+    if (subtitle) subtitle.textContent = 'Editar site';
+    if (bottom) bottom.style.display = 'none';
+
+    const allowedPaths = new Map([
+      ['/admin/media.html', 'Fotos'],
+      ['/admin/theme.html', 'Aparência'],
+      ['/admin/structure.html', 'Estrutura']
+    ]);
+    for (const a of [...nav.querySelectorAll('a[href]')]) {
+      const pathname = new URL(a.href, location.href).pathname.toLowerCase();
+      const label = allowedPaths.get(pathname);
+      if (!label) a.remove();
+      else a.textContent = label;
+    }
+
+    if (!nav.querySelector('[data-simple-divider]')) {
+      const sectionButtons = [...nav.querySelectorAll('button[data-key]')];
+      if (sectionButtons.length) {
+        const divider = document.createElement('div');
+        divider.dataset.simpleDivider = '1';
+        divider.className = 'webappcap-sidebar-label';
+        divider.textContent = 'Textos e seções';
+        nav.insertBefore(divider, sectionButtons[0]);
+      }
+      const firstLink = nav.querySelector('a[href]');
+      if (firstLink) {
+        const divider = document.createElement('div');
+        divider.dataset.simpleToolsDivider = '1';
+        divider.className = 'webappcap-sidebar-label';
+        divider.textContent = 'Visual e estrutura';
+        nav.insertBefore(divider, firstLink);
+      }
+    }
+
+    nav.dataset.simpleSidebarApplying = '0';
+  }
+
   async function enhanceContent(role) {
     let host = document.querySelector('main') || document.querySelector('.main') || document.querySelector('.content');
     for (let i = 0; !host && i < 60; i++) { await wait(100); host = document.querySelector('main') || document.querySelector('.main') || document.querySelector('.content'); }
     if (!host || document.getElementById('webappcapEditorTools')) return;
+
+    document.body.classList.add('webappcap-dashboard-navigation');
+    simplifyEditorSidebar();
+    const nav = document.getElementById('nav');
+    if (nav) new MutationObserver(() => requestAnimationFrame(simplifyEditorSidebar)).observe(nav, { childList: true, subtree: false });
 
     const tools = document.createElement('div');
     tools.id = 'webappcapEditorTools';

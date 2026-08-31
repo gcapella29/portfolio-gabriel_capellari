@@ -13,6 +13,7 @@
     '/admin/lead-form.html':'leads',
     '/admin/media.html':'media',
     '/admin/history.html':'history',
+    '/admin/backup.html':'backup',
     '/admin/structure.html':'structure',
     '/admin/theme.html':'theme',
     '/admin/templates.html':'templates',
@@ -40,10 +41,10 @@
   const sb=window.WebAppCapRouteGuardSupabase||(window.WebAppCapRouteGuardSupabase=window.supabase.createClient(cfg.url,cfg.publishableKey,{auth:{persistSession:true,autoRefreshToken:true}}));
   const normalizeRole=role=>String(role||'').trim().toLowerCase();
   const matrix={
-    owner:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true,leads:true},
-    admin:{editContent:true,publish:true,media:true,history:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true,leads:true},
-    editor:{editContent:true,publish:true,media:true,history:true,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false,leads:false},
-    viewer:{editContent:false,publish:false,media:false,history:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false,leads:false}
+    owner:{editContent:true,publish:true,media:true,history:true,backup:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true,leads:true},
+    admin:{editContent:true,publish:true,media:true,history:true,backup:true,restoreVersion:true,structure:true,theme:true,templates:true,footer:true,domains:true,team:true,projects:true,analytics:true,leads:true},
+    editor:{editContent:true,publish:true,media:true,history:true,backup:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false,leads:false},
+    viewer:{editContent:false,publish:false,media:false,history:false,backup:false,restoreVersion:false,structure:false,theme:false,templates:false,footer:false,domains:false,team:false,projects:false,analytics:false,leads:false}
   };
   const can=(role,cap)=>matrix[normalizeRole(role)]?.[cap]===true;
   const params=new URLSearchParams(location.search);
@@ -56,6 +57,7 @@
     const slug=slugFromUrl();if(!slug)return;
     const target=document.getElementById('optional');if(!target)return;
     const cards=[
+      {key:'backup',title:'Backup',desc:'Cópia portátil para recuperação administrativa.',href:'backup.html'},
       {key:'lead-form',title:'Formulário',desc:'Campos, consentimento e mensagens.',href:'lead-form.html'},
       {key:'leads',title:'Leads',desc:'Contatos recebidos, status e acompanhamento comercial.',href:'leads.html'},
       {key:'analytics',title:'Analytics',desc:'Visitas, conversões e origens de tráfego.',href:'analytics.html'}
