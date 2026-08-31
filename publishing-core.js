@@ -81,7 +81,16 @@
     const publishedSnapshot = published?.snapshot || published || {};
     const hasPublishedContent = Object.keys(publishedSnapshot).length > 0;
     const hasDraft = Object.keys(draftSnapshot).length > 0;
-    const changed = hasDraft && fingerprint(draftSnapshot) !== fingerprint(publishedSnapshot);
+
+    const updatedAt = draft?.updated_at ? new Date(draft.updated_at).getTime() : NaN;
+    const publishedAt = draft?.last_published_at ? new Date(draft.last_published_at).getTime() : NaN;
+    let changed;
+    if (Number.isFinite(updatedAt) && Number.isFinite(publishedAt)) {
+      changed = updatedAt > publishedAt + 999;
+    } else {
+      changed = hasDraft && fingerprint(draftSnapshot) !== fingerprint(publishedSnapshot);
+    }
+
     const domainStatus = project?.domain_status || 'unconfigured';
     const route = routeUrl(project);
     const configured = configuredUrl(project);
