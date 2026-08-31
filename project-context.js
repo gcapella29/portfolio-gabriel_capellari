@@ -64,6 +64,17 @@
     };
   }
 
+  // Fitness-specific editor extensions stay outside the generic CMS core.
+  // This keeps the base editor reusable while exposing the Reels workflow only
+  // where a project context is present. The extension itself checks the active module.
+  if (isContentEditor && !document.querySelector('script[data-webappcap-fitness-reels-editor]')) {
+    const script = document.createElement('script');
+    script.src = '/admin/fitness-reels-editor.js';
+    script.defer = true;
+    script.dataset.webappcapFitnessReelsEditor = '1';
+    document.head.appendChild(script);
+  }
+
   if (!isAdmin) {
     document.addEventListener('webappcap:data-ready', event => {
       const key = String(event.detail?.snapshot?.template?.content?.key || '').toLowerCase();
