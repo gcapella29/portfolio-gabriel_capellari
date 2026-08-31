@@ -11,8 +11,18 @@
     .replace(/^-+|-+$/g, '');
 
   function routeUrl(project, origin = window.location.origin) {
-    const slug = window.WebAppCapTenantResolver?.cleanSlug(project?.slug);
-    return slug ? new URL(`/p/${encodeURIComponent(slug)}`, origin).href : null;
+    const resolver = window.WebAppCapTenantResolver;
+    const slug = resolver?.cleanSlug(project?.slug);
+    if (!slug) return null;
+
+    try {
+      const host = new URL(origin).hostname;
+      const isPrimaryProject = slug === resolver?.primaryProjectSlug;
+      const isPrimaryHost = typeof resolver?.isPrimaryHost === 'function' && resolver.isPrimaryHost(host);
+      if (isPrimaryProject && isPrimaryHost) return new URL('/', origin).href;
+    } catch {}
+
+    return new URL(`/p/${encodeURIComponent(slug)}`, origin).href;
   }
 
   function configuredUrl(project) {
