@@ -16,7 +16,23 @@
   const params = new URLSearchParams(location.search);
   const slug = window.WebAppCapTenantResolver?.cleanSlug(params.get('project') || window.VITRINE_PROJECT_CONTEXT?.slug || cfg.projectSlug);
   const labelRole = role => ({ owner: 'Owner', admin: 'Admin', editor: 'Cliente', viewer: 'Visualizador' })[String(role || '').toLowerCase()] || 'Usuário';
+  const cacheKey = slug ? `webappcap:role:${slug}` : null;
   const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const idle = fn => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 250));
+
+  function getCachedRole() {
+    if (!cacheKey) return null;
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+      if (!cached?.role || Date.now() - Number(cached.at || 0) > 5 * 60 * 1000) return null;
+      return cached.role;
+    } catch { return null; }
+  }
+
+  function setCachedRole(role) {
+    if (!cacheKey || !role) return;
+    try { sessionStorage.setItem(cacheKey, JSON.stringify({ role, at: Date.now() })); } catch {}
+  }
 
   async function currentRole() {
     const session = (await sb.auth.getSession()).data?.session;
@@ -24,7 +40,9 @@
     const project = await sb.from('projects').select('id').eq('slug', slug).maybeSingle();
     if (project.error || !project.data) return null;
     const member = await sb.from('project_members').select('role').eq('project_id', project.data.id).eq('user_id', session.user.id).maybeSingle();
-    return member.error ? null : (member.data?.role || null);
+    const role = member.error ? null : (member.data?.role || null);
+    if (role) setCachedRole(role);
+    return role;
   }
 
   function makeRoleBadge(role) {
@@ -35,13 +53,33 @@
   }
 
   async function logout() {
-    try { await sb.auth.signOut(); }
-    finally { location.href = '/admin/'; }
+    try {
+      if (cacheKey) sessionStorage.removeItem(cacheKey);
+      await sb.auth.signOut();
+    } finally { location.href = '/admin/'; }
+  }
+
+  function prefetchEditorPages() {
+    if (!slug) return;
+    const urls = [
+      `/admin/dashboard.html?project=${encodeURIComponent(slug)}`,
+      `/admin/?project=${encodeURIComponent(slug)}`,
+      `/admin/media.html?project=${encodeURIComponent(slug)}`,
+      `/admin/theme.html?project=${encodeURIComponent(slug)}`,
+      `/admin/structure.html?project=${encodeURIComponent(slug)}`
+    ];
+    for (const href of urls) {
+      if (location.pathname + location.search === href || document.querySelector(`link[rel="prefetch"][href="${href}"]`)) continue;
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
   }
 
   async function enhanceDashboard(role) {
     let actions = document.querySelector('.top .actions');
-    for (let i = 0; !actions && i < 50; i++) { await wait(100); actions = document.querySelector('.top .actions'); }
+    for (let i = 0; !actions && i < 12; i++) { await wait(40); actions = document.querySelector('.top .actions'); }
     if (!actions || actions.dataset.uxPolished) return;
     actions.dataset.uxPolished = '1';
     actions.classList.add('webappcap-session-actions');
@@ -105,6 +143,7 @@
     if (!sidebar || !nav || nav.dataset.simpleSidebarApplying === '1') return;
     nav.dataset.simpleSidebarApplying = '1';
 
+    document.body.classList.add('webappcap-dashboard-navigation');
     sidebar.removeAttribute('aria-hidden');
     sidebar.classList.add('webappcap-simple-sidebar');
     const brand = sidebar.querySelector('.brand');
@@ -126,37 +165,39 @@
       else a.textContent = label;
     }
 
-    if (!nav.querySelector('[data-simple-divider]')) {
-      const sectionButtons = [...nav.querySelectorAll('button[data-key]')];
-      if (sectionButtons.length) {
-        const divider = document.createElement('div');
-        divider.dataset.simpleDivider = '1';
-        divider.className = 'webappcap-sidebar-label';
-        divider.textContent = 'Textos e seções';
-        nav.insertBefore(divider, sectionButtons[0]);
-      }
-      const firstLink = nav.querySelector('a[href]');
-      if (firstLink) {
-        const divider = document.createElement('div');
-        divider.dataset.simpleToolsDivider = '1';
-        divider.className = 'webappcap-sidebar-label';
-        divider.textContent = 'Visual e estrutura';
-        nav.insertBefore(divider, firstLink);
-      }
+    nav.querySelectorAll('[data-simple-divider],[data-simple-tools-divider]').forEach(el => el.remove());
+    const sectionButtons = [...nav.querySelectorAll('button[data-key]')];
+    if (sectionButtons.length) {
+      const divider = document.createElement('div');
+      divider.dataset.simpleDivider = '1';
+      divider.className = 'webappcap-sidebar-label';
+      divider.textContent = 'Textos e seções';
+      nav.insertBefore(divider, sectionButtons[0]);
+    }
+    const firstLink = nav.querySelector('a[href]');
+    if (firstLink) {
+      const divider = document.createElement('div');
+      divider.dataset.simpleToolsDivider = '1';
+      divider.className = 'webappcap-sidebar-label';
+      divider.textContent = 'Visual e estrutura';
+      nav.insertBefore(divider, firstLink);
     }
 
     nav.dataset.simpleSidebarApplying = '0';
   }
 
   async function enhanceContent(role) {
+    simplifyEditorSidebar();
     let host = document.querySelector('main') || document.querySelector('.main') || document.querySelector('.content');
-    for (let i = 0; !host && i < 60; i++) { await wait(100); host = document.querySelector('main') || document.querySelector('.main') || document.querySelector('.content'); }
+    for (let i = 0; !host && i < 12; i++) { await wait(40); host = document.querySelector('main') || document.querySelector('.main') || document.querySelector('.content'); }
     if (!host || document.getElementById('webappcapEditorTools')) return;
 
-    document.body.classList.add('webappcap-dashboard-navigation');
     simplifyEditorSidebar();
     const nav = document.getElementById('nav');
-    if (nav) new MutationObserver(() => requestAnimationFrame(simplifyEditorSidebar)).observe(nav, { childList: true, subtree: false });
+    if (nav && !nav.dataset.simpleObserverInstalled) {
+      nav.dataset.simpleObserverInstalled = '1';
+      new MutationObserver(() => requestAnimationFrame(simplifyEditorSidebar)).observe(nav, { childList: true });
+    }
 
     const tools = document.createElement('div');
     tools.id = 'webappcapEditorTools';
@@ -223,8 +264,8 @@
     document.addEventListener('change', event => { if (event.target.closest?.('input,textarea,select,[contenteditable="true"]')) markDirty(); }, true);
 
     if (save) save.addEventListener('click', async () => {
-      for (let i = 0; i < 60; i++) {
-        await wait(100);
+      for (let i = 0; i < 30; i++) {
+        await wait(80);
         const text = String(document.getElementById('statusText')?.textContent || '').toLowerCase();
         if (text.includes('salvo') || text.includes('sincroniz')) {
           window.WebAppCapUX?.markDirty?.(false);
@@ -234,12 +275,26 @@
     });
   }
 
+  if (isContent) {
+    document.body?.classList.add('webappcap-dashboard-navigation');
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', simplifyEditorSidebar, { once: true });
+    else simplifyEditorSidebar();
+  }
+
   (async () => {
     try {
+      const cachedRole = getCachedRole();
+      if (cachedRole) {
+        if (isDashboard) enhanceDashboard(cachedRole);
+        if (isContent) enhanceContent(cachedRole);
+      }
       const role = await currentRole();
       if (!role) return;
-      if (isDashboard) await enhanceDashboard(role);
-      if (isContent) await enhanceContent(role);
+      if (!cachedRole) {
+        if (isDashboard) await enhanceDashboard(role);
+        if (isContent) await enhanceContent(role);
+      }
+      idle(prefetchEditorPages);
     } catch (error) {
       console.warn('[WebAppCap UX polish]', error);
     }
