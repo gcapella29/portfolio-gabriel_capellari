@@ -17,16 +17,34 @@
     },
     fitness: {
       key:'fitness',
-      name:'Personal Trainer / Fitness',
+      name:'Personal Trainer / Fitness — Performance',
       site_type:'personal_trainer',
-      description:'Template para personal trainers e profissionais de performance, com vídeos, agenda, serviços, prova social e conversão.',
-      visual:'linear-gradient(145deg,#0d0f0f 0%,#171b19 60%,#202820 100%)',
+      description:'Template fitness de alta conversão para personal trainers: impacto visual, vídeos logo no início, serviços, método, resultados, agenda e CTA direto para contato.',
+      visual:'linear-gradient(125deg,#080a09 0%,#141a16 48%,#28321d 100%)',
       color:'#fff',
-      chips:['Vídeos','Agenda','Serviços','Resultados'],
+      chips:['Hero de impacto','Vídeos/Reels','Método','Resultados','Agenda','WhatsApp'],
       layout:[
-        ['fitness_videos',true,'fitness-reels'],['fitness_schedule',true,'fitness-schedule'],['stats',true,'fitness-proof'],['about',true,'fitness-profile'],['coverage',true,'fitness-services'],['wsop',true,'fitness-method'],['portfolio',true,'fitness-results'],['experience',true,'fitness-experience'],['education',true,'fitness-credentials'],['instagram',true,'fitness-social'],['contact',true,'fitness-contact'],['ticker',false,'compact']
+        ['fitness_videos',true,'fitness-reels'],
+        ['about',true,'fitness-profile'],
+        ['coverage',true,'fitness-services'],
+        ['wsop',true,'fitness-method'],
+        ['stats',true,'fitness-proof'],
+        ['portfolio',true,'fitness-results'],
+        ['fitness_schedule',true,'fitness-schedule'],
+        ['experience',true,'fitness-experience'],
+        ['education',true,'fitness-credentials'],
+        ['instagram',true,'fitness-social'],
+        ['contact',true,'fitness-contact'],
+        ['ticker',false,'compact']
       ],
-      theme:{colors:{primary:'#101312',secondary:'#1d2420',accent:'#d9ff43',background:'#f4f4ef',surface:'#ffffff',text:'#141615',muted:'#6d746f'},typography:{heading:'Montserrat',body:'DM Sans',mono:'IBM Plex Mono',scale:'large'},layout:{content_width:'1200',section_spacing:'normal',radius:'large',density:'comfortable'},buttons:{style:'pill',weight:'700'},effects:{shadow:'strong',motion:'normal'},guardrails:{enabled:true,palette_mode:'performance'}}
+      theme:{
+        colors:{primary:'#080a09',secondary:'#182019',accent:'#d9ff43',background:'#f2f3ed',surface:'#ffffff',text:'#101410',muted:'#667067'},
+        typography:{heading:'Montserrat',body:'DM Sans',mono:'IBM Plex Mono',scale:'large'},
+        layout:{content_width:'1320',section_spacing:'airy',radius:'large',density:'spacious'},
+        buttons:{style:'pill',weight:'700'},
+        effects:{shadow:'strong',motion:'normal'},
+        guardrails:{enabled:true,palette_mode:'performance'}
+      }
     },
     educator: {
       key:'educator',
