@@ -54,6 +54,20 @@
     exit.onclick = logout;
     actions.appendChild(exit);
 
+    const sectionTitles = [...document.querySelectorAll('.section-title')];
+    if (sectionTitles[0]) {
+      const h2 = sectionTitles[0].querySelector('h2');
+      const p = sectionTitles[0].querySelector('p');
+      if (h2) h2.textContent = 'Editar projeto';
+      if (p) p.textContent = 'Escolha uma área para configurar o site.';
+    }
+    if (sectionTitles[1]) {
+      const h2 = sectionTitles[1].querySelector('h2');
+      const p = sectionTitles[1].querySelector('p');
+      if (h2) h2.textContent = 'Gestão e recursos';
+      if (p) p.textContent = 'Configurações administrativas, métricas e ferramentas do projeto.';
+    }
+
     const banner = document.querySelector('.status-banner');
     const pulse = document.getElementById('draftPulse');
     const draftText = document.getElementById('draftText');
@@ -89,6 +103,10 @@
     let host = document.querySelector('main') || document.querySelector('.main') || document.querySelector('.content');
     for (let i = 0; !host && i < 60; i++) { await wait(100); host = document.querySelector('main') || document.querySelector('.main') || document.querySelector('.content'); }
     if (!host || document.getElementById('webappcapEditorTools')) return;
+
+    document.body.classList.add('webappcap-dashboard-navigation');
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) sidebar.setAttribute('aria-hidden', 'true');
 
     const tools = document.createElement('div');
     tools.id = 'webappcapEditorTools';
