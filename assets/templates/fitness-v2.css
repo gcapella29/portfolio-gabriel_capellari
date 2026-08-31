@@ -1,32 +1,29 @@
 html[data-webappcap-template="fitness"]{
-  --fitness-ink:#080a09;
-  --fitness-panel:#111713;
-  --fitness-lime:#d9ff43;
-  --fitness-paper:#f2f3ed;
-  --fitness-muted:#8e9990;
-  --fitness-radius:28px;
-  background:var(--fitness-paper);
+  --fitness-ink:#080a09;--fitness-panel:#111713;--fitness-lime:#d9ff43;--fitness-paper:#f2f3ed;--fitness-muted:#8e9990;--fitness-radius:28px;background:var(--fitness-paper)
 }
 html[data-webappcap-template="fitness"] body{background:var(--fitness-paper);color:#101410;font-family:'DM Sans',Inter,sans-serif}
-html[data-webappcap-template="fitness"] h1,
-html[data-webappcap-template="fitness"] h2,
-html[data-webappcap-template="fitness"] h3{font-family:Montserrat,Inter,sans-serif;letter-spacing:-.045em;font-weight:700}
-html[data-webappcap-template="fitness"] .hero{min-height:96svh;background:#080a09;overflow:hidden;isolation:isolate}
-html[data-webappcap-template="fitness"] .hero::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(5,8,6,.94) 0%,rgba(5,8,6,.67) 45%,rgba(5,8,6,.12) 76%),linear-gradient(0deg,rgba(5,8,6,.72),transparent 42%);pointer-events:none}
-html[data-webappcap-template="fitness"] .hero-bg-layer{filter:saturate(.72) contrast(1.08);transform:scale(1.04)}
-html[data-webappcap-template="fitness"] .hero-content{position:relative;z-index:2;width:min(1320px,100%);margin-inline:auto}
-html[data-webappcap-template="fitness"] .hero-main{max-width:790px}
-html[data-webappcap-template="fitness"] .hero h1{font-size:clamp(3.25rem,8.8vw,7.6rem);line-height:.87;text-transform:uppercase;max-width:10ch}
-html[data-webappcap-template="fitness"] .hero .eyebrow,
-html[data-webappcap-template="fitness"] .kicker{color:var(--fitness-lime);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.11em;font-weight:700}
-html[data-webappcap-template="fitness"] .hero-actions{gap:.7rem;margin-top:2rem}
-html[data-webappcap-template="fitness"] .cta-btn{min-height:52px;padding:.9rem 1.25rem;border-radius:999px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
-html[data-webappcap-template="fitness"] .cta-btn.primary{background:var(--fitness-lime);border-color:var(--fitness-lime);color:var(--fitness-ink);box-shadow:0 15px 45px rgba(217,255,67,.18)}
+html[data-webappcap-template="fitness"] h1,html[data-webappcap-template="fitness"] h2,html[data-webappcap-template="fitness"] h3{font-family:Montserrat,Inter,sans-serif;letter-spacing:-.045em;font-weight:700}
+/* Commercial fitness hero: lighter overlay, compact copy, photo-first composition. */
+html[data-webappcap-template="fitness"] .hero{min-height:94svh;background:#080a09;overflow:hidden;isolation:isolate;align-items:center}
+html[data-webappcap-template="fitness"] .hero::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(5,8,6,.78) 0%,rgba(5,8,6,.54) 38%,rgba(5,8,6,.12) 70%,rgba(5,8,6,.05) 100%),linear-gradient(0deg,rgba(5,8,6,.38),transparent 48%);pointer-events:none}
+html[data-webappcap-template="fitness"] .hero-bg{transform:none}
+html[data-webappcap-template="fitness"] .hero-bg::after{background:linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.04) 72%)}
+html[data-webappcap-template="fitness"] .hero-inner{width:min(1240px,calc(100% - 3rem));padding:8rem 0 5rem;display:grid;grid-template-columns:minmax(0,650px) 1fr;align-items:end;min-height:94svh}
+html[data-webappcap-template="fitness"] .hero-top{position:absolute;top:2rem;right:0;margin:0}
+html[data-webappcap-template="fitness"] .hero h1{font-size:clamp(3rem,6vw,5.6rem);line-height:.94;text-transform:none;max-width:9.5ch;letter-spacing:-.055em}
+html[data-webappcap-template="fitness"] .hero-role{max-width:590px;margin-top:1.35rem;font-family:'DM Sans',Inter,sans-serif;font-size:clamp(1rem,1.35vw,1.18rem);line-height:1.55;letter-spacing:0;color:rgba(255,255,255,.84)}
+html[data-webappcap-template="fitness"] .hero .badge{border-color:rgba(255,255,255,.32);background:rgba(5,8,6,.24)}
+html[data-webappcap-template="fitness"] .hero .chips{margin-top:1.15rem}
+html[data-webappcap-template="fitness"] .hero .chip{background:rgba(5,8,6,.22);backdrop-filter:blur(8px)}
+html[data-webappcap-template="fitness"] .hero .actions{gap:.7rem;margin-top:2rem}
+html[data-webappcap-template="fitness"] .hero .btn{min-height:52px;padding:.9rem 1.3rem;text-transform:uppercase;letter-spacing:.055em;font-weight:700}
+html[data-webappcap-template="fitness"] .hero .btn.primary{background:var(--fitness-lime);border-color:var(--fitness-lime);color:var(--fitness-ink);box-shadow:0 15px 45px rgba(217,255,67,.18)}
+html[data-webappcap-template="fitness"] .hero #langSwitch{position:absolute;top:2rem;left:0;min-height:38px;padding:.55rem .75rem;background:rgba(5,8,6,.2);backdrop-filter:blur(8px)}
+html[data-webappcap-template="fitness"] .hero .eyebrow,html[data-webappcap-template="fitness"] .kicker{color:var(--fitness-lime);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.11em;font-weight:700}
 html[data-webappcap-template="fitness"] section:not(.hero){padding-top:clamp(4.5rem,8vw,8rem);padding-bottom:clamp(4.5rem,8vw,8rem)}
 html[data-webappcap-template="fitness"] .stats{background:var(--fitness-ink);gap:1px;padding-top:0;padding-bottom:0}
 html[data-webappcap-template="fitness"] .stat{background:#101612;color:#fff;border:0;border-radius:0;min-height:180px;display:flex;flex-direction:column;justify-content:center}
-html[data-webappcap-template="fitness"] .stat strong,
-html[data-webappcap-template="fitness"] .stat .num{color:var(--fitness-lime);font-family:Montserrat,sans-serif;font-size:clamp(2.2rem,5vw,4rem);font-weight:700}
+html[data-webappcap-template="fitness"] .stat strong,html[data-webappcap-template="fitness"] .stat .num{color:var(--fitness-lime);font-family:Montserrat,sans-serif;font-size:clamp(2.2rem,5vw,4rem);font-weight:700}
 html[data-webappcap-template="fitness"] .about{background:var(--fitness-paper)}
 html[data-webappcap-template="fitness"] .about-grid{gap:clamp(2rem,6vw,7rem);align-items:center}
 html[data-webappcap-template="fitness"] .about-photo{border-radius:var(--fitness-radius);overflow:hidden;box-shadow:0 30px 80px rgba(8,10,9,.16);transform:rotate(-1.2deg)}
@@ -37,36 +34,13 @@ html[data-webappcap-template="fitness"] .board{display:grid;grid-template-column
 html[data-webappcap-template="fitness"] .board-row{display:block;min-height:210px;padding:1.5rem;border:1px solid #dfe4dc;border-radius:22px;background:#f8f9f5;transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease}
 html[data-webappcap-template="fitness"] .board-row:hover{transform:translateY(-7px);border-color:#b9c394;box-shadow:0 24px 55px rgba(8,10,9,.09)}
 html[data-webappcap-template="fitness"] .featured-wsop{background:var(--fitness-panel);color:#fff}
-html[data-webappcap-template="fitness"] .featured-wsop .section-head h2,
-html[data-webappcap-template="fitness"] .featured-wsop h2{color:#fff}
+html[data-webappcap-template="fitness"] .featured-wsop .section-head h2,html[data-webappcap-template="fitness"] .featured-wsop h2{color:#fff}
 html[data-webappcap-template="fitness"] .wsop-visual{border-radius:var(--fitness-radius);background:linear-gradient(145deg,#1d271d,#080a09);box-shadow:none}
-html[data-webappcap-template="fitness"] .wsop-visual::before{content:"MÉTODO";color:var(--fitness-lime)}
-html[data-webappcap-template="fitness"] .wsop-visual::after{content:"↗";color:var(--fitness-lime)}
-html[data-webappcap-template="fitness"] .wsop-copy p{color:#cbd2cc}
-html[data-webappcap-template="fitness"] .wsop-points span{border-color:#3b463c;color:var(--fitness-lime);background:rgba(217,255,67,.04)}
-html[data-webappcap-template="fitness"] .portfolio{background:#0d110e;color:#fff}
-html[data-webappcap-template="fitness"] .portfolio .section-head h2{color:#fff}
-html[data-webappcap-template="fitness"] .press-card{border-radius:24px;border:1px solid #293029;background:#151b16;color:#fff;overflow:hidden}
-html[data-webappcap-template="fitness"] .press-card:hover{border-color:var(--fitness-lime);transform:translateY(-6px)}
-html[data-webappcap-template="fitness"] .experience{background:var(--fitness-paper)}
-html[data-webappcap-template="fitness"] .log-entry{border-color:#cfd6cd}
-html[data-webappcap-template="fitness"] .edu{background:#fff}
-html[data-webappcap-template="fitness"] .instagram{background:var(--fitness-lime);color:var(--fitness-ink)}
-html[data-webappcap-template="fitness"] .instagram .section-head h2{color:var(--fitness-ink)}
-html[data-webappcap-template="fitness"] .reel-frame{border-radius:28px;overflow:hidden;box-shadow:0 25px 70px rgba(8,10,9,.22)}
-html[data-webappcap-template="fitness"] .contact{background:var(--fitness-ink);color:#fff}
-html[data-webappcap-template="fitness"] .contact h2{color:#fff}
-html[data-webappcap-template="fitness"] .contact-links a{border-color:#303a31;color:#fff}
-html[data-webappcap-template="fitness"] .contact-links a:hover{color:var(--fitness-lime);border-color:var(--fitness-lime)}
-html[data-webappcap-template="fitness"] .section-nav{background:rgba(8,10,9,.82);border:1px solid rgba(255,255,255,.08)}
-html[data-webappcap-template="fitness"] .section-nav a{background:#6e786f}
-html[data-webappcap-template="fitness"] .section-nav a.active{background:var(--fitness-lime)}
-html[data-webappcap-template="fitness"] [data-module-key="fitness_videos"],
-html[data-webappcap-template="fitness"] .fitness-videos,
-html[data-webappcap-template="fitness"] #fitnessVideos{background:#0d110e;color:#fff}
-html[data-webappcap-template="fitness"] [data-module-key="fitness_schedule"],
-html[data-webappcap-template="fitness"] .fitness-schedule,
-html[data-webappcap-template="fitness"] #fitnessSchedule{background:var(--fitness-paper)}
-@media(max-width:900px){html[data-webappcap-template="fitness"] .board{grid-template-columns:1fr 1fr}html[data-webappcap-template="fitness"] .hero h1{font-size:clamp(3rem,13vw,6.2rem)}}
-@media(max-width:620px){html[data-webappcap-template="fitness"] .hero{min-height:90svh}html[data-webappcap-template="fitness"] .hero h1{font-size:clamp(2.8rem,15vw,4.8rem)}html[data-webappcap-template="fitness"] .board{grid-template-columns:1fr}html[data-webappcap-template="fitness"] .about-photo{transform:none}html[data-webappcap-template="fitness"] .hero-actions{grid-template-columns:1fr}html[data-webappcap-template="fitness"] section:not(.hero){padding-top:4rem;padding-bottom:4rem}}
+html[data-webappcap-template="fitness"] .wsop-visual::before{content:"MÉTODO";color:var(--fitness-lime)}html[data-webappcap-template="fitness"] .wsop-visual::after{content:"↗";color:var(--fitness-lime)}html[data-webappcap-template="fitness"] .wsop-copy p{color:#cbd2cc}html[data-webappcap-template="fitness"] .wsop-points span{border-color:#3b463c;color:var(--fitness-lime);background:rgba(217,255,67,.04)}
+html[data-webappcap-template="fitness"] .portfolio{background:#0d110e;color:#fff}html[data-webappcap-template="fitness"] .portfolio .section-head h2{color:#fff}html[data-webappcap-template="fitness"] .press-card{border-radius:24px;border:1px solid #293029;background:#151b16;color:#fff;overflow:hidden}html[data-webappcap-template="fitness"] .press-card:hover{border-color:var(--fitness-lime);transform:translateY(-6px)}
+html[data-webappcap-template="fitness"] .experience{background:var(--fitness-paper)}html[data-webappcap-template="fitness"] .log-entry{border-color:#cfd6cd}html[data-webappcap-template="fitness"] .edu{background:#fff}html[data-webappcap-template="fitness"] .instagram{background:var(--fitness-lime);color:var(--fitness-ink)}html[data-webappcap-template="fitness"] .instagram .section-head h2{color:var(--fitness-ink)}html[data-webappcap-template="fitness"] .reel-frame{border-radius:28px;overflow:hidden;box-shadow:0 25px 70px rgba(8,10,9,.22)}
+html[data-webappcap-template="fitness"] .contact{background:var(--fitness-ink);color:#fff}html[data-webappcap-template="fitness"] .contact h2{color:#fff}html[data-webappcap-template="fitness"] .contact-links a{border-color:#303a31;color:#fff}html[data-webappcap-template="fitness"] .contact-links a:hover{color:var(--fitness-lime);border-color:var(--fitness-lime)}html[data-webappcap-template="fitness"] .section-nav{background:rgba(8,10,9,.82);border:1px solid rgba(255,255,255,.08)}html[data-webappcap-template="fitness"] .section-nav a{background:#6e786f}html[data-webappcap-template="fitness"] .section-nav a.active{background:var(--fitness-lime)}
+html[data-webappcap-template="fitness"] [data-module-key="fitness_videos"],html[data-webappcap-template="fitness"] .fitness-videos,html[data-webappcap-template="fitness"] #fitnessVideos{background:#0d110e;color:#fff}html[data-webappcap-template="fitness"] [data-module-key="fitness_schedule"],html[data-webappcap-template="fitness"] .fitness-schedule,html[data-webappcap-template="fitness"] #fitnessSchedule{background:var(--fitness-paper)}
+@media(max-width:900px){html[data-webappcap-template="fitness"] .board{grid-template-columns:1fr 1fr}html[data-webappcap-template="fitness"] .hero-inner{grid-template-columns:1fr;width:min(100% - 2rem,760px)}html[data-webappcap-template="fitness"] .hero h1{font-size:clamp(3rem,11vw,5.8rem)}}
+@media(max-width:620px){html[data-webappcap-template="fitness"] .hero{min-height:88svh;align-items:flex-end}html[data-webappcap-template="fitness"] .hero-inner{min-height:88svh;padding:7rem 0 3rem}html[data-webappcap-template="fitness"] .hero::after{background:linear-gradient(0deg,rgba(5,8,6,.9) 0%,rgba(5,8,6,.52) 52%,rgba(5,8,6,.08) 100%)}html[data-webappcap-template="fitness"] .hero-bg::after{background:linear-gradient(0deg,rgba(0,0,0,.38),transparent 70%)}html[data-webappcap-template="fitness"] .hero h1{font-size:clamp(2.7rem,14vw,4.5rem);max-width:10ch}html[data-webappcap-template="fitness"] .hero-role{font-size:1rem;max-width:34ch}html[data-webappcap-template="fitness"] .hero-top{top:1.25rem;right:0}html[data-webappcap-template="fitness"] .hero #langSwitch{top:1.25rem}html[data-webappcap-template="fitness"] .board{grid-template-columns:1fr}html[data-webappcap-template="fitness"] .about-photo{transform:none}html[data-webappcap-template="fitness"] .hero .actions{display:grid;grid-template-columns:1fr auto}html[data-webappcap-template="fitness"] section:not(.hero){padding-top:4rem;padding-bottom:4rem}}
 @media(prefers-reduced-motion:reduce){html[data-webappcap-template="fitness"] .board-row,html[data-webappcap-template="fitness"] .press-card{transition:none!important;transform:none!important}}
