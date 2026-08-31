@@ -5,6 +5,7 @@
   const MAX_REELS = 3;
   const host = () => document.getElementById('editorHost');
   const locale = () => document.querySelector('.locale-tab.active')?.dataset.locale || 'pt';
+  const isFitnessProject = () => !!document.querySelector('#nav [data-key="fitness_videos"]');
   const esc = value => String(value ?? '')
     .replaceAll('&', '&amp;')
     .replaceAll('"', '&quot;')
@@ -68,7 +69,7 @@
     });
   }
 
-  function enhance() {
+  function enhanceVideos() {
     if (!isVideosEditor()) return;
     const editor = host();
     const content = editor?.__working;
@@ -95,10 +96,52 @@
     renderRows(root, content);
   }
 
+  function enhanceStats() {
+    if (!isFitnessProject()) return;
+    const navButton = document.querySelector('#nav [data-key="stats"]');
+    if (navButton) navButton.textContent = 'Números e destaques';
+    if (!navButton?.classList.contains('active')) return;
+
+    const title = document.getElementById('editorTitle');
+    if (title) title.textContent = 'Números e destaques';
+
+    host()?.querySelectorAll('[data-list-field][data-prop="num"]').forEach(input => {
+      const label = input.closest('.field')?.querySelector('label');
+      if (label) label.textContent = 'Número / destaque';
+      input.placeholder = 'Ex.: 10+, 200+, 100%';
+    });
+    host()?.querySelectorAll('[data-list-field][data-prop="label"]').forEach(input => {
+      const label = input.closest('.field')?.querySelector('label');
+      if (label) label.textContent = 'Descrição';
+      input.placeholder = 'Ex.: Anos de experiência';
+    });
+  }
+
+  function alignPreviewButton() {
+    if (!isFitnessProject()) return;
+    const preview = document.getElementById('previewLink');
+    const site = document.getElementById('publishedLink');
+    if (!preview || !site || !site.parentElement) return;
+    const actions = site.parentElement;
+    if (preview.parentElement !== actions || preview.nextElementSibling !== site) {
+      actions.insertBefore(preview, site);
+    }
+  }
+
+  function enhanceAll() {
+    enhanceVideos();
+    enhanceStats();
+    alignPreviewButton();
+  }
+
   document.addEventListener('click', event => {
-    if (event.target.closest?.('#nav [data-key="fitness_videos"]')) setTimeout(enhance, 0);
-    if (event.target.closest?.('.locale-tab')) setTimeout(enhance, 0);
+    if (event.target.closest?.('#nav [data-key="fitness_videos"]')) setTimeout(enhanceVideos, 0);
+    if (event.target.closest?.('#nav [data-key="stats"]')) setTimeout(enhanceStats, 0);
+    if (event.target.closest?.('.locale-tab')) setTimeout(enhanceAll, 0);
   }, true);
 
-  window.addEventListener('load', () => setTimeout(enhance, 0), { once: true });
+  window.addEventListener('load', () => {
+    setTimeout(enhanceAll, 0);
+    setTimeout(enhanceAll, 350);
+  }, { once: true });
 })();
