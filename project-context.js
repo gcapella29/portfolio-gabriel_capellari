@@ -42,6 +42,28 @@
     }
   };
 
+  const isContentEditor = isAdmin && !!route.querySlug && (
+    window.location.pathname === '/admin/' ||
+    window.location.pathname === '/admin/index.html' ||
+    window.location.pathname === '/admin'
+  );
+
+  // The content editor already rebuilds its own navigation on section changes.
+  // ux.js also attaches a MutationObserver to the same #nav node; on some browsers
+  // that secondary observer can repeatedly react to those rebuilds and lock the UI.
+  // Ignore only observers attached to #nav on the content editor. Other observers
+  // elsewhere in the CMS keep the native behavior.
+  if (isContentEditor && window.MutationObserver && !window.__WebAppCapNativeMutationObserver) {
+    const NativeMutationObserver = window.MutationObserver;
+    window.__WebAppCapNativeMutationObserver = NativeMutationObserver;
+    window.MutationObserver = class WebAppCapMutationObserver extends NativeMutationObserver {
+      observe(target, options) {
+        if (target?.id === 'nav') return;
+        return super.observe(target, options);
+      }
+    };
+  }
+
   if (!isAdmin) {
     document.addEventListener('webappcap:data-ready', event => {
       const key = String(event.detail?.snapshot?.template?.content?.key || '').toLowerCase();
