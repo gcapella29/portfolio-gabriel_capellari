@@ -57,6 +57,43 @@
   if (route.querySlug && isAdmin) localStorage.setItem('vitrine-current-project', route.querySlug);
   if (isAdmin && !route.querySlug) localStorage.removeItem('vitrine-current-project');
 
+  // Projectless admin entry is only a routing screen. Hide it while resolving
+  // the signed-in user's destination so the generic content editor never flashes
+  // an expected "no project selected" error before Projects/Client opens.
+  if (isAdmin && !route.querySlug && (window.location.pathname === '/admin/' || window.location.pathname === '/admin/index.html' || window.location.pathname === '/admin')) {
+    document.documentElement.style.visibility = 'hidden';
+    queueMicrotask(async () => {
+      try {
+        if (!window.supabase) {
+          document.documentElement.style.visibility = '';
+          return;
+        }
+        const sb = window.WebAppCapEntrySupabase || (window.WebAppCapEntrySupabase = window.supabase.createClient(cfg.url, cfg.publishableKey, { auth:{persistSession:true,autoRefreshToken:true} }));
+        const session = (await sb.auth.getSession()).data?.session;
+        if (!session) {
+          document.documentElement.style.visibility = '';
+          return;
+        }
+        const q = await sb.rpc('webappcap_my_projects', { include_archived:false });
+        if (q.error) throw q.error;
+        const projects = q.data || [];
+        if (!projects.length) {
+          document.documentElement.style.visibility = '';
+          return;
+        }
+        if (projects.some(p => String(p.role || '').toLowerCase() === 'owner')) {
+          window.location.replace('/admin/projects.html');
+          return;
+        }
+        const chosen = projects.find(p => !p.archived_at) || projects[0];
+        window.location.replace(`/admin/client.html?project=${encodeURIComponent(chosen.slug)}`);
+      } catch (error) {
+        console.warn('[WebAppCap entry routing]', error);
+        document.documentElement.style.visibility = '';
+      }
+    });
+  }
+
   // Public custom domains/subdomains are intentionally allowed to continue
   // without a slug here. project-data.js resolves the host against the projects
   // table before any tenant UI is rendered. Never fall back to the primary project.
