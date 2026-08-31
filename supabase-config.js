@@ -80,7 +80,7 @@ window.WebAppCapProjectSchema = Object.freeze({
     }),
     personal_trainer: Object.freeze({
       label: 'Personal Trainer / Fitness',
-      modules: Object.freeze(['fitness_videos','fitness_schedule','stats','about','coverage','portfolio','experience','education','instagram','contact','ticker','wsop'])
+      modules: Object.freeze(['fitness_videos','stats','about','coverage','wsop','portfolio','fitness_schedule','experience','education','instagram','contact'])
     }),
     educator: Object.freeze({
       label: 'Professor / Consultor',
@@ -117,7 +117,7 @@ window.WebAppCapProjectSchema = Object.freeze({
         ['ticker',true,'marquee'],['stats',true,'cards'],['about',true,'image-left'],['wsop',true,'featured'],['coverage',true,'rows'],['portfolio',true,'featured'],['experience',true,'timeline'],['education',true,'split'],['instagram',true,'featured'],['contact',true,'split']
       ],
       personal_trainer:[
-        ['fitness_videos',true,'fitness-reels'],['fitness_schedule',true,'fitness-schedule'],['stats',true,'minimal'],['about',true,'image-right'],['coverage',true,'cards'],['portfolio',true,'cards'],['experience',true,'cards'],['education',true,'stacked'],['instagram',true,'featured'],['contact',true,'centered'],['ticker',false,'compact'],['wsop',false,'compact']
+        ['fitness_videos',true,'fitness-reels'],['stats',true,'minimal'],['about',true,'image-right'],['coverage',true,'cards'],['wsop',true,'featured'],['portfolio',true,'cards'],['fitness_schedule',true,'fitness-schedule'],['experience',true,'cards'],['education',true,'stacked'],['instagram',true,'featured'],['contact',true,'centered']
       ],
       educator:[
         ['about',true,'image-left'],['stats',true,'split'],['portfolio',true,'list'],['experience',true,'timeline'],['education',true,'split'],['instagram',true,'minimal'],['contact',true,'centered'],['ticker',false,'compact'],['wsop',false,'compact'],['coverage',false,'compact']
@@ -151,3 +151,39 @@ window.WebAppCapProjectSchema = Object.freeze({
     return structuredClone(sections[sectionKey] || {is_visible:visible,content:{}});
   }
 });
+
+/* Fitness CMS adapter: keep the reusable storage keys, but expose only fitness language. */
+(() => {
+  if (!location.pathname.startsWith('/admin')) return;
+  const nav = document.getElementById('nav');
+  if (!nav) return;
+  const labels = {
+    'Números':'Números / Resultados',
+    'Coberturas / Trabalhos':'Serviços',
+    'Trabalho em destaque':'Método de trabalho',
+    'Portfólio':'Resultados / Transformações',
+    'Formação':'Formação / Certificações'
+  };
+  const apply = () => {
+    const buttons = [...nav.querySelectorAll('button[data-key]')];
+    const fitness = buttons.some(b => b.dataset.key === 'fitness_videos') && buttons.some(b => b.dataset.key === 'fitness_schedule');
+    if (!fitness) return;
+    document.documentElement.dataset.webappcapAdminType = 'fitness';
+    for (const b of buttons) if (labels[b.textContent.trim()]) b.textContent = labels[b.textContent.trim()];
+    const active = nav.querySelector('button[data-key].active')?.dataset.key;
+    const title = document.getElementById('editorTitle');
+    const titleByKey = {stats:'Números / Resultados',coverage:'Serviços',wsop:'Método de trabalho',portfolio:'Resultados / Transformações',education:'Formação / Certificações'};
+    if (title && titleByKey[active]) title.textContent = titleByKey[active];
+    if (active === 'hero') {
+      const host = document.getElementById('editorHost');
+      for (const block of host?.querySelectorAll(':scope > div[style*="margin-top"]') || []) {
+        const heading = block.querySelector('.toolbar strong');
+        if (heading?.textContent.trim() === 'Faixa / destaques') block.remove();
+      }
+    }
+  };
+  new MutationObserver(apply).observe(nav,{childList:true,subtree:true});
+  const host = document.getElementById('editorHost');
+  if (host) new MutationObserver(apply).observe(host,{childList:true,subtree:true});
+  queueMicrotask(apply);
+})();
