@@ -42,6 +42,18 @@
     }
   };
 
+  if (!isAdmin) {
+    document.addEventListener('webappcap:data-ready', event => {
+      const key = String(event.detail?.snapshot?.template?.content?.key || '').toLowerCase();
+      if (key !== 'fitness' || document.querySelector('link[data-webappcap-template-skin="fitness"]')) return;
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/assets/templates/fitness-v2.css';
+      link.dataset.webappcapTemplateSkin = 'fitness';
+      document.head.appendChild(link);
+    }, { once:true });
+  }
+
   if (route.querySlug && isAdmin) localStorage.setItem('vitrine-current-project', route.querySlug);
   if (isAdmin && !route.querySlug) localStorage.removeItem('vitrine-current-project');
 
