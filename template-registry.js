@@ -19,23 +19,22 @@
       key:'fitness',
       name:'Personal Trainer / Fitness — Performance',
       site_type:'personal_trainer',
-      description:'Template fitness de alta conversão para personal trainers: impacto visual, vídeos logo no início, serviços, método, resultados, agenda e CTA direto para contato.',
+      description:'Template fitness de alta conversão para personal trainers: impacto visual, vídeos, serviços, método, resultados, agenda e CTA direto para contato.',
       visual:'linear-gradient(125deg,#080a09 0%,#141a16 48%,#28321d 100%)',
       color:'#fff',
-      chips:['Hero de impacto','Vídeos/Reels','Método','Resultados','Agenda','WhatsApp'],
+      chips:['Hero de impacto','Vídeos/Reels','Serviços','Método','Resultados','Agenda','WhatsApp'],
       layout:[
         ['fitness_videos',true,'fitness-reels'],
+        ['stats',true,'fitness-proof'],
         ['about',true,'fitness-profile'],
         ['coverage',true,'fitness-services'],
         ['wsop',true,'fitness-method'],
-        ['stats',true,'fitness-proof'],
         ['portfolio',true,'fitness-results'],
         ['fitness_schedule',true,'fitness-schedule'],
         ['experience',true,'fitness-experience'],
         ['education',true,'fitness-credentials'],
         ['instagram',true,'fitness-social'],
-        ['contact',true,'fitness-contact'],
-        ['ticker',false,'compact']
+        ['contact',true,'fitness-contact']
       ],
       theme:{
         colors:{primary:'#080a09',secondary:'#182019',accent:'#d9ff43',background:'#f2f3ed',surface:'#ffffff',text:'#101410',muted:'#667067'},
