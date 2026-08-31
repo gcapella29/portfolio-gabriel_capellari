@@ -1,12 +1,13 @@
 (() => {
   const clone=v=>structuredClone(v);
   let cache=null, source='static';
+  const canonicalType=value=>({journalist:'editorial',editorial:'editorial',portfolio:'editorial',other:'editorial',personal_trainer:'personal_trainer',fitness:'personal_trainer',educator:'educator',language_teacher:'educator',local:'local',local_business:'local'})[String(value||'').trim().toLowerCase()]||String(value||'').trim().toLowerCase();
   function normalize(row){
     if(!row)return null;
     return {
       key:row.key,
       name:row.name,
-      site_type:row.site_type,
+      site_type:canonicalType(row.site_type),
       description:row.description||'',
       visual:row.visual||'',
       color:row.color||'#fff',
@@ -24,7 +25,7 @@
   }
   async function load(sb,{refresh=false}={}){
     if(cache&&!refresh)return clone(cache);
-    const fallback=window.WebAppCapTemplateRegistry?.all?.()||{};
+    const fallback=Object.fromEntries(Object.entries(window.WebAppCapTemplateRegistry?.all?.()||{}).map(([key,t])=>[key,normalize(t)]));
     if(!sb){cache=fallback;source='static';return clone(cache)}
     try{
       const rows=await queryDatabase(sb);
@@ -49,12 +50,14 @@
     }catch(e){return{seeded:false,source,error:e}}
   }
   async function save(sb,template,userId){
-    const row={...normalize(template),updated_at:new Date().toISOString(),updated_by:userId};
+    const normalized=normalize(template);
+    const row={...normalized,site_type:template.site_type,updated_at:new Date().toISOString(),updated_by:userId};
     const q=await sb.from('platform_templates').upsert(row,{onConflict:'key'}).select().single();
     if(q.error)throw q.error;await load(sb,{refresh:true});return normalize(q.data);
   }
   async function get(sb,key){const all=await load(sb);return all[key]?clone(all[key]):null}
-  async function bySiteType(sb,type){const all=await load(sb);return clone(Object.values(all).find(t=>t.site_type===type)||null)}
+  async function bySiteType(sb,type){const all=await load(sb),wanted=canonicalType(type);return clone(Object.values(all).find(t=>canonicalType(t.site_type)===wanted)||null)}
+  async function compatible(sb,type){const all=await load(sb),wanted=canonicalType(type);return Object.fromEntries(Object.entries(all).filter(([,t])=>canonicalType(t.site_type)===wanted).map(([k,t])=>[k,clone(t)]))}
   async function keys(sb){return Object.keys(await load(sb))}
-  window.WebAppCapTemplateStore=Object.freeze({load,get,bySiteType,keys,save,seedIfEmpty,source:()=>source});
+  window.WebAppCapTemplateStore=Object.freeze({load,get,bySiteType,compatible,keys,save,seedIfEmpty,canonicalType,source:()=>source});
 })();

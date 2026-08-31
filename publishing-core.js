@@ -11,8 +11,18 @@
     .replace(/^-+|-+$/g, '');
 
   function routeUrl(project, origin = window.location.origin) {
-    const slug = window.WebAppCapTenantResolver?.cleanSlug(project?.slug);
-    return slug ? new URL(`/p/${encodeURIComponent(slug)}`, origin).href : null;
+    const resolver = window.WebAppCapTenantResolver;
+    const slug = resolver?.cleanSlug(project?.slug);
+    if (!slug) return null;
+
+    try {
+      const host = new URL(origin).hostname;
+      const isPrimaryProject = slug === resolver?.primaryProjectSlug;
+      const isPrimaryHost = typeof resolver?.isPrimaryHost === 'function' && resolver.isPrimaryHost(host);
+      if (isPrimaryProject && isPrimaryHost) return new URL('/', origin).href;
+    } catch {}
+
+    return new URL(`/p/${encodeURIComponent(slug)}`, origin).href;
   }
 
   function configuredUrl(project) {
@@ -22,6 +32,15 @@
     const subdomain = cleanSubdomain(project.subdomain);
     if (subdomain) return `https://${subdomain}.webappcap.com.br/`;
     return null;
+  }
+
+  function validationUrl(project) {
+    const configured = configuredUrl(project);
+    const slug = window.WebAppCapTenantResolver?.cleanSlug(project?.slug);
+    if (!configured || !slug) return null;
+    const url = new URL(configured);
+    url.searchParams.set('webappcap_validate', slug);
+    return url.href;
   }
 
   function publicUrl(project, origin = window.location.origin) {
@@ -67,6 +86,7 @@
     const route = routeUrl(project);
     const configured = configuredUrl(project);
     const publicAddress = publicUrl(project);
+    const validationAddress = validationUrl(project);
     return {
       isPublished: project?.is_published === true && hasPublishedContent,
       hasDraft,
@@ -77,6 +97,7 @@
       domainStatus,
       domainIsActive: String(domainStatus).toLowerCase() === 'active',
       configuredUrl: configured,
+      validationUrl: validationAddress,
       publicUrl: publicAddress,
       previewUrl: previewUrl(project),
       routeUrl: route
@@ -87,6 +108,7 @@
     cleanHost,
     cleanSubdomain,
     configuredUrl,
+    validationUrl,
     publicUrl,
     previewUrl,
     routeUrl,
