@@ -1,37 +1,41 @@
 (() => {
   const clone=v=>structuredClone(v);
   let cache=null, source='static';
-  const canonicalType=value=>({journalist:'editorial',editorial:'editorial',portfolio:'editorial',other:'editorial',personal_trainer:'personal_trainer',fitness:'personal_trainer',educator:'educator',language_teacher:'educator',local:'local',local_business:'local'})[String(value||'').trim().toLowerCase()]||String(value||'').trim().toLowerCase();
+  const canonicalType=value=>({journalist:'editorial',editorial:'editorial',portfolio:'editorial',other:'editorial',personal_trainer:'personal_trainer',fitness:'personal_trainer',educator:'school',language_teacher:'school',school:'school',local:'food_business',local_business:'food_business',food_business:'food_business',food:'food_business'})[String(value||'').trim().toLowerCase()]||String(value||'').trim().toLowerCase();
+  const registry=()=>window.WebAppCapTemplateRegistry?.all?.()||{};
+  const allowedKeys=()=>new Set(Object.keys(registry()));
   function normalize(row){
     if(!row)return null;
+    const base=registry()[row.key]||{};
     return {
       key:row.key,
-      name:row.name,
-      site_type:canonicalType(row.site_type),
-      description:row.description||'',
-      visual:row.visual||'',
-      color:row.color||'#fff',
-      chips:Array.isArray(row.chips)?row.chips:[],
-      layout:Array.isArray(row.layout)?row.layout:[],
-      theme:row.theme&&typeof row.theme==='object'?row.theme:{},
-      version:Number(row.version)||1,
-      is_active:row.is_active!==false
+      name:row.name||base.name||row.key,
+      site_type:canonicalType(row.site_type||base.site_type),
+      description:row.description||base.description||'',
+      visual:row.visual||base.visual||'',
+      color:row.color||base.color||'#fff',
+      chips:Array.isArray(row.chips)?row.chips:(base.chips||[]),
+      layout:Array.isArray(row.layout)?row.layout:(base.layout||[]),
+      theme:row.theme&&typeof row.theme==='object'?row.theme:(base.theme||{}),
+      version:Number(row.version)||Number(base.version)||1,
+      is_active:row.is_active!==false,
+      status:base.status||row.status||'ready'
     };
   }
   async function queryDatabase(sb){
     const q=await sb.from('platform_templates').select('key,name,site_type,description,visual,color,chips,layout,theme,version,is_active').eq('is_active',true).order('key');
     if(q.error)throw q.error;
-    return q.data||[];
+    return (q.data||[]).filter(r=>allowedKeys().has(r.key));
   }
+  function staticTemplates(){return Object.fromEntries(Object.entries(registry()).map(([key,t])=>[key,normalize(t)]))}
   async function load(sb,{refresh=false}={}){
     if(cache&&!refresh)return clone(cache);
-    const fallback=Object.fromEntries(Object.entries(window.WebAppCapTemplateRegistry?.all?.()||{}).map(([key,t])=>[key,normalize(t)]));
+    const fallback=staticTemplates();
     if(!sb){cache=fallback;source='static';return clone(cache)}
     try{
-      const rows=await queryDatabase(sb);
-      if(!rows.length){cache=fallback;source='static-empty-db';return clone(cache)}
-      cache=Object.fromEntries(rows.map(r=>{const t=normalize(r);return[t.key,t]}));
-      source='database';
+      const rows=await queryDatabase(sb),db=Object.fromEntries(rows.map(r=>{const t=normalize(r);return[t.key,t]}));
+      cache={...fallback,...db};
+      source=rows.length?'database+registry':'static-empty-db';
       return clone(cache);
     }catch(e){
       console.warn('[WebAppCap TemplateStore] banco indisponível; usando registry estático.',e.message||e);
@@ -41,8 +45,9 @@
   async function seedIfEmpty(sb,userId){
     try{
       const existing=await queryDatabase(sb);
-      if(existing.length){await load(sb,{refresh:true});return{seeded:false,source:'database',count:existing.length}}
-      const rows=Object.values(window.WebAppCapTemplateRegistry.all()).map(t=>({...t,description:t.description||'',version:Number(t.version)||1,is_active:true,updated_by:userId}));
+      const missing=Object.values(registry()).filter(t=>!existing.some(x=>x.key===t.key));
+      if(!missing.length){await load(sb,{refresh:true});return{seeded:false,source:'database',count:existing.length}}
+      const rows=missing.map(t=>({...t,description:t.description||'',version:Number(t.version)||1,is_active:true,updated_by:userId}));
       const q=await sb.from('platform_templates').upsert(rows,{onConflict:'key'}).select('key');
       if(q.error)throw q.error;
       await load(sb,{refresh:true});
@@ -50,8 +55,10 @@
     }catch(e){return{seeded:false,source,error:e}}
   }
   async function save(sb,template,userId){
+    if(!allowedKeys().has(template?.key))throw new Error('Template fora do catálogo ativo.');
     const normalized=normalize(template);
     const row={...normalized,site_type:template.site_type,updated_at:new Date().toISOString(),updated_by:userId};
+    delete row.status;
     const q=await sb.from('platform_templates').upsert(row,{onConflict:'key'}).select().single();
     if(q.error)throw q.error;await load(sb,{refresh:true});return normalize(q.data);
   }

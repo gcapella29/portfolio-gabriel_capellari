@@ -45,9 +45,10 @@
     return;
   }
 
-  // Preview must use the exact same visual shell, CSS, media and effects as the
-  // published site. The draft flag only changes the data source in project-data.js.
-  const target = new URL('/index.html', window.location.origin);
+  // Preview must use the exact same data-first shell and renderer as the
+  // published multi-project site. The draft flag only changes the data source
+  // in project-data.js, preserving the selected project's template/layout.
+  const target = new URL('/public-shell.html', window.location.origin);
   target.searchParams.set('preview', 'draft');
   target.searchParams.set('project', validSlug);
 

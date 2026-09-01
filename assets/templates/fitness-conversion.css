@@ -1,0 +1,59 @@
+html[data-webappcap-template="fitness"]{scroll-behavior:smooth}
+html[data-webappcap-template="fitness"] .fitness-navbar{position:fixed;top:0;left:0;right:0;z-index:90;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:.8rem clamp(1rem,4vw,3.5rem);background:rgba(7,10,8,.82);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.08)}
+html[data-webappcap-template="fitness"] .fitness-brand{color:#fff;text-decoration:none;font:800 .88rem/1 Montserrat,sans-serif;letter-spacing:-.02em;white-space:nowrap}
+html[data-webappcap-template="fitness"] .fitness-nav-links{display:flex;justify-content:center;gap:1.45rem}
+html[data-webappcap-template="fitness"] .fitness-nav-links a{color:rgba(255,255,255,.72);text-decoration:none;font:700 .62rem/1 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+html[data-webappcap-template="fitness"] .fitness-nav-cta{display:inline-flex;align-items:center;justify-content:center;background:var(--fitness-lime);color:#0b0e0c;text-decoration:none;border-radius:999px;padding:.72rem .95rem;font:800 .64rem/1 Montserrat,sans-serif}
+html[data-webappcap-template="fitness"] .hero{padding-top:56px}
+html[data-webappcap-template="fitness"] .hero .hero-inner{padding-left:clamp(2rem,8vw,8.5rem)!important;padding-right:clamp(1.5rem,7vw,7rem)!important}
+html[data-webappcap-template="fitness"] .fitness-hero-copy{max-width:560px!important}
+html[data-webappcap-template="fitness"] .fitness-hero-name{font-size:clamp(.95rem,1.35vw,1.22rem)!important;margin-bottom:.7rem!important}
+html[data-webappcap-template="fitness"] .hero .fitness-hero-copy h1{font-size:clamp(2.35rem,4.3vw,4rem)!important;line-height:.98!important;max-width:12.5ch!important;letter-spacing:-.045em!important}
+html[data-webappcap-template="fitness"] .fitness-hero-description{max-width:47ch!important;font-size:clamp(.94rem,1.05vw,1.02rem)!important}
+html[data-webappcap-template="fitness"] .fitness-proof-strip{position:relative;z-index:2}
+html[data-webappcap-template="fitness"] .fitness-services-section{background:#f4f5ef!important;color:#0d110e!important}
+html[data-webappcap-template="fitness"] .fitness-services-section h2{max-width:13ch!important}
+html[data-webappcap-template="fitness"] .fitness-results-section{background:#0b0e0c!important;color:#fff!important}
+html[data-webappcap-template="fitness"] .fitness-results-intro{max-width:52ch;color:#aeb6af;margin:1rem 0 2rem}
+html[data-webappcap-template="fitness"] .fitness-results-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.8rem}
+html[data-webappcap-template="fitness"] .fitness-result-card{overflow:hidden;border:1px solid #283029;border-radius:24px;background:#131814;box-shadow:0 22px 60px rgba(0,0,0,.18)}
+html[data-webappcap-template="fitness"] .fitness-result-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:#2c342d}
+html[data-webappcap-template="fitness"] .fitness-result-photos figure{position:relative;margin:0;min-height:260px;background:#0a0d0b;overflow:hidden}
+html[data-webappcap-template="fitness"] .fitness-result-photos img{display:block;width:100%;height:100%;min-height:260px;object-fit:cover}
+html[data-webappcap-template="fitness"] .fitness-result-photos figcaption{position:absolute;left:.7rem;bottom:.7rem;padding:.35rem .5rem;border-radius:999px;background:rgba(8,10,9,.76);color:#fff;font:700 .56rem/1 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+html[data-webappcap-template="fitness"] .fitness-result-body{padding:1.35rem}
+html[data-webappcap-template="fitness"] .fitness-result-number{display:block;color:var(--fitness-lime);font:900 clamp(1.6rem,2.4vw,2.5rem)/1 Montserrat,sans-serif;letter-spacing:-.04em;margin-bottom:.65rem}
+html[data-webappcap-template="fitness"] .fitness-result-body h3{margin:0;font-size:1.05rem}
+html[data-webappcap-template="fitness"] .fitness-result-context{margin-top:.4rem;color:#88918a;font:600 .62rem/1.4 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+html[data-webappcap-template="fitness"] .fitness-result-details{margin-top:1rem;color:#c7cdc8;font-size:.88rem;line-height:1.6}
+html[data-webappcap-template="fitness"] .fitness-result-body blockquote{margin:1rem 0 0;padding-top:1rem;border-top:1px solid #2d352f;color:#fff;font-size:.9rem;line-height:1.55}
+html[data-webappcap-template="fitness"] .fitness-conversion-agenda{order:0}
+html[data-webappcap-template="fitness"] .fitness-reels-section{background:#101512!important}
+html[data-webappcap-template="fitness"] .fitness-about-section{background:#fff!important;color:#111511!important}
+html[data-webappcap-template="fitness"] .fitness-about-section .about-grid{align-items:center;gap:clamp(2rem,7vw,7rem)}
+html[data-webappcap-template="fitness"] .fitness-about-section .copy p{max-width:60ch;color:#5f6961;line-height:1.7}
+html[data-webappcap-template="fitness"] .fitness-trust-section{background:#eef0e8!important;color:#0d110e!important;padding-top:clamp(4rem,6.5vw,6.5rem)!important;padding-bottom:clamp(4rem,6.5vw,6.5rem)!important}
+html[data-webappcap-template="fitness"] .fitness-trust-section>.eyebrow{color:#5f6f18;font-size:.66rem;letter-spacing:.12em}
+html[data-webappcap-template="fitness"] .fitness-trust-section>h2{font-size:clamp(2.25rem,4vw,4rem);line-height:.98;letter-spacing:-.045em;max-width:12ch;margin-bottom:.8rem}
+html[data-webappcap-template="fitness"] .fitness-trust-grid{display:grid;grid-template-columns:minmax(240px,.65fr) minmax(0,1.55fr);gap:clamp(2.4rem,6vw,6rem);margin-top:2.2rem;align-items:start}
+html[data-webappcap-template="fitness"] .fitness-trust-copy p{max-width:34ch;color:#4e5850;line-height:1.7;font-size:1rem}
+html[data-webappcap-template="fitness"] .fitness-trust-content{display:grid;gap:2.4rem}
+html[data-webappcap-template="fitness"] .fitness-trust-block>h3{margin:0 0 1rem;font:800 .76rem/1.2 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:#596817}
+html[data-webappcap-template="fitness"] .fitness-trust-section .experience-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem!important}
+html[data-webappcap-template="fitness"] .fitness-trust-section .experience-card{padding:1.35rem!important;border:1px solid #cfd6ca!important;border-radius:18px!important;background:#fff!important;color:#0d110e!important;box-shadow:0 12px 30px rgba(13,17,14,.045)}
+html[data-webappcap-template="fitness"] .fitness-trust-section .experience-card h3{margin:0 0 .45rem!important;color:#0d110e!important;font:800 1rem/1.25 Montserrat,sans-serif!important;letter-spacing:-.02em}
+html[data-webappcap-template="fitness"] .fitness-trust-section .experience-card p,html[data-webappcap-template="fitness"] .fitness-trust-section .experience-card span,html[data-webappcap-template="fitness"] .fitness-trust-section .experience-card small{color:#4f5a52!important;font-size:.88rem!important;line-height:1.55!important}
+html[data-webappcap-template="fitness"] .fitness-trust-section .edu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem!important}
+html[data-webappcap-template="fitness"] .fitness-trust-section .edu-item{padding:1rem 1.1rem!important;border:1px solid #d4dacf!important;border-radius:14px!important;background:#f8f9f5!important;color:#0d110e!important}
+html[data-webappcap-template="fitness"] .fitness-trust-section .edu-item strong,html[data-webappcap-template="fitness"] .fitness-trust-section .edu-item h3,html[data-webappcap-template="fitness"] .fitness-trust-section .edu-item h4{color:#0d110e!important;font-size:.94rem!important;line-height:1.35!important}
+html[data-webappcap-template="fitness"] .fitness-trust-section .edu-item p,html[data-webappcap-template="fitness"] .fitness-trust-section .edu-item span,html[data-webappcap-template="fitness"] .fitness-trust-section .edu-item small{color:#566159!important;font-size:.84rem!important;line-height:1.5!important}
+html[data-webappcap-template="fitness"] .fitness-cref-badge{display:inline-flex;align-items:center;gap:.55rem;margin:0 0 1.2rem;padding:.65rem .8rem;border-radius:999px;background:#111713;color:#fff;font:800 .7rem/1 'IBM Plex Mono',monospace;letter-spacing:.04em}
+html[data-webappcap-template="fitness"] .fitness-cref-badge::before{content:'CREF';display:inline-flex;padding:.28rem .38rem;border-radius:999px;background:var(--fitness-lime);color:#0b0e0c;font-size:.56rem;letter-spacing:.08em}
+html[data-webappcap-template="fitness"] .fitness-contact-section{display:grid;place-items:center;text-align:center;min-height:58vh;background:#080a09!important}
+html[data-webappcap-template="fitness"] .fitness-final-cta{max-width:720px;margin:auto;padding:1rem}
+html[data-webappcap-template="fitness"] .fitness-final-cta h2{max-width:none!important;margin:.7rem auto 0;font-size:clamp(2.5rem,5vw,5rem)!important}
+html[data-webappcap-template="fitness"] .fitness-final-cta p{max-width:50ch;margin:1rem auto 1.5rem;color:#adb5af;line-height:1.6}
+html[data-webappcap-template="fitness"] .fitness-final-cta .btn{background:var(--fitness-lime);color:#0b0e0c}
+html[data-webappcap-template="fitness"] .fitness-mobile-cta{position:fixed;left:50%;bottom:14px;z-index:100;display:none;transform:translateX(-50%);width:calc(100% - 28px);max-width:420px;padding:.95rem 1rem;border-radius:999px;background:var(--fitness-lime);color:#090c0a;text-decoration:none;text-align:center;font:800 .78rem/1 Montserrat,sans-serif;box-shadow:0 15px 45px rgba(0,0,0,.25)}
+@media(max-width:980px){html[data-webappcap-template="fitness"] .fitness-nav-links{display:none}html[data-webappcap-template="fitness"] .fitness-navbar{grid-template-columns:1fr auto}html[data-webappcap-template="fitness"] .fitness-results-grid{grid-template-columns:1fr 1fr}html[data-webappcap-template="fitness"] .fitness-trust-grid{grid-template-columns:1fr}html[data-webappcap-template="fitness"] .fitness-trust-copy p{max-width:58ch}}
+@media(max-width:680px){html[data-webappcap-template="fitness"] .fitness-navbar{padding:.7rem 1rem}html[data-webappcap-template="fitness"] .fitness-brand{font-size:.8rem}html[data-webappcap-template="fitness"] .fitness-nav-cta{font-size:.58rem;padding:.65rem .8rem}html[data-webappcap-template="fitness"] .hero .hero-inner{padding-left:1.4rem!important;padding-right:1.4rem!important}html[data-webappcap-template="fitness"] .hero .fitness-hero-copy h1{font-size:clamp(2.2rem,10vw,3.25rem)!important;max-width:11ch!important}html[data-webappcap-template="fitness"] .fitness-results-grid{grid-template-columns:1fr}html[data-webappcap-template="fitness"] .fitness-result-photos figure,html[data-webappcap-template="fitness"] .fitness-result-photos img{min-height:220px}html[data-webappcap-template="fitness"] .fitness-trust-section .experience-cards,html[data-webappcap-template="fitness"] .fitness-trust-section .edu-grid{grid-template-columns:1fr}html[data-webappcap-template="fitness"] .fitness-trust-section>h2{font-size:clamp(2.25rem,10vw,3.35rem)}html[data-webappcap-template="fitness"] .fitness-mobile-cta{display:block}html[data-webappcap-template="fitness"] body{padding-bottom:72px}}
