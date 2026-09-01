@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { resolveProjectAccess } from '@/core/session';
 import { can } from '@/core/permissions';
-import { nextOnboardingStep, onboardingPath } from '@/core/onboarding';
+import { nextOnboardingStep, onboardingPath, orderedOnboardingSteps } from '@/core/onboarding';
 import { readV2Content, saveV2Section, updateOnboardingState, uploadProjectImage, validateTemplateForProject } from '@/core/onboarding-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { OnboardingStep } from '@/core/domain';
@@ -34,7 +34,8 @@ export async function saveSetupStep(formData:FormData){
     const dupe=await sb.from('project_v2_state').select('project_id').eq('native_subdomain',native).neq('project_id',access.project.id).maybeSingle();if(dupe.data)throw new Error('Esse subdomínio já está em uso.');
     statePatch={native_subdomain:native,custom_domain:custom||null,domain_status:custom?'pending':'native'};const legacy=await sb.from('projects').update({subdomain:native,custom_domain:custom||null,domain_status:custom?'pending':'active'}).eq('id',access.project.id);if(legacy.error)throw legacy.error;
   }
-  const next=nextOnboardingStep(step);await updateOnboardingState(access.project.id,next,statePatch);redirect(onboardingPath(next,access.project.slug));
+  const candidate=nextOnboardingStep(step),currentIndex=orderedOnboardingSteps.indexOf(access.project.onboardingStep),candidateIndex=orderedOnboardingSteps.indexOf(candidate);const target=candidateIndex>currentIndex?candidate:access.project.onboardingStep;
+  await updateOnboardingState(access.project.id,target,statePatch);redirect(onboardingPath(target,access.project.slug));
 }
 
 export async function publishOnboardingProject(formData:FormData){
