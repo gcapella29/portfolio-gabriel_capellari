@@ -1,11 +1,10 @@
 import { resolveProjectAccess } from '@/core/session';
 import { readV2Content } from '@/core/onboarding-data';
-import { segments } from '@/core/segments';
-
-const value=(obj:Record<string,unknown>,key:string)=>String(obj[key]??'');
-const mediaUrl=(obj:Record<string,unknown>,key:string)=>{const item=obj[key];return item&&typeof item==='object'&&'url' in item?String((item as {url?:unknown}).url||''):''};
+import { renderTemplate } from '@/templates/registry';
 
 export default async function PreviewPage({params}:{params:Promise<{slug:string}>}){
-  const {slug}=await params;const {project}=await resolveProjectAccess(slug),data=await readV2Content(project.id),segment=segments[project.segment],template=segment.templates.find(t=>t.key===project.templateKey);const accent=value(data.appearance,'accent')||'#d9ff43',hero=mediaUrl(data.media,'hero');
-  return <main className="preview-canvas" style={{'--preview-accent':accent} as React.CSSProperties}><nav className="preview-nav"><strong>{value(data.identity,'name')||project.name}</strong><span>{segment.name} · {template?.name||'modelo ainda não escolhido'}</span></nav><section className="preview-hero" style={hero?{backgroundImage:`linear-gradient(90deg,rgba(5,10,8,.88),rgba(5,10,8,.35)),url(${hero})`}:undefined}><div><span className="eyebrow">PREVIEW DO RASCUNHO</span><h1>{value(data.content,'hero_title')||value(data.identity,'tagline')||'Seu título principal aparecerá aqui.'}</h1><p>{value(data.content,'hero_text')||value(data.identity,'description')||'Preencha as etapas do onboarding para acompanhar o site tomando forma.'}</p><a href="#contato" className="preview-cta">Entrar em contato</a></div></section><section className="preview-section"><div><span className="eyebrow dark-text">DESTAQUE</span><h2>{value(data.content,'primary_offer')||'Oferta ou serviço principal'}</h2></div><p>{value(data.content,'proof')||'Seus diferenciais, provas e resultados aparecerão nesta área.'}</p></section><section className="preview-section alt"><div><span className="eyebrow dark-text">SOBRE</span><h2>{value(data.identity,'name')||project.name}</h2></div><p>{value(data.content,'about')||value(data.identity,'description')||'Conte um pouco sobre o negócio ou profissional.'}</p></section><section className="preview-contact" id="contato"><span className="eyebrow">CONTATO</span><h2>Vamos conversar?</h2><p>{value(data.contact,'whatsapp')||value(data.contact,'phone')||value(data.contact,'email')||'Seus canais de contato aparecerão aqui.'}</p></section><div className="preview-note">Este é o Preview estrutural da v2. O renderer visual definitivo de cada modelo entra no Bloco 4.</div></main>
+  const {slug}=await params;
+  const {project}=await resolveProjectAccess(slug);
+  const data=await readV2Content(project.id);
+  return renderTemplate({project:{id:project.id,slug:project.slug,name:project.name,segment:project.segment,templateKey:project.templateKey},data,preview:true});
 }
