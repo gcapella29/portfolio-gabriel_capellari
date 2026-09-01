@@ -11,6 +11,7 @@
     const load=(src,attr)=>{if(document.querySelector(`script[${attr}]`))return;const s=document.createElement('script');s.src=src;s.defer=true;s.setAttribute(attr,'1');document.head.appendChild(s)};
     load('/admin/fitness-reels-editor.js','data-webappcap-fitness-reels-editor');
     load('/admin/fitness-cms-editor.js','data-webappcap-fitness-cms-editor');
+    load('/admin/publish-sync-guard.js','data-webappcap-publish-sync-guard');
     const placePreview=()=>{
       const preview=document.getElementById('previewLink');
       const right=document.querySelector('.webappcap-editor-tools-right');
