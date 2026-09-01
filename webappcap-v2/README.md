@@ -25,27 +25,39 @@ A base v2 possui contratos de domínio tipados, registro de segmentos/templates,
 
 ## Bloco 2 — Onboarding concluído
 
-O fluxo guiado está implementado de ponta a ponta na nova arquitetura:
-
 Owner → Novo cliente → segmento + administrador → convite → callback → criação de senha → conta → escolha de modelo → identidade → conteúdo → fotos → aparência → contato → endereço → revisão → Preview → Publicar → Dashboard.
 
-### Decisões de UX
+O cliente vê somente templates compatíveis com o segmento; etapas concluídas podem ser revisitadas sem regredir o progresso; Preview permanece disponível; subdomínio WebAppCap é nativo; domínio próprio entra como pendente; uploads usam bucket dedicado com RLS.
 
-- Owner não escolhe o template visual do cliente; escolhe apenas o segmento.
-- O cliente enxerga somente templates compatíveis com seu segmento.
-- Modelos ainda não construídos aparecem como `Em breve` e não podem ser aplicados.
-- O progresso é salvo no servidor e o usuário nunca é enviado para uma tela genérica de “projeto não selecionado”.
-- Etapas já concluídas podem ser revisitadas sem regredir o progresso.
-- Preview permanece disponível durante a configuração.
-- Subdomínio `*.webappcap.com.br` é nativo e não exige validação manual.
-- Domínio próprio entra como `pending` para validação posterior.
-- Uploads usam bucket separado `webappcap-v2-sites`, com RLS por projeto.
+## Bloco 3 — CMS pós-publicação concluído
 
-### Dados
+O cliente passa a ter uma navegação única e pequena:
 
-`project_v2_content` separa os dados novos em `identity`, `content`, `media`, `appearance` e `contact`. Nenhum campo do onboarding precisa reutilizar nomes como `wsop`, `coverage` ou `portfolio` de outro segmento.
+- Início
+- Conteúdo
+- Fotos
+- Aparência
+- Leads
+- Configurações
 
-O Preview atual é estrutural e serve para validar o fluxo/dados. O renderer visual definitivo de cada modelo será construído no Bloco 4.
+`Preview`, `Ver site` e `Publicar` são ações globais da barra superior e não páginas concorrentes. O Dashboard mostra modelo, endereço, última publicação e se existem alterações pendentes.
+
+### Rascunho x produção
+
+`project_v2_content` é sempre o rascunho editável. A publicação copia o snapshot inteiro para `project_v2_public_content`. Portanto, salvar Conteúdo/Fotos/Aparência não muda o site público; somente `Publicar` promove o rascunho atual. O Preview continua lendo o rascunho.
+
+Leads continuam usando `site_leads`, agora dentro da navegação v2 e respeitando a capacidade `viewLeads`.
+
+## Dados v2
+
+- `project_v2_state`: segmento, template, lifecycle, onboarding e domínio.
+- `project_v2_content`: rascunho atual (`identity`, `content`, `media`, `appearance`, `contact`).
+- `project_v2_public_content`: snapshot publicado.
+- `webappcap-v2-sites`: mídia dos novos projetos.
+
+Nenhum conteúdo novo precisa reutilizar nomes herdados como `wsop`, `coverage` ou `portfolio`.
+
+O Preview atual é estrutural. O renderer visual definitivo de cada modelo será construído no Bloco 4.
 
 ## Migrações necessárias
 
@@ -53,6 +65,7 @@ Aplicar em ordem:
 
 1. `supabase/migrations/001_core_v2.sql`
 2. `supabase/migrations/002_onboarding_v2.sql`
+3. `supabase/migrations/003_published_content_v2.sql`
 
 As migrações são aditivas e não substituem o conteúdo do Portfólio legado.
 
