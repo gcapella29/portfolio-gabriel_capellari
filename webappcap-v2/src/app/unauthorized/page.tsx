@@ -1,0 +1,1 @@
+export default function UnauthorizedPage(){return <main className="shell"><section className="segment-card"><span>ACESSO</span><h2>Você não tem acesso a este projeto.</h2><p>O WebAppCap bloqueou a rota antes de carregar qualquer conteúdo do cliente.</p></section></main>}
