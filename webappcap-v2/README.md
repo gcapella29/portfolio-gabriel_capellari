@@ -15,25 +15,46 @@ Nova base da plataforma, isolada do renderer legado do portfólio.
 ## Stack
 
 - Next.js + React + TypeScript
-- Supabase Auth/Postgres/RLS
+- Supabase Auth/Postgres/RLS/Storage
 - Tailwind CSS
 - Vercel
 
 ## Bloco 1 — Core concluído
 
-A base v2 agora possui contratos de domínio tipados, registro de segmentos/templates, permissões centralizadas, clientes Supabase server/browser, resolução server-side de sessão e projeto, roteamento determinístico, middleware de proteção, callback de autenticação, hubs iniciais de Owner/Dashboard, rota guardada de onboarding e uma migração SQL aditiva `project_v2_state`.
+A base v2 possui contratos de domínio tipados, registro de segmentos/templates, permissões centralizadas, clientes Supabase server/browser, resolução server-side de sessão e projeto, roteamento determinístico, middleware de proteção, callback de autenticação, hubs de Owner/Dashboard e estado aditivo em `project_v2_state`.
 
-O schema v2 é aditivo: usa `projects` e `project_members` existentes como identidade/permissão e guarda apenas o estado novo em `project_v2_state`. O Portfólio atual é registrado como `portfolio-legacy-1` com onboarding concluído, sem alterar seu renderer público.
+## Bloco 2 — Onboarding concluído
 
-### Regra de entrada
+O fluxo guiado está implementado de ponta a ponta na nova arquitetura:
 
-- sem sessão → `/login`
-- Owner → `/owner/projects`
-- cliente com um projeto e onboarding pendente → etapa exata em `/setup/...`
-- cliente com onboarding concluído → `/dashboard/...`
-- sem acesso → `/unauthorized`
+Owner → Novo cliente → segmento + administrador → convite → callback → criação de senha → conta → escolha de modelo → identidade → conteúdo → fotos → aparência → contato → endereço → revisão → Preview → Publicar → Dashboard.
 
-Nenhuma página deve renderizar uma interface de outro contexto antes de redirecionar.
+### Decisões de UX
+
+- Owner não escolhe o template visual do cliente; escolhe apenas o segmento.
+- O cliente enxerga somente templates compatíveis com seu segmento.
+- Modelos ainda não construídos aparecem como `Em breve` e não podem ser aplicados.
+- O progresso é salvo no servidor e o usuário nunca é enviado para uma tela genérica de “projeto não selecionado”.
+- Etapas já concluídas podem ser revisitadas sem regredir o progresso.
+- Preview permanece disponível durante a configuração.
+- Subdomínio `*.webappcap.com.br` é nativo e não exige validação manual.
+- Domínio próprio entra como `pending` para validação posterior.
+- Uploads usam bucket separado `webappcap-v2-sites`, com RLS por projeto.
+
+### Dados
+
+`project_v2_content` separa os dados novos em `identity`, `content`, `media`, `appearance` e `contact`. Nenhum campo do onboarding precisa reutilizar nomes como `wsop`, `coverage` ou `portfolio` de outro segmento.
+
+O Preview atual é estrutural e serve para validar o fluxo/dados. O renderer visual definitivo de cada modelo será construído no Bloco 4.
+
+## Migrações necessárias
+
+Aplicar em ordem:
+
+1. `supabase/migrations/001_core_v2.sql`
+2. `supabase/migrations/002_onboarding_v2.sql`
+
+As migrações são aditivas e não substituem o conteúdo do Portfólio legado.
 
 ## Fluxo obrigatório antes do merge na produção
 
