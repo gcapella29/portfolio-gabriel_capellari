@@ -2,8 +2,4 @@ import Link from 'next/link';
 import { requireUser } from '@/core/session';
 import { projectsForUser } from '@/core/projects';
 
-export default async function OwnerProjectsPage() {
-  const user = await requireUser();
-  const projects = (await projectsForUser(user.id)).filter(p => p.owner_id === user.id);
-  return <main className="shell"><section className="hero-panel"><span className="eyebrow">OWNER</span><h1>Projetos</h1><p>Crie clientes, acompanhe configuração e entre em qualquer projeto sem rotas ambíguas.</p></section><section className="segment-grid">{projects.map(project => <Link className="segment-card" key={project.id} href={`/owner/projects/${encodeURIComponent(project.slug)}`}><span>{project.is_published?'Publicado':'Configuração'}</span><h2>{project.name}</h2><p>{project.slug}</p></Link>)}</section></main>;
-}
+export default async function OwnerProjectsPage(){const user=await requireUser();const projects=(await projectsForUser(user.id)).filter(p=>p.owner_id===user.id);return <main className="shell"><div className="topbar"><div><span className="eyebrow dark-text">WEBAPPCAP OWNER</span><strong>Projetos</strong></div><Link className="action primary" href="/owner/projects/new">+ Novo cliente</Link></div><section className="hero-panel"><span className="eyebrow">GESTÃO</span><h1>Seus projetos em um só lugar.</h1><p>Crie o cliente, acompanhe a configuração e intervenha somente quando necessário.</p></section><section className="segment-grid">{projects.map(project=><Link className="segment-card" key={project.id} href={`/owner/projects/${encodeURIComponent(project.slug)}`}><span>{project.is_published?'Publicado':'Configuração'}</span><h2>{project.name}</h2><p>{project.slug}</p></Link>)}</section></main>}
