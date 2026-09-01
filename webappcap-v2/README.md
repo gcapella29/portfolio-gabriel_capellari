@@ -19,59 +19,33 @@ Nova base da plataforma, isolada do renderer legado do portfólio.
 - Tailwind CSS
 - Vercel
 
-## Bloco 1 — Core concluído
+## Blocos concluídos
 
-A base v2 possui contratos de domínio tipados, registro de segmentos/templates, permissões centralizadas, clientes Supabase server/browser, resolução server-side de sessão e projeto, roteamento determinístico, middleware de proteção, callback de autenticação, hubs de Owner/Dashboard e estado aditivo em `project_v2_state`.
+### Bloco 1 — Core
+Contratos tipados, segmentos/templates separados, permissões, Supabase server/browser, sessão, projeto e roteamento autenticado.
 
-## Bloco 2 — Onboarding concluído
+### Bloco 2 — Onboarding
+Owner → projeto/segmento → convite → senha → template compatível → identidade → conteúdo → fotos → aparência → contato → endereço → revisão → Preview → Publicar → Dashboard.
 
-Owner → Novo cliente → segmento + administrador → convite → callback → criação de senha → conta → escolha de modelo → identidade → conteúdo → fotos → aparência → contato → endereço → revisão → Preview → Publicar → Dashboard.
+### Bloco 3 — CMS pós-publicação
+Navegação reduzida a Início, Conteúdo, Fotos, Aparência, Leads e Configurações. Preview, Ver site e Publicar são ações globais. `project_v2_content` é rascunho; `project_v2_public_content` é produção.
 
-O cliente vê somente templates compatíveis com o segmento; etapas concluídas podem ser revisitadas sem regredir o progresso; Preview permanece disponível; subdomínio WebAppCap é nativo; domínio próprio entra como pendente; uploads usam bucket dedicado com RLS.
+### Bloco 4 — Renderer nativo
+O Personal Trainer — Performance é o primeiro renderer React nativo da v2. Preview e produção usam o mesmo componente. Conteúdo do segmento permanece independente do design, preparando a troca futura entre modelos sem recadastro.
 
-## Bloco 3 — CMS pós-publicação concluído
+### Bloco 5 — Produção, hosts e domínios
+O middleware classifica o hostname antes da renderização. `*.webappcap.com.br` e domínios próprios são reescritos para uma única rota pública `_tenant`, que resolve exatamente um projeto publicado e usa o mesmo registry de templates do Preview.
 
-O cliente passa a ter uma navegação única e pequena:
+Subdomínio WebAppCap é resolvido por `native_subdomain`. Domínio próprio só é servido quando `domain_status=active`; o Dashboard oferece verificação DNS. Índices únicos impedem dois projetos de reivindicarem o mesmo subdomínio ou domínio próprio.
 
-- Início
-- Conteúdo
-- Fotos
-- Aparência
-- Leads
-- Configurações
-
-`Preview`, `Ver site` e `Publicar` são ações globais da barra superior e não páginas concorrentes. O Dashboard mostra modelo, endereço, última publicação e se existem alterações pendentes.
-
-### Rascunho x produção
-
-`project_v2_content` é sempre o rascunho editável. A publicação copia o snapshot inteiro para `project_v2_public_content`. Portanto, salvar Conteúdo/Fotos/Aparência não muda o site público; somente `Publicar` promove o rascunho atual. O Preview continua lendo o rascunho.
-
-Leads continuam usando `site_leads`, agora dentro da navegação v2 e respeitando a capacidade `viewLeads`.
-
-## Bloco 4 — Renderer de templates concluído
-
-A renderização pública deixou de depender de scripts que alteram HTML depois da página carregar. Existe agora um registry explícito em `src/templates/registry.tsx`: o projeto resolve `segment + templateKey` e entrega o mesmo conjunto de dados ao componente visual correspondente.
-
-### Personal Trainer · Modelo 1 — Performance
-
-`trainer-performance-1` é o primeiro renderer nativo da v2. Ele reconstrói a linguagem visual aprovada do Fitness em React/CSS Modules, sem `fitness-public-enhancer`, sem `coverage`, sem `wsop` e sem módulos herdados do Portfólio.
-
-O modelo possui navbar, hero comercial, prova/diferenciais, acompanhamento, resultados, agenda, método, apresentação profissional, credenciais, CTA final e CTA móvel. Se uma seção não possui dados reais, ela é omitida sempre que possível; CREF e credenciais nunca são inventados.
-
-O CMS de Personal Trainer ganhou campos próprios (`trainer_*`) para especialidade, CREF, serviços, resultados, agenda, método e credenciais. Esses dados pertencem ao segmento e não ao template, permitindo que futuros Modelos 2 e 3 consumam exatamente o mesmo conteúdo.
-
-O Preview e a rota pública `/site/[slug]` usam o mesmo renderer. A diferença é apenas a fonte de dados: Preview lê `project_v2_content` (rascunho) e o site público lê `project_v2_public_content` (snapshot publicado).
-
-O renderer também consome os tokens seguros de Aparência: cor de destaque, fonte de títulos, fonte de texto, escala, alinhamento e densidade, sem permitir que a personalização quebre a responsividade do modelo.
+Esse desenho remove a antiga resolução concorrente de host e evita o flash de outro projeto antes do site correto.
 
 ## Dados v2
 
 - `project_v2_state`: segmento, template, lifecycle, onboarding e domínio.
-- `project_v2_content`: rascunho atual (`identity`, `content`, `media`, `appearance`, `contact`).
+- `project_v2_content`: rascunho atual.
 - `project_v2_public_content`: snapshot publicado.
 - `webappcap-v2-sites`: mídia dos novos projetos.
-
-Nenhum conteúdo novo precisa reutilizar nomes herdados como `wsop`, `coverage` ou `portfolio`.
 
 ## Migrações necessárias
 
@@ -81,11 +55,26 @@ Aplicar em ordem:
 2. `supabase/migrations/002_onboarding_v2.sql`
 3. `supabase/migrations/003_published_content_v2.sql`
 4. `supabase/migrations/004_public_template_state_v2.sql`
+5. `supabase/migrations/005_domain_integrity_v2.sql`
 
 As migrações são aditivas e não substituem o conteúdo do Portfólio legado.
 
-## Fluxo obrigatório antes do merge na produção
+## Variáveis de ambiente
 
-Owner cria projeto → convite → criação de senha → onboarding → escolha de template → preenchimento → preview → domínio → publicação → dashboard → edição → republicação.
+Obrigatórias:
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
-A v2 permanece em `webappcap-v2/` e na branch `refactor/webappcap-core-v2` até o fluxo inteiro ser validado.
+Domínio próprio:
+- `WEBAPPCAP_DOMAIN_CNAME` — alvo CNAME esperado; padrão `cname.vercel-dns.com`.
+- `WEBAPPCAP_DOMAIN_TXT` — token TXT opcional.
+
+## Gate de produção
+
+Antes do merge em `main`, validar em Preview Deployment:
+
+Owner cria projeto → convite → senha → onboarding → template → conteúdo → preview → subdomínio → publicação → site público → dashboard → edição → republicação.
+
+Depois testar domínio próprio com DNS real e confirmar que host desconhecido retorna 404, projeto não publicado não é exposto e o Portfólio legado continua idêntico.
+
+A v2 permanece em `webappcap-v2/` e na branch `refactor/webappcap-core-v2` até esse gate ser aprovado. Não fazer merge automático em produção sem a validação humana do fluxo.
