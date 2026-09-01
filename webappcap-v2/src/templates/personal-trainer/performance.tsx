@@ -1,4 +1,5 @@
 import styles from './performance.module.css';
+import tokens from './performance-tokens.module.css';
 import type { TemplateRenderProps } from '../types';
 
 const value=(obj:Record<string,unknown>,key:string)=>String(obj[key]??'').trim();
@@ -23,7 +24,7 @@ export function PerformanceTrainerTemplate({project,data,preview=false}:Template
   const headingFont=value(data.appearance,'heading_font')||'Montserrat';
   const bodyFont=value(data.appearance,'body_font')||'DM Sans';
   const scale=value(data.appearance,'scale')==='large'?'1.08':value(data.appearance,'scale')==='compact'?'.93':'1';
-  const space=value(data.appearance,'density')==='airy'?'1.18':value(data.appearance,'density')==='compact'?'.84':'1';
+  const density=['compact','normal','airy'].includes(value(data.appearance,'density'))?value(data.appearance,'density'):'normal';
   const align=['left','center','right'].includes(value(data.appearance,'alignment'))?value(data.appearance,'alignment'):'left';
   const whatsapp=value(data.contact,'whatsapp')||value(data.contact,'phone');
   const instagram=value(data.contact,'instagram');
@@ -35,9 +36,9 @@ export function PerformanceTrainerTemplate({project,data,preview=false}:Template
   const scheduleTitle=value(data.content,'trainer_schedule_title')||'Vamos encontrar o melhor horário para você.';
   const scheduleText=value(data.content,'trainer_schedule_text')||'Fale sobre seu objetivo e consulte a disponibilidade atual.';
   const resultTitle=value(data.content,'trainer_results_title')||'Resultados construídos com consistência.';
-  const cssVars={'--pt-accent':accent,'--pt-head-font':font(headingFont,'Arial, sans-serif'),'--pt-body-font':font(bodyFont,'Arial, sans-serif'),'--pt-scale':scale,'--pt-space':space,'--pt-align':align} as React.CSSProperties;
+  const cssVars={'--pt-accent':accent,'--pt-head-font':font(headingFont,'Arial, sans-serif'),'--pt-body-font':font(bodyFont,'Arial, sans-serif'),'--pt-scale':scale,'--pt-align':align} as React.CSSProperties;
 
-  return <div className={styles.site} style={cssVars}>
+  return <div className={`${styles.site} ${tokens.tokens}`} style={cssVars} data-density={density}>
     {preview&&<div className={styles.previewBar}>Preview do rascunho · alterações ainda não publicadas</div>}
     <header className={styles.nav}><a href="#inicio" className={styles.brand}>{logo?<img src={logo} alt={name}/>:<span>{name}</span>}</a><nav><a href="#acompanhamento">Acompanhamento</a><a href="#resultados">Resultados</a><a href="#metodo">Método</a><a href="#sobre">Sobre</a></nav><a className={styles.navCta} href={wa(whatsapp)}>Consultar horários</a></header>
     <main>
