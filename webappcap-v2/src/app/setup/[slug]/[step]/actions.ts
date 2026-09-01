@@ -6,6 +6,7 @@ import { can } from '@/core/permissions';
 import { nextOnboardingStep, onboardingPath, orderedOnboardingSteps } from '@/core/onboarding';
 import { readV2Content, saveV2Section, updateOnboardingState, uploadProjectImage, validateTemplateForProject } from '@/core/onboarding-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { publishV2Project } from '@/core/publishing';
 import type { OnboardingStep } from '@/core/domain';
 
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
@@ -16,7 +17,6 @@ export async function saveSetupStep(formData:FormData){
   const slug=text(formData,'slug'),step=text(formData,'step') as OnboardingStep;const access=await resolveProjectAccess(slug);if(!can(access.role,'editContent')&&step!=='account'&&step!=='template'&&step!=='domain')throw new Error('Sem permissão para editar esta etapa.');
   const existing=await readV2Content(access.project.id);let statePatch:Record<string,unknown>={};
   if(step==='account'){
-    // Conta já foi criada pelo convite; esta tela apenas confirma a entrada no assistente.
   } else if(step==='template'){
     if(!can(access.role,'chooseTemplate'))throw new Error('Sem permissão para escolher o modelo.');const templateKey=text(formData,'templateKey');const template=validateTemplateForProject(access.project,templateKey);if(!template)throw new Error('Esse modelo ainda não está disponível.');statePatch={template_key:template.key};
   } else if(step==='identity'){
@@ -39,9 +39,4 @@ export async function saveSetupStep(formData:FormData){
   await updateOnboardingState(access.project.id,target,statePatch);redirect(onboardingPath(target,access.project.slug));
 }
 
-export async function publishOnboardingProject(formData:FormData){
-  const slug=text(formData,'slug'),access=await resolveProjectAccess(slug);if(!can(access.role,'publish'))throw new Error('Sem permissão para publicar.');const sb=await createSupabaseServerClient();
-  const state=await sb.from('project_v2_state').select('template_key,domain_status').eq('project_id',access.project.id).maybeSingle();if(state.error)throw state.error;if(!state.data?.template_key)throw new Error('Escolha um modelo antes de publicar.');
-  const updated=await sb.from('project_v2_state').update({lifecycle:'published',onboarding_step:'completed',onboarding_completed_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('project_id',access.project.id);if(updated.error)throw updated.error;
-  const project=await sb.from('projects').update({is_published:true}).eq('id',access.project.id);if(project.error)throw project.error;redirect(`/dashboard/${encodeURIComponent(access.project.slug)}`);
-}
+export async function publishOnboardingProject(formData:FormData){const slug=text(formData,'slug'),access=await resolveProjectAccess(slug);if(!can(access.role,'publish'))throw new Error('Sem permissão para publicar.');await publishV2Project(access.project.id);redirect(`/dashboard/${encodeURIComponent(access.project.slug)}?published=1`)}
