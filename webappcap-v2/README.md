@@ -48,6 +48,22 @@ O cliente passa a ter uma navegação única e pequena:
 
 Leads continuam usando `site_leads`, agora dentro da navegação v2 e respeitando a capacidade `viewLeads`.
 
+## Bloco 4 — Renderer de templates concluído
+
+A renderização pública deixou de depender de scripts que alteram HTML depois da página carregar. Existe agora um registry explícito em `src/templates/registry.tsx`: o projeto resolve `segment + templateKey` e entrega o mesmo conjunto de dados ao componente visual correspondente.
+
+### Personal Trainer · Modelo 1 — Performance
+
+`trainer-performance-1` é o primeiro renderer nativo da v2. Ele reconstrói a linguagem visual aprovada do Fitness em React/CSS Modules, sem `fitness-public-enhancer`, sem `coverage`, sem `wsop` e sem módulos herdados do Portfólio.
+
+O modelo possui navbar, hero comercial, prova/diferenciais, acompanhamento, resultados, agenda, método, apresentação profissional, credenciais, CTA final e CTA móvel. Se uma seção não possui dados reais, ela é omitida sempre que possível; CREF e credenciais nunca são inventados.
+
+O CMS de Personal Trainer ganhou campos próprios (`trainer_*`) para especialidade, CREF, serviços, resultados, agenda, método e credenciais. Esses dados pertencem ao segmento e não ao template, permitindo que futuros Modelos 2 e 3 consumam exatamente o mesmo conteúdo.
+
+O Preview e a rota pública `/site/[slug]` usam o mesmo renderer. A diferença é apenas a fonte de dados: Preview lê `project_v2_content` (rascunho) e o site público lê `project_v2_public_content` (snapshot publicado).
+
+O renderer também consome os tokens seguros de Aparência: cor de destaque, fonte de títulos, fonte de texto, escala, alinhamento e densidade, sem permitir que a personalização quebre a responsividade do modelo.
+
 ## Dados v2
 
 - `project_v2_state`: segmento, template, lifecycle, onboarding e domínio.
@@ -57,8 +73,6 @@ Leads continuam usando `site_leads`, agora dentro da navegação v2 e respeitand
 
 Nenhum conteúdo novo precisa reutilizar nomes herdados como `wsop`, `coverage` ou `portfolio`.
 
-O Preview atual é estrutural. O renderer visual definitivo de cada modelo será construído no Bloco 4.
-
 ## Migrações necessárias
 
 Aplicar em ordem:
@@ -66,6 +80,7 @@ Aplicar em ordem:
 1. `supabase/migrations/001_core_v2.sql`
 2. `supabase/migrations/002_onboarding_v2.sql`
 3. `supabase/migrations/003_published_content_v2.sql`
+4. `supabase/migrations/004_public_template_state_v2.sql`
 
 As migrações são aditivas e não substituem o conteúdo do Portfólio legado.
 
