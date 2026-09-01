@@ -15,7 +15,9 @@ const path=(slug:string,area='')=>`/dashboard/${encodeURIComponent(slug)}${area?
 export async function saveContentAction(formData:FormData){
   const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'editContent'))throw new Error('Sem permissão para editar conteúdo.');const current=await readV2Content(access.project.id);
   await saveV2Section(access.project.id,'identity',{...current.identity,name:text(formData,'name')||access.project.name,tagline:text(formData,'tagline'),description:text(formData,'description'),location:text(formData,'location')});
-  await saveV2Section(access.project.id,'content',{...current.content,hero_title:text(formData,'hero_title'),hero_text:text(formData,'hero_text'),primary_offer:text(formData,'primary_offer'),proof:text(formData,'proof'),about:text(formData,'about'),extra_notes:text(formData,'extra_notes')});
+  const content={...current.content,hero_title:text(formData,'hero_title'),hero_text:text(formData,'hero_text'),primary_offer:text(formData,'primary_offer'),proof:text(formData,'proof'),about:text(formData,'about'),extra_notes:text(formData,'extra_notes')};
+  if(access.project.segment==='personal-trainer')Object.assign(content,{trainer_specialty:text(formData,'trainer_specialty'),trainer_cref:text(formData,'trainer_cref'),trainer_services:text(formData,'trainer_services'),trainer_results_title:text(formData,'trainer_results_title'),trainer_schedule_title:text(formData,'trainer_schedule_title'),trainer_schedule_text:text(formData,'trainer_schedule_text'),trainer_method:text(formData,'trainer_method'),trainer_credentials:text(formData,'trainer_credentials')});
+  await saveV2Section(access.project.id,'content',content);
   await saveV2Section(access.project.id,'contact',{...current.contact,email:text(formData,'email'),phone:text(formData,'phone'),whatsapp:text(formData,'whatsapp'),instagram:text(formData,'instagram'),address:text(formData,'address'),hours:text(formData,'hours')});
   revalidatePath(path(slug,'content'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);redirect(`${path(slug,'content')}?saved=1`);
 }
@@ -41,4 +43,4 @@ export async function saveSettingsAction(formData:FormData){
   revalidatePath(path(slug,'settings'));redirect(`${path(slug,'settings')}?saved=1`);
 }
 
-export async function publishDashboardAction(formData:FormData){const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'publish'))throw new Error('Sem permissão para publicar.');await publishV2Project(access.project.id);revalidatePath(path(slug));redirect(`${path(slug)}?published=1`)}
+export async function publishDashboardAction(formData:FormData){const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'publish'))throw new Error('Sem permissão para publicar.');await publishV2Project(access.project.id);revalidatePath(path(slug));revalidatePath(`/site/${encodeURIComponent(slug)}`);redirect(`${path(slug)}?published=1`)}
