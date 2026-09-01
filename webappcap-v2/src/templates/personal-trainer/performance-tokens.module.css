@@ -1,0 +1,1 @@
+.tokens{font-family:var(--pt-body-font);font-size:calc(1rem * var(--pt-scale))}.tokens h1,.tokens h2,.tokens h3,.tokens strong{font-family:var(--pt-head-font)}.tokens section>div:first-child:not(:only-child){text-align:var(--pt-align)}.tokens[data-density="compact"] section{scroll-margin-top:72px}.tokens[data-density="airy"] section{scroll-margin-top:88px}
