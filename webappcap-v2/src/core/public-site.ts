@@ -25,11 +25,29 @@ export async function readPublicSiteBySlug(slug:string){
 export async function readPublicSiteByHost(rawHost:string){
   const route=classifyHost(rawHost);if(route.kind==='platform')return null;
   const sb=await createSupabaseServerClient();
-  const stateQuery=route.kind==='native'
-    ?sb.from('project_v2_state').select('project_id').eq('native_subdomain',route.subdomain).eq('lifecycle','published').maybeSingle()
-    :sb.from('project_v2_state').select('project_id').eq('custom_domain',route.host).eq('domain_status','active').eq('lifecycle','published').maybeSingle();
-  const state=await stateQuery;if(state.error||!state.data?.project_id)return null;
-  const p=await sb.from('projects').select('id,slug,name,site_type').eq('id',state.data.project_id).eq('is_published',true).is('archived_at',null).maybeSingle();
-  if(p.error||!p.data)return null;
-  return hydratePublicProject(p.data);
+  const resolved=await sb.rpc('resolve_v2_public_site',{requested_host:route.host});
+  if(resolved.error||!resolved.data||typeof resolved.data!=='object')return null;
+  const row=resolved.data as Record<string,unknown>;
+  const id=String(row.id||''),slug=String(row.slug||''),name=String(row.name||'');
+  const templateKey=String(row.template_key||'');
+  if(!id||!slug||!name||!templateKey)return null;
+  const data:V2Content={
+    identity:(row.identity&&typeof row.identity==='object'?row.identity:{}) as Record<string,unknown>,
+    content:(row.content&&typeof row.content==='object'?row.content:{}) as Record<string,unknown>,
+    media:(row.media&&typeof row.media==='object'?row.media:{}) as Record<string,unknown>,
+    appearance:(row.appearance&&typeof row.appearance==='object'?row.appearance:{}) as Record<string,unknown>,
+    contact:(row.contact&&typeof row.contact==='object'?row.contact:{}) as Record<string,unknown>
+  };
+  return {
+    project:{id,slug,name,segment:segmentFromValue(row.segment||row.site_type),templateKey},
+    data,
+    state:{
+      segment:row.segment,
+      template_key:row.template_key,
+      lifecycle:row.lifecycle,
+      native_subdomain:row.native_subdomain,
+      custom_domain:row.custom_domain,
+      domain_status:row.domain_status
+    }
+  };
 }
