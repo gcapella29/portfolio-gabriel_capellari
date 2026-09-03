@@ -14,15 +14,13 @@ type MiddlewareCookieToSet = {
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const host = classifyHost(request.headers.get('host') || '');
-  const isTenantRoute = path === '/_tenant' || path.startsWith('/_tenant/');
+  const isTenantRoute = path === '/tenant' || path.startsWith('/tenant/');
 
   // Tenant hosts never enter the platform UI. Resolve the hostname in one public route
   // before React renders anything, preventing the old project/portfolio flash.
-  // Do not rewrite the internal tenant route again; doing so can create a rewrite loop
-  // on real custom/native hosts.
   if (host.kind !== 'platform' && !isPublicAssetPath(path) && !isTenantRoute) {
     const target = request.nextUrl.clone();
-    target.pathname = '/_tenant';
+    target.pathname = '/tenant';
     target.search = '';
     target.searchParams.set('host', host.host);
     return NextResponse.rewrite(target);
