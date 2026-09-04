@@ -15,10 +15,11 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const host = classifyHost(request.headers.get('host') || '');
   const isTenantRoute = path === '/tenant' || path.startsWith('/tenant/');
+  const isApiRoute = path === '/api' || path.startsWith('/api/');
 
   // Tenant hosts never enter the platform UI. Resolve the hostname in one public route
   // before React renders anything, preventing the old project/portfolio flash.
-  if (host.kind !== 'platform' && !isPublicAssetPath(path) && !isTenantRoute) {
+  if (host.kind !== 'platform' && !isPublicAssetPath(path) && !isTenantRoute && !isApiRoute) {
     const target = request.nextUrl.clone();
     target.pathname = '/tenant';
     target.search = '';
@@ -26,8 +27,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.rewrite(target);
   }
 
-  // Public tenant rendering must not fall through to platform auth handling.
-  if (host.kind !== 'platform' && isTenantRoute) {
+  // Public tenant rendering and public API endpoints must not fall through to platform auth handling.
+  if (host.kind !== 'platform' && (isTenantRoute || isApiRoute)) {
     return NextResponse.next();
   }
 
