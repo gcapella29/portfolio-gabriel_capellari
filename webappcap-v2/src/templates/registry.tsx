@@ -1,10 +1,12 @@
 import type { ComponentType } from 'react';
 import { PerformanceTrainerTemplate } from './personal-trainer/performance';
 import { LegacyPortfolioTemplate } from './portfolio/legacy';
+import { NativePortfolioTemplate } from './portfolio/native';
 import type { TemplateRenderProps } from './types';
 
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
   'portfolio-legacy-1': LegacyPortfolioTemplate,
+  'portfolio-native-1': NativePortfolioTemplate,
   'trainer-performance-1': PerformanceTrainerTemplate
 };
 
