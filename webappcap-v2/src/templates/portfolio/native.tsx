@@ -29,9 +29,9 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const share=async()=>{const payload={title:`${name} — ${language==='pt'?'Jornalista de Poker':'Poker Journalist'}`,text:language==='pt'?'Portfólio profissional de Gabriel Capellari.':'Gabriel Capellari professional portfolio.',url:window.location.href};if(navigator.share){try{await navigator.share(payload);return}catch(error){if(error instanceof DOMException&&error.name==='AbortError')return}}await navigator.clipboard.writeText(window.location.href)};
 
   return <div className={styles.site} data-language={language}>
-    {preview?<div className={styles.preview}>Preview nativo · ainda não publicado</div>:null}
+    {preview?<div className={styles.preview}>Homologação · renderer nativo</div>:null}
     <a className={styles.skip} href="#sobre">{language==='pt'?'Pular para o conteúdo':'Skip to content'}</a>
-    <header className={styles.hero} id="inicio" style={{backgroundImage:`linear-gradient(180deg,rgba(8,39,32,.46),rgba(8,39,32,.9)),url(${hero})`}}>
+    <header className={styles.hero} id="inicio" style={{backgroundImage:`linear-gradient(180deg,rgba(8,39,32,.46),rgba(8,39,32,.9)),url(${hero})`,backgroundPosition:'22% 81%'}}>
       <div className={styles.heroTop}>
         <div className={styles.language} role="group" aria-label="Idioma / Language"><button type="button" aria-pressed={language==='pt'} onClick={()=>chooseLanguage('pt')}>🇧🇷</button><button type="button" aria-pressed={language==='en'} onClick={()=>chooseLanguage('en')}>🇬🇧</button></div>
         <span>{location}</span>

@@ -2,3 +2,9 @@
 @media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.about,.featured,.coverage,.instagram,.contact{grid-template-columns:1fr}.coverage h2{max-width:none}.pressCards{grid-template-columns:1fr}.carousel{min-height:540px}.contactPhoto{min-height:430px}}
 @media(max-width:560px){.hero{padding:1.2rem 1.2rem 2rem}.heroCopy h1{font-size:clamp(3.4rem,20vw,5.7rem)}.heroCopy>p{font-size:.68rem}.heroTop>span{font-size:.58rem}.actions{display:grid;grid-template-columns:1fr 1fr}.actions a,.actions button{text-align:center}.stats{grid-template-columns:1fr}.stats article{border-right:0;border-bottom:1px solid #dcd5c5}.section{padding:4rem 1.2rem}.about{gap:2rem}.carousel{min-height:500px}.featuredCopy h2{font-size:3.5rem}.board>div{display:grid}.board span{text-align:left}.profile{grid-template-columns:1fr}.profilePhoto{max-width:220px}.educationGrid{grid-template-columns:1fr}.contactPhoto{min-height:380px}.preview{max-width:calc(100% - 2rem);overflow:hidden;text-overflow:ellipsis}.instagram iframe{max-height:560px}}
 @media(prefers-reduced-motion:reduce){.ticker>div{animation:none}.slide,.activeSlide{transition:none}}
+
+/* Native migration parity overrides. Keep these isolated until renderer promotion. */
+.preview{top:auto;bottom:.7rem;left:.7rem;transform:none}
+.heroCopy h1{font-size:clamp(2.6rem,11vw,5rem);line-height:.96}
+.actions a,.actions button{border-radius:999px}
+@media(max-width:560px){.heroCopy h1{font-size:clamp(2.8rem,12vw,5rem)}}
