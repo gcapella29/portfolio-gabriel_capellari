@@ -18,25 +18,20 @@ export function PersonalTrainerLeadForm({projectId}:{projectId:string}){
     try{
       const response=await fetch('/api/leads',{method:'POST',body:data});
       if(!response.ok)throw new Error('Falha ao enviar');
-      form.reset();
-      setStatus('success');
-    }catch{
-      setStatus('error');
-    }
+      form.reset(); setStatus('success');
+    }catch{setStatus('error')}
   }
 
+  if(status==='success')return <div className={styles.success} role="status"><span>✓</span><small>Solicitação recebida</small><h3>Seu próximo passo já começou.</h3><p>Os dados foram enviados. O contato será feito pelo WhatsApp informado.</p></div>;
+
   return <form className={styles.form} onSubmit={submit}>
-    <div className={styles.formHead}>
-      <div><span>Contato direto</span><h3>Fale comigo agora</h3><p>Preencha os dados e receba meu retorno em breve.</p></div>
-      <div className={styles.quick}><b>↯</b><div><strong>Resposta rápida</strong><small>Retorno pelo WhatsApp</small></div></div>
-    </div>
-    {status==='error'&&<div className={`${styles.alert} ${styles.alertError}`} role="alert"><b>!</b><div><strong>Não foi possível enviar agora.</strong><span>Tente novamente ou fale diretamente pelo WhatsApp.</span></div></div>}
-    {status==='success'&&<div className={`${styles.alert} ${styles.alertSuccess}`} role="status"><b>✓</b><div><strong>Mensagem recebida.</strong><span>Entraremos em contato pelo WhatsApp.</span></div></div>}
+    <div className={styles.formHead}><span>Ficha / 001</span><h3>Solicitação de acompanhamento</h3><p>Três informações para iniciar a conversa.</p></div>
+    {status==='error'&&<div className={styles.alert} role="alert">Não foi possível enviar agora. Tente novamente ou use o WhatsApp.</div>}
     <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{position:'absolute',left:'-9999px',width:'1px',height:'1px',opacity:0}}/>
-    <label><span>Nome *</span><input name="name" required maxLength={120} autoComplete="name" placeholder="Seu nome"/></label>
-    <label><span>WhatsApp *</span><input name="phone" required maxLength={40} inputMode="tel" autoComplete="tel" placeholder="(16) 99999-9999"/></label>
-    <label className={styles.message}><span>Objetivo *</span><textarea name="message" required maxLength={1000} rows={5} placeholder="Conte brevemente o que você busca no acompanhamento."/></label>
-    <button type="submit" disabled={status==='sending'}>{status==='sending'?'Enviando...':'Quero começar agora →'}</button>
-    <p className={styles.privacy}>Seus dados serão usados apenas para entrar em contato sobre o acompanhamento.</p>
+    <label><b>01</b><span>Nome *</span><input name="name" required maxLength={120} autoComplete="name" placeholder="Seu nome"/></label>
+    <label><b>02</b><span>WhatsApp *</span><input name="phone" required maxLength={40} inputMode="tel" autoComplete="tel" placeholder="(16) 99999-9999"/></label>
+    <label><b>03</b><span>Objetivo principal *</span><textarea name="message" required maxLength={1000} rows={4} placeholder="O que você quer alcançar com o acompanhamento?"/></label>
+    <button type="submit" disabled={status==='sending'}>{status==='sending'?'Enviando ficha...':'Solicitar contato →'}</button>
+    <p className={styles.privacy}>Dados utilizados somente para contato sobre o acompanhamento.</p>
   </form>;
 }
