@@ -51,6 +51,18 @@ Bridge rollback:
 - Keep all legacy tables, files and the legacy Vercel project unchanged.
 - No domain or wildcard rollback is needed because this stage does not move them.
 
+## Portfolio native snapshot
+
+After the compatibility bridge is validated, apply migration 013. It copies the
+current portfolio into the v2 draft and public snapshots without changing the
+active `portfolio-legacy-1` renderer. Existing v2 keys take precedence, so the
+migration is safe to rerun and does not erase later CMS edits.
+
+Validate the isolated native renderer at `/native-preview/portfolio`. Do not
+change the project's `template_key` to `portfolio-native-1` until the mobile and
+desktop parity review is approved. The confirmed language levels are Portuguese
+native, English B2 and Spanish C2.
+
 ## Stage 2 — Wildcard cutover
 
 Only after Stage 1 passes, move `*.webappcap.com.br` from the legacy project to the v2 project.
