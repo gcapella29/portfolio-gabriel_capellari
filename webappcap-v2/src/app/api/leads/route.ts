@@ -17,9 +17,10 @@ export async function POST(request:Request){
   const projectId=clean(form.get('projectId'),60),name=clean(form.get('name'),120),phoneValue=clean(form.get('phone'),40),message=clean(form.get('message'),1000);
   if(!uuid.test(projectId)||name.length<2||!phone.test(phoneValue)||message.length<3)return json({ok:false,error:'invalid_input'},400);
   if(limited(clientKey(request,projectId)))return json({ok:false,error:'rate_limited'},429);
+
   const sb=await createSupabaseServerClient();
-  const published=await sb.from('project_v2_state').select('project_id,lifecycle').eq('project_id',projectId).eq('lifecycle','published').maybeSingle();
-  if(published.error||!published.data)return json({ok:false,error:'project_unavailable'},404);
+  // Public visitors cannot read project_v2_state directly because of RLS.
+  // Publication eligibility is intentionally enforced inside the SECURITY DEFINER RPC.
   const result=await sb.rpc('submit_v2_public_lead',{p_project_id:projectId,p_name:name,p_phone:phoneValue,p_message:message});
   if(result.error){console.error('submit_v2_public_lead',result.error.message);return json({ok:false,error:'submit_failed'},500)}
   return json({ok:true});
