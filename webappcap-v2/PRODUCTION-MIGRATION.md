@@ -33,6 +33,24 @@ Rollback for Stage 1:
 - Remove/move `fabio-ferrari.webappcap.com.br` back to the legacy project.
 - Do not change DNS records if Vercel already owns/serves the apex domain.
 
+## Portfolio compatibility bridge
+
+The existing `gabriel-capellari` project can be rendered by v2 with the
+`portfolio-legacy-1` template before the apex domain is moved. Migration 012
+only creates the missing v2 state/content rows; it does not delete or rewrite
+legacy snapshots.
+
+Validate the bridge first at `/preview/gabriel-capellari` while authenticated,
+then at `/site/gabriel-capellari` after publishing. Keep the apex domain on the
+legacy Vercel project until visual parity, links, language switching, downloads,
+mobile behavior and SEO redirects have all been accepted.
+
+Bridge rollback:
+
+- Restore the project's previous `template_key` if it had one.
+- Keep all legacy tables, files and the legacy Vercel project unchanged.
+- No domain or wildcard rollback is needed because this stage does not move them.
+
 ## Stage 2 — Wildcard cutover
 
 Only after Stage 1 passes, move `*.webappcap.com.br` from the legacy project to the v2 project.

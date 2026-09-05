@@ -1,7 +1,9 @@
 import { PerformanceTrainerTemplate } from './personal-trainer/performance';
+import { LegacyPortfolioTemplate } from './portfolio/legacy';
 import type { TemplateRenderProps } from './types';
 
 const renderers: Record<string,(props:TemplateRenderProps)=>React.ReactNode> = {
+  'portfolio-legacy-1': LegacyPortfolioTemplate,
   'trainer-performance-1': PerformanceTrainerTemplate
 };
 

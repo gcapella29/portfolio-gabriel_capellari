@@ -13,7 +13,7 @@ export const segments: Record<SegmentKey, SegmentDefinition> = {
     name: 'Portfólio',
     description: 'Portfólio profissional preservado no renderer legado durante a migração.',
     templates: [
-      {key:'portfolio-legacy-1',segment:'portfolio',name:'Portfólio atual',description:'Site atual preservado sem alterações.',status:'legacy'}
+      {key:'portfolio-legacy-1',segment:'portfolio',name:'Portfólio atual',description:'Site atual preservado por uma ponte de compatibilidade segura durante a migração.',status:'ready'}
     ]
   },
   'personal-trainer': {

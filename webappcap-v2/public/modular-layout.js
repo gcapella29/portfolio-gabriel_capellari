@@ -1,0 +1,339 @@
+(() => {
+  if (!window.WebAppCapData?.ready) return;
+
+  const cfg = window.VITRINE_SUPABASE;
+  const ctx = window.VITRINE_PROJECT_CONTEXT;
+  const slug = ctx?.slug || cfg.projectSlug;
+  const isDraftPreview = new URLSearchParams(location.search).get('preview') === 'draft';
+
+  const sb = window.supabase.createClient(cfg.url, cfg.publishableKey, {
+    auth:{persistSession:true,autoRefreshToken:true}
+  });
+
+  const moduleMap = {
+    ticker: () => document.querySelector('.ticker-wrap'),
+    fitness_videos: () => document.getElementById('fitness-videos'),
+    fitness_schedule: () => document.getElementById('fitness-schedule'),
+    stats: () => document.getElementById('destaques'),
+    about: () => document.getElementById('sobre'),
+    wsop: () => document.getElementById('wsop-featured'),
+    coverage: () => document.getElementById('cobertura'),
+    portfolio: () => document.getElementById('portfolio'),
+    experience: () => document.getElementById('experiencia'),
+    education: () => document.getElementById('formacao'),
+    instagram: () => document.getElementById('instagram'),
+    contact: () => document.getElementById('contato')
+  };
+
+  function normalizeModules(raw) {
+    if (!Array.isArray(raw)) return [];
+    return raw
+      .filter(x => x && moduleMap[x.key])
+      .map((x,i) => ({
+        key:String(x.key),
+        visible:x.visible !== false,
+        order:Number.isFinite(Number(x.order)) ? Number(x.order) : i,
+        variant:x.variant || 'default'
+      }))
+      .sort((a,b)=>a.order-b.order);
+  }
+
+
+  function ensureVariantStyles(){
+    if(document.getElementById('vitrine-module-variant-styles')) return;
+
+    const style=document.createElement('style');
+    style.id='vitrine-module-variant-styles';
+    style.textContent=`
+      [data-vitrine-module]{transition:opacity .2s ease, transform .2s ease}
+
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner,
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid{
+        direction:rtl;
+      }
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner > *,
+      [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid > *{
+        direction:ltr;
+      }
+      [data-vitrine-module="about"][data-vitrine-variant="centered"]{
+        text-align:center;
+      }
+
+      [data-vitrine-module="ticker"][data-vitrine-variant="static"] .ticker{
+        animation:none!important;
+        transform:none!important;
+      }
+      [data-vitrine-module="ticker"][data-vitrine-variant="compact"]{
+        transform:scaleY(.82);
+        transform-origin:center top;
+      }
+
+      [data-vitrine-module="stats"][data-vitrine-variant="minimal"] .stat{
+        background:transparent!important;
+        border-color:transparent!important;
+        box-shadow:none!important;
+      }
+      [data-vitrine-module="stats"][data-vitrine-variant="split"]{
+        max-width:980px;
+        margin-inline:auto;
+      }
+
+      [data-vitrine-module="coverage"][data-vitrine-variant="compact"] .board-row,
+      [data-vitrine-module="experience"][data-vitrine-variant="compact"] .log-entry,
+      [data-vitrine-module="education"][data-vitrine-variant="compact"] .edu-item{
+        padding-block:.55rem!important;
+      }
+
+      [data-vitrine-module="portfolio"][data-vitrine-variant="list"] .press-cards{
+        grid-template-columns:1fr!important;
+      }
+
+      [data-vitrine-module="education"][data-vitrine-variant="stacked"] .edu-grid{
+        grid-template-columns:1fr!important;
+      }
+
+      [data-vitrine-module="instagram"][data-vitrine-variant="minimal"] .insta-grid{
+        grid-template-columns:1fr!important;
+      }
+
+      [data-vitrine-module="contact"][data-vitrine-variant="centered"]{
+        text-align:center;
+      }
+
+
+      /* Editorial / Jornalista Signature
+         Uses the existing DOM and content model, so current projects remain compatible. */
+      [data-vitrine-module="ticker"][data-vitrine-variant="editorial-marquee"]{
+        border-block:1px solid color-mix(in srgb,var(--vp-accent,#e3bb3d) 32%,transparent);
+      }
+      [data-vitrine-module="ticker"][data-vitrine-variant="editorial-marquee"] .ticker{
+        letter-spacing:.08em;
+        text-transform:uppercase;
+      }
+
+      [data-vitrine-module="stats"][data-vitrine-variant="editorial-metrics"]{
+        position:relative;
+      }
+      [data-vitrine-module="stats"][data-vitrine-variant="editorial-metrics"] .stat{
+        box-shadow:none!important;
+        border-radius:0!important;
+        border-top:1px solid color-mix(in srgb,var(--vp-text,#171310) 16%,transparent)!important;
+        background:transparent!important;
+      }
+
+      [data-vitrine-module="about"][data-vitrine-variant="editorial-profile"] .about-inner,
+      [data-vitrine-module="about"][data-vitrine-variant="editorial-profile"] .about-grid{
+        align-items:center;
+        gap:clamp(2rem,5vw,5.5rem);
+      }
+      [data-vitrine-module="about"][data-vitrine-variant="editorial-profile"] h2{
+        max-width:12ch;
+      }
+
+      [data-vitrine-module="wsop"][data-vitrine-variant="editorial-feature"]{
+        position:relative;
+        overflow:hidden;
+      }
+      [data-vitrine-module="wsop"][data-vitrine-variant="editorial-feature"] h2{
+        max-width:11ch;
+      }
+
+      [data-vitrine-module="coverage"][data-vitrine-variant="editorial-board"] .board-row{
+        border-radius:0!important;
+        border-inline:0!important;
+        transition:padding-left .18s ease,background .18s ease;
+      }
+      [data-vitrine-module="coverage"][data-vitrine-variant="editorial-board"] .board-row:hover{
+        padding-left:.65rem;
+      }
+
+      [data-vitrine-module="portfolio"][data-vitrine-variant="editorial-press"] .press-cards{
+        align-items:stretch;
+      }
+      [data-vitrine-module="portfolio"][data-vitrine-variant="editorial-press"] .press-card{
+        position:relative;
+        overflow:hidden;
+      }
+      [data-vitrine-module="portfolio"][data-vitrine-variant="editorial-press"] .press-card::before{
+        content:"";
+        position:absolute;left:0;top:0;bottom:0;width:3px;
+        background:var(--vp-accent,#e3bb3d);
+        opacity:.9;
+      }
+
+      [data-vitrine-module="experience"][data-vitrine-variant="editorial-timeline"] .log-entry{
+        border-left:1px solid color-mix(in srgb,var(--vp-accent,#e3bb3d) 55%,transparent);
+        padding-left:clamp(1rem,2vw,1.6rem)!important;
+      }
+
+      [data-vitrine-module="education"][data-vitrine-variant="editorial-foundations"] .edu-grid{
+        gap:clamp(1.2rem,3vw,2.8rem);
+      }
+
+      [data-vitrine-module="instagram"][data-vitrine-variant="editorial-social"] .insta-grid{
+        align-items:center;
+      }
+
+      [data-vitrine-module="contact"][data-vitrine-variant="editorial-contact"]{
+        position:relative;
+      }
+      [data-vitrine-module="contact"][data-vitrine-variant="editorial-contact"] h2{
+        max-width:12ch;
+      }
+
+      
+      /* Neutral Editorial placeholders: new projects never borrow another project's photography. */
+      body:not([data-default-project="true"]) .hero:not(.has-project-image),
+      [data-vitrine-module="hero"]:not(.has-project-image){
+        background-image:
+          radial-gradient(circle at 75% 25%,rgba(227,187,61,.16),transparent 22%),
+          linear-gradient(145deg,#082720 0%,#0e3b2e 58%,#164b3c 100%)!important;
+      }
+      body:not([data-default-project="true"]) .about-photo:empty,
+      body:not([data-default-project="true"]) .contact-photo:empty{
+        background:
+          linear-gradient(145deg,rgba(8,39,32,.05),rgba(227,187,61,.10)),
+          #eee9dc;
+      }
+
+      
+      /* WebAppCap tenant UI state.
+         Author CSS in the legacy shell uses display:flex/inline-flex, which can
+         override the browser's default [hidden] rule. Keep hidden authoritative. */
+      [hidden]{display:none!important}
+
+      /* Editorial hero without photography: intentionally typographic, not an empty
+         photographic frame. */
+      .hero.webappcap-hero-no-image{
+        min-height:clamp(500px,66vh,620px)!important;
+      }
+      .hero.webappcap-hero-no-image .hero-content{
+        min-height:inherit!important;
+        padding-top:clamp(5rem,10vh,7.5rem)!important;
+        padding-bottom:clamp(3.4rem,7vh,5.5rem)!important;
+      }
+      .hero.webappcap-hero-no-image .hero-main{
+        max-width:980px;
+      }
+      .hero.webappcap-hero-no-image .hero-name{
+        max-width:12ch;
+      }
+      .hero.webappcap-hero-no-image .hero-actions[hidden]{
+        margin:0!important;
+      }
+      @media(max-width:700px){
+        .hero.webappcap-hero-no-image{
+          min-height:500px!important;
+        }
+        .hero.webappcap-hero-no-image .hero-content{
+          padding-top:4.5rem!important;
+          padding-bottom:3.2rem!important;
+        }
+      }
+
+
+      /* Personal Trainer Signature */
+      .fitness-wrap{width:min(var(--vp-content-width,1200px),calc(100% - 2rem));margin-inline:auto}
+      .fitness-videos{padding:clamp(2.8rem,6vw,5.5rem) 0;background:#101312;color:#fff}
+      .fitness-section-head{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(240px,.7fr);gap:1rem;align-items:end;margin-bottom:1.4rem}
+      .fitness-section-head h2{font-size:clamp(2.2rem,5vw,4.8rem);line-height:.95;margin:.35rem 0}
+      .fitness-section-head p{color:rgba(255,255,255,.62);max-width:38ch;justify-self:end}
+      .fitness-video-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem}
+      .fitness-video-card{background:#191d1b;border:1px solid rgba(255,255,255,.09);border-radius:var(--vp-radius,22px);overflow:hidden}
+      .fitness-video-frame{aspect-ratio:9/16;max-height:560px;background:#080909;overflow:hidden}
+      .fitness-video-frame iframe,.fitness-video-frame video{width:100%;height:100%;border:0;object-fit:cover;display:block}
+      .fitness-video-title{padding:.8rem .9rem;font:700 .7rem "IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.04em}
+
+      .fitness-schedule{padding:clamp(3rem,7vw,6rem) 0;background:var(--vp-accent,#d9ff43);color:#101312}
+      .fitness-schedule .fitness-wrap{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,1.4fr);gap:clamp(2rem,5vw,5rem);align-items:start}
+      .fitness-schedule h2{font-size:clamp(2.5rem,5.5vw,5rem);line-height:.92;margin:.35rem 0 .7rem;max-width:9ch}
+      .fitness-schedule-copy p{max-width:40ch;line-height:1.55}
+      .fitness-book-btn{display:inline-flex;margin-top:1rem;background:#101312;color:#fff!important;text-decoration:none;border-radius:999px;padding:.78rem 1rem;font:700 .68rem "IBM Plex Mono",monospace}
+      .fitness-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
+      .fitness-slot{background:rgba(255,255,255,.68);border:1px solid rgba(16,19,18,.12);border-radius:16px;padding:.9rem 1rem;display:grid;grid-template-columns:1fr auto;gap:.3rem .8rem;align-items:center}
+      .fitness-day{font:700 .65rem "IBM Plex Mono",monospace;text-transform:uppercase}
+      .fitness-slot strong{font-size:1.1rem}.fitness-slot small{grid-column:1/-1;color:#545a56}
+
+      [data-vitrine-module="stats"][data-vitrine-variant="fitness-proof"] .stat{background:#fff;border-radius:20px!important;border:1px solid rgba(20,22,21,.08)!important;box-shadow:0 14px 45px rgba(16,19,18,.08)}
+      [data-vitrine-module="about"][data-vitrine-variant="fitness-profile"] h2{font-size:clamp(2.5rem,5vw,5rem);line-height:.95}
+      [data-vitrine-module="coverage"][data-vitrine-variant="fitness-services"] .board-row{border-radius:18px!important;margin-bottom:.55rem;background:rgba(255,255,255,.06)}
+      [data-vitrine-module="wsop"][data-vitrine-variant="fitness-method"] h2{font-size:clamp(2.5rem,5vw,5rem)}
+      [data-vitrine-module="portfolio"][data-vitrine-variant="fitness-results"] .press-card{border-radius:22px!important}
+      [data-vitrine-module="experience"][data-vitrine-variant="fitness-experience"] .log-entry{border-left:3px solid var(--vp-accent,#d9ff43);padding-left:1.2rem!important}
+      [data-vitrine-module="contact"][data-vitrine-variant="fitness-contact"] h2{font-size:clamp(3rem,7vw,6.5rem);line-height:.9}
+
+      @media(max-width:760px){
+        .fitness-section-head,.fitness-schedule .fitness-wrap{grid-template-columns:1fr}
+        .fitness-section-head p{justify-self:start}
+        .fitness-video-grid{grid-template-columns:1fr;grid-auto-flow:column;grid-auto-columns:minmax(78vw,1fr);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.5rem}
+        .fitness-video-card{scroll-snap-align:start}
+        .fitness-video-frame{max-height:520px}
+        .fitness-slots{grid-template-columns:1fr}
+      }
+
+      @media(max-width:760px){
+        [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-inner,
+        [data-vitrine-module="about"][data-vitrine-variant="image-right"] .about-grid{
+          direction:ltr;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function applyLayout(layout) {
+    ensureVariantStyles();
+    const modules = normalizeModules(layout?.modules);
+    if (!modules.length) return;
+
+    const footer = document.querySelector('footer');
+    if (!footer) return;
+
+    // Order each real DOM block before the footer.
+    modules.forEach(item => {
+      const el = moduleMap[item.key]?.();
+      if (!el) return;
+      footer.parentNode.insertBefore(el, footer);
+      el.dataset.vitrineModule = item.key;
+      el.dataset.vitrineVariant = item.variant;
+
+      // Layout visibility can hide a section, but cannot force-show a section
+      // that the content CMS itself marked invisible.
+      if (!item.visible) {
+        el.dataset.layoutHidden = 'true';
+        el.style.setProperty('display','none','important');
+        el.setAttribute('aria-hidden','true');
+      } else {
+        delete el.dataset.layoutHidden;
+        el.style.removeProperty('display');
+        if (el.getAttribute('aria-hidden') === 'true' && !el.hidden) {
+          el.removeAttribute('aria-hidden');
+        }
+      }
+    });
+
+    document.dispatchEvent(new CustomEvent('vitrine:layout-ready'));
+  }
+
+  async function loadLayout() {
+    try {
+      const data=await window.WebAppCapData.ready;
+      applyLayout(data.snapshot?.layout?.content);
+    } catch (error) {
+      console.warn('WebAppCap Layout: usando ordem padrão.', error);
+    }
+  }
+
+  // Run after DOM exists, then re-apply after tenant content/media finishes.
+  const schedule = () => requestAnimationFrame(() => requestAnimationFrame(loadLayout));
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', schedule, {once:true});
+  } else {
+    schedule();
+  }
+
+  document.addEventListener('vitrine:tenant-content-ready', schedule);
+  document.addEventListener('vitrine:tenant-media-ready', schedule);
+  document.addEventListener('vitrine:tenant-ready', schedule);
+})();

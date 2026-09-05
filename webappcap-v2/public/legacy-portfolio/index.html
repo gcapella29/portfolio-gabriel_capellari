@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriel Capellari — Poker Journalist</title>
+<meta name="description" content="Gabriel Capellari — Jornalista de poker, repórter de torneios ao vivo e redator SEO.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --felt: #0e3b2e;
+    --felt-dark: #082720;
+    --felt-line: rgba(243,238,226,0.14);
+    --cream: #f3eee2;
+    --paper: #faf7f0;
+    --ink: #171310;
+    --gold: #c9a227;
+    --gold-bright: #e3bb3d;
+    --brick: #a83c2e;
+    --muted: #7c8f86;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces',serif; margin:0; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex;
+    align-items:center;
+    gap:0.6em;
+  }
+  .eyebrow::before{content:"♠"; font-size:0.9em;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100svh;
+    background:
+      linear-gradient(180deg, rgba(8,39,32,0.55) 0%, rgba(8,39,32,0.88) 62%, var(--felt-dark) 100%),
+      url('/assets/media/hero-gabriel.jpg') center 18% / cover no-repeat;
+    color:var(--cream);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:1.4rem 1.4rem 2.2rem;
+    overflow:hidden;
+  }
+  .hero-top{
+    display:flex;
+    justify-content:flex-end;
+    align-items:flex-start;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:rgba(243,238,226,0.75);
+  }
+  .badge{
+    border:1px solid rgba(243,238,226,0.4);
+    border-radius:3px;
+    padding:0.35rem 0.6rem;
+    background:rgba(8,39,32,0.4);
+    backdrop-filter:blur(2px);
+  }
+  .hero-main{margin-top:auto; padding-top:3rem;}
+  .hero-name{
+    font-size:clamp(2.6rem, 11vw, 5rem);
+    line-height:0.96;
+    font-weight:600;
+  }
+  .hero-name em{font-style:italic; font-weight:500; color:var(--gold-bright);}
+  .signature-mark{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.3em;
+    font-weight:500;
+    color:var(--gold-bright);
+    letter-spacing:0.08em;
+    vertical-align:0.65em;
+    margin-right:0.25rem;
+  }
+  .hero-role{
+    margin-top:0.9rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.82rem;
+    letter-spacing:0.045em;
+    color:rgba(243,238,226,0.88);
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.5rem 0;
+  }
+  .hero-role .sep{margin:0 0.55rem; color:var(--gold);}
+  .hero-flags{
+    margin-top:1.6rem;
+    display:flex;
+    gap:0.5rem;
+    flex-wrap:wrap;
+  }
+  .chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.04em;
+    border:1px solid rgba(243,238,226,0.35);
+    border-radius:999px;
+    padding:0.3rem 0.7rem 0.32rem;
+    color:rgba(243,238,226,0.9);
+  }
+
+  /* ---------- TICKER ---------- */
+  .ticker-wrap{
+    background:var(--gold);
+    color:var(--felt-dark);
+    overflow:hidden;
+    white-space:nowrap;
+    border-top:1px solid var(--felt-dark);
+    border-bottom:1px solid var(--felt-dark);
+  }
+  .ticker{display:flex; width:max-content; will-change:transform; animation:scroll 24s linear infinite;}
+  .ticker-group{display:flex; flex-shrink:0; padding:0.72rem 0;}
+  .ticker span{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.03em;
+    padding:0 1.65rem;
+    text-transform:uppercase;
+  }
+  .ticker span::after{content:"◆"; margin-left:1.4rem; opacity:0.6; font-size:0.6rem; vertical-align:middle;}
+  @keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}}
+
+  @media (min-width:820px){.ticker-wrap{min-height:52px;display:flex;align-items:center;}.ticker-group{padding:0.82rem 0;}.ticker span{font-size:0.8rem;padding-left:1.9rem;padding-right:1.9rem;}}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:4.2rem 1.4rem;}
+  .section-head{margin-bottom:2rem;}
+  .section-head h2{font-size:clamp(1.7rem,6vw,2.3rem); margin-top:0.4rem; font-weight:600;}
+
+  /* ABOUT */
+  .about{background:var(--paper);}
+  .about-photo{
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:1.8rem;
+    aspect-ratio:4/5;
+    background:var(--felt);
+  }
+  .about-photo img{width:100%; height:100%; object-fit:cover; object-position:top;}
+  .about p{font-size:1.02rem; line-height:1.65; color:#3a342c; max-width:60ch;}
+  .about p + p{margin-top:1rem;}
+
+  /* COVERAGE — live board */
+  .coverage{background:var(--felt); color:var(--cream);}
+  .coverage .eyebrow{color:var(--gold-bright);}
+  .coverage .section-head h2{color:var(--cream);}
+  .board{
+    border-top:1px solid var(--felt-line);
+  }
+  .board-row{
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    padding:0.85rem 0;
+    border-bottom:1px solid var(--felt-line);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.82rem;
+  }
+  .board-row .ev{color:var(--cream); font-weight:500;}
+  .board-row .yr{color:var(--gold-bright); white-space:nowrap; text-align:right;}
+
+  /* PORTFOLIO */
+  .portfolio{background:var(--paper);}
+  .press-cards{display:grid; gap:0.9rem; grid-template-columns:1fr;}
+
+  .media-bio{
+    display:flex;
+    flex-direction:column;
+    gap:1.3rem;
+    border:1px solid #e2dbc8;
+    border-radius:10px;
+    padding:1.4rem;
+    margin-bottom:1.5rem;
+    background:linear-gradient(175deg, #ffffff 0%, #fbf6e9 100%);
+  }
+  .media-bio-photo{
+    width:100%;
+    max-width:220px;
+    aspect-ratio:1/1;
+    border-radius:8px;
+    overflow:hidden;
+    border:1px solid #e2dbc8;
+  }
+  .media-bio-photo img{width:100%; height:100%; object-fit:cover;}
+  .media-bio-content h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:1.35rem;
+  }
+  .media-bio-content .role-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.76rem;
+    color:var(--muted);
+    margin-top:0.2rem;
+  }
+  .social-row{display:flex; align-items:center; gap:0.6rem; margin:1rem 0 1.1rem;}
+  .social-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--muted);
+    margin-right:0.2rem;
+  }
+  .social-icon{
+    width:33px; height:33px;
+    border-radius:8px;
+    border:1px solid #d8cfb5;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink);
+    transition:border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  }
+  .social-icon:hover{border-color:var(--brick); transform:translateY(-2px); background:#fff;}
+  .social-icon svg{width:16px; height:16px;}
+  .media-bio-content p{font-size:0.92rem; line-height:1.62; color:#3a342c; max-width:56ch;}
+  .media-bio-content p + p{margin-top:0.7rem;}
+  .press-card{
+    border:1px solid #e2dbc8;
+    border-radius:6px;
+    padding:1.1rem 1.2rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    text-decoration:none;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .press-card:hover, .press-card:focus-visible{border-color:var(--gold); background:#fbf6e9;}
+  .press-card .name{font-family:'Fraunces',serif; font-weight:600; font-size:1.15rem;}
+  .press-card .desc{font-size:0.85rem; color:var(--muted); margin-top:0.15rem;}
+  .press-card .arrow{font-family:'IBM Plex Mono',monospace; font-size:1.1rem; color:var(--brick); flex-shrink:0;}
+
+  /* EXPERIENCE — hand history log */
+  .experience{background:var(--felt-dark); color:var(--cream);}
+  .experience .eyebrow{color:var(--gold-bright);}
+  .experience .section-head h2{color:var(--cream);}
+  .log{border-top:1px solid var(--felt-line);}
+  .log-entry{
+    padding:1.1rem 0;
+    border-bottom:1px solid var(--felt-line);
+    display:flex;
+    flex-direction:column;
+    gap:0.2rem;
+  }
+  .log-entry .top-line{display:flex; justify-content:space-between; gap:1rem; align-items:baseline; flex-wrap:wrap;}
+  .log-entry .role{font-family:'Fraunces',serif; font-size:1.08rem; font-weight:600;}
+  .log-entry .yrs{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--gold-bright); white-space:nowrap;}
+  .log-entry .org{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:rgba(243,238,226,0.65); margin-top:0.15rem;}
+  .log-entry .note{font-size:0.9rem; color:rgba(243,238,226,0.8); margin-top:0.35rem; max-width:58ch; line-height:1.5;}
+
+  /* EDU + SKILLS */
+  .edu{background:var(--paper);}
+  .edu-grid{display:grid; gap:2.4rem; grid-template-columns:1fr;}
+  .edu-item{border-left:2px solid var(--gold); padding-left:1rem;}
+  .edu-item .deg{font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem;}
+  .edu-item .inst{font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--muted); margin-top:0.2rem;}
+  .stack-title{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:0.8rem;}
+  .chipstack{display:flex; flex-wrap:wrap; gap:0.6rem;}
+  .poker-chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.74rem;
+    font-weight:600;
+    border-radius:999px;
+    padding:0.42rem 0.85rem;
+    border:2px dashed var(--gold);
+    color:var(--ink);
+    background:repeating-linear-gradient(135deg, var(--cream), var(--cream) 6px, #f8f0d8 6px, #f8f0d8 12px);
+  }
+  .poker-chip.high{border-color:var(--brick); border-style:solid;}
+
+  /* CONTACT */
+  .contact{
+    background:var(--felt);
+    color:var(--cream);
+    text-align:left;
+  }
+  .contact .section-head h2{color:var(--cream);}
+  .contact-photo{
+    border-radius:4px;
+    overflow:hidden;
+    margin:1.6rem 0 2rem;
+    aspect-ratio:16/10;
+  }
+  .contact-photo img{width:100%; height:100%; object-fit:cover;}
+  .contact-links{display:flex; flex-direction:column; gap:0.8rem;}
+  .contact-links a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.95rem;
+    text-decoration:none;
+    border-bottom:1px solid var(--felt-line);
+    padding-bottom:0.8rem;
+    display:flex;
+    justify-content:space-between;
+  }
+  .contact-links a span.lbl{color:var(--gold-bright); font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em;}
+
+  /* HIGHLIGHTS STRIP */
+  .stats{
+    background:var(--felt-dark);
+    padding:2.6rem 1.4rem;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:1.8rem;
+    border-bottom:1px solid var(--felt-line);
+  }
+  .stat{text-align:left;}
+  .stat .num{font-family:'Fraunces',serif; font-weight:600; font-size:2.6rem; color:var(--gold-bright); line-height:1;}
+  .stat .lbl{font-family:'IBM Plex Mono',monospace; font-size:0.74rem; color:rgba(243,238,226,0.75); margin-top:0.4rem; letter-spacing:0.02em; max-width:24ch;}
+  footer{
+    background:var(--felt-dark);
+    color:rgba(243,238,226,0.5);
+    text-align:center;
+    padding:1.6rem 1.4rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- DESKTOP ---------- */
+  @media (min-width:820px){
+    section{padding:6rem max(4rem, calc((100vw - 1240px) / 2));}
+    .hero{padding:2rem 4rem 3rem;}
+    .hero-content{max-width:1240px; margin:0 auto;}
+    .hero-main{max-width:980px;}
+    .about-grid{display:grid; grid-template-columns:340px 1fr; gap:3.5rem; align-items:start;}
+    .about-photo{margin-bottom:0;}
+    .board{max-width:820px;}
+    .press-cards{grid-template-columns:1fr 1fr;}
+    .media-bio{flex-direction:row; align-items:flex-start; padding:1.8rem;}
+    .media-bio-photo{flex-shrink:0;}
+    .log{max-width:820px;}
+    .log-entry .top-line{flex-wrap:nowrap;}
+    .edu-grid{grid-template-columns:1fr 1fr; align-items:start;}
+    .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;}
+    .contact-photo{margin:0;}
+    .stats{grid-template-columns:repeat(3,1fr); padding:3.2rem 4rem; gap:2.5rem;}
+    .about-grid{grid-template-columns:minmax(300px, .8fr) minmax(0, 1.35fr); gap:5rem;}
+    .portfolio > *, .coverage > *, .experience > *, .edu > *, .instagram > *, .contact > *{max-width:1120px; margin-left:auto; margin-right:auto;}
+    .insta-grid{grid-template-columns:minmax(0, 1fr) minmax(300px, 400px); align-items:center; gap:5rem;}
+    .reel-frame{margin-left:auto;}
+  }
+
+  :focus-visible{outline:2px solid var(--gold-bright); outline-offset:2px;}
+
+  /* ---------- MOTION ---------- */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity 0.8s cubic-bezier(.16,.8,.3,1), transform 0.8s cubic-bezier(.16,.8,.3,1);}
+  .reveal.in{opacity:1; transform:translateY(0);}
+  .reveal-stagger > *{opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease;}
+  .reveal-stagger.in > *{opacity:1; transform:translateY(0);}
+  .reveal-stagger.in > *:nth-child(1){transition-delay:0.03s;}
+  .reveal-stagger.in > *:nth-child(2){transition-delay:0.08s;}
+  .reveal-stagger.in > *:nth-child(3){transition-delay:0.13s;}
+  .reveal-stagger.in > *:nth-child(4){transition-delay:0.18s;}
+  .reveal-stagger.in > *:nth-child(5){transition-delay:0.23s;}
+  .reveal-stagger.in > *:nth-child(6){transition-delay:0.28s;}
+  .reveal-stagger.in > *:nth-child(7){transition-delay:0.33s;}
+  .reveal-stagger.in > *:nth-child(8){transition-delay:0.38s;}
+  .reveal-stagger.in > *:nth-child(9){transition-delay:0.43s;}
+  .reveal-stagger.in > *:nth-child(10){transition-delay:0.48s;}
+
+  .hero-bg-layer{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(8,39,32,0.55) 0%, rgba(8,39,32,0.88) 62%, var(--felt-dark) 100%),
+      url('/assets/media/hero-gabriel.jpg') center 18% / cover no-repeat;
+    will-change:transform;
+    transform:translateY(0) scale(1.08);
+  }
+  .hero{background:none; padding:1.4rem 1.4rem 2.2rem;}
+  .hero-content{position:relative; z-index:1; display:flex; flex-direction:column; min-height:calc(100svh - 0px); width:100%;}
+
+  .about-photo img, .press-card, .contact-photo img{transition:transform 0.5s cubic-bezier(.16,.8,.3,1);}
+  .about-photo:hover img{transform:scale(1.045);}
+  .contact-photo:hover img{transform:scale(1.045);}
+  .press-card{transform:translateY(0);}
+  .press-card:hover{transform:translateY(-3px);}
+  .poker-chip{transition:transform 0.25s ease, border-color 0.25s ease;}
+  .poker-chip:hover{transform:translateY(-2px) rotate(-1deg); border-color:var(--brick);}
+  .board-row, .log-entry{transition:background 0.2s ease, padding-left 0.2s ease;}
+  .board-row:hover{background:rgba(243,238,226,0.04); padding-left:0.4rem;}
+  .log-entry:hover{background:rgba(243,238,226,0.03); padding-left:0.4rem;}
+
+  /* ---------- INSTAGRAM ---------- */
+  .instagram{background:var(--paper); text-align:left;}
+  .insta-grid{display:grid; gap:2rem; grid-template-columns:1fr;}
+  .insta-handle{
+    display:inline-flex; align-items:center; gap:0.5rem;
+    font-family:'IBM Plex Mono',monospace; font-size:0.85rem;
+    color:var(--brick); text-decoration:none;
+    border-bottom:1px solid transparent;
+  }
+  .insta-handle:hover{border-color:var(--brick);}
+  .reel-frame{
+    position:relative;
+    width:100%;
+    max-width:400px;
+    aspect-ratio:9/16;
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--felt);
+    border:1px solid #e2dbc8;
+  }
+  .reel-frame iframe{width:100%; height:100%; border:0;}
+  .reel-fallback{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:0.8rem; padding:1.5rem; text-align:center;
+    background:linear-gradient(160deg, var(--felt) 0%, var(--felt-dark) 100%);
+    color:var(--cream);
+  }
+  .reel-fallback img{width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid var(--gold);}
+  .reel-fallback .txt{font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:rgba(243,238,226,0.75); max-width:26ch;}
+  .reel-fallback a.btn{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em;
+    color:var(--felt-dark); background:var(--gold-bright); padding:0.5rem 1rem; border-radius:999px; text-decoration:none;
+  }
+  /* ---------- EXPERIENCE POLISH ---------- */
+  .language-toggle{display:flex; padding:.22rem; border:1px solid rgba(243,238,226,.48); border-radius:999px; background:rgba(8,39,32,.46); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);}
+  .language-option{appearance:none; width:2rem; height:2rem; display:grid; place-items:center; padding:0; border:0; border-radius:50%; color:var(--cream); background:transparent; font-size:1rem; cursor:pointer; filter:grayscale(1) opacity(.58); transition:transform .2s ease, filter .2s ease, background .2s ease;}
+  .language-option:hover{transform:translateY(-2px); filter:grayscale(0) opacity(1);}
+  .language-option[aria-pressed="true"]{background:rgba(201,162,39,.3); filter:grayscale(0) opacity(1);}
+  .language-option:focus-visible{outline:3px solid var(--gold-bright); outline-offset:2px;}
+  .hero-top{gap:.65rem;}
+  .hero::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 84% 12%, rgba(227,187,61,.16), transparent 23%); mix-blend-mode:screen;}
+  .hero-content{position:relative; z-index:1;}
+  @media (prefers-reduced-motion:no-preference){.hero-name em{animation:gold-glow 4s ease-in-out infinite;} @keyframes gold-glow{50%{text-shadow:0 0 26px rgba(227,187,61,.32);}}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;} *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}}
+  
+
+/* =========================================================
+   MODERN UI LAYER — preserves original content and images
+   ========================================================= */
+:root{
+  --ui-radius:18px;
+  --ui-shadow:0 18px 60px rgba(8,39,32,.12);
+  --ui-shadow-hover:0 24px 70px rgba(8,39,32,.20);
+  --ui-ease:cubic-bezier(.22,1,.36,1);
+}
+
+/* Global rendering / accessibility */
+html{scroll-padding-top:1rem;}
+body{
+  overflow-x:hidden;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:rgba(201,162,39,.28);color:var(--ink);}
+section[id]{scroll-margin-top:1.25rem;}
+img{height:auto;}
+button,a{touch-action:manipulation;}
+
+/* Skip link */
+.skip-link{
+  position:fixed;
+  left:1rem;
+  top:1rem;
+  z-index:10000;
+  transform:translateY(-160%);
+  padding:.7rem 1rem;
+  border-radius:999px;
+  background:var(--gold-bright);
+  color:var(--felt-dark);
+  font:600 .75rem/1 'IBM Plex Mono',monospace;
+  text-decoration:none;
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
+  transition:transform .25s var(--ui-ease);
+}
+.skip-link:focus{transform:translateY(0);}
+
+/* Scroll progress */
+.scroll-progress{
+  position:fixed;
+  inset:0 0 auto 0;
+  height:3px;
+  z-index:10001;
+  transform-origin:left center;
+  transform:scaleX(0);
+  background:linear-gradient(90deg,var(--gold),var(--gold-bright));
+  box-shadow:0 0 18px rgba(227,187,61,.42);
+  pointer-events:none;
+}
+
+/* Fixed language control — LEFT side */
+.language-toggle{
+  position:fixed !important;
+  left:max(14px, env(safe-area-inset-left));
+  top:max(16px, env(safe-area-inset-top));
+  z-index:9999;
+  padding:.24rem !important;
+  border:1px solid rgba(243,238,226,.52) !important;
+  background:rgba(8,39,32,.58) !important;
+  box-shadow:0 12px 34px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter:blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(16px) saturate(140%) !important;
+}
+.language-toggle::before{
+  content:"LANG";
+  display:grid;
+  place-items:center;
+  min-width:2.15rem;
+  height:2rem;
+  padding:0 .35rem;
+  color:rgba(243,238,226,.58);
+  font:500 .56rem/1 'IBM Plex Mono',monospace;
+  letter-spacing:.12em;
+}
+.language-option{
+  width:2.15rem !important;
+  height:2.15rem !important;
+  transition:transform .25s var(--ui-ease),filter .25s ease,background .25s ease,box-shadow .25s ease !important;
+}
+.language-option:hover{transform:translateY(-2px) scale(1.04) !important;}
+.language-option[aria-pressed="true"]{
+  box-shadow:inset 0 0 0 1px rgba(227,187,61,.22),0 5px 18px rgba(201,162,39,.16);
+}
+
+/* Hero */
+.hero{
+  isolation:isolate;
+  overflow:clip;
+}
+.hero-bg-layer{
+  will-change:transform;
+  transform:scale(1.06);
+  transition:transform .1s linear;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 65%, rgba(227,187,61,.075), transparent 32%),
+    linear-gradient(90deg,rgba(8,39,32,.18),transparent 35%,rgba(8,39,32,.10));
+}
+.hero-content{z-index:2;}
+.hero-name{
+  text-wrap:balance;
+  text-shadow:0 12px 45px rgba(0,0,0,.20);
+}
+.hero-role{max-width:75ch;}
+.hero-flags .chip{
+  transition:transform .3s var(--ui-ease),border-color .3s ease,background .3s ease;
+  background:rgba(8,39,32,.16);
+  backdrop-filter:blur(5px);
+}
+.hero-flags .chip:hover{
+  transform:translateY(-3px);
+  border-color:rgba(227,187,61,.7);
+  background:rgba(8,39,32,.28);
+}
+
+/* Ticker */
+.ticker-wrap{position:relative;z-index:3;box-shadow:0 8px 30px rgba(8,39,32,.12);}
+.ticker span{transition:letter-spacing .3s ease;}
+.ticker-wrap:hover .ticker{animation-play-state:running;}
+
+/* Stats */
+.stats{
+  position:relative;
+  isolation:isolate;
+}
+.stat{
+  position:relative;
+  padding:1.25rem;
+  border:1px solid rgba(243,238,226,.08);
+  border-radius:var(--ui-radius);
+  background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
+  overflow:hidden;
+  transition:transform .45s var(--ui-ease),border-color .35s ease,box-shadow .45s ease;
+}
+.stat::after{
+  content:"";
+  position:absolute;
+  width:110px;height:110px;
+  right:-55px;top:-55px;
+  border-radius:50%;
+  background:rgba(227,187,61,.10);
+  filter:blur(2px);
+}
+.stat:hover{
+  transform:translateY(-6px);
+  border-color:rgba(227,187,61,.24);
+  box-shadow:0 18px 45px rgba(0,0,0,.16);
+}
+.stat .num{position:relative;z-index:1;}
+
+/* Section rhythm */
+.section-head h2{text-wrap:balance;}
+.about-photo,
+.contact-photo,
+.media-bio,
+.press-card,
+.log-entry,
+.edu-item,
+.reel-frame{
+  transition:transform .5s var(--ui-ease),box-shadow .5s var(--ui-ease),border-color .35s ease;
+}
+
+/* About image */
+.about-photo{
+  box-shadow:var(--ui-shadow);
+}
+.about-photo img,
+.media-bio-photo img,
+.contact-photo img{
+  transition:transform .8s var(--ui-ease),filter .5s ease;
+}
+.about-photo:hover img,
+.media-bio:hover .media-bio-photo img,
+.contact-photo:hover img{
+  transform:scale(1.035);
+}
+
+/* Coverage board */
+.board{
+  border-radius:var(--ui-radius);
+  overflow:hidden;
+  border:1px solid var(--felt-line);
+  box-shadow:0 18px 55px rgba(0,0,0,.10);
+}
+.board-row{
+  position:relative;
+  padding:1rem 1.15rem;
+  background:linear-gradient(90deg,rgba(255,255,255,.018),transparent);
+  transition:padding-left .35s var(--ui-ease),background .35s ease;
+}
+.board-row::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:2px;
+  transform:scaleY(0);
+  transform-origin:center;
+  background:var(--gold-bright);
+  transition:transform .35s var(--ui-ease);
+}
+.board-row:hover{
+  padding-left:1.4rem;
+  background:rgba(227,187,61,.055);
+}
+.board-row:hover::before{transform:scaleY(1);}
+
+/* Portfolio */
+.media-bio{
+  border-radius:var(--ui-radius) !important;
+  box-shadow:var(--ui-shadow);
+  position:relative;
+  overflow:hidden;
+}
+.media-bio::after{
+  content:"";
+  position:absolute;
+  inset:auto -20% -65% 45%;
+  height:220px;
+  border-radius:50%;
+  background:rgba(201,162,39,.10);
+  filter:blur(25px);
+  pointer-events:none;
+}
+.media-bio-content{position:relative;z-index:1;}
+.social-icon{
+  transition:transform .3s var(--ui-ease),background .25s ease,border-color .25s ease,box-shadow .3s ease !important;
+}
+.social-icon:hover{
+  transform:translateY(-4px) scale(1.04) !important;
+  box-shadow:0 8px 22px rgba(168,60,46,.12);
+}
+.press-card{
+  border-radius:14px !important;
+  position:relative;
+  overflow:hidden;
+  background:rgba(255,255,255,.55);
+}
+.press-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 25%,rgba(201,162,39,.10),transparent 75%);
+  transform:translateX(-120%);
+  transition:transform .7s var(--ui-ease);
+  pointer-events:none;
+}
+.press-card:hover::before{transform:translateX(120%);}
+.press-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 14px 35px rgba(23,19,16,.09);
+}
+.press-card .arrow{
+  transition:transform .35s var(--ui-ease);
+}
+.press-card:hover .arrow{transform:translateX(4px);}
+
+/* Experience timeline */
+.log{
+  position:relative;
+}
+.log::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;bottom:0;
+  width:1px;
+  background:linear-gradient(var(--gold),transparent 92%);
+  opacity:.55;
+}
+.log-entry{
+  position:relative;
+  padding-left:1.45rem !important;
+}
+.log-entry::before{
+  content:"";
+  position:absolute;
+  left:-3px;
+  top:1.35rem;
+  width:7px;height:7px;
+  border-radius:50%;
+  background:var(--gold-bright);
+  box-shadow:0 0 0 5px rgba(227,187,61,.08);
+  transition:transform .3s var(--ui-ease),box-shadow .3s ease;
+}
+.log-entry:hover::before{
+  transform:scale(1.45);
+  box-shadow:0 0 0 8px rgba(227,187,61,.08),0 0 22px rgba(227,187,61,.24);
+}
+.log-entry:hover{padding-left:1.65rem !important;}
+
+/* Education / chips */
+.edu-item{
+  padding-top:.25rem;
+  padding-bottom:.25rem;
+  border-radius:0 12px 12px 0;
+}
+.edu-item:hover{
+  transform:translateX(5px);
+  background:linear-gradient(90deg,rgba(201,162,39,.08),transparent);
+}
+.poker-chip{
+  transition:transform .3s var(--ui-ease),box-shadow .3s ease,background .3s ease;
+}
+.poker-chip:hover{
+  transform:translateY(-4px) rotate(-1deg);
+  box-shadow:0 10px 24px rgba(23,19,16,.10);
+}
+
+/* Instagram */
+.instagram{
+  position:relative;
+  overflow:hidden;
+}
+.insta-handle{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  margin-top:1.1rem;
+  padding:.7rem 1rem;
+  border:1px solid #d8cfb5;
+  border-radius:999px;
+  text-decoration:none;
+  font:600 .76rem/1 'IBM Plex Mono',monospace;
+  transition:transform .35s var(--ui-ease),background .25s ease,border-color .25s ease;
+}
+.insta-handle:hover{
+  transform:translateY(-4px);
+  border-color:var(--gold);
+  background:#fff;
+}
+.reel-frame{
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:var(--ui-shadow);
+}
+.reel-frame:hover{box-shadow:var(--ui-shadow-hover);}
+
+/* Contact */
+.contact{
+  position:relative;
+  overflow:hidden;
+}
+.contact::before{
+  content:"♠";
+  position:absolute;
+  right:-.05em;
+  bottom:-.3em;
+  font:600 clamp(10rem,30vw,25rem)/.8 'Fraunces',serif;
+  color:rgba(227,187,61,.035);
+  pointer-events:none;
+}
+.contact-grid{position:relative;z-index:1;}
+.contact-links a{
+  position:relative;
+  transition:padding-left .35s var(--ui-ease),color .25s ease,border-color .25s ease;
+}
+.contact-links a::before{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  width:0;
+  height:1px;
+  background:var(--gold-bright);
+  transition:width .4s var(--ui-ease);
+}
+.contact-links a:hover{
+  padding-left:.5rem;
+  border-color:rgba(227,187,61,.22);
+}
+.contact-links a:hover::before{width:100%;}
+
+/* Floating section navigation */
+.section-nav{
+  position:fixed;
+  right:clamp(14px,2vw,28px);
+  top:50%;
+  transform:translateY(-50%);
+  z-index:9997;
+  display:flex;
+  flex-direction:column;
+  gap:.45rem;
+  padding:.55rem;
+  border:1px solid rgba(23,19,16,.10);
+  border-radius:999px;
+  background:rgba(250,247,240,.68);
+  box-shadow:0 14px 40px rgba(23,19,16,.10);
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+}
+.section-nav a{
+  position:relative;
+  width:9px;height:9px;
+  border-radius:50%;
+  background:#cfc6b2;
+  text-decoration:none;
+  transition:transform .3s var(--ui-ease),background .25s ease,box-shadow .3s ease;
+}
+.section-nav a::after{
+  content:attr(aria-label);
+  position:absolute;
+  right:1.35rem;
+  top:50%;
+  transform:translateY(-50%) translateX(5px);
+  padding:.45rem .65rem;
+  border-radius:7px;
+  background:var(--felt-dark);
+  color:var(--cream);
+  font:500 .62rem/1 'IBM Plex Mono',monospace;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease,transform .25s var(--ui-ease);
+}
+.section-nav a:hover::after,
+.section-nav a:focus-visible::after{
+  opacity:1;
+  transform:translateY(-50%) translateX(0);
+}
+.section-nav a.active{
+  transform:scale(1.55);
+  background:var(--gold);
+  box-shadow:0 0 0 5px rgba(201,162,39,.14);
+}
+
+/* Reveal polish */
+.reveal,
+.reveal-stagger > *{
+  will-change:transform,opacity;
+}
+.reveal.in,
+.reveal-stagger.in > *{
+  will-change:auto;
+}
+
+/* Modern hover cursor glow on capable devices */
+.pointer-glow{
+  position:fixed;
+  left:0;top:0;
+  width:260px;height:260px;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:0;
+  opacity:0;
+  background:radial-gradient(circle,rgba(201,162,39,.07),transparent 68%);
+  transform:translate(-50%,-50%);
+  transition:opacity .3s ease;
+}
+@media (hover:hover) and (pointer:fine){
+  .pointer-glow{opacity:1;}
+}
+
+/* Performance */
+@media (min-width:820px){
+  section:not(.hero){content-visibility:auto;contain-intrinsic-size:700px;}
+}
+@media (max-width:819px){
+  .section-nav{right:10px;padding:.45rem;gap:.42rem;}
+  .section-nav a::after{display:none;}
+}
+@media (max-width:560px){
+  .language-toggle{
+    left:10px !important;
+    top:10px !important;
+  }
+  .language-toggle::before{min-width:1.8rem;}
+  .language-option{width:1.95rem !important;height:1.95rem !important;}
+  .hero{min-height:92svh;}
+  .hero-top{padding-top:3.6rem;}
+  .stat{padding:1.1rem;}
+}
+
+/* Reduced motion: never force movement */
+@media (prefers-reduced-motion:reduce){
+  .hero-bg-layer{transform:none !important;}
+  .pointer-glow{display:none;}
+  .language-option,.stat,.press-card,.poker-chip,.edu-item,.contact-links a,.insta-handle,
+  .about-photo img,.media-bio-photo img,.contact-photo img{transition:none !important;}
+}
+
+
+
+/* =========================================================
+   DESKTOP REFINEMENT — balanced editorial layout
+   ========================================================= */
+@media (min-width: 820px){
+  :root{
+    --desktop-max: 1180px;
+    --desktop-gutter: clamp(2rem, 5vw, 5rem);
+  }
+
+  /* Keep the desktop composition centered and visually contained. */
+  section{
+    padding-left: var(--desktop-gutter);
+    padding-right: var(--desktop-gutter);
+  }
+
+  .hero{
+    padding-left: var(--desktop-gutter);
+    padding-right: var(--desktop-gutter);
+  }
+
+  .hero-content,
+  .portfolio > *,
+  .coverage > *,
+  .experience > *,
+  .edu > *,
+  .instagram > *,
+  .contact > *{
+    width: min(100%, var(--desktop-max));
+  }
+
+  .hero-content{max-width:var(--desktop-max);}
+  .hero-main{max-width:960px;}
+
+  /* More deliberate proportions for the editorial sections. */
+  .about-grid{
+    grid-template-columns:minmax(320px, 390px) minmax(0, 1fr);
+    gap:clamp(4rem, 7vw, 6.5rem);
+    align-items:center;
+  }
+
+  .about-photo{
+    aspect-ratio:4 / 5;
+    max-height:540px;
+  }
+
+  .section-head{margin-bottom:2.5rem;}
+  .section-head h2{font-size:clamp(2rem,3.3vw,3rem);}
+
+  .board{max-width:none;}
+  .board-row{min-height:54px; align-items:center;}
+
+  .media-bio{
+    min-height:250px;
+    padding:2rem;
+    gap:2rem;
+  }
+  .media-bio-photo{width:220px; max-width:220px;}
+  .media-bio-content{padding-top:.25rem;}
+
+  .press-cards{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:1rem;
+  }
+
+  .log{max-width:none;}
+  .log-entry{padding-top:1.35rem; padding-bottom:1.35rem;}
+  .log-entry .note{max-width:72ch;}
+
+  .edu-grid{gap:clamp(4rem,7vw,7rem);}
+
+  .insta-grid{
+    grid-template-columns:minmax(0,1fr) 360px;
+    gap:clamp(4rem,8vw,8rem);
+  }
+  .reel-frame{width:360px; max-width:360px;}
+
+  .contact-grid{
+    grid-template-columns:minmax(0,1fr) minmax(320px,520px);
+    gap:clamp(4rem,8vw,8rem);
+  }
+  .contact-photo{max-height:430px;}
+
+  .stats{
+    grid-template-columns:repeat(3,minmax(0,360px));
+    justify-content:center;
+    gap:1.2rem;
+    padding-left:var(--desktop-gutter);
+    padding-right:var(--desktop-gutter);
+  }
+  .stat{width:100%;}
+
+  /* Keep the section dots subtle rather than competing with the page. */
+  .section-nav{
+    right:18px;
+    padding:.45rem;
+    background:rgba(250,247,240,.82);
+    box-shadow:0 10px 28px rgba(23,19,16,.08);
+  }
+}
+
+/* Language control: flags only, fixed and intentionally static. */
+.language-toggle::before{display:none !important;}
+.language-option:hover,
+.language-option[aria-pressed="true"]:hover{
+  transform:none !important;
+}
+.language-option{cursor:pointer;}
+
+/* FINAL TICKER OVERRIDE — seamless, constant right-to-left motion */
+.ticker-wrap{
+  overflow:hidden;
+}
+.ticker{
+  display:flex;
+  width:max-content;
+  animation:ticker-continuous 24s linear infinite !important;
+  animation-play-state:running !important;
+  will-change:transform;
+}
+.ticker-group{
+  display:flex;
+  flex-shrink:0;
+  align-items:center;
+  min-width:max-content;
+}
+@keyframes ticker-continuous{
+  from{transform:translate3d(0,0,0);}
+  to{transform:translate3d(-50%,0,0);}
+}
+.ticker-wrap:hover .ticker,
+.ticker-wrap:focus-within .ticker{
+  animation-play-state:running !important;
+}
+
+
+/* ---------- CONVERSION / FEATURED / SEO UPGRADE ---------- */
+.hero-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.45rem;align-items:center}
+.cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;padding:.72rem 1rem;border-radius:999px;font:600 .72rem/1 'IBM Plex Mono',monospace;letter-spacing:.035em;text-decoration:none;border:1px solid rgba(243,238,226,.42);transition:transform .3s var(--ui-ease),background .25s ease,border-color .25s ease,box-shadow .3s ease}
+.cta-btn.primary{background:var(--gold-bright);color:var(--felt-dark);border-color:var(--gold-bright);box-shadow:0 10px 28px rgba(201,162,39,.18)}
+.cta-btn.secondary{background:rgba(8,39,32,.32);color:var(--cream);backdrop-filter:blur(8px)}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.featured-wsop{background:var(--cream);position:relative;overflow:hidden}
+.featured-wsop-grid{display:grid;gap:1.6rem;align-items:stretch}
+.wsop-visual{min-height:330px;border-radius:var(--ui-radius);overflow:hidden;position:relative;background:linear-gradient(145deg,var(--felt),var(--felt-dark));box-shadow:var(--ui-shadow)}
+.wsop-visual::before{content:"WSOP";position:absolute;inset:auto auto 1.1rem 1.1rem;font:600 clamp(3.8rem,15vw,8rem)/.8 'Fraunces',serif;color:rgba(227,187,61,.17);letter-spacing:-.05em}
+.wsop-visual::after{content:none;}
+.wsop-copy{display:flex;flex-direction:column;justify-content:center;padding:.4rem 0}
+.wsop-copy h2{font-size:clamp(2rem,6vw,3.4rem);line-height:.98;margin:.45rem 0 1rem}
+.wsop-copy p{max-width:55ch;line-height:1.7;color:#3a342c}
+.wsop-points{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.2rem}
+.wsop-points span{padding:.42rem .7rem;border:1px solid #d8cfb5;border-radius:999px;font:600 .67rem/1 'IBM Plex Mono',monospace;color:var(--felt)}
+.cv-inline{margin-top:1.1rem}
+@media(min-width:820px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.featured-wsop-grid{grid-template-columns:minmax(360px,.95fr) minmax(0,1.05fr);gap:4.5rem}.wsop-visual{min-height:500px}.hero-actions{margin-top:1.7rem}}
+@media(max-width:560px){.hero-actions{display:grid;grid-template-columns:1fr 1fr}.cta-btn{padding:.7rem .75rem;font-size:.65rem}.featured-wsop{padding-top:3.8rem;padding-bottom:3.8rem}.wsop-visual{min-height:280px}}
+
+
+/* ---------- SHARE PORTFOLIO ---------- */
+.share-btn{
+  cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;
+}
+.contact-share{
+  appearance:none;
+  width:100%;
+  color:inherit;
+  background:transparent;
+  border:0;
+  border-bottom:1px solid var(--felt-line);
+  padding:0 0 .8rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.95rem;
+  text-align:left;
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  cursor:pointer;
+  position:relative;
+  transition:padding-left .35s var(--ui-ease),color .25s ease,border-color .25s ease;
+}
+.contact-share .lbl{
+  color:var(--gold-bright);
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.contact-share::before{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  width:0;
+  height:1px;
+  background:var(--gold-bright);
+  transition:width .4s var(--ui-ease);
+}
+.contact-share:hover{
+  padding-left:.5rem;
+  border-color:rgba(227,187,61,.22);
+}
+.contact-share:hover::before{width:100%}
+.share-btn.share-success,
+.contact-share.share-success{
+  border-color:var(--gold-bright);
+}
+@media(prefers-reduced-motion:reduce){
+  .share-btn,.contact-share{transition:none!important}
+}
+
+
+
+/* ---------- WSOP CAROUSEL ---------- */
+.wsop-visual{
+  position:relative;
+  min-height:430px;
+  background:var(--felt-dark);
+  overflow:hidden;
+}
+.wsop-visual::before{
+  content:"LAS VEGAS · 2022 · 2023 · 2024 · 2025";
+  position:absolute;
+  left:1rem;
+  top:1rem;
+  z-index:8;
+  color:var(--gold-bright);
+  font:600 .64rem/1 'IBM Plex Mono',monospace;
+  letter-spacing:.08em;
+  pointer-events:none;
+  text-shadow:0 3px 18px rgba(0,0,0,.55);
+}
+.wsop-visual::after{
+  content:"♠";
+  position:absolute;
+  right:1rem;
+  top:.85rem;
+  z-index:8;
+  color:var(--gold-bright);
+  font-size:1.3rem;
+  pointer-events:none;
+}
+.wsop-carousel{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  outline:none;
+  background:#050b09;
+}
+.wsop-slides{
+  position:absolute;
+  inset:0;
+}
+.wsop-slide{
+  position:absolute;
+  inset:0;
+  margin:0;
+  opacity:0;
+  visibility:hidden;
+  transform:scale(1.025);
+  transition:
+    opacity .9s cubic-bezier(.22,1,.36,1),
+    transform 1.15s cubic-bezier(.22,1,.36,1),
+    visibility 0s linear .9s;
+}
+.wsop-slide.is-active{
+  opacity:1;
+  visibility:visible;
+  transform:scale(1);
+  transition-delay:0s;
+  z-index:2;
+}
+.wsop-slide::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg,rgba(8,39,32,.05) 40%,rgba(8,39,32,.56) 100%),
+    linear-gradient(90deg,rgba(8,39,32,.14),transparent 45%);
+  pointer-events:none;
+}
+.wsop-slide img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  background:#050b09;
+}
+.wsop-slide figcaption{
+  position:absolute;
+  left:1rem;
+  bottom:3.7rem;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  color:var(--cream);
+  font:600 .68rem/1 'IBM Plex Mono',monospace;
+  letter-spacing:.04em;
+  text-shadow:0 2px 12px rgba(0,0,0,.65);
+}
+.wsop-year{
+  display:inline-grid;
+  place-items:center;
+  padding:.38rem .58rem;
+  border-radius:999px;
+  background:var(--gold-bright);
+  color:var(--felt-dark);
+  text-shadow:none;
+}
+.wsop-arrow{
+  position:absolute;
+  top:50%;
+  z-index:7;
+  width:42px;
+  height:42px;
+  transform:translateY(-50%);
+  border:1px solid rgba(243,238,226,.35);
+  border-radius:50%;
+  background:rgba(8,39,32,.54);
+  color:var(--cream);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font:500 1.1rem/1 'IBM Plex Mono',monospace;
+  transition:transform .25s var(--ui-ease),background .25s ease,border-color .25s ease;
+}
+.wsop-arrow:hover{
+  background:rgba(201,162,39,.82);
+  color:var(--felt-dark);
+  border-color:var(--gold-bright);
+}
+.wsop-prev{left:1rem;}
+.wsop-next{right:1rem;}
+.wsop-carousel-ui{
+  position:absolute;
+  left:1rem;
+  right:1rem;
+  bottom:1rem;
+  z-index:7;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+}
+.wsop-dots{
+  display:flex;
+  align-items:center;
+  gap:.42rem;
+}
+.wsop-dot{
+  width:7px;
+  height:7px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(243,238,226,.42);
+  cursor:pointer;
+  transition:width .3s var(--ui-ease),background .3s ease,border-radius .3s ease;
+}
+.wsop-dot.is-active{
+  width:25px;
+  border-radius:999px;
+  background:var(--gold-bright);
+}
+.wsop-counter{
+  color:rgba(243,238,226,.82);
+  font:500 .65rem/1 'IBM Plex Mono',monospace;
+  letter-spacing:.06em;
+}
+
+  to{transform:scaleX(1)}
+}
+@media(min-width:820px){
+  .wsop-visual{min-height:560px;}
+  .wsop-arrow{width:48px;height:48px;}
+  .wsop-prev{left:1.4rem;}
+  .wsop-next{right:1.4rem;}
+}
+@media(max-width:560px){
+  .wsop-visual{min-height:520px;}
+  .wsop-slide figcaption{bottom:3.5rem;font-size:.6rem;}
+  .wsop-arrow{width:38px;height:38px;}
+  .wsop-prev{left:.65rem;}
+  .wsop-next{right:.65rem;}
+  .wsop-visual::before{font-size:.55rem;max-width:78%;}
+  .wsop-carousel-ui{left:.8rem;right:.8rem;bottom:.9rem;}
+}
+@media(prefers-reduced-motion:reduce){
+  .wsop-slide{transition:none!important;transform:none!important;}
+  
+}
+
+</style>
+
+<!-- SEO, social sharing & identity -->
+<meta name="author" content="Gabriel Capellari">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#0e3b2e">
+<meta property="og:type" content="profile">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:title" content="Gabriel Capellari — Jornalista de Poker">
+<meta property="og:description" content="Jornalista de poker, repórter de torneios ao vivo e redator SEO com experiência em coberturas internacionais.">
+<meta property="og:image" content="og-gabriel-capellari.jpg">
+<meta property="og:image:alt" content="Gabriel Capellari — Jornalista de Poker">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gabriel Capellari — Jornalista de Poker">
+<meta name="twitter:description" content="Jornalista de poker, repórter de torneios ao vivo e redator SEO com experiência em coberturas internacionais.">
+<meta name="twitter:image" content="og-gabriel-capellari.jpg">
+<link rel="icon" href="/assets/media/favicon.svg" type="image/svg+xml">
+<script type="application/ld+json">{
+  "@context":"https://schema.org",
+  "@type":"ProfilePage",
+  "mainEntity":{
+    "@type":"Person",
+    "name":"Gabriel Capellari",
+    "jobTitle":"Poker Journalist",
+    "email":"mailto:gcapellari@hotmail.com",
+    "knowsLanguage":["Portuguese","English","Spanish"],
+    "sameAs":["https://www.linkedin.com/in/gabriel-capellari-5347ba14b/","https://www.instagram.com/gabrielcapellari/"]
+  }
+}</script>
+
+<!-- VITRINE PRO CMS — Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script src="/domain-router.js"></script>
+
+
+<script>
+(() => {
+  const host = location.hostname.toLowerCase();
+  const isPrimary =
+    host === 'portfolio-gabriel-capellari.vercel.app' ||
+    host === 'webappcap.com.br' ||
+    host === 'www.webappcap.com.br' ||
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host.endsWith('.vercel.app');
+
+  if (!isPrimary) document.documentElement.classList.add('vitrine-domain-resolving');
+})();
+</script>
+<style>
+html.vitrine-domain-resolving body{overflow:hidden}
+html.vitrine-domain-resolving body > *:not(#vitrineDomainLoader){
+  visibility:hidden!important;
+}
+#vitrineDomainLoader{display:none}
+html.vitrine-domain-resolving #vitrineDomainLoader{
+  display:flex;position:fixed;inset:0;z-index:999999;
+  align-items:center;justify-content:center;background:#082720;color:#f3eee2;
+}
+.vitrine-domain-loader-inner{
+  display:grid;justify-items:center;gap:.75rem;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+.vitrine-domain-loader-inner strong{font-size:1rem}
+.vitrine-domain-loader-inner span{font-size:.8rem;opacity:.72;text-align:center;max-width:330px}
+.vitrine-domain-spinner{
+  width:42px;height:42px;border-radius:50%;
+  border:3px solid rgba(243,238,226,.18);border-top-color:#e3bb3d;
+  animation:vitrineDomainSpin .8s linear infinite
+}
+@keyframes vitrineDomainSpin{to{transform:rotate(360deg)}}
+</style>
+
+<link rel="preload" as="image" href="/assets/media/hero-gabriel.jpg" fetchpriority="high">
+</head>
+<body>
+
+<div id="vitrineDomainLoader" aria-live="polite">
+  <div class="vitrine-domain-loader-inner">
+    <div class="vitrine-domain-spinner" aria-hidden="true"></div>
+    <span>Carregando site</span>
+  </div>
+</div>
+
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg-layer" id="heroBg"></div>
+  <div class="hero-content">
+    <div class="hero-top">
+      <div class="language-toggle" id="languageToggle" role="group" aria-label="Idioma / Language" title="Idioma / Language">
+        <button class="language-option" type="button" data-language="pt" aria-pressed="true" aria-label="Português">🇧🇷</button>
+        <button class="language-option" type="button" data-language="en" aria-pressed="false" aria-label="English">🇬🇧</button>
+      </div>
+      <span class="badge">IBITINGA · SP · BR</span>
+    </div>
+    <div class="hero-main">
+      <h1 class="hero-name">Gabriel<br><em>Capellari</em></h1>
+      <div class="hero-role">
+        JORNALISTA DE POKER <span class="sep">·</span> REPÓRTER DE TORNEIOS AO VIVO <span class="sep">·</span> REDATOR SEO <span class="sep">·</span> APRENDIZ .·.
+      </div>
+      <div class="hero-flags">
+        <span class="chip">🇧🇷 Português — nativo</span>
+        <span class="chip">🇬🇧 Inglês — C1</span>
+        <span class="chip">🇪🇸 Espanhol — B1</span>
+      </div>
+      <div class="hero-actions" aria-label="Ações principais">
+        <a class="cta-btn primary track-cta" data-event="hero_portfolio" href="#portfolio">Ver meu trabalho ↘</a>
+        <a class="cta-btn secondary track-cta" data-event="hero_contact" href="#contato">Entrar em contato →</a>
+        <a class="cta-btn secondary track-cta" data-event="hero_cv" href="CV-Gabriel-Capellari.pdf" download>Baixar CV ↓</a>
+        <button class="cta-btn secondary share-btn track-cta" data-event="hero_share" type="button" data-share-portfolio>Compartilhar ↗</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker">
+    <div class="ticker-group">
+      <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
+    </div>
+    <div class="ticker-group">
+      <span>WSOP LAS VEGAS</span><span>WSOP BRASIL</span><span>BSOP MILLIONS</span><span>LAPT PANAMÁ</span><span>BSOP/LAPT RIO</span><span>LAPT MONTEVIDÉU</span><span>WPT WORLD CHAMPIONSHIP</span>
+    </div>
+  </div>
+</div>
+
+<section class="stats reveal-stagger" id="destaques">
+  <div class="stat"><div class="num">4+</div><div class="lbl">anos de cobertura de poker ao vivo</div></div>
+  <div class="stat"><div class="num">4</div><div class="lbl">países cobertos — Brasil · EUA · Panamá · Uruguai</div></div>
+  <div class="stat"><div class="num">4</div><div class="lbl">grandes circuitos — WSOP · WPT · BSOP · LAPT</div></div>
+  <div class="stat"><div class="num">3</div><div class="lbl">idiomas — Português · Inglês · Espanhol</div></div>
+</section>
+
+<!-- ABOUT -->
+<section class="about reveal" id="sobre">
+  <div class="about-grid">
+    <div class="about-photo">
+      <img src="/assets/media/about-gabriel.jpg" alt="Gabriel Capellari operando câmera durante cobertura ao vivo de torneio de poker" loading="lazy" width="1400" height="933" decoding="async">
+    </div>
+    <div>
+      <div class="section-head">
+        <div class="eyebrow" id="aboutEyebrow">Perfil</div>
+        <h2 id="aboutTitle">Da sala de aula<br>aos feltros</h2>
+      </div>
+      <p id="aboutParagraph1">Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.</p>
+      <p id="aboutParagraph2">Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- FEATURED COVERAGE -->
+<section class="featured-wsop reveal" id="wsop-featured">
+  <div class="featured-wsop-grid">
+    
+<div class="wsop-visual" aria-label="Carrossel de fotos da cobertura da WSOP Las Vegas de 2022 a 2025">
+  <div class="wsop-carousel" id="wsopCarousel" tabindex="0" aria-roledescription="carousel">
+    <div class="wsop-slides">
+      
+        <figure class="wsop-slide is-active" data-wsop-slide="0" aria-hidden="false">
+          <img src="/assets/media/wsop-01.jpg" alt="Gabriel Capellari na WSOP Las Vegas em 2022" loading="eager" decoding="async" width="1532" height="2048">
+          <figcaption>
+            <span class="wsop-year">2022</span>
+            <span>WSOP Las Vegas</span>
+          </figcaption>
+        </figure>
+        <figure class="wsop-slide" data-wsop-slide="1" aria-hidden="true">
+          <img src="/assets/media/wsop-02.jpg" alt="Gabriel Capellari trabalhando na cobertura da WSOP Las Vegas em 2022" loading="lazy" decoding="async" width="1364" height="1364">
+          <figcaption>
+            <span class="wsop-year">2022</span>
+            <span>WSOP Las Vegas</span>
+          </figcaption>
+        </figure>
+        <figure class="wsop-slide" data-wsop-slide="2" aria-hidden="true">
+          <img src="/assets/media/wsop-03.png" alt="Gabriel Capellari na equipe de cobertura da WSOP Las Vegas em 2023" loading="lazy" decoding="async" width="457" height="356">
+          <figcaption>
+            <span class="wsop-year">2023</span>
+            <span>WSOP Las Vegas</span>
+          </figcaption>
+        </figure>
+        <figure class="wsop-slide" data-wsop-slide="3" aria-hidden="true">
+          <img src="/assets/media/wsop-04.jpg" alt="Gabriel Capellari durante a cobertura da WSOP Las Vegas em 2024" loading="lazy" decoding="async" width="1440" height="960">
+          <figcaption>
+            <span class="wsop-year">2024</span>
+            <span>WSOP Las Vegas</span>
+          </figcaption>
+        </figure>
+        <figure class="wsop-slide" data-wsop-slide="4" aria-hidden="true">
+          <img src="/assets/media/wsop-05.jpg" alt="Gabriel Capellari trabalhando com produção de vídeo na WSOP Las Vegas em 2025" loading="lazy" decoding="async" width="1200" height="800">
+          <figcaption>
+            <span class="wsop-year">2025</span>
+            <span>WSOP Las Vegas</span>
+          </figcaption>
+        </figure>
+        <figure class="wsop-slide" data-wsop-slide="5" aria-hidden="true">
+          <img src="/assets/media/wsop-06.jpg" alt="Gabriel Capellari realizando uma entrevista na WSOP Las Vegas em 2025" loading="lazy" decoding="async" width="1280" height="720">
+          <figcaption>
+            <span class="wsop-year">2025</span>
+            <span>WSOP Las Vegas</span>
+          </figcaption>
+        </figure>
+        <figure class="wsop-slide" data-wsop-slide="6" aria-hidden="true">
+          <img src="/assets/media/wsop-07.jpg" alt="Gabriel Capellari trabalhando no salão da WSOP Las Vegas em 2025" loading="lazy" decoding="async" width="900" height="1600">
+          <figcaption>
+            <span class="wsop-year">2025</span>
+            <span>WSOP Las Vegas</span>
+          </figcaption>
+        </figure>
+    </div>
+
+    <button class="wsop-arrow wsop-prev" type="button" data-wsop-prev aria-label="Foto anterior">←</button>
+    <button class="wsop-arrow wsop-next" type="button" data-wsop-next aria-label="Próxima foto">→</button>
+
+    <div class="wsop-carousel-ui">
+      <div class="wsop-dots" aria-label="Selecionar foto">
+        <button type="button" class="wsop-dot is-active" data-wsop-dot="0" aria-label="Ir para foto 1" aria-current="true"></button><button type="button" class="wsop-dot" data-wsop-dot="1" aria-label="Ir para foto 2"></button><button type="button" class="wsop-dot" data-wsop-dot="2" aria-label="Ir para foto 3"></button><button type="button" class="wsop-dot" data-wsop-dot="3" aria-label="Ir para foto 4"></button><button type="button" class="wsop-dot" data-wsop-dot="4" aria-label="Ir para foto 5"></button><button type="button" class="wsop-dot" data-wsop-dot="5" aria-label="Ir para foto 6"></button><button type="button" class="wsop-dot" data-wsop-dot="6" aria-label="Ir para foto 7"></button>
+      </div>
+      <div class="wsop-counter" aria-live="polite"><span id="wsopCurrent">01</span> / 07</div>
+    </div>
+  </div>
+</div>
+    <div class="wsop-copy">
+      <div class="eyebrow">Cobertura em destaque</div>
+      <h2>WSOP<br>Las Vegas</h2>
+      <p>Quatro edições consecutivas da World Series of Poker em Las Vegas, de 2022 a 2025 — com cobertura também do WPT World Championship em 2022. Experiência internacional em reportagem ao vivo, produção editorial e conteúdo para a audiência brasileira de poker.</p>
+      <div class="wsop-points"><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>Las Vegas · EUA</span></div>
+      <div class="cv-inline"><a class="cta-btn primary track-cta" data-event="wsop_portfolio" href="#portfolio">Ver portfólio →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- COVERAGE / LIVE BOARD -->
+<section class="coverage reveal" id="cobertura">
+  <div class="section-head">
+    <div class="eyebrow">Painel de cobertura</div>
+    <h2>Torneios cobertos</h2>
+  </div>
+  <div class="board reveal-stagger">
+    <div class="board-row"><span class="ev">WSOP — Las Vegas</span><span class="yr">2022 · 2023 · 2024 · 2025</span></div>
+    <div class="board-row"><span class="ev">WSOP &amp; WPT World Championship — Las Vegas</span><span class="yr">2022</span></div>
+    <div class="board-row"><span class="ev">WSOP Brasil</span><span class="yr">2022</span></div>
+    <div class="board-row"><span class="ev">BSOP Millions</span><span class="yr">2022 · 2023 · 2025</span></div>
+    <div class="board-row"><span class="ev">BSOP São Paulo</span><span class="yr">2023 · 2024</span></div>
+    <div class="board-row"><span class="ev">BSOP Winter Millions</span><span class="yr">2023 · 2025 (remoto)</span></div>
+    <div class="board-row"><span class="ev">BSOP / LAPT Foz do Iguaçu</span><span class="yr">2023</span></div>
+    <div class="board-row"><span class="ev">BSOP / LAPT Rio</span><span class="yr">2024</span></div>
+    <div class="board-row"><span class="ev">LAPT Montevidéu</span><span class="yr">2023</span></div>
+    <div class="board-row"><span class="ev">LAPT Panamá</span><span class="yr">2024</span></div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio reveal" id="portfolio">
+  <div class="section-head">
+    <div class="eyebrow">Onde ler</div>
+    <h2>Portfólio publicado</h2>
+  </div>
+
+  <div class="media-bio reveal">
+    <div class="media-bio-photo">
+      <img src="/assets/media/portfolio-gabriel.jpg" alt="Gabriel Capellari, redator na PokerNews Brasil" loading="lazy" width="600" height="537" decoding="async">
+    </div>
+    <div class="media-bio-content">
+      <h3>Gabriel Capellari</h3>
+      <div class="social-row">
+        <span class="social-label">Siga no</span>
+        <a class="social-icon" href="https://www.instagram.com/gabrielcapellari/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a class="social-icon" href="https://www.linkedin.com/in/gabriel-capellari-5347ba14b/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zM8.5 8h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-6.9c0-1.65-.03-3.77-2.3-3.77-2.3 0-2.65 1.8-2.65 3.65V23h-4V8z"/></svg>
+        </a>
+      </div>
+      <p>Formado em Letras (Português/Inglês), sempre fui apaixonado por esportes e comunicação. Através das palavras, encontrei uma forma de contar histórias, aproximar pessoas e transformar experiências em conexão.</p>
+      </div>
+  </div>
+
+  <div class="press-cards reveal-stagger">
+    <a class="press-card" href="https://superpoker.com.br/info/staff/gabrielcapellari" target="_blank" rel="noopener">
+      <div>
+        <div class="name">SuperPoker</div>
+        <div class="desc">Notícias, cobertura ao vivo e entrevistas exclusivas · 2022–2024</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+    <a class="press-card" href="https://br.pokernews.com/editores/gabriel-capellari/" target="_blank" rel="noopener">
+      <div>
+        <div class="name">PokerNews</div>
+        <div class="desc">Conteúdo editorial para o maior veículo de poker do mundo · 2025–2026</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+    <a class="press-card" href="https://www.canalhasgames.com.br/pages/quem-somos" target="_blank" rel="noopener">
+      <div>
+        <div class="name">Canalhas Games</div>
+        <div class="desc">Produção de conteúdo de mídia esportiva</div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="experience reveal" id="experiencia">
+  <div class="section-head">
+    <div class="eyebrow">Histórico de mãos</div>
+    <h2>Experiência profissional</h2>
+  </div>
+  <div class="log reveal-stagger">
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Poker Footage Researcher</span><span class="yrs">2026</span></div>
+      <div class="org">World Series of Poker (WSOP) / GGPoker</div>
+      <div class="note">Pesquisei imagens de torneios de poker e documentei mãos-chave, histórias de jogadores e marcações de tempo para apoiar a produção de conteúdo de uma das maiores empresas de mídia de poker do mundo.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Remote Player Researcher</span><span class="yrs">2026</span></div>
+      <div class="org">World Series of Poker (WSOP) / GGPoker</div>
+      <div class="note">Pesquisei jogadores profissionais de poker, levantando históricos, destaques de carreira e conquistas relevantes para apoiar a produção de conteúdo.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Content Writer</span><span class="yrs">2025 — 2026</span></div>
+      <div class="org">PokerNews Brasil</div>
+      <div class="note">Produzo conteúdo editorial e cobertura jornalística para um dos maiores veículos de poker do mundo, unindo precisão informativa a SEO estratégico.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Copywriter</span><span class="yrs">2025</span></div>
+      <div class="org">RegLife</div>
+      <div class="note">Desenvolvi conteúdo de marketing e editorial voltado à indústria do poker, com foco em conversão e engajamento.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Jornalista / Content Writer</span><span class="yrs">2022 — 2024</span></div>
+      <div class="org">SuperPoker Group</div>
+      <div class="note">Conduzi cobertura ao vivo de torneios, entrevistas e produção de notícias para uma das maiores plataformas de mídia de poker do Brasil, consolidando presença editorial no setor.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Professor de Literatura (Ensino Médio)</span><span class="yrs">2020 — 2022</span></div>
+      <div class="org">Colégio Max Beny Macena</div>
+      <div class="note">Lecionei literatura brasileira e portuguesa para turmas do ensino médio, desenvolvendo habilidades de comunicação e didática que hoje sustentam meu trabalho como redator e repórter.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Corretor de Redação</span><span class="yrs">2019 — 2021</span></div>
+      <div class="org">ENEM / ENCCEJA</div>
+      <div class="note">Avaliei redações de candidatos em exames nacionais, aplicando critérios técnicos de coesão, argumentação e norma culta.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2014 — 2022</span></div>
+      <div class="org">Escola LYVA</div>
+      <div class="note">Lecionei inglês para turmas do fundamental ao médio, construindo a base do domínio fluente (C2) que hoje aplico no jornalismo internacional.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Professor de Inglês</span><span class="yrs">2017 — 2022</span></div>
+      <div class="org">Escola EDUCARE</div>
+      <div class="note">Conduzi aulas de inglês para o ensino fundamental, reforçando fundamentos de leitura, escrita e conversação.</div>
+    </div>
+    <div class="log-entry">
+      <div class="top-line"><span class="role">Assistente de Laboratório de TI</span><span class="yrs">2011 — 2013</span></div>
+      <div class="org">Prescon Informática Assessoria LTDA</div>
+      <div class="note">Prestei suporte técnico e apoio operacional em laboratórios de informática.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION + SKILLS -->
+<section class="edu reveal" id="formacao">
+  <div class="section-head">
+    <div class="eyebrow">Fundamentos</div>
+    <h2>Formação &amp; ferramentas</h2>
+  </div>
+  <div class="edu-grid">
+    <div>
+      <div class="edu-item" style="margin-bottom:1.6rem;">
+        <div class="deg">Bacharelado e Licenciatura em Letras (Português/Inglês)</div>
+        <div class="inst">UNESP — Araraquara · 2018/2019</div>
+      </div>
+      <div class="edu-item" style="margin-bottom:1.6rem;">
+        <div class="deg">Técnico em Informática</div>
+        <div class="inst">Centro Paula Souza — ETEC Ibitinga · 2010</div>
+      </div>
+      <div class="edu-item">
+        <div class="deg">Certificação em SEO Best Practices</div>
+        <div class="inst">Better Collective · 2024</div>
+      </div>
+    </div>
+    <div>
+      <div class="stack-title">Idiomas &amp; ferramentas — mesa de fichas</div>
+      <div class="chipstack">
+        <span class="poker-chip high">Inglês C1</span>
+        <span class="poker-chip">Espanhol B1</span>
+        <span class="poker-chip">SEO</span>
+        <span class="poker-chip">Cobertura ao vivo</span>
+        <span class="poker-chip">ChatGPT · Gemini · Claude</span>
+        <span class="poker-chip">Canva</span>
+        <span class="poker-chip">CapCut</span>
+        <span class="poker-chip">Google Workspace</span>
+        <span class="poker-chip">Microsoft Office</span>
+        <span class="poker-chip">CNH categoria AB</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="instagram reveal" id="instagram">
+  <div class="insta-grid">
+    <div>
+      <div class="section-head">
+        <div class="eyebrow">Bastidores</div>
+        <h2>Também no Instagram</h2>
+      </div>
+      <p style="font-size:1.02rem; line-height:1.65; color:#3a342c; max-width:52ch;">Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.</p>
+      <a class="insta-handle" href="https://www.instagram.com/SEU_USUARIO/" target="_blank" rel="noopener" id="instaHandleLink">@seu_usuario →</a>
+    </div>
+    <div class="reel-frame" id="reelFrame">
+      <!-- Se REEL_URL estiver definido no script no final da página, o reels real é injetado aqui. -->
+      <div class="reel-fallback" id="reelFallback">
+        <img src="/assets/media/instagram-gabriel.jpg" alt="Gabriel Capellari" width="1400" height="933" decoding="async" loading="lazy">
+        <div class="txt">Troque a variável <strong>REEL_URL</strong> no final do arquivo pelo link do seu Reels favorito para ele aparecer aqui, tocando em loop.</div>
+        <a class="btn" href="https://www.instagram.com/SEU_USUARIO/" target="_blank" rel="noopener">Ver no Instagram</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact reveal" id="contato">
+  <div class="contact-grid">
+    <div>
+      <div class="section-head">
+        <h2>Contato</h2>
+      </div>
+      <div class="contact-links">
+      <a class="track-cta" data-event="contact_cv" href="CV-Gabriel-Capellari.pdf" download><span class="lbl">Currículo</span> Baixar CV em PDF ↓</a>
+      <button class="contact-share track-cta" data-event="contact_share" type="button" data-share-portfolio><span class="lbl">Portfólio</span> Compartilhar ↗</button>
+        <a href="mailto:gcapellari@hotmail.com"><span class="lbl">E-mail</span> gcapellari@hotmail.com</a>
+        <a href="mailto:gcapellari1@gmail.com"><span class="lbl">E-mail alternativo</span> gcapellari1@gmail.com</a>
+        <a href="https://wa.me/5516997168229" target="_blank" rel="noopener"><span class="lbl">WhatsApp</span> +55 16 99716-8229</a>
+        <a href="https://www.instagram.com/gabrielcapellari/" target="_blank" rel="noopener"><span class="lbl">Instagram</span> @gabrielcapellari →</a>
+        <a href="https://www.linkedin.com/in/gabriel-capellari-5347ba14b/" target="_blank" rel="noopener"><span class="lbl">LinkedIn</span> Ver perfil →</a>
+      </div>
+    </div>
+    <div class="contact-photo">
+      <img src="/assets/media/contact-gabriel.jpg" alt="Gabriel Capellari filmando mesa final durante torneio de poker" loading="lazy" width="1400" height="933" decoding="async">
+    </div>
+  </div>
+</section>
+
+<footer>
+  GABRIEL CAPELLARI · JORNALISMO DE POKER · IBITINGA, SP — BRASIL
+</footer>
+
+<script>
+  // ---------- LANGUAGE + ENCODING ----------
+  // The original text was pasted with mojibake. Decode only rendered copy, keeping
+  // the original markup and embedded image data untouched.
+  const cp1252 = {"€":128,"‚":130,"ƒ":131,"„":132,"…":133,"†":134,"‡":135,"ˆ":136,"‰":137,"Š":138,"‹":139,"Œ":140,"Ž":142,"‘":145,"’":146,"“":147,"”":148,"•":149,"–":150,"—":151,"˜":152,"™":153,"š":154,"›":155,"œ":156,"ž":158,"Ÿ":159};
+  const textDecoder = new TextDecoder('utf-8');
+  const restoreText = value => {
+    if (!/[ÃÂâð]/.test(value)) return value;
+    try { return textDecoder.decode(Uint8Array.from(value, char => cp1252[char] ?? char.charCodeAt(0))); }
+    catch { return value; }
+  };
+  const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  const nodes = []; while (textNodes.nextNode()) nodes.push(textNodes.currentNode);
+  nodes.forEach(node => node.nodeValue = restoreText(node.nodeValue));
+  document.querySelectorAll('[alt],[title],[aria-label]').forEach(el => ['alt','title','aria-label'].forEach(attr => {
+    if (el.hasAttribute(attr)) el.setAttribute(attr, restoreText(el.getAttribute(attr)));
+  }));
+
+  const translations = new Map([
+    ['JORNALISTA DE POKER · REPÓRTER DE TORNEIOS AO VIVO · REDATOR SEO · APRENDIZ .·.', 'POKER JOURNALIST · LIVE TOURNAMENT REPORTER · SEO WRITER · LEARNER .·.'],
+    ['Português — nativo', 'Portuguese — native'], ['Inglês — C1', 'English — C1'], ['Espanhol — B1', 'Spanish — B1'],
+    ['anos como professor de inglês', 'years as an English teacher'], ['anos de cobertura de poker ao vivo', 'years covering live poker'], ['países cobertos — Brasil · EUA · Panamá · Uruguai', 'countries covered — Brazil · USA · Panama · Uruguay'],
+    ['Da sala de aula aos feltros', 'From the classroom to the felt'], ['Torneios cobertos', 'Tournaments covered'], ['Portfólio publicado', 'Published portfolio'],
+    ['Formado em Letras (Português/Inglês), sempre fui apaixonado por esportes e comunicação. Através das palavras, encontrei uma forma de contar histórias, aproximar pessoas e transformar experiências em conexão.', 'With a degree in Languages (Portuguese/English), I have always been passionate about sports and communication. Through words, I found a way to tell stories, bring people together and turn experiences into connection.'],
+    ['Produção de conteúdo de mídia esportiva', 'Sports-media content production'], ['Histórico de mãos', 'Hand history'], ['Experiência profissional', 'Professional experience'],
+    ['Pesquisei imagens de torneios de poker e documentei mãos-chave, histórias de jogadores e marcações de tempo para apoiar a produção de conteúdo de uma das maiores empresas de mídia de poker do mundo.', 'Researched poker-tournament footage and documented key hands, player stories and timestamps to support content production for one of the world’s largest poker media companies.'],
+    ['Pesquisei jogadores profissionais de poker, levantando históricos, destaques de carreira e conquistas relevantes para apoiar a produção de conteúdo.', 'Researched professional poker players, gathering backgrounds, career highlights and relevant achievements to support content production.'],
+    ['Produzo conteúdo editorial e cobertura jornalística para um dos maiores veículos de poker do mundo, unindo precisão informativa a SEO estratégico.', 'Produce editorial content and journalistic coverage for one of the world’s largest poker outlets, combining accuracy with strategic SEO.'],
+    ['Desenvolvi conteúdo de marketing e editorial voltado à indústria do poker, com foco em conversão e engajamento.', 'Developed marketing and editorial content for the poker industry, focused on conversion and engagement.'],
+    ['Conduzi cobertura ao vivo de torneios, entrevistas e produção de notícias para uma das maiores plataformas de mídia de poker do Brasil, consolidando presença editorial no setor.', 'Led live tournament coverage, interviews and news production for one of Brazil’s largest poker media platforms, building a strong editorial presence in the sector.'],
+    ['Professor de Literatura (Ensino Médio)', 'High School Literature Teacher'], ['Lecionei literatura brasileira e portuguesa para turmas do ensino médio, desenvolvendo habilidades de comunicação e didática que hoje sustentam meu trabalho como redator e repórter.', 'Taught Brazilian and Portuguese literature to high-school classes, developing the communication and teaching skills that now support my work as a writer and reporter.'],
+    ['Corretor de Redação', 'Essay Evaluator'], ['Avaliei redações de candidatos em exames nacionais, aplicando critérios técnicos de coesão, argumentação e norma culta.', 'Evaluated candidate essays in national examinations, applying technical standards for cohesion, argumentation and formal language.'],
+    ['Professor de Inglês', 'English Teacher'], ['Lecionei inglês para turmas do fundamental ao médio, construindo a base do domínio fluente (C2) que hoje aplico no jornalismo internacional.', 'Taught English from elementary through high-school levels, building the fluent command (C2) I now apply in international journalism.'],
+    ['Conduzi aulas de inglês para o ensino fundamental, reforçando fundamentos de leitura, escrita e conversação.', 'Taught English in elementary school, reinforcing foundations of reading, writing and conversation.'],
+    ['Assistente de Laboratório de TI', 'IT Lab Assistant'], ['Prestei suporte técnico e apoio operacional em laboratórios de informática.', 'Provided technical and operational support in computer labs.'],
+    ['Fundamentos', 'Foundations'], ['Formação & ferramentas', 'Education & tools'], ['Bacharelado e Licenciatura em Letras (Português/Inglês)', 'BA and Teaching Degree in Languages (Portuguese/English)'], ['Técnico em Informática', 'IT Technician'], ['Certificação em SEO Best Practices', 'SEO Best Practices Certification'], ['Idiomas & ferramentas — mesa de fichas', 'Languages & tools — chip stack'], ['Cobertura ao vivo', 'Live coverage'], ['CNH categoria AB', 'Brazilian driver’s license (AB)'],
+    ['Bastidores', 'Behind the scenes'], ['Também no Instagram', 'Also on Instagram'], ['Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.', 'Final-table behind the scenes, reporting trips and everyday reporter life — all there.'], ['Ver no Instagram', 'View on Instagram'],
+    ['Contato', 'Contact'], ['E-mail alternativo', 'Alternative email'], ['Ver perfil →', 'View profile →'], ['GABRIEL CAPELLARI · JORNALISMO DE POKER · IBITINGA, SP — BRASIL', 'GABRIEL CAPELLARI · POKER JOURNALISM · IBITINGA, SP — BRAZIL'],
+    ['Formado em Letras (Português/Inglês) pela UNESP, Gabriel construiu uma carreira que une domínio de idioma, disciplina de sala de aula e faro jornalístico. Foram oito anos ensinando inglês e literatura antes da migração para a cobertura de eventos ao vivo — uma transição que trouxe para o poker o rigor didático e a clareza de quem já formou centenas de alunos.', 'With a degree in Languages (Portuguese/English) from UNESP, Gabriel built a career that blends language mastery, classroom discipline and journalistic instinct. He spent eight years teaching English and literature before moving into live-event coverage — a transition that brought teaching rigor and clarity to poker journalism.'],
+    ['Hoje soma mais de quatro anos cobrindo eventos em países que incluem Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para os principais veículos do setor.', 'He now has more than four years of event coverage across Brazil, the United States, Panama and Uruguay, producing editorial and SEO content for leading outlets in the industry.'],
+    ['Ver meu trabalho ↘','View my work ↘'], ['Entrar em contato →','Get in touch →'], ['Baixar CV ↓','Download CV ↓'], ['Compartilhar ↗','Share ↗'], ['Portfólio','Portfolio'], ['Baixar CV em PDF ↓','Download CV as PDF ↓'], ['Currículo','CV'], ['grandes circuitos — WSOP · WPT · BSOP · LAPT','major circuits — WSOP · WPT · BSOP · LAPT'], ['idiomas — Português · Inglês · Espanhol','languages — Portuguese · English · Spanish'], ['Cobertura em destaque','Featured coverage'],
+    ['WSOP Las Vegas · 2022','WSOP Las Vegas · 2022'],
+    ['WSOP Las Vegas · 2023','WSOP Las Vegas · 2023'], ['Quatro edições consecutivas da World Series of Poker em Las Vegas, de 2022 a 2025 — com cobertura também do WPT World Championship em 2022. Experiência internacional em reportagem ao vivo, produção editorial e conteúdo para a audiência brasileira de poker.','Four consecutive editions of the World Series of Poker in Las Vegas, from 2022 to 2025 — also covering the WPT World Championship in 2022. International experience in live reporting, editorial production and content for Brazilian poker audiences.'], ['Ver portfólio →','View portfolio →'], ['Las Vegas · EUA','Las Vegas · USA']
+  ]);
+  const replaceCopy = (root, language) => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const copy = []; while (walker.nextNode()) copy.push(walker.currentNode);
+    copy.forEach(node => {
+      const current = node.nodeValue;
+      if (!node.dataset) node.__pt = node.__pt ?? current;
+      const pt = node.__pt;
+      node.nodeValue = language === 'en' ? (translations.get(pt.trim()) ? pt.replace(pt.trim(), translations.get(pt.trim())) : pt) : pt;
+    });
+  };
+  const toggle = document.getElementById('languageToggle');
+  const languageOptions = [...toggle.querySelectorAll('.language-option')];
+  let language = localStorage.getItem('portfolio-language') || 'pt';
+  const setLanguage = next => {
+    language = next; replaceCopy(document.body, language);
+    document.documentElement.lang = language === 'en' ? 'en' : 'pt-BR';
+    document.title = language === 'en' ? 'Gabriel Capellari — Poker Journalist' : 'Gabriel Capellari — Jornalista de Poker';
+    languageOptions.forEach(option => option.setAttribute('aria-pressed', String(option.dataset.language === language)));
+    toggle.setAttribute('aria-label', language === 'en' ? 'Mudar idioma do portfólio para português' : 'Switch portfolio language to English');
+    localStorage.setItem('portfolio-language', language);
+  };
+  languageOptions.forEach(option => option.addEventListener('click', () => setLanguage(option.dataset.language)));
+  setLanguage(language);
+
+
+  // ---------- ANALYTICS (configure once the site is published) ----------
+  // Add your GA4 Measurement ID below (example format: G-XXXXXXXXXX).
+  // Leaving it empty keeps the portfolio completely tracker-free.
+  const ANALYTICS_ID = '';
+  if (ANALYTICS_ID) {
+    const ga = document.createElement('script');
+    ga.async = true;
+    ga.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ANALYTICS_ID)}`;
+    document.head.appendChild(ga);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){ dataLayer.push(arguments); };
+    gtag('js', new Date());
+    gtag('config', ANALYTICS_ID, {anonymize_ip:true});
+    document.querySelectorAll('[data-event]').forEach(el => el.addEventListener('click', () => {
+      gtag('event', el.dataset.event, {event_category:'portfolio_engagement'});
+    }));
+  }
+
+  // ---------- CONFIGURE SEU INSTAGRAM AQUI ----------
+  const INSTAGRAM_USER = "gabrielcapellari";
+  const REEL_URL = "https://www.instagram.com/p/DZK3eH_uRzP/";
+  // ---------------------------------------------------
+
+  const igLink = document.getElementById('instaHandleLink');
+  if (INSTAGRAM_USER && INSTAGRAM_USER !== "SEU_USUARIO") {
+    const url = `https://www.instagram.com/${INSTAGRAM_USER}/`;
+    igLink.href = url;
+    igLink.textContent = `@${INSTAGRAM_USER} →`;
+    document.querySelectorAll('a[href*="SEU_USUARIO"]').forEach(a => a.href = url);
+  }
+
+  if (REEL_URL) {
+    const frame = document.getElementById('reelFrame');
+    const embedUrl = REEL_URL.replace(/\/?$/, '/') + 'embed';
+    frame.innerHTML = `<iframe src="${embedUrl}" allowtransparency="true" allowfullscreen loading="lazy" title="Reels de Gabriel Capellari"></iframe>`;
+  }
+
+  // ---------- SCROLL REVEAL ----------
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    const targets = document.querySelectorAll('.reveal, .reveal-stagger');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -60px 0px' });
+    targets.forEach(t => io.observe(t));
+  } else {
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(t => t.classList.add('in'));
+  }
+
+  // ---------- HERO PARALLAX ----------
+  const heroBg = document.getElementById('heroBg');
+  if (!reduceMotion && heroBg) {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          const shift = Math.min(y * 0.25, 140);
+          heroBg.style.transform = `translateY(${shift}px) scale(1.08)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+</script>
+
+<script>
+/* =========================================================
+   MODERN UI BEHAVIOR
+   ========================================================= */
+(() => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Skip link
+  const skip = document.createElement('a');
+  skip.className = 'skip-link';
+  skip.href = '#sobre';
+  skip.textContent = 'Pular para o conteúdo';
+  document.body.prepend(skip);
+
+  // Scroll progress indicator
+  const progress = document.createElement('div');
+  progress.className = 'scroll-progress';
+  progress.setAttribute('aria-hidden','true');
+  document.body.appendChild(progress);
+
+  const updateProgress = () => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    progress.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+  };
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress, {passive:true});
+
+  // Floating section navigation — additive only; original sections remain untouched.
+  const sections = [...document.querySelectorAll('section[id]')];
+  const nav = document.createElement('nav');
+  nav.className = 'section-nav';
+  nav.setAttribute('aria-label','Navegação rápida');
+  sections.forEach(section => {
+    const link = document.createElement('a');
+    link.href = `#${section.id}`;
+    link.setAttribute('aria-label', section.querySelector('h2')?.textContent.trim() || section.id);
+    link.dataset.target = section.id;
+    nav.appendChild(link);
+  });
+  document.body.appendChild(nav);
+
+  if ('IntersectionObserver' in window) {
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.dataset.target === entry.target.id));
+        }
+      });
+    }, {rootMargin:'-35% 0px -55% 0px', threshold:0});
+    sections.forEach(section => sectionObserver.observe(section));
+  }
+
+  // Pointer spotlight for modern desktop feel, disabled for touch/reduced-motion.
+  if (!reduceMotion && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    const glow = document.createElement('div');
+    glow.className = 'pointer-glow';
+    glow.setAttribute('aria-hidden','true');
+    document.body.appendChild(glow);
+
+    let raf = 0, x = 0, y = 0;
+    window.addEventListener('pointermove', event => {
+      x = event.clientX; y = event.clientY;
+      if (!raf) {
+        raf = requestAnimationFrame(() => {
+          glow.style.left = `${x}px`;
+          glow.style.top = `${y}px`;
+          raf = 0;
+        });
+      }
+    }, {passive:true});
+  }
+
+  // Improve image decoding without changing/removing any original image.
+  document.querySelectorAll('img').forEach((img, index) => {
+    img.decoding = 'async';
+    if (index > 0 && !img.hasAttribute('loading')) img.loading = 'lazy';
+  });
+
+  // Add a subtle tilt only to cards, not to content/images themselves.
+  if (!reduceMotion && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    document.querySelectorAll('.press-card, .media-bio').forEach(card => {
+      card.addEventListener('pointermove', event => {
+        const r = card.getBoundingClientRect();
+        const px = (event.clientX - r.left) / r.width - .5;
+        const py = (event.clientY - r.top) / r.height - .5;
+        card.style.transform = `perspective(900px) rotateX(${py * -1.8}deg) rotateY(${px * 1.8}deg) translateY(-4px)`;
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+      });
+    });
+  }
+})();
+</script>
+
+
+<script>
+(() => {
+  const shareButtons = document.querySelectorAll('[data-share-portfolio]');
+  if (!shareButtons.length) return;
+
+  const feedback = (button) => {
+    const english = document.documentElement.lang.toLowerCase().startsWith('en');
+    const textNode = [...button.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim());
+    const original = textNode ? textNode.nodeValue : button.textContent;
+
+    if (textNode) textNode.nodeValue = english ? ' Link copied ✓' : ' Link copiado ✓';
+    else button.textContent = english ? 'Link copied ✓' : 'Link copiado ✓';
+
+    button.classList.add('share-success');
+    window.setTimeout(() => {
+      if (textNode) textNode.nodeValue = original;
+      else button.textContent = original;
+      button.classList.remove('share-success');
+    }, 1800);
+  };
+
+  const copyLink = async (button) => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+    } catch {
+      const field = document.createElement('textarea');
+      field.value = window.location.href;
+      field.setAttribute('readonly','');
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand('copy');
+      field.remove();
+    }
+    feedback(button);
+  };
+
+  shareButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const english = document.documentElement.lang.toLowerCase().startsWith('en');
+      const shareData = {
+        title: document.title,
+        text: english
+          ? 'Gabriel Capellari — Poker journalist, live tournament reporter and SEO content writer.'
+          : 'Gabriel Capellari — Jornalista de poker, repórter de torneios ao vivo e redator SEO.',
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          return;
+        } catch (error) {
+          if (error?.name === 'AbortError') return;
+        }
+      }
+      await copyLink(button);
+    });
+  });
+})();
+</script>
+
+
+<script>
+(() => {
+  const carousel = document.getElementById('wsopCarousel');
+  if (!carousel) return;
+
+  const slides = [...carousel.querySelectorAll('[data-wsop-slide]')];
+  const dots = [...carousel.querySelectorAll('[data-wsop-dot]')];
+  const prev = carousel.querySelector('[data-wsop-prev]');
+  const next = carousel.querySelector('[data-wsop-next]');
+  const current = document.getElementById('wsopCurrent');
+
+  const INTERVAL = 10000;
+  let index = 0;
+  let timer = null;
+  let touchStartX = null;
+
+
+  const show = (newIndex) => {
+    index = (newIndex + slides.length) % slides.length;
+
+    slides.forEach((slide, i) => {
+      const active = i === index;
+      slide.classList.toggle('is-active', active);
+      slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+    });
+
+    dots.forEach((dot, i) => {
+      const active = i === index;
+      dot.classList.toggle('is-active', active);
+      if (active) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+
+    if (current) current.textContent = String(index + 1).padStart(2, '0');
+  };
+
+  const schedule = () => {
+    clearInterval(timer);
+    timer = setInterval(() => show(index + 1), INTERVAL);
+  };
+
+  const manualGo = (newIndex) => {
+    show(newIndex);
+    schedule();
+  };
+
+  prev?.addEventListener('click', () => manualGo(index - 1));
+  next?.addEventListener('click', () => manualGo(index + 1));
+  dots.forEach((dot, i) => dot.addEventListener('click', () => manualGo(i)));
+
+  carousel.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      manualGo(index - 1);
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      manualGo(index + 1);
+    }
+  });
+
+  carousel.addEventListener('touchstart', (event) => {
+    touchStartX = event.changedTouches[0].clientX;
+  }, {passive:true});
+
+  carousel.addEventListener('touchend', (event) => {
+    if (touchStartX === null) return;
+    const delta = event.changedTouches[0].clientX - touchStartX;
+    touchStartX = null;
+    if (Math.abs(delta) < 45) return;
+    manualGo(delta > 0 ? index - 1 : index + 1);
+  }, {passive:true});
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearInterval(timer);
+    } else {
+      schedule();
+    }
+  });
+
+  show(0);
+  schedule();
+})();
+</script>
+
+
+
+
+
+
+
+<script src="/project-data.js"></script>
+<script src="/public-cms.js"></script>
+<script src="/media-cms.js"></script>
+<script src="/seo-cms.js"></script>
+<script src="/modular-layout.js"></script>
+<script src="/theme-cms.js"></script>
+<script src="/footer-cms.js"></script>
+</body>
+</html>
