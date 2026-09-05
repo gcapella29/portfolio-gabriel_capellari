@@ -1,13 +1,12 @@
-import { Manrope, Space_Grotesk } from 'next/font/google';
-import styles from './performance.module.css';
-import fixes from './performance-fixes.module.css';
-import tokens from './performance-tokens.module.css';
+import { Barlow_Condensed, IBM_Plex_Mono, Manrope } from 'next/font/google';
+import styles from './performance-v2.module.css';
 import type { TemplateRenderProps } from '../types';
 import { PersonalTrainerLeadForm } from './lead-form';
 import { PersonalTrainerPremiumMotion } from './premium-motion';
 
-const displayFont=Space_Grotesk({subsets:['latin'],variable:'--font-pt-display',display:'swap'});
+const displayFont=Barlow_Condensed({subsets:['latin'],weight:['600','700'],variable:'--font-pt-display',display:'swap'});
 const bodyFont=Manrope({subsets:['latin'],variable:'--font-pt-body',display:'swap'});
+const utilityFont=IBM_Plex_Mono({subsets:['latin'],weight:['500','600','700'],variable:'--font-pt-util',display:'swap'});
 const value=(obj:Record<string,unknown>,key:string)=>String(obj[key]??'').trim();
 const mediaUrl=(obj:Record<string,unknown>,key:string)=>{const item=obj[key];return item&&typeof item==='object'&&'url' in item?String((item as {url?:unknown}).url||''):''};
 const lines=(v:string)=>v.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
@@ -16,6 +15,7 @@ const wa=(v:string)=>v?`https://wa.me/${v.replace(/\D/g,'')}`:'#contato';
 
 export function PerformanceTrainerTemplate({project,data,preview=false}:TemplateRenderProps){
   const name=value(data.identity,'name')||project.name;
+  const nameParts=name.split(/\s+/); const first=nameParts[0]||name; const last=nameParts.slice(1).join(' ')||'';
   const location=value(data.identity,'location');
   const heroTitle=value(data.content,'hero_title')||value(data.identity,'tagline')||'Treino personalizado para transformar objetivos em evolução.';
   const heroText=value(data.content,'hero_text')||value(data.identity,'description');
@@ -26,9 +26,6 @@ export function PerformanceTrainerTemplate({project,data,preview=false}:Template
   const logo=mediaUrl(data.media,'logo');
   const gallery=Array.isArray(data.media.gallery)?data.media.gallery as Array<{url?:string}>:[];
   const accent=value(data.appearance,'accent')||'#d9ff43';
-  const scale=value(data.appearance,'scale')==='large'?'1.08':value(data.appearance,'scale')==='compact'?'.93':'1';
-  const density=['compact','normal','airy'].includes(value(data.appearance,'density'))?value(data.appearance,'density'):'normal';
-  const align=['left','center','right'].includes(value(data.appearance,'alignment'))?value(data.appearance,'alignment'):'left';
   const whatsapp=value(data.contact,'whatsapp')||value(data.contact,'phone');
   const instagram=value(data.contact,'instagram');
   const cref=value(data.content,'trainer_cref');
@@ -39,24 +36,61 @@ export function PerformanceTrainerTemplate({project,data,preview=false}:Template
   const scheduleTitle=value(data.content,'trainer_schedule_title')||'Vamos encontrar o melhor horário para você.';
   const scheduleText=value(data.content,'trainer_schedule_text')||'Fale sobre seu objetivo e consulte a disponibilidade atual.';
   const resultTitle=value(data.content,'trainer_results_title')||'Resultados construídos com consistência.';
-  const cssVars={'--pt-accent':accent,'--pt-head-font':'var(--font-pt-display)','--pt-body-font':'var(--font-pt-body)','--pt-scale':scale,'--pt-align':align} as React.CSSProperties;
+  const cssVars={'--pt-accent':accent,'--pt-head-font':'var(--font-pt-display)','--pt-body-font':'var(--font-pt-body)','--pt-util-font':'var(--font-pt-util)'} as React.CSSProperties;
+  const tape=[offer,'Treino individualizado','Técnica','Progressão','Consistência',proof].filter(Boolean) as string[];
+  const tapeLoop=[...tape,...tape];
+  const insta=instagram?(instagram.startsWith('http')?instagram:`https://instagram.com/${instagram.replace(/^@/,'')}`):'';
 
-  return <div className={`${styles.site} ${tokens.tokens} ${fixes.premiumRoot} ${displayFont.variable} ${bodyFont.variable}`} style={cssVars} data-density={density} data-pt-premium-root>
+  return <div className={`${styles.site} ${displayFont.variable} ${bodyFont.variable} ${utilityFont.variable}`} style={cssVars} data-pt-premium-root>
     <PersonalTrainerPremiumMotion/>
-    {preview&&<div className={styles.previewBar}>Preview do rascunho · alterações ainda não publicadas</div>}
-    <header className={`${styles.nav} ${fixes.premiumNav}`}><a href="#inicio" className={`${styles.brand} ${fixes.identityBrand}`}>{logo&&<img src={logo} alt=""/>}<span><strong>{name}</strong><small>{specialty}</small></span></a><nav><a href="#acompanhamento">Acompanhamento</a><a href="#resultados">Resultados</a><a href="#metodo">Método</a><a href="#sobre">Sobre</a></nav><a className={`${styles.navCta} ${fixes.magneticCta}`} href={wa(whatsapp)}>Consultar horários</a></header>
+    {preview&&<div className={styles.preview}>Preview do rascunho · ainda não publicado</div>}
+    <header className={styles.header}>
+      <a className={styles.brand} href="#inicio">{logo&&<img src={logo} alt=""/>}<span><strong>{name}</strong><small>{specialty}{cref?` · ${cref}`:''}</small></span></a>
+      <nav className={styles.nav}><a href="#metodo">Método</a><a href="#resultados">Resultados</a><a href="#treinador">Treinador</a></nav>
+      <a className={styles.headerCta} href="#contato">Agenda / consultar →</a>
+    </header>
     <main>
-      <section id="inicio" className={`${styles.hero} ${fixes.heroPremium}`}><div className={styles.heroCopy} data-pt-reveal><div className={fixes.heroIdentity}><span>{specialty}</span><strong>{name}</strong><small>{location||'Atendimento personalizado'}</small></div><h1 className={fixes.heroSafe}>{heroTitle}</h1>{heroText&&<p>{heroText}</p>}<div className={styles.heroActions}><a className={`${styles.primary} ${fixes.magneticCta}`} href="#contato">Quero começar →</a><a className={styles.secondary} href="#resultados">Ver resultados ↓</a></div><div className={`${styles.meta} ${fixes.heroStats}`}>{proof&&<span><b>{proof}</b><small>prova social</small></span>}{cref&&<span><b>{cref}</b><small>registro profissional</small></span>}<span><b>100%</b><small>acompanhamento individual</small></span></div></div><div className={`${styles.heroMedia} ${fixes.heroMediaPremium}`} data-pt-reveal>{hero?<img src={hero} alt={name}/>:<div className={styles.heroPlaceholder}><span>Imagem principal</span></div>}<div className={fixes.heroSignature} aria-hidden="true">{name}</div><span className={fixes.heroGlow}/></div></section>
-      <section className={fixes.authorityBar} data-pt-reveal><div><small>Treinador</small><strong>{name}</strong></div><div><small>Especialidade</small><strong>{specialty}</strong></div>{location&&<div><small>Atendimento</small><strong>{location}</strong></div>}<div><small>Abordagem</small><strong>Plano individualizado</strong></div></section>
-      {(offer||proof)&&<section className={`${styles.proofStrip} ${fixes.proofPremium}`} data-pt-reveal>{offer&&<strong>{offer}</strong>}{proof&&<p>{proof}</p>}</section>}
-      {services.length>0&&<section id="acompanhamento" className={`${styles.lightSection} ${fixes.sectionPremium}`} data-pt-reveal><div className={styles.sectionHead}><span>Seu objetivo, seu plano</span><h2>Para quem é o acompanhamento</h2></div><div className={styles.cardGrid}>{services.map((item,i)=><article className={`${styles.serviceCard} ${fixes.premiumCard}`} style={{'--delay':`${i*80}ms`} as React.CSSProperties} key={`${item.title}-${i}`} data-pt-reveal><b>{String(i+1).padStart(2,'0')}</b><h3>{item.title}</h3>{item.text&&<p>{item.text}</p>}</article>)}</div></section>}
-      {(gallery.length>0||proof)&&<section id="resultados" className={`${styles.darkSection} ${fixes.premiumDark}`} data-pt-reveal><div className={styles.sectionHead}><span>Prova social</span><h2>{resultTitle}</h2>{proof&&<p>{proof}</p>}</div>{gallery.length>0&&<div className={`${styles.gallery} ${fixes.premiumGallery}`}>{gallery.map((item,i)=>item?.url?<figure key={`${item.url}-${i}`} data-pt-reveal><img src={item.url} alt={`Resultado ${i+1}`}/><span>Resultado {String(i+1).padStart(2,'0')}</span></figure>:null)}</div>}</section>}
-      <section className={`${styles.schedule} ${fixes.scheduleSafe}`} data-pt-reveal><div><span>Agenda</span><h2>{scheduleTitle}</h2><p>{scheduleText}</p></div><a className={`${styles.scheduleButton} ${fixes.magneticCta}`} href="#contato">Consultar disponibilidade →</a></section>
-      {method.length>0&&<section id="metodo" className={`${styles.lightSection} ${fixes.methodPremium}`} data-pt-reveal><div className={styles.sectionHead}><span>Como funciona</span><h2>Do primeiro contato à evolução</h2></div><div className={styles.methodGrid}>{method.map((item,i)=><article key={`${item.title}-${i}`} data-pt-reveal><span>{String(i+1).padStart(2,'0')}</span><div><h3>{item.title}</h3>{item.text&&<p>{item.text}</p>}</div></article>)}</div></section>}
-      {(about||credentials.length>0||cref)&&<section id="sobre" className={`${styles.about} ${fixes.premiumAbout}`} data-pt-reveal><div className={styles.sectionHead}><span>Conheça seu treinador</span><h2>Por que treinar comigo?</h2></div><div className={styles.aboutGrid}><div>{about&&<p className={styles.aboutText}>{about}</p>}</div><aside>{cref&&<div className={`${styles.credential} ${fixes.credentialPremium}`}><small>Registro profissional</small><strong>{cref}</strong></div>}{credentials.length>0&&<ul>{credentials.map((item,i)=><li key={`${item}-${i}`}>{item}</li>)}</ul>}</aside></div></section>}
-      <section id="contato" className={fixes.leadSection} data-pt-reveal><div className={fixes.leadIntro}><span>Vamos conversar</span><h2>Conte seu objetivo.</h2><p>Preencha os dados ao lado e receba o contato para combinar o melhor formato e horário para o seu acompanhamento.</p><ul className={fixes.benefits}><li><b>01</b><div><strong>Atendimento personalizado</strong><small>De acordo com seu objetivo e sua rotina.</small></div></li><li><b>02</b><div><strong>Horários flexíveis</strong><small>Encontre a melhor opção para treinar.</small></div></li><li><b>03</b><div><strong>Acompanhamento constante</strong><small>Um plano pensado para sua evolução.</small></div></li></ul>{whatsapp&&<a href={wa(whatsapp)}>Prefere WhatsApp? Fale diretamente →</a>}</div><PersonalTrainerLeadForm projectId={project.id}/></section>
-      <section className={`${styles.finalCta} ${fixes.premiumFinal}`} data-pt-reveal><span>Próximo passo</span><h2>Pronto para começar?</h2><p>Seu acompanhamento pode começar por aqui. Envie seus dados ou fale diretamente pelo WhatsApp.</p><div>{whatsapp&&<a className={`${styles.primary} ${fixes.magneticCta}`} href={wa(whatsapp)}>Falar no WhatsApp →</a>}{instagram&&<a className={styles.secondaryDark} href={instagram.startsWith('http')?instagram:`https://instagram.com/${instagram.replace(/^@/,'')}`}>Instagram ↗</a>}</div></section>
+      <section id="inicio" className={styles.hero}>
+        <div className={`${styles.heroCopy} ${styles.reveal}`} data-pt-reveal>
+          <span className={styles.eyebrow}>{specialty} / {location||'atendimento personalizado'}</span>
+          <h1 className={styles.name}><span>{first}</span>{last&&<span>{last}</span>}</h1>
+          <h2 className={styles.positioning}>{heroTitle}</h2>
+          {heroText&&<p className={styles.heroText}>{heroText}</p>}
+          <div className={styles.actions}><a className={styles.primary} href="#contato">Começar avaliação →</a><a className={styles.textLink} href="#metodo">Ver método ↓</a></div>
+        </div>
+        <div className={styles.heroMedia}>{hero?<img src={hero} alt={name}/>:<div className={styles.heroPlaceholder}>Imagem principal</div>}<div className={styles.measure}/><span className={styles.photoIndex}>01 / Performance</span><div className={styles.photoMeta}>{cref&&<span>{cref}</span>}<span>{specialty}</span></div></div>
+      </section>
+
+      {tape.length>0&&<section className={styles.tape} aria-label="Destaques"><div className={styles.tapeTrack}>{tapeLoop.map((item,i)=><span className={styles.tapeItem} key={`${item}-${i}`}>{item}</span>)}</div></section>}
+
+      {services.length>0&&<section id="acompanhamento" className={`${styles.section} ${styles.light} ${styles.diagnosis}`}>
+        <span className={styles.notation} aria-hidden="true">03×12</span>
+        <div className={`${styles.diagnosisIntro} ${styles.reveal}`} data-pt-reveal><span className={`${styles.sectionLabel} ${styles.utility}`}>01 / Diagnóstico</span><h2 className={styles.sectionTitle}>O treino começa antes da primeira repetição.</h2>{offer&&<p>{offer}</p>}</div>
+        <div className={`${styles.prescription} ${styles.reveal}`} data-pt-reveal>{services.map((item,i)=><article className={styles.service} key={`${item.title}-${i}`}><span>{String(i+1).padStart(2,'0')}</span><div><h3>{item.title}</h3>{item.text&&<p>{item.text}</p>}</div><b>{i%2===0?'foco':'meta'}</b></article>)}</div>
+      </section>}
+
+      {method.length>0&&<section id="metodo" className={`${styles.section} ${styles.dark}`}>
+        <div className={`${styles.systemHead} ${styles.reveal}`} data-pt-reveal><div><span className={`${styles.sectionLabel} ${styles.utility}`}>02 / Sistema</span><h2 className={styles.sectionTitle}>Progressão que você consegue enxergar.</h2></div><p>Um acompanhamento estruturado para transformar objetivo em processo, execução e evolução consistente.</p></div>
+        <div className={`${styles.progression} ${styles.reveal}`} style={{'--steps':method.length} as React.CSSProperties} data-pt-reveal>{method.map((item,i)=><article className={styles.step} key={`${item.title}-${i}`}><span>{String(i+1).padStart(2,'0')} / {String(method.length).padStart(2,'0')}</span><h3>{item.title}</h3>{item.text&&<p>{item.text}</p>}</article>)}</div>
+      </section>}
+
+      {(gallery.length>0||proof)&&<section id="resultados" className={`${styles.section} ${styles.light}`}>
+        <div className={`${styles.resultsHead} ${styles.reveal}`} data-pt-reveal><div><span className={`${styles.sectionLabel} ${styles.utility}`}>03 / Evidência</span><h2 className={styles.sectionTitle}>{resultTitle}</h2></div>{proof&&<p>{proof}</p>}</div>
+        {gallery.length>0?<div className={styles.mosaic}>{gallery.map((item,i)=>item?.url?<figure className={`${styles.result} ${styles.reveal}`} data-pt-reveal key={`${item.url}-${i}`}><img src={item.url} alt={`Resultado ${i+1}`}/><figcaption>Resultado / {String(i+1).padStart(2,'0')}</figcaption></figure>:null)}</div>:proof&&<p className={styles.proofOnly}>{proof}</p>}
+      </section>}
+
+      {(about||credentials.length>0||cref)&&<section id="treinador" className={`${styles.section} ${styles.light} ${styles.profile}`}>
+        <div className={`${styles.profileImage} ${styles.reveal}`} data-pt-reveal>{hero?<img src={hero} alt={name}/>:<div className={styles.heroPlaceholder}>Foto do treinador</div>}<span className={styles.profileName}>{first}<br/>{last}</span></div>
+        <div className={`${styles.profileCopy} ${styles.reveal}`} data-pt-reveal><span className={`${styles.sectionLabel} ${styles.utility}`}>04 / Treinador</span><h2 className={styles.sectionTitle}>{name}</h2>{about&&<p className={styles.about}>{about}</p>}<div className={styles.dossier}>{cref&&<div className={styles.dossierRow}><span>Registro</span><strong>{cref}</strong></div>}<div className={styles.dossierRow}><span>Especialidade</span><strong>{specialty}</strong></div>{location&&<div className={styles.dossierRow}><span>Atendimento</span><strong>{location}</strong></div>}</div>{credentials.length>0&&<ul className={styles.credentials}>{credentials.map((item,i)=><li key={`${item}-${i}`}>+ {item}</li>)}</ul>}</div>
+      </section>}
+
+      <section id="contato" className={`${styles.section} ${styles.intake}`}>
+        <div className={`${styles.reveal}`} data-pt-reveal><span className={`${styles.sectionLabel} ${styles.utility}`}>05 / Próximo treino</span><h2 className={styles.sectionTitle}>{scheduleTitle}</h2><p>{scheduleText}</p>{whatsapp&&<a className={styles.whatsapp} href={wa(whatsapp)}>Falar direto no WhatsApp →</a>}</div>
+        <div className={styles.reveal} data-pt-reveal><PersonalTrainerLeadForm projectId={project.id}/></div>
+      </section>
+
+      <section className={styles.final}><div className={styles.reveal} data-pt-reveal><span className={`${styles.sectionLabel} ${styles.utility}`}>Seu próximo nível</span><h2>Começa no próximo treino.</h2><div className={styles.finalLinks}>{whatsapp&&<a href={wa(whatsapp)}>WhatsApp ↗</a>}{insta&&<a href={insta}>Instagram ↗</a>}{location&&<span>{location}</span>}</div></div></section>
     </main>
-    <footer className={`${styles.footer} ${fixes.premiumFooter}`}><strong>{name}</strong><span>{specialty}{cref?` · ${cref}`:''}</span></footer>{whatsapp&&<a className={`${styles.mobileCta} ${fixes.magneticCta}`} href={wa(whatsapp)}>Consultar horários</a>}
+    <footer className={styles.footer}><span>{name} / {specialty}{cref?` / ${cref}`:''}</span><span>WebAppCap</span></footer>
   </div>;
 }
