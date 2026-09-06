@@ -2199,11 +2199,22 @@ html.vitrine-domain-resolving #vitrineDomainLoader{
     const element = document.querySelector(selector);
     if (element && String(value || '').trim()) element.textContent = String(value).trim();
   };
+  const mediaUrl = value => {
+    if (typeof value === 'string') return value.trim();
+    if (value && typeof value === 'object') return String(value.url || '').trim();
+    return '';
+  };
+  const image = (selector, value) => {
+    const element = document.querySelector(selector);
+    const source = mediaUrl(value);
+    if (element && source) element.src = source;
+  };
   const apply = () => {
     if (!v2Data) return;
     const identity = v2Data.identity || {};
     const content = v2Data.content || {};
     const contact = v2Data.contact || {};
+    const media = v2Data.media || {};
 
     const name = String(identity.name || '').trim();
     if (name) {
@@ -2221,6 +2232,24 @@ html.vitrine-domain-resolving #vitrineDomainLoader{
     text('#aboutParagraph2', content.about);
     text('.media-bio-content p', content.primary_offer);
     text('.wsop-copy p', content.proof);
+
+    const heroSource = mediaUrl(media.hero);
+    const hero = document.querySelector('.hero-bg-layer');
+    if (hero && heroSource) {
+      hero.style.backgroundImage = `linear-gradient(180deg, rgba(8,39,32,0.55) 0%, rgba(8,39,32,0.88) 62%, var(--felt-dark) 100%), url(${JSON.stringify(heroSource)})`;
+      hero.style.backgroundPosition = 'center 18%';
+      hero.style.backgroundSize = 'cover';
+      hero.style.backgroundRepeat = 'no-repeat';
+    }
+    image('.about-photo img', media.about);
+    image('.media-bio-photo img', media.logo || media.profile);
+    image('.contact-photo img', media.contact);
+
+    const gallery = Array.isArray(media.gallery) ? media.gallery.map(mediaUrl).filter(Boolean) : [];
+    const slides = [...document.querySelectorAll('.wsop-slide img')];
+    gallery.slice(-slides.length).forEach((source, index) => {
+      slides[index].src = source;
+    });
 
     const mailLinks = [...document.querySelectorAll('#contato a[href^="mailto:"]')];
     const emails = [contact.email, contact.email_alt].filter(value => String(value || '').trim());
