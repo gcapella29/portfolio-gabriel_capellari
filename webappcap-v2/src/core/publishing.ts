@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getTemplate } from './segments';
+import type { SegmentKey } from './domain';
 
 export async function readProjectState(projectId:string){const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_state').select('template_key,lifecycle,onboarding_step,native_subdomain,custom_domain,domain_status,updated_at').eq('project_id',projectId).maybeSingle();if(q.error)throw q.error;return q.data}
 export function publicProjectUrl(state:{native_subdomain?:string|null;custom_domain?:string|null;domain_status?:string|null}|null,slug:string){if(state?.custom_domain&&state.domain_status==='active')return `https://${state.custom_domain}`;if(state?.native_subdomain)return `https://${state.native_subdomain}.webappcap.com.br`;return `/site/${encodeURIComponent(slug)}`}
@@ -7,14 +8,13 @@ export async function publicationStatus(projectId:string){const sb=await createS
 
 export async function publishV2Project(projectId:string){
   const sb=await createSupabaseServerClient();
-  const [state,project,draft]=await Promise.all([
-    sb.from('project_v2_state').select('template_key,onboarding_step,native_subdomain').eq('project_id',projectId).maybeSingle(),
-    sb.from('projects').select('segment').eq('id',projectId).maybeSingle(),
+  const [state,draft]=await Promise.all([
+    sb.from('project_v2_state').select('segment,template_key,onboarding_step,native_subdomain').eq('project_id',projectId).maybeSingle(),
     sb.from('project_v2_content').select('identity,content,media,appearance,contact').eq('project_id',projectId).maybeSingle()
   ]);
-  if(state.error)throw state.error;if(project.error)throw project.error;if(draft.error)throw draft.error;
-  if(!state.data?.template_key||!project.data?.segment)throw new Error('Escolha um modelo antes de publicar.');
-  if(!getTemplate(project.data.segment,state.data.template_key))throw new Error('O modelo selecionado não é compatível com este projeto.');
+  if(state.error)throw state.error;if(draft.error)throw draft.error;
+  if(!state.data?.template_key||!state.data.segment)throw new Error('Escolha um modelo antes de publicar.');
+  if(!getTemplate(state.data.segment as SegmentKey,state.data.template_key))throw new Error('O modelo selecionado não é compatível com este projeto.');
   if(state.data.onboarding_step!=='completed')throw new Error('Conclua a configuração inicial antes de publicar.');
   if(!draft.data)throw new Error('O rascunho do projeto ainda não existe.');
   const identity=draft.data.identity||{},content=draft.data.content||{};

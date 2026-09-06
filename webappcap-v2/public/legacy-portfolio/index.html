@@ -2192,5 +2192,53 @@ html.vitrine-domain-resolving #vitrineDomainLoader{
 <script src="/modular-layout.js"></script>
 <script src="/theme-cms.js"></script>
 <script src="/footer-cms.js"></script>
+<script>
+(() => {
+  let v2Data = null;
+  const text = (selector, value) => {
+    const element = document.querySelector(selector);
+    if (element && String(value || '').trim()) element.textContent = String(value).trim();
+  };
+  const apply = () => {
+    if (!v2Data) return;
+    const identity = v2Data.identity || {};
+    const content = v2Data.content || {};
+    const contact = v2Data.contact || {};
+
+    const name = String(identity.name || '').trim();
+    if (name) {
+      const parts = name.split(/\s+/);
+      const first = parts.shift() || name;
+      const last = parts.join(' ');
+      const heading = document.querySelector('.hero-name');
+      if (heading) heading.innerHTML = `${first}<br><em>${last}</em>`;
+      text('.media-bio-content h3', name);
+    }
+    text('.hero-role', content.hero_text);
+    text('.hero .badge', identity.location);
+    text('#aboutTitle', content.hero_title);
+    text('#aboutParagraph1', identity.description);
+    text('#aboutParagraph2', content.about);
+    text('.media-bio-content p', content.primary_offer);
+    text('.wsop-copy p', content.proof);
+
+    const mailLinks = [...document.querySelectorAll('#contato a[href^="mailto:"]')];
+    const emails = [contact.email, contact.email_alt].filter(value => String(value || '').trim());
+    mailLinks.forEach((link, index) => {
+      const value = String(emails[index] || '').trim();
+      if (!value) return;
+      link.setAttribute('href', `mailto:${value}`);
+      const label = link.querySelector('.lbl');
+      link.replaceChildren(...(label ? [label, document.createTextNode(value)] : [document.createTextNode(value)]));
+    });
+  };
+  window.addEventListener('message', event => {
+    if (event.origin !== window.location.origin || event.data?.type !== 'webappcap:v2-public-content') return;
+    v2Data = event.data.data || {};
+    apply();
+  });
+  document.addEventListener('webappcap:content-rendered', apply);
+})();
+</script>
 </body>
 </html>
