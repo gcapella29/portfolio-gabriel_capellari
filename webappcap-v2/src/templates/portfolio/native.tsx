@@ -53,7 +53,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const accent=stringValue(data.appearance,'accent','#e3bb3d');
 
   useEffect(()=>{const stored=window.localStorage.getItem('portfolio-language');if(stored==='en')setLanguage('en')},[]);
-  useEffect(()=>{if(gallery.length<2)return;const timer=window.setInterval(()=>setSlide(current=>(current+1)%gallery.length),10000);return()=>window.clearInterval(timer)},[gallery.length]);
+  useEffect(()=>{if(gallery.length<2)return;const timer=window.setInterval(()=>setSlide(current=>(current+1)%gallery.length),6500);return()=>window.clearInterval(timer)},[gallery.length]);
   useEffect(()=>{
     const root=siteRef.current;if(!root)return;
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
