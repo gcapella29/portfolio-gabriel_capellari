@@ -91,7 +91,11 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
         <div className={styles.heroCopy}><h1>{firstName}<br/><em>{surname}</em></h1><p>{localized(role,language)}</p><div className={styles.chips}>{defaults.identity.languages.map(item=><span key={item.pt}>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
       </div>
     </header>
-    <div className={styles.ticker} aria-hidden="true"><div>{[...defaults.ticker,...defaults.ticker].map((item,index)=><span key={`${item}-${index}`}>{item}</span>)}</div></div>
+    <div className={styles.tickerWrap} aria-hidden="true">
+      <div className={styles.tickerTrack}>
+        {[0,1].map(group=><div className={styles.tickerGroup} key={group}>{defaults.ticker.map(item=><span key={`${group}-${item}`}>{item}</span>)}</div>)}
+      </div>
+    </div>
     <main>
       <section className={styles.stats} id="destaques" data-reveal>{defaults.stats.map(item=><article key={item.number+item.label.pt}><strong>{item.number}</strong><span>{localized(item.label,language)}</span></article>)}</section>
       <section className={`${styles.section} ${styles.about}`} id="sobre" data-reveal><div className={styles.photo}><Image src={aboutImage} alt={`${name} operando câmera durante cobertura ao vivo de torneio de poker`} fill sizes="(max-width: 819px) 100vw, 390px"/></div><div><span className={styles.eyebrow}>{localized(defaults.about.eyebrow,language)}</span><h2>{localized(aboutTitle,language)}</h2>{aboutParagraphs.map(paragraph=><p key={paragraph.pt}>{localized(paragraph,language)}</p>)}</div></section>
