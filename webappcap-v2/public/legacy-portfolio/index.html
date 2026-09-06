@@ -1854,6 +1854,7 @@ html.vitrine-domain-resolving #vitrineDomainLoader{
     languageOptions.forEach(option => option.setAttribute('aria-pressed', String(option.dataset.language === language)));
     toggle.setAttribute('aria-label', language === 'en' ? 'Mudar idioma do portfólio para português' : 'Switch portfolio language to English');
     localStorage.setItem('portfolio-language', language);
+    document.dispatchEvent(new CustomEvent('webappcap:language-changed', { detail: { language } }));
   };
   languageOptions.forEach(option => option.addEventListener('click', () => setLanguage(option.dataset.language)));
   setLanguage(language);
@@ -2209,12 +2210,17 @@ html.vitrine-domain-resolving #vitrineDomainLoader{
     const source = mediaUrl(value);
     if (element && source) element.src = source;
   };
+  const localized = (record, key, language) => {
+    const translated = language === 'en' ? String(record[`${key}_en`] || '').trim() : '';
+    return translated || record[key];
+  };
   const apply = () => {
     if (!v2Data) return;
     const identity = v2Data.identity || {};
     const content = v2Data.content || {};
     const contact = v2Data.contact || {};
     const media = v2Data.media || {};
+    const language = document.documentElement.lang === 'en' ? 'en' : 'pt';
 
     const name = String(identity.name || '').trim();
     if (name) {
@@ -2225,13 +2231,13 @@ html.vitrine-domain-resolving #vitrineDomainLoader{
       if (heading) heading.innerHTML = `${first}<br><em>${last}</em>`;
       text('.media-bio-content h3', name);
     }
-    text('.hero-role', content.hero_text);
+    text('.hero-role', localized(content, 'hero_text', language));
     text('.hero .badge', identity.location);
-    text('#aboutTitle', content.hero_title);
-    text('#aboutParagraph1', identity.description);
-    text('#aboutParagraph2', content.about);
-    text('.media-bio-content p', content.primary_offer);
-    text('.wsop-copy p', content.proof);
+    text('#aboutTitle', localized(content, 'hero_title', language));
+    text('#aboutParagraph1', localized(identity, 'description', language));
+    text('#aboutParagraph2', localized(content, 'about', language));
+    text('.media-bio-content p', localized(content, 'primary_offer', language));
+    text('.wsop-copy p', localized(content, 'proof', language));
 
     const heroSource = mediaUrl(media.hero);
     const hero = document.querySelector('.hero-bg-layer');
@@ -2267,6 +2273,7 @@ html.vitrine-domain-resolving #vitrineDomainLoader{
     apply();
   });
   document.addEventListener('webappcap:content-rendered', apply);
+  document.addEventListener('webappcap:language-changed', apply);
 })();
 </script>
 </body>
