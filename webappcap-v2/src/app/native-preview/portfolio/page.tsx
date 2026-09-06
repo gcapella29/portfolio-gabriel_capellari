@@ -11,7 +11,6 @@ export const metadata:Metadata={
 export default async function NativePortfolioPreviewPage(){
   const result=await readPublicSiteBySlug('gabriel-capellari');
   return <NativePortfolioTemplate
-    preview
     project={result?{...result.project,templateKey:'portfolio-native-1'}:{id:'native-preview',slug:'gabriel-capellari',name:'Gabriel Capellari',segment:'portfolio',templateKey:'portfolio-native-1'}}
     data={result?.data??{identity:{},content:{},media:{},appearance:{},contact:{}}}
   />;

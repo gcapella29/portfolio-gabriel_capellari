@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Fraunces, IBM_Plex_Mono, Inter } from 'next/font/google';
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import type { TemplateRenderProps } from '../types';
 import { portfolioDefaults as defaults, type LocalizedText } from './native-data';
 import styles from './native.module.css';
@@ -23,6 +23,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const [slide,setSlide]=useState(0);
   const [activeSection,setActiveSection]=useState('destaques');
   const [shareFeedback,setShareFeedback]=useState(false);
+  const [leadState,setLeadState]=useState<'idle'|'sending'|'success'|'error'>('idle');
   const siteRef=useRef<HTMLDivElement>(null);
   const heroBackgroundRef=useRef<HTMLDivElement>(null);
   const touchStartRef=useRef<number|null>(null);
@@ -53,7 +54,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const accent=stringValue(data.appearance,'accent','#e3bb3d');
 
   useEffect(()=>{const stored=window.localStorage.getItem('portfolio-language');if(stored==='en')setLanguage('en')},[]);
-  useEffect(()=>{if(gallery.length<2)return;const timer=window.setInterval(()=>setSlide(current=>(current+1)%gallery.length),6500);return()=>window.clearInterval(timer)},[gallery.length]);
+  useEffect(()=>{if(gallery.length<2)return;const timer=window.setInterval(()=>setSlide(current=>(current+1)%gallery.length),10000);return()=>window.clearInterval(timer)},[gallery.length]);
   useEffect(()=>{
     const root=siteRef.current;if(!root)return;
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -77,6 +78,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const chooseLanguage=(next:Language)=>{setLanguage(next);window.localStorage.setItem('portfolio-language',next)};
   const moveSlide=(direction:number)=>setSlide(current=>(current+direction+gallery.length)%gallery.length);
   const share=async()=>{const payload={title:`${name} — ${language==='pt'?'Jornalista de Poker':'Poker Journalist'}`,text:language==='pt'?'Portfólio profissional de Gabriel Capellari.':'Gabriel Capellari professional portfolio.',url:window.location.href};if(navigator.share){try{await navigator.share(payload);return}catch(error){if(error instanceof DOMException&&error.name==='AbortError')return}}try{await navigator.clipboard.writeText(window.location.href)}catch{return}setShareFeedback(true);window.setTimeout(()=>setShareFeedback(false),1800)};
+  const submitLead=async(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();setLeadState('sending');const form=event.currentTarget;const formData=new FormData(form);formData.set('projectId',project.id);try{const response=await fetch('/api/leads',{method:'POST',body:formData});if(!response.ok)throw new Error('submit_failed');form.reset();setLeadState('success')}catch{setLeadState('error')}};
   const firstName=name.split(' ')[0];const surname=name.split(' ').slice(1).join(' ');
   const cssVariables:CssVariables={'--accent':accent};
 
@@ -85,7 +87,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
     {preview?<div className={styles.preview}>Homologação · renderer nativo</div>:null}
     <a className={styles.skip} href="#sobre">{language==='pt'?'Pular para o conteúdo':'Skip to content'}</a>
     <header className={styles.hero} id="inicio">
-      <div ref={heroBackgroundRef} className={styles.heroBackground} style={{backgroundImage:`linear-gradient(180deg,rgba(8,39,32,.55),rgba(8,39,32,.88) 62%,#082720),url(${hero})`,backgroundPosition:'22% 81%'}}/>
+      <div ref={heroBackgroundRef} className={styles.heroBackground} style={{backgroundImage:`linear-gradient(180deg,rgba(8,39,32,.55),rgba(8,39,32,.88) 62%,#082720),url(${hero})`,backgroundPosition:'center 18%'}}/>
       <div className={styles.heroContent}>
         <div className={styles.heroTop}><div className={styles.language} role="group" aria-label={language==='pt'?'Alterar idioma':'Change language'}><button type="button" aria-label="Português" aria-pressed={language==='pt'} onClick={()=>chooseLanguage('pt')}>🇧🇷</button><button type="button" aria-label="English" aria-pressed={language==='en'} onClick={()=>chooseLanguage('en')}>🇬🇧</button></div><span>{location}</span></div>
         <div className={styles.heroCopy}><h1>{firstName}<br/><em>{surname}</em></h1><p>{localized(role,language)}</p><div className={styles.chips}>{defaults.identity.languages.map(item=><span key={item.pt}>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
@@ -106,6 +108,22 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
       <section className={`${styles.section} ${styles.education}`} id="formacao" data-reveal><header><span className={styles.eyebrow}>{language==='pt'?'Fundamentos':'Foundations'}</span><h2>{language==='pt'?'Formação & ferramentas':'Education & tools'}</h2></header><div className={styles.educationGrid}><div>{defaults.education.map(([degree,institution])=><article key={degree}><strong>{degree}</strong><span>{institution}</span></article>)}</div><div><h3 className={styles.stackTitle}>{language==='pt'?'Idiomas & ferramentas — mesa de fichas':'Languages & tools — chip stack'}</h3><div className={styles.skillStack}>{defaults.skills.map((skill,index)=><span className={index<2?styles.highlightSkill:''} key={skill}>{skill}</span>)}</div></div></div></section>
       <section className={`${styles.section} ${styles.instagram}`} id="instagram" data-reveal><div><span className={styles.eyebrow}>{language==='pt'?'Bastidores':'Behind the scenes'}</span><h2>{language==='pt'?'Também no Instagram':'Also on Instagram'}</h2><p>{language==='pt'?'Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.':'Final-table behind the scenes, reporting trips and everyday reporter life — all there.'}</p><a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noreferrer">@{instagram} →</a></div><div className={styles.reel}><iframe src={reel} title={`Instagram — ${name}`} loading="lazy" allowFullScreen/></div></section>
       <section className={`${styles.section} ${styles.contact}`} id="contato" data-reveal><div><span className={styles.eyebrow}>{language==='pt'?'Contato':'Contact'}</span><h2>{language==='pt'?'Vamos conversar?':'Let’s talk?'}</h2><div className={styles.contactLinks}><a href={cv} download><span>{language==='pt'?'Currículo':'CV'}</span>{language==='pt'?'Baixar CV em PDF ↓':'Download CV as PDF ↓'}</a><button type="button" onClick={share}><span>{language==='pt'?'Portfólio':'Portfolio'}</span>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button><a href={`mailto:${email}`}><span>E-mail</span>{email}</a><a href={`mailto:${emailAlt}`}><span>{language==='pt'?'E-mail alternativo':'Alternative email'}</span>{emailAlt}</a><a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer"><span>WhatsApp</span>{whatsappLabel}</a><a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noreferrer"><span>Instagram</span>@{instagram} →</a><a href={linkedin} target="_blank" rel="noreferrer"><span>LinkedIn</span>{language==='pt'?'Ver perfil →':'View profile →'}</a></div></div><div className={styles.contactPhoto}><Image src={contactImage} alt={`${name} filmando mesa final durante torneio de poker`} fill sizes="(max-width: 819px) 100vw, 520px"/></div></section>
+      <section className={styles.leadSection} aria-labelledby="lead-title" data-reveal>
+        <div className={styles.leadCard}>
+          <span className={styles.eyebrow}>{language==='pt'?'Contato direto':'Direct contact'}</span>
+          <h2 id="lead-title">{language==='pt'?'Fale comigo pelo WebAppCap':'Contact me through WebAppCap'}</h2>
+          <p>{language==='pt'?'Preencha seus dados e sua mensagem chega diretamente ao painel do projeto.':'Fill in your details and your message will go directly to the project dashboard.'}</p>
+          <form onSubmit={submitLead}>
+            <label><span>{language==='pt'?'Nome':'Name'}</span><input name="name" required minLength={2} autoComplete="name"/></label>
+            <div className={styles.leadRow}><label><span>WhatsApp</span><input name="phone" required autoComplete="tel" inputMode="tel"/></label><label><span>E-mail</span><input name="email" type="email" autoComplete="email"/></label></div>
+            <label><span>{language==='pt'?'Mensagem':'Message'}</span><textarea name="message" required minLength={3} rows={5}/></label>
+            <input className={styles.honeypot} name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"/>
+            <label className={styles.consent}><input name="consent" type="checkbox" required/><span>{language==='pt'?'Autorizo o uso destes dados para retorno deste contato.':'I authorize the use of this data to reply to this message.'}</span></label>
+            <button type="submit" disabled={leadState==='sending'}>{leadState==='sending'?(language==='pt'?'Enviando…':'Sending…'):(language==='pt'?'Enviar minha mensagem':'Send my message')}</button>
+            <div className={styles.formStatus} role="status" aria-live="polite">{leadState==='success'?(language==='pt'?'Mensagem enviada com sucesso.':'Message sent successfully.'):leadState==='error'?(language==='pt'?'Não foi possível enviar agora. Tente novamente.':'Unable to send right now. Please try again.'):''}</div>
+          </form>
+        </div>
+      </section>
     </main>
     <nav className={styles.sectionNav} aria-label={language==='pt'?'Navegação rápida':'Quick navigation'}>{sectionLinks.map(([id,label])=><a href={`#${id}`} className={activeSection===id?styles.activeNav:undefined} aria-label={label} key={id}/>)}</nav>
     <footer className={styles.footer}>{name.toUpperCase()} · {language==='pt'?'JORNALISMO DE POKER · IBITINGA, SP — BRASIL':'POKER JOURNALISM · IBITINGA, SP — BRAZIL'}</footer>
