@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { readPublicSiteBySlug } from '@/core/public-site';
 import { NativePortfolioTemplate } from '@/templates/portfolio/native';
 
 export const metadata:Metadata={
@@ -7,10 +8,11 @@ export const metadata:Metadata={
   robots:{index:false,follow:false}
 };
 
-export default function NativePortfolioPreviewPage(){
+export default async function NativePortfolioPreviewPage(){
+  const result=await readPublicSiteBySlug('gabriel-capellari');
   return <NativePortfolioTemplate
     preview
-    project={{id:'native-preview',slug:'gabriel-capellari',name:'Gabriel Capellari',segment:'portfolio',templateKey:'portfolio-native-1'}}
-    data={{identity:{},content:{},media:{},appearance:{},contact:{}}}
+    project={result?{...result.project,templateKey:'portfolio-native-1'}:{id:'native-preview',slug:'gabriel-capellari',name:'Gabriel Capellari',segment:'portfolio',templateKey:'portfolio-native-1'}}
+    data={result?.data??{identity:{},content:{},media:{},appearance:{},contact:{}}}
   />;
 }
