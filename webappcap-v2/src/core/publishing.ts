@@ -14,7 +14,9 @@ export async function publishV2Project(projectId:string){
   ]);
   if(state.error)throw state.error;if(draft.error)throw draft.error;
   if(!state.data?.template_key||!state.data.segment)throw new Error('Escolha um modelo antes de publicar.');
-  if(!getTemplate(state.data.segment as SegmentKey,state.data.template_key))throw new Error('O modelo selecionado não é compatível com este projeto.');
+  const template=getTemplate(state.data.segment as SegmentKey,state.data.template_key);
+  if(!template)throw new Error('O modelo selecionado não é compatível com este projeto.');
+  if(template.status!=='ready')throw new Error('O modelo selecionado ainda não está disponível para publicação.');
   if(state.data.onboarding_step!=='completed')throw new Error('Conclua a configuração inicial antes de publicar.');
   if(!draft.data)throw new Error('O rascunho do projeto ainda não existe.');
   const identity=draft.data.identity||{},content=draft.data.content||{};
