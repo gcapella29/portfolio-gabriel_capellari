@@ -21,8 +21,8 @@ export function NativeMainParityPortfolioTemplate(props:TemplateRenderProps){
     return()=>{window.removeEventListener('pointermove',move);if(frame)window.cancelAnimationFrame(frame)};
   },[]);
 
-  return <>
+  return <div className={motion.parity}>
     <NativePortfolioTemplate {...props}/>
     <div ref={glowRef} className={motion.pointerGlow} aria-hidden="true"/>
-  </>;
+  </div>;
 }
