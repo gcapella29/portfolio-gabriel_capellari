@@ -7,7 +7,15 @@ import motion from './legacy-motion.module.css';
 
 /** Native React/CMS renderer with the interaction grammar of main/index.html. */
 export function NativeMainParityPortfolioTemplate(props:TemplateRenderProps){
+  const wrapperRef=useRef<HTMLDivElement>(null);
   const glowRef=useRef<HTMLDivElement>(null);
+
+  useEffect(()=>{
+    const wrapper=wrapperRef.current;
+    const site=wrapper?.firstElementChild as HTMLElement|null;
+    if(site)site.classList.add(motion.parity);
+    return()=>site?.classList.remove(motion.parity);
+  },[]);
 
   useEffect(()=>{
     const glow=glowRef.current;
@@ -21,7 +29,7 @@ export function NativeMainParityPortfolioTemplate(props:TemplateRenderProps){
     return()=>{window.removeEventListener('pointermove',move);if(frame)window.cancelAnimationFrame(frame)};
   },[]);
 
-  return <div className={motion.parity}>
+  return <div ref={wrapperRef}>
     <NativePortfolioTemplate {...props}/>
     <div ref={glowRef} className={motion.pointerGlow} aria-hidden="true"/>
   </div>;
