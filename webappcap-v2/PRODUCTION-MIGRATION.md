@@ -2,15 +2,16 @@
 
 ## Current safety boundary
 
-- Keep `main` unchanged until the final cutover is approved.
-- Keep the legacy Vercel project serving `webappcap.com.br` and `www.webappcap.com.br` during the first migration stage.
-- Keep the wildcard `*.webappcap.com.br` on the legacy project until the canary subdomain is validated on v2.
+- Keep `main` unchanged until the final cutover is explicitly approved.
+- Keep the legacy Vercel project serving `webappcap.com.br` and `www.webappcap.com.br` during the migration stages.
+- Keep the wildcard `*.webappcap.com.br` on the legacy project until the tenant migration gate is approved.
 - Keep `webappcap-v2-preview` on branch `refactor/webappcap-core-v2`, root directory `webappcap-v2`, Framework Preset `Next.js`.
-- Supabase migrations 001–006 must already be applied.
+- Supabase migrations 001–013 must be reviewed/applied as required for the current environment before final homologation.
+- Do not move apex, wildcard or merge the v2 branch merely because an isolated preview works.
 
 ## Stage 1 — Canary production subdomain
 
-Move/assign only `fabio-ferrari.webappcap.com.br` to `webappcap-v2-preview`.
+Assign only `fabio-ferrari.webappcap.com.br` to `webappcap-v2-preview`.
 
 Expected behavior:
 
@@ -26,7 +27,8 @@ Validate:
 3. HTTPS certificate is valid.
 4. Preview/dashboard/login continue to work on the v2 Vercel URL.
 5. Publish from CMS updates the public Fabio site.
-6. `webappcap.com.br` still renders the legacy Gabriel portfolio unchanged.
+6. Public lead submission succeeds and the lead appears in the project dashboard.
+7. `webappcap.com.br` still renders the legacy Gabriel portfolio unchanged.
 
 Rollback for Stage 1:
 
@@ -53,61 +55,90 @@ Bridge rollback:
 
 ## Portfolio native snapshot
 
-After the compatibility bridge is validated, apply migration 013. It copies the
-current portfolio into the v2 draft and public snapshots without changing the
-active `portfolio-legacy-1` renderer. Existing v2 keys take precedence, so the
-migration is safe to rerun and does not erase later CMS edits.
+After the compatibility bridge is validated, migration 013 copies the current
+portfolio into the v2 draft and public snapshots without changing the active
+`portfolio-legacy-1` renderer. Existing v2 keys take precedence, so rerunning the
+migration does not erase later CMS edits.
 
-Validate the isolated native renderer at `/native-preview/portfolio`. Do not
-change the project's `template_key` to `portfolio-native-1` until the mobile and
-desktop parity review is approved. The confirmed language levels are Portuguese
-native, English B2 and Spanish C2.
+Validate the isolated React renderer at `/native-preview/portfolio`. This route
+must render `portfolio-native-1` directly and must remain `noindex` during
+homologation. Do not change the project's active `template_key` from
+`portfolio-legacy-1` to `portfolio-native-1` until desktop/mobile parity,
+language switching, links, downloads, media, lead capture and accessibility are
+accepted.
 
-## Stage 2 — Wildcard cutover
+Templates marked `planned` are not publishable. Promote `portfolio-native-1` to
+`ready` only after the acceptance review is complete.
 
-Only after Stage 1 passes, move `*.webappcap.com.br` from the legacy project to the v2 project.
+## Stage 2 — Custom-domain end-to-end test
+
+Before marketing custom domains as complete, validate one disposable external
+domain or subdomain outside `webappcap.com.br` through the full lifecycle:
+
+1. save the custom domain in project settings;
+2. attach it to the v2 Vercel project through server-side automation;
+3. configure the DNS records returned/required by Vercel;
+4. verify the domain;
+5. confirm HTTPS and tenant routing;
+6. replace or remove it;
+7. confirm the old Vercel binding is detached.
+
+Never expose `VERCEL_API_TOKEN` to the browser.
+
+## Stage 3 — Tenant wildcard cutover
+
+Only after the canary, custom-domain test and regression gate pass, consider
+moving `*.webappcap.com.br` from the legacy project to the v2 project.
 
 Expected behavior:
 
-- tenant subdomains route to v2 through middleware and `/_tenant`.
-- apex `webappcap.com.br` remains on the legacy project.
+- tenant subdomains route to v2 through middleware and `/tenant`;
+- apex `webappcap.com.br` remains on the legacy project;
 - `www.webappcap.com.br` remains on the legacy project.
 
-Before moving wildcard, inventory every currently used legacy subdomain. Any legacy subdomain without a published v2 project will return no tenant site after the cutover.
+Before moving wildcard, inventory every currently used legacy subdomain. Any
+legacy subdomain without a published v2 project may stop resolving to a valid
+tenant site after the cutover.
 
-Rollback for Stage 2:
+Rollback for Stage 3:
 
 - Move `*.webappcap.com.br` back to the legacy project.
 - Leave Supabase state unchanged; routing rollback is enough to restore legacy traffic.
 
-## Stage 3 — Main branch / permanent v2 project
+## Stage 4 — Main branch / permanent v2 project
 
 Do not merge the v2 branch to `main` merely to move tenant traffic. First decide whether:
 
 1. `webappcap-v2-preview` becomes the permanent tenant project, or
 2. the v2 app is promoted into a new permanent Vercel project / repository structure.
 
-The legacy apex portfolio can stay isolated until a native portfolio renderer or explicit legacy adapter is ready.
-
-## Custom domains
-
-Current v2 code validates DNS and marks `domain_status=active`, but Vercel also needs the customer's domain associated with the tenant project. DNS validation alone is not sufficient.
-
-Before selling custom-domain automation as complete, add/test Vercel project-domain provisioning using a server-side Vercel token and project ID. Never expose the token to the browser.
+The legacy apex portfolio can remain isolated until the native portfolio renderer
+has passed its own migration gate.
 
 ## Final acceptance checks
 
-- Owner login
+- Owner login/logout
 - Client/admin login
 - New client creation
 - Invite/password flow
 - Onboarding
-- Media upload
+- Media upload and invalid-file rejection
 - Draft vs published separation
 - Preview
 - Publish / republish
+- Planned-template publication rejection
 - Native subdomain
-- Leads
-- Mobile layout
-- Custom-domain provisioning + DNS verification
+- Leads from public site to dashboard
+- Mobile and desktop layout
+- Portfolio legacy bridge
+- Portfolio native isolated preview
+- Custom-domain provisioning + DNS verification + removal
+- Tenant isolation / authorization regression
+- Legacy subdomain inventory
 - Rollback rehearsal
+
+## Explicit production gate
+
+No wildcard move, apex move, destructive legacy cleanup or `main` merge is
+implicitly authorized by this runbook. Those operations require an explicit
+production-impact approval after the acceptance checks above are complete.
