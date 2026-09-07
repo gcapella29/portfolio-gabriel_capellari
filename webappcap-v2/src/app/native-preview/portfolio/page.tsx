@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { readPublicSiteBySlug } from '@/core/public-site';
-import { NativePortfolioTemplate } from '@/templates/portfolio/native';
+import { NativeMainParityPortfolioTemplate } from '@/templates/portfolio/native-main-parity';
 
 export const metadata:Metadata={
   title:'Gabriel Capellari — Portfólio nativo em homologação',
@@ -11,7 +11,7 @@ export const metadata:Metadata={
 export default async function NativePortfolioPreviewPage(){
   const result=await readPublicSiteBySlug('gabriel-capellari');
 
-  return <NativePortfolioTemplate
+  return <NativeMainParityPortfolioTemplate
     project={result
       ? {...result.project,templateKey:'portfolio-native-1'}
       : {id:'native-preview',slug:'gabriel-capellari',name:'Gabriel Capellari',segment:'portfolio',templateKey:'portfolio-native-1'}
