@@ -1,70 +1,70 @@
 /* Motion parity skin. Source of truth: main/index.html.
-   The native renderer keeps React/CMS data, while this layer mirrors main's timing,
-   easing and interaction grammar. */
+   Scoped under .parity so Next.js CSS Modules can compile it safely. */
+
+.parity{display:contents}
 
 /* Main reveal */
-:global([data-reveal]){
+.parity :global([data-reveal]){
   opacity:0!important;
   transform:translateY(28px)!important;
   transition:opacity .8s cubic-bezier(.16,.8,.3,1),transform .8s cubic-bezier(.16,.8,.3,1)!important;
   will-change:transform,opacity;
 }
-:global([data-reveal][data-visible="true"]){opacity:1!important;transform:translateY(0)!important;will-change:auto}
+.parity :global([data-reveal][data-visible="true"]){opacity:1!important;transform:translateY(0)!important;will-change:auto}
 
 /* Main does not animate the hero entrance; only the surname glow and parallax move. */
-:global(#inicio) h1,:global(#inicio) p,:global(#inicio) a,:global(#inicio) button,:global(#inicio) [role="group"]{opacity:1!important;transform:none!important;animation:none!important}
-:global(#inicio) h1 em{animation:goldGlow 4s ease-in-out infinite!important}
+.parity :global(#inicio) h1,.parity :global(#inicio) p,.parity :global(#inicio) a,.parity :global(#inicio) button,.parity :global(#inicio) [role="group"]{opacity:1!important;transform:none!important;animation:none!important}
+.parity :global(#inicio) h1 em{animation:goldGlow 4s ease-in-out infinite!important}
 
 /* Stats = main reveal-stagger: 18px / .6s / 50ms cadence. */
-:global(#destaques)>*{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease!important}
-:global(#destaques[data-visible="true"])>*{opacity:1;transform:translateY(0)}
-:global(#destaques[data-visible="true"])>*:nth-child(1){transition-delay:.03s!important}
-:global(#destaques[data-visible="true"])>*:nth-child(2){transition-delay:.08s!important}
-:global(#destaques[data-visible="true"])>*:nth-child(3){transition-delay:.13s!important}
-:global(#destaques[data-visible="true"])>*:nth-child(4){transition-delay:.18s!important}
+.parity :global(#destaques)>*{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease!important}
+.parity :global(#destaques[data-visible="true"])>*{opacity:1;transform:translateY(0)}
+.parity :global(#destaques[data-visible="true"])>*:nth-child(1){transition-delay:.03s!important}
+.parity :global(#destaques[data-visible="true"])>*:nth-child(2){transition-delay:.08s!important}
+.parity :global(#destaques[data-visible="true"])>*:nth-child(3){transition-delay:.13s!important}
+.parity :global(#destaques[data-visible="true"])>*:nth-child(4){transition-delay:.18s!important}
 
-/* Cancel the experimental native choreography. Main reveals sections as coherent blocks. */
-:global([data-reveal]) .motionReset{transition-delay:0s!important}
-:global(#sobre) img,:global(#contato) img{transition:transform .8s cubic-bezier(.22,1,.36,1),filter .5s ease!important}
-:global(#sobre) div:hover>img,:global(#contato) div:hover>img{transform:scale(1.035)!important}
+/* Main-style image and content interactions. */
+.parity :global(#sobre) img,.parity :global(#contato) img{transition:transform .8s cubic-bezier(.22,1,.36,1),filter .5s ease!important}
+.parity :global(#sobre) div:hover>img,.parity :global(#contato) div:hover>img{transform:scale(1.035)!important}
 
-/* Coverage board: exact modern UI layer behavior from main. */
-:global(#cobertura)>div>div{position:relative;transition:padding-left .35s cubic-bezier(.22,1,.36,1),background .35s ease!important}
-:global(#cobertura)>div>div::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;transform:scaleY(0);transform-origin:center;background:var(--gold);transition:transform .35s cubic-bezier(.22,1,.36,1)}
-:global(#cobertura)>div>div:hover{padding-left:1.4rem!important;background:rgba(227,187,61,.055)!important}
-:global(#cobertura)>div>div:hover::before{transform:scaleY(1)}
+/* Coverage board. */
+.parity :global(#cobertura)>div>div{position:relative;transition:padding-left .35s cubic-bezier(.22,1,.36,1),background .35s ease!important}
+.parity :global(#cobertura)>div>div::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;transform:scaleY(0);transform-origin:center;background:#e3bb3d;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.parity :global(#cobertura)>div>div:hover{padding-left:1.4rem!important;background:rgba(227,187,61,.055)!important}
+.parity :global(#cobertura)>div>div:hover::before{transform:scaleY(1)}
 
 /* Portfolio cards: main lift + sheen. */
-:global(#portfolio)>div:last-child>a{position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1),border-color .35s ease!important}
-:global(#portfolio)>div:last-child>a::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(201,162,39,.10),transparent 75%);transform:translateX(-120%);transition:transform .7s cubic-bezier(.22,1,.36,1);pointer-events:none}
-:global(#portfolio)>div:last-child>a:hover{transform:translateY(-5px)!important;box-shadow:0 14px 35px rgba(23,19,16,.09)}
-:global(#portfolio)>div:last-child>a:hover::before{transform:translateX(120%)}
+.parity :global(#portfolio)>div:last-child>a{position:relative;overflow:hidden;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1),border-color .35s ease!important}
+.parity :global(#portfolio)>div:last-child>a::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(201,162,39,.10),transparent 75%);transform:translateX(-120%);transition:transform .7s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.parity :global(#portfolio)>div:last-child>a:hover{transform:translateY(-5px)!important;box-shadow:0 14px 35px rgba(23,19,16,.09)}
+.parity :global(#portfolio)>div:last-child>a:hover::before{transform:translateX(120%)}
 
-/* Experience and education use the same restrained hover language as main. */
-:global(#experiencia) article{transition:background .2s ease,padding-left .2s ease!important}
-:global(#experiencia) article:hover{background:rgba(243,238,226,.03);padding-left:1.65rem!important}
-:global(#experiencia) article::before{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease!important}
-:global(#experiencia) article:hover::before{transform:scale(1.45);box-shadow:0 0 0 8px rgba(227,187,61,.08),0 0 22px rgba(227,187,61,.24)}
-:global(#formacao) article{transition:transform .5s cubic-bezier(.22,1,.36,1),background .35s ease!important}
-:global(#formacao) article:hover{transform:translateX(5px)!important;background:linear-gradient(90deg,rgba(201,162,39,.08),transparent)}
-:global(#formacao) div:last-child span{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background .3s ease!important}
-:global(#formacao) div:last-child span:hover{transform:translateY(-4px) rotate(-1deg)!important;box-shadow:0 10px 24px rgba(23,19,16,.10)}
+/* Experience and education. */
+.parity :global(#experiencia) article{transition:background .2s ease,padding-left .2s ease!important}
+.parity :global(#experiencia) article:hover{background:rgba(243,238,226,.03);padding-left:1.65rem!important}
+.parity :global(#experiencia) article::before{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease!important}
+.parity :global(#experiencia) article:hover::before{transform:scale(1.45);box-shadow:0 0 0 8px rgba(227,187,61,.08),0 0 22px rgba(227,187,61,.24)}
+.parity :global(#formacao) article{transition:transform .5s cubic-bezier(.22,1,.36,1),background .35s ease!important}
+.parity :global(#formacao) article:hover{transform:translateX(5px)!important;background:linear-gradient(90deg,rgba(201,162,39,.08),transparent)}
+.parity :global(#formacao) div:last-child span{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background .3s ease!important}
+.parity :global(#formacao) div:last-child span:hover{transform:translateY(-4px) rotate(-1deg)!important;box-shadow:0 10px 24px rgba(23,19,16,.10)}
 
-/* Instagram/contact: exact main micro-interactions. */
-:global(#instagram) a{transition:transform .35s cubic-bezier(.22,1,.36,1),background .25s ease,border-color .25s ease!important}
-:global(#instagram) a:hover{transform:translateY(-4px)!important;border-color:var(--gold)!important;background:#fff!important}
-:global(#contato) a,:global(#contato) button{transition:padding-left .35s cubic-bezier(.22,1,.36,1),color .25s ease,border-color .25s ease!important}
-:global(#contato) a:hover,:global(#contato) button:hover{padding-left:.5rem!important;border-color:rgba(227,187,61,.22)!important}
+/* Instagram/contact. */
+.parity :global(#instagram) a{transition:transform .35s cubic-bezier(.22,1,.36,1),background .25s ease,border-color .25s ease!important}
+.parity :global(#instagram) a:hover{transform:translateY(-4px)!important;border-color:#e3bb3d!important;background:#fff!important}
+.parity :global(#contato) a,.parity :global(#contato) button{transition:padding-left .35s cubic-bezier(.22,1,.36,1),color .25s ease,border-color .25s ease!important}
+.parity :global(#contato) a:hover,.parity :global(#contato) button:hover{padding-left:.5rem!important;border-color:rgba(227,187,61,.22)!important}
 
-/* Desktop pointer spotlight copied from main's Modern UI Behavior. */
+/* Desktop pointer spotlight copied from main. */
 .pointerGlow{position:fixed;left:0;top:0;width:260px;height:260px;border-radius:50%;pointer-events:none;z-index:0;opacity:0;background:radial-gradient(circle,rgba(201,162,39,.07),transparent 68%);transform:translate(-50%,-50%);transition:opacity .3s ease}
 @media (hover:hover) and (pointer:fine){.pointerGlow{opacity:1}}
 
 @keyframes goldGlow{50%{text-shadow:0 0 26px rgba(227,187,61,.32)}}
 
 @media(prefers-reduced-motion:reduce){
-  :global([data-reveal]),:global(#destaques)>*{opacity:1!important;transform:none!important;transition:none!important}
-  :global(#inicio) h1 em{animation:none!important}
+  .parity :global([data-reveal]),.parity :global(#destaques)>*{opacity:1!important;transform:none!important;transition:none!important}
+  .parity :global(#inicio) h1 em{animation:none!important}
   .pointerGlow{display:none}
-  :global(#sobre) img,:global(#contato) img,:global(#portfolio) a,:global(#cobertura)>div>div,:global(#experiencia) article,:global(#formacao) article,:global(#formacao) span,:global(#instagram) a,:global(#contato) a,:global(#contato) button{transition:none!important;transform:none!important}
+  .parity :global(#sobre) img,.parity :global(#contato) img,.parity :global(#portfolio) a,.parity :global(#cobertura)>div>div,.parity :global(#experiencia) article,.parity :global(#formacao) article,.parity :global(#formacao) span,.parity :global(#instagram) a,.parity :global(#contato) a,.parity :global(#contato) button{transition:none!important;transform:none!important}
 }
