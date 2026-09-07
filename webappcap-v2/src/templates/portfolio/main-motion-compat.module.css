@@ -1,5 +1,12 @@
 .forceMotion{display:contents}
 
+/* Main ticker: keep it moving continuously on every device, including mobile. */
+.forceMotion :global(#inicio) + div[aria-hidden="true"] > div{
+  animation:mainTickerContinuous 24s linear infinite!important;
+  animation-play-state:running!important;
+  will-change:transform;
+}
+
 /* main/index.html does not disable reveal/ticker motion when the OS requests reduced motion.
    This compatibility layer intentionally mirrors main for Portfolio 1 homologation. */
 @media (prefers-reduced-motion:reduce){
@@ -23,6 +30,14 @@
   .forceMotion :global(#destaques[data-visible="true"])>*:nth-child(3){transition-delay:.13s!important}
   .forceMotion :global(#destaques[data-visible="true"])>*:nth-child(4){transition-delay:.18s!important}
   .forceMotion :global(#inicio) h1 em{animation:mainGoldGlow 4s ease-in-out infinite!important}
+  .forceMotion :global(#inicio) + div[aria-hidden="true"] > div{
+    animation:mainTickerContinuous 24s linear infinite!important;
+    animation-play-state:running!important;
+  }
 }
 
 @keyframes mainGoldGlow{50%{text-shadow:0 0 26px rgba(227,187,61,.32)}}
+@keyframes mainTickerContinuous{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
