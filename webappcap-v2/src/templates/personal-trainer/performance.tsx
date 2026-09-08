@@ -14,45 +14,67 @@ const items=(o:Record<string,unknown>,k:string)=>Array.isArray(o[k])?(o[k] as Ar
 const pairs=(v:string)=>v.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map(row=>{const [title,...rest]=row.split('|');return{title:title.trim(),text:rest.join('|').trim()}}).filter(x=>x.title);
 const lines=(v:string)=>v.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
 const wa=(v:string)=>v?`https://wa.me/${v.replace(/\D/g,'')}`:'#contato';
+const DEMO_SERVICES=[
+ {title:'Treino de precisão',text:'Sessões planejadas para o seu objetivo, nível atual e rotina — sem exercícios aleatórios ou tempo desperdiçado.'},
+ {title:'Estratégia construída para você',text:'Planejamento individual, progressão clara e ajustes contínuos conforme sua resposta ao treinamento.'},
+ {title:'Coaching e responsabilidade',text:'Acompanhamento próximo para transformar execução, consistência e decisões diárias em progresso sustentável.'},
+ {title:'Evolução guiada por dados',text:'Indicadores simples e objetivos ajudam a identificar o que funciona e quando é hora de ajustar o plano.'}
+];
+const DEMO_METHOD=[
+ {title:'Avaliação inicial',text:'Entendemos objetivos, histórico, rotina, limitações e o ponto de partida antes de definir o caminho.'},
+ {title:'Plano individual',text:'Treino, frequência e prioridades são organizados em uma estratégia compatível com a sua vida.'},
+ {title:'Execução com propósito',text:'Cada sessão tem função clara e cada etapa prepara a próxima, com técnica e intensidade adequadas.'},
+ {title:'Acompanhamento contínuo',text:'A evolução é revisada regularmente e o plano muda quando os dados e a resposta do corpo pedem.'}
+];
+const DEMO_STATS=[
+ {title:'10+ anos',text:'de experiência com treinamento individualizado'},
+ {title:'100%',text:'planejamento adaptado ao aluno'},
+ {title:'1:1',text:'atenção individual durante o acompanhamento'}
+];
 
 export function PerformanceTrainerTemplate(props:TemplateRenderProps){
  const {project,data,preview=false}=props,c=trainerContent(props),name=c.name;
  const logo=mediaUrl(data.media,'logo'),heroVideo=mediaUrl(data.media,'hero_video'),cref=value(data.content,'trainer_cref'),specialty=value(data.content,'trainer_specialty')||c.specialty;
- const services=items(data.content,'services').length?items(data.content,'services'):pairs(value(data.content,'trainer_services'));
- const method=items(data.content,'method').length?items(data.content,'method'):pairs(value(data.content,'trainer_method'));
+ const rawServices=items(data.content,'services').length?items(data.content,'services'):pairs(value(data.content,'trainer_services'));
+ const rawMethod=items(data.content,'method').length?items(data.content,'method'):pairs(value(data.content,'trainer_method'));
+ const services=(rawServices.length?rawServices:DEMO_SERVICES).slice(0,4);
+ const method=rawMethod.length?rawMethod:DEMO_METHOD;
  const credentials=items(data.content,'credentials').length?items(data.content,'credentials').map(x=>x.title):lines(value(data.content,'trainer_credentials'));
- const stats=items(data.content,'results').filter(x=>x.title).slice(0,4),gallery=c.gallery.filter(x=>x?.url),accent=c.accent;
+ const realStats=items(data.content,'results').filter(x=>x.title).slice(0,4),stats=realStats.length?realStats:DEMO_STATS;
+ const gallery=c.gallery.filter(x=>x?.url),accent=c.accent;
+ const mediaPool=[...gallery.map(x=>x.url).filter(Boolean),c.hero].filter(Boolean) as string[];
+ const photo=(index:number)=>mediaPool.length?mediaPool[index%mediaPool.length]:'';
  const cssVars={'--pt-accent':accent,'--pt-head-font':'var(--font-pt-display)','--pt-body-font':'var(--font-pt-body)','--pt-util-font':'var(--font-pt-util)'} as React.CSSProperties;
- const tape=[c.offer,'Treino individualizado','Método','Progressão','Consistência',c.proof].filter(Boolean) as string[];
- const featureServices=services.slice(0,4);
+ const tape=['Treino individualizado','Força','Composição corporal','Progressão','Consistência','Acompanhamento'].filter(Boolean);
+ const resultStories=(gallery.length>1?gallery.slice(1,5):[{url:c.hero},{url:c.hero},{url:c.hero}]).filter(x=>x?.url);
  return <div className={`${styles.site} ${displayFont.variable} ${bodyFont.variable} ${utilityFont.variable}`} style={cssVars} data-pt-premium-root>
   <PersonalTrainerPremiumMotion/>{preview&&<div className={styles.preview}>Preview do rascunho</div>}
   <div className={styles.topBar}><span>{c.location?`Personal training · ${c.location}`:'Personal training · acompanhamento individual'}</span><div><a href="#metodo">Método</a><a href="#resultados">Resultados</a><a className={styles.topAction} href="#contato">Começar agora</a></div></div>
-  <header className={styles.header}><a className={styles.brand} href="#inicio">{logo&&<img src={logo} alt=""/>}<span><strong>{name}</strong><small>{specialty}{cref?` · ${cref}`:''}</small></span></a><nav className={styles.nav}><a href="#sistema">Sistema</a><a href="#metodo">Método</a><a href="#resultados">Resultados</a><a href="#treinador">Sobre</a></nav><a className={styles.headerCta} href="#contato">Quero começar →</a></header>
+  <header className={styles.header}><a className={styles.brand} href="#inicio">{logo&&<img src={logo} alt=""/>}<span><strong>{name}</strong><small>{specialty}{cref?` · ${cref}`:''}</small></span></a><nav className={styles.nav}><a href="#sistema">Sistema</a><a href="#metodo">Método</a><a href="#resultados">Resultados</a><a href="#treinador">Sobre</a></nav><a className={styles.headerCta} href="#contato">Começar →</a></header>
   <main>
    <section id="inicio" className={styles.hero}>
-    <div className={styles.heroMedia}>{heroVideo?<video autoPlay muted loop playsInline poster={c.hero||undefined}><source src={heroVideo}/></video>:c.hero?<img src={c.hero} alt={name}/>:<div className={styles.heroPlaceholder}>Imagem ou vídeo principal</div>}</div>
-    <div className={styles.heroShade}/><div className={`${styles.heroCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.eyebrow}>{specialty}</span><h1>{c.heroTitle}</h1>{c.heroText&&<p>{c.heroText}</p>}<a className={styles.primary} href="#contato">Começar minha jornada <b>↗</b></a></div>
-    <div className={styles.heroFoot}><span>{cref||'Acompanhamento personalizado'}</span><a href="#sistema">Descobrir o método ↓</a></div>
+    <div className={styles.heroMedia}>{heroVideo?<video autoPlay muted loop playsInline preload="metadata" poster={c.hero||undefined}><source src={heroVideo}/></video>:c.hero?<img src={c.hero} alt={name}/>:<div className={styles.heroPlaceholder}>Imagem ou vídeo principal</div>}</div>
+    <div className={styles.heroShade}/><div className={`${styles.heroCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.eyebrow}>{specialty}</span><h1>{c.heroTitle||'Seu melhor resultado começa com um plano melhor.'}</h1><p>{c.heroText||'Treino preciso, acompanhamento próximo e evolução construída para durar.'}</p><a className={styles.primary} href="#contato">Começar minha jornada <b>→</b></a></div>
+    <div className={styles.heroFoot}><span>{cref||'Acompanhamento personalizado'}</span><a href="#sistema">Conheça o sistema ↓</a></div>
    </section>
-   {tape.length>0&&<div className={styles.tape}><div className={styles.tapeTrack}>{[...tape,...tape].map((x,i)=><span key={`${x}-${i}`}>{x}</span>)}</div></div>}
+   <div className={styles.tape}><div className={styles.tapeTrack}>{[...tape,...tape].map((x,i)=><span key={`${x}-${i}`}>{x}</span>)}</div></div>
 
-   <section id="sistema" className={styles.intro}><div className={`${styles.introLead} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Um sistema feito para você</span><h2>Mais forte.<br/>Por mais tempo.</h2></div><div className={`${styles.introBody} ${styles.reveal}`} data-pt-reveal><h3>Método comprovado, adaptado ao indivíduo.</h3><p>{c.offer||c.about||'Treino estruturado, acompanhamento próximo e decisões guiadas pela sua evolução.'}</p></div></section>
+   <section id="sistema" className={styles.intro}><div className={`${styles.introLead} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Mais do que sessões</span><h2>Mais forte.<br/>Para a vida.</h2></div><div className={`${styles.introBody} ${styles.reveal}`} data-pt-reveal><h3>Método comprovado. Aplicação individual.</h3><p>{c.offer||'Construa força, melhore sua composição corporal e evolua com um sistema claro, individual e acompanhado de perto.'}</p></div></section>
 
-   {(stats.length>0||gallery[0]?.url)&&<section className={styles.evidence}><div className={styles.evidenceMedia}>{gallery[0]?.url?<img src={gallery[0].url} alt="Acompanhamento e evolução"/>:c.hero&&<img src={c.hero} alt={name}/>}</div>{stats.length>0&&<div className={styles.evidenceStats}><span className={styles.sectionLabel}>Prova em números</span>{stats.map((x,i)=><article className={styles.reveal} data-pt-reveal key={`${x.title}-${i}`}><strong>{x.title}</strong>{x.text&&<p>{x.text}</p>}</article>)}</div>}</section>}
+   <section className={styles.evidence}><div className={styles.evidenceMedia}>{photo(0)?<img src={photo(0)} alt="Treinamento individualizado"/>:<div className={styles.heroPlaceholder}>Foto de treino</div>}</div><div className={styles.evidenceStats}><span className={styles.sectionLabel}>{realStats.length?'Resultados em números':'Demonstração do layout'}</span>{stats.map((x,i)=><article className={styles.reveal} data-pt-reveal key={`${x.title}-${i}`}><strong>{x.title}</strong><p>{x.text}</p></article>)}</div></section>
 
-   {featureServices.length>0&&<section className={styles.features}>{featureServices.map((item,i)=>{const photo=gallery[(i+1)%Math.max(gallery.length,1)]?.url;return <article className={styles.feature} key={`${item.title}-${i}`}><div className={`${styles.featureCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>{String(i+1).padStart(2,'0')} / Sistema</span><h2>{item.title}</h2>{item.text&&<p>{item.text}</p>}<a href="#metodo">Conheça o processo <b>↗</b></a></div><div className={styles.featureMedia}>{photo?<img src={photo} alt=""/>:c.hero&&<img src={c.hero} alt=""/>}</div></article>})}</section>}
+   <section className={styles.features}>{services.map((item,i)=><article className={styles.feature} key={`${item.title}-${i}`}><div className={`${styles.featureCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>{String(i+1).padStart(2,'0')} / O que você recebe</span><h2>{item.title}</h2><p>{item.text}</p><a href="#metodo">Entender o método <b>→</b></a></div><div className={styles.featureMedia}>{photo(i+1)?<img src={photo(i+1)} alt=""/>:<div className={styles.heroPlaceholder}>Foto do serviço</div>}</div></article>)}</section>
 
-   {c.proof&&<section className={styles.quote}><span className={styles.sectionLabel}>O que guia o trabalho</span><blockquote>“{c.proof}”</blockquote></section>}
+   <section className={styles.quote}><span className={styles.sectionLabel}>A diferença</span><blockquote>“{c.proof||'O objetivo não é apenas treinar mais. É saber exatamente o que fazer, por que fazer e como continuar evoluindo.'}”</blockquote></section>
 
-   {(gallery.length>1||stats.length>0)&&<section id="resultados" className={styles.results}><div className={`${styles.resultsIntro} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Histórias reais</span><h2>{c.resultsTitle}</h2><p>Resultados não acontecem por acaso. São consequência de método, execução e consistência.</p></div>{gallery.length>1&&<div className={styles.resultsRail}>{gallery.slice(1).map((x,i)=><figure key={`${x.url}-${i}`}><img src={x.url} alt={`Resultado ${i+1}`}/><figcaption><span>Resultado</span><strong>{String(i+1).padStart(2,'0')}</strong></figcaption></figure>)}</div>}</section>}
+   <section id="resultados" className={styles.results}><div className={`${styles.resultsIntro} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Histórias de evolução</span><h2>{c.resultsTitle||'Pessoas reais. Evolução real.'}</h2><p>Resultados duradouros são consequência de um processo bem executado, acompanhado e ajustado com consistência.</p></div><div className={styles.resultsRail}>{resultStories.map((x,i)=><figure key={`${x.url}-${i}`}><img src={String(x.url)} alt={`História de evolução ${i+1}`}/><figcaption><span>{gallery.length>1?'Evolução real':'Conteúdo demonstrativo'}</span><strong>{String(i+1).padStart(2,'0')}</strong></figcaption></figure>)}</div></section>
 
-   {method.length>0&&<section id="metodo" className={styles.method}><div className={`${styles.methodIntro} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>O método</span><h2>Clareza em cada etapa.</h2><p>Um processo simples de entender, individual na aplicação e rigoroso na execução.</p></div><div className={styles.methodList}>{method.map((x,i)=><article className={styles.reveal} data-pt-reveal key={`${x.title}-${i}`}><span>{String(i+1).padStart(2,'0')}</span><h3>{x.title}</h3>{x.text&&<p>{x.text}</p>}</article>)}</div></section>}
+   <section id="metodo" className={styles.method}><div className={`${styles.methodIntro} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Como funciona</span><h2>Um sistema.<br/>Sem achismo.</h2><p>Você sabe onde está, qual é o próximo passo e por que cada decisão faz parte do processo.</p></div><div className={styles.methodList}>{method.map((x,i)=><article className={styles.reveal} data-pt-reveal key={`${x.title}-${i}`}><span>Etapa {String(i+1).padStart(2,'0')}</span><h3>{x.title}</h3><p>{x.text}</p></article>)}</div></section>
 
-   {(c.about||credentials.length||cref)&&<section id="treinador" className={styles.trainer}><div className={styles.trainerMedia}>{c.hero&&<img src={c.hero} alt={name}/>}</div><div className={`${styles.trainerCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Seu treinador</span><h2>{name}</h2>{c.about&&<p className={styles.about}>{c.about}</p>}<dl>{cref&&<><dt>Registro</dt><dd>{cref}</dd></>}<dt>Especialidade</dt><dd>{specialty}</dd>{c.location&&<><dt>Atendimento</dt><dd>{c.location}</dd></>}</dl>{credentials.length>0&&<ul>{credentials.map((x,i)=><li key={`${x}-${i}`}>{x}</li>)}</ul>}</div></section>}
+   {(c.about||credentials.length||cref)&&<section id="treinador" className={styles.trainer}><div className={styles.trainerMedia}>{photo(2)&&<img src={photo(2)} alt={name}/>}</div><div className={`${styles.trainerCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Seu treinador</span><h2>{name}</h2><p className={styles.about}>{c.about||'Acompanhamento individual para transformar objetivos em um processo claro, consistente e sustentável.'}</p><dl>{cref&&<><dt>Registro</dt><dd>{cref}</dd></>}<dt>Especialidade</dt><dd>{specialty}</dd>{c.location&&<><dt>Atendimento</dt><dd>{c.location}</dd></>}</dl>{credentials.length>0&&<ul>{credentials.map((x,i)=><li key={`${x}-${i}`}>{x}</li>)}</ul>}</div></section>}
 
-   <section id="contato" className={styles.contact}><div className={`${styles.contactPitch} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Seu próximo passo</span><h2>{c.scheduleTitle}</h2><p>{c.scheduleText}</p>{c.whatsapp&&<a href={wa(c.whatsapp)}>Falar no WhatsApp ↗</a>}</div><div className={`${styles.formWrap} ${styles.reveal}`} data-pt-reveal><PersonalTrainerLeadForm projectId={project.id}/></div></section>
-   <section className={styles.final}><span>Pronto para evoluir?</span><h2>Começa<br/>agora.</h2><div>{c.whatsapp&&<a href={wa(c.whatsapp)}>WhatsApp ↗</a>}{c.instagramHref&&<a href={c.instagramHref}>Instagram ↗</a>}</div></section>
+   <section id="contato" className={styles.contact}><div className={`${styles.contactPitch} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Comece por aqui</span><h2>{c.scheduleTitle||'Pronto para começar?'}</h2><p>{c.scheduleText||'Conte seu objetivo. A primeira conversa serve para entender seu momento e definir o melhor próximo passo.'}</p>{c.whatsapp&&<a href={wa(c.whatsapp)}>Falar no WhatsApp →</a>}</div><div className={`${styles.formWrap} ${styles.reveal}`} data-pt-reveal><PersonalTrainerLeadForm projectId={project.id}/></div></section>
+   <section className={styles.final}><span>Seu próximo capítulo</span><h2>Começa<br/>agora.</h2><div>{c.whatsapp&&<a href={wa(c.whatsapp)}>WhatsApp →</a>}{c.instagramHref&&<a href={c.instagramHref}>Instagram →</a>}</div></section>
   </main><footer className={styles.footer}><span>{name} · {specialty}</span><span>WebAppCap</span></footer>
  </div>;
 }
