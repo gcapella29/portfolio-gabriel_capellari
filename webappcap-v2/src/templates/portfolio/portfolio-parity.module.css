@@ -1,4 +1,4 @@
-.mainParity{display:contents;font-family:var(--portfolio-body),Inter,sans-serif}
+.mainParity{--cream:#fff;--paper:#f7f4ec;display:contents;font-family:var(--portfolio-body),Inter,sans-serif}
 .mainParity :global(h1),.mainParity :global(h2),.mainParity :global(h3){font-family:var(--portfolio-heading),Fraunces,serif!important;letter-spacing:-.01em}
 .mainParity :global(#inicio p),.mainParity :global(#inicio [role="group"]),.mainParity :global(#inicio a),.mainParity :global(#inicio button),.mainParity :global(#inicio span),.mainParity :global(#destaques),.mainParity :global(#cobertura),.mainParity :global(#formacao h3),.mainParity :global(#formacao [class*="skillStack"]),.mainParity :global(footer){font-family:var(--portfolio-mono),'IBM Plex Mono',monospace!important}
 
@@ -39,6 +39,13 @@
 
 .pointerGlow{position:fixed;left:0;top:0;width:260px;height:260px;border-radius:50%;pointer-events:none;z-index:0;opacity:0;background:radial-gradient(circle,rgba(201,162,39,.07),transparent 68%);transform:translate(-50%,-50%);transition:opacity .3s ease}
 @media(hover:hover) and (pointer:fine){.pointerGlow{opacity:1}}
-@media(min-width:820px){.mainParity :global(#inicio)+div[aria-hidden="true"]{min-height:52px!important;display:flex!important;align-items:center!important}.mainParity :global(#inicio)+div[aria-hidden="true"]>div>div{padding:.82rem 0!important}.mainParity :global(#inicio)+div[aria-hidden="true"] span{font-size:.8rem!important;padding-left:1.9rem!important;padding-right:1.9rem!important}}
+@media(min-width:820px){
+  .mainParity :global(section[id]:not(#destaques)){padding-top:4.8rem!important;padding-bottom:4.8rem!important}
+  .mainParity :global(#sobre h2){max-width:none!important}
+  .mainParity :global(#wsop-featured)>div:first-child{min-height:430px!important}
+  .mainParity :global(#inicio)+div[aria-hidden="true"]{min-height:52px!important;display:flex!important;align-items:center!important}
+  .mainParity :global(#inicio)+div[aria-hidden="true"]>div>div{padding:.82rem 0!important}
+  .mainParity :global(#inicio)+div[aria-hidden="true"] span{font-size:.8rem!important;padding-left:1.9rem!important;padding-right:1.9rem!important}
+}
 @keyframes goldGlow{50%{text-shadow:0 0 26px rgba(227,187,61,.32)}}
 @keyframes mainTicker{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
