@@ -22,9 +22,9 @@ export const segments: Record<SegmentKey, SegmentDefinition> = {
     name: 'Personal Trainer',
     description: 'Sites comerciais para personal trainers com foco em confiança, prova social e conversão.',
     templates: [
-      {key:'trainer-performance-1',segment:'personal-trainer',name:'Performance',description:'Base aprovada em preto, off-white e lima, orientada a conversão.',status:'ready'},
-      {key:'trainer-template-2',segment:'personal-trainer',name:'Modelo 2',description:'Segundo estilo visual a ser construído com referências próprias.',status:'planned'},
-      {key:'trainer-template-3',segment:'personal-trainer',name:'Modelo 3',description:'Terceiro estilo visual a ser construído com referências próprias.',status:'planned'}
+      {key:'trainer-performance-1',segment:'personal-trainer',name:'Performance',description:'Visual dark em preto, off-white e lima, técnico e orientado a conversão.',status:'ready'},
+      {key:'trainer-template-2',segment:'personal-trainer',name:'Editorial',description:'Experiência clara, sofisticada e editorial, com fotografia ampla, tipografia premium e ritmo elegante.',status:'ready'},
+      {key:'trainer-template-3',segment:'personal-trainer',name:'Velocity',description:'Experiência esportiva de alta energia, tipografia de impacto, contraste forte e linguagem visual dinâmica.',status:'ready'}
     ]
   },
   'food-business': {
