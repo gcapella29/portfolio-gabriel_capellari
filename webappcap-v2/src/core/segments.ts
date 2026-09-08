@@ -11,10 +11,10 @@ export const segments: Record<SegmentKey, SegmentDefinition> = {
   portfolio: {
     key: 'portfolio',
     name: 'Portfólio',
-    description: 'Portfólio profissional preservado no renderer legado durante a migração.',
+    description: 'Portfólios profissionais nativos e gerenciáveis pelo CMS do WebAppCap.',
     templates: [
       {key:'portfolio-legacy-1',segment:'portfolio',name:'Portfólio atual',description:'Site atual preservado por uma ponte de compatibilidade segura durante a migração.',status:'ready'},
-      {key:'portfolio-native-1',segment:'portfolio',name:'Editorial nativo',description:'Conversão React do portfólio atual em homologação.',status:'planned'}
+      {key:'portfolio-native-1',segment:'portfolio',name:'Editorial nativo',description:'Conversão React/CMS homologada do portfólio editorial WebAppCap.',status:'ready'}
     ]
   },
   'personal-trainer': {
