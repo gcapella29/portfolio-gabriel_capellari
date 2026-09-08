@@ -1,10 +1,25 @@
 import type { SegmentKey, TemplateDefinition } from './domain';
 export type SegmentDefinition={key:SegmentKey;name:string;description:string;templates:TemplateDefinition[]};
+
+/**
+ * Scope reset: until the portfolio migration is complete, WebAppCap v2 has
+ * one active product surface: Portfolio. Other segment keys remain in the
+ * domain type only for database/backward compatibility, with no selectable
+ * templates or active product flow.
+ */
 export const segments:Record<SegmentKey,SegmentDefinition>={
- portfolio:{key:'portfolio',name:'Portfólio',description:'Portfólios profissionais nativos e gerenciáveis pelo CMS do WebAppCap.',templates:[{key:'portfolio-legacy-1',segment:'portfolio',name:'Portfólio atual',description:'Site atual preservado por uma ponte de compatibilidade segura durante a migração.',status:'ready'},{key:'portfolio-native-1',segment:'portfolio',name:'Editorial nativo',description:'Conversão React/CMS homologada do portfólio editorial WebAppCap.',status:'ready'}]},
- 'personal-trainer':{key:'personal-trainer',name:'Fitness',description:'Sites para profissionais e negócios fitness, com conteúdo reutilizável entre experiências visuais.',templates:[{key:'trainer-performance-1',segment:'personal-trainer',name:'Performance',description:'Visual dark em preto, off-white e lima, técnico e orientado a conversão.',status:'ready'},{key:'trainer-template-2',segment:'personal-trainer',name:'Prime',description:'Experiência fitness clara, sofisticada e premium, com fotografia ampla e ritmo elegante.',status:'ready'},{key:'trainer-template-3',segment:'personal-trainer',name:'Velocity',description:'Experiência esportiva de alta energia, tipografia de impacto, contraste forte e linguagem visual dinâmica.',status:'ready'}]},
- 'food-business':{key:'food-business',name:'Comércio',description:'Comércios, produtos, alimentação, atendimento local e delivery.',templates:[{key:'food-template-1',segment:'food-business',name:'Modelo 1',description:'Aguardando referências.',status:'planned'},{key:'food-template-2',segment:'food-business',name:'Modelo 2',description:'Aguardando referências.',status:'planned'},{key:'food-template-3',segment:'food-business',name:'Modelo 3',description:'Aguardando referências.',status:'planned'}]},
- school:{key:'school',name:'Educação',description:'Escolas, cursos e instituições de ensino.',templates:[{key:'school-template-1',segment:'school',name:'Modelo 1',description:'Aguardando referências.',status:'planned'},{key:'school-template-2',segment:'school',name:'Modelo 2',description:'Aguardando referências.',status:'planned'},{key:'school-template-3',segment:'school',name:'Modelo 3',description:'Aguardando referências.',status:'planned'}]}
+ portfolio:{
+  key:'portfolio',
+  name:'Portfólio',
+  description:'Primeiro projeto nativo do WebAppCap: migração do portfólio atual para a nova plataforma.',
+  templates:[
+   {key:'portfolio-legacy-1',segment:'portfolio',name:'Referência atual',description:'Ponte temporária para comparar o site raiz durante a migração.',status:'ready'},
+   {key:'portfolio-native-1',segment:'portfolio',name:'Portfólio WebAppCap',description:'Versão nativa e gerenciável que substituirá o projeto raiz após homologação.',status:'ready'}
+  ]
+ },
+ 'personal-trainer':{key:'personal-trainer',name:'Fitness',description:'Segmento pausado enquanto o portfólio é migrado.',templates:[]},
+ 'food-business':{key:'food-business',name:'Comércio',description:'Segmento pausado enquanto o portfólio é migrado.',templates:[]},
+ school:{key:'school',name:'Educação',description:'Segmento pausado enquanto o portfólio é migrado.',templates:[]}
 };
 export function templatesForSegment(segment:SegmentKey){return segments[segment].templates}
 export function getTemplate(segment:SegmentKey,templateKey:string){return templatesForSegment(segment).find(template=>template.key===templateKey)??null}
