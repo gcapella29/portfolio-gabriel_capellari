@@ -41,6 +41,10 @@
 @media(hover:hover) and (pointer:fine){.pointerGlow{opacity:1}}
 @media(min-width:820px){
   .mainParity :global(section[id]:not(#destaques)){padding-top:4.8rem!important;padding-bottom:4.8rem!important}
+  .mainParity :global(section[id] h2){font-size:clamp(2rem,3.3vw,3rem)!important}
+  .mainParity :global(#wsop-featured h2){font-size:clamp(2rem,6vw,3.4rem)!important;line-height:.98!important}
+  .mainParity :global(#cobertura)>*,.mainParity :global(#portfolio)>*,.mainParity :global(#experiencia)>*,.mainParity :global(#formacao)>*,.mainParity :global(#instagram)>*,.mainParity :global(#contato)>*{width:min(100%,1120px)!important}
+  .mainParity :global(#sobre),.mainParity :global(#wsop-featured),.mainParity :global(#instagram),.mainParity :global(#contato){padding-left:max(clamp(2rem,5vw,5rem),calc((100% - 1120px)/2))!important;padding-right:max(clamp(2rem,5vw,5rem),calc((100% - 1120px)/2))!important}
   .mainParity :global(#sobre h2){max-width:none!important}
   .mainParity :global(#wsop-featured)>div:first-child{min-height:430px!important}
   .mainParity :global(#inicio)+div[aria-hidden="true"]{min-height:52px!important;display:flex!important;align-items:center!important}
