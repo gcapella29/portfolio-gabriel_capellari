@@ -11,6 +11,7 @@ const utilityFont=IBM_Plex_Mono({subsets:['latin'],weight:['500','600','700'],va
 const value=(o:Record<string,unknown>,k:string)=>String(o[k]??'').trim();
 const mediaUrl=(o:Record<string,unknown>,k:string)=>{const x=o[k];return x&&typeof x==='object'&&'url' in x?String((x as {url?:unknown}).url||''):''};
 const items=(o:Record<string,unknown>,k:string)=>Array.isArray(o[k])?(o[k] as Array<Record<string,unknown>>).map(x=>({title:String(x.title||x.name||'').trim(),text:String(x.description||x.text||'').trim()})).filter(x=>x.title):[];
+const availabilityItems=(o:Record<string,unknown>)=>Array.isArray(o.availability)?(o.availability as Array<Record<string,unknown>>).map(x=>({day:String(x.day||'').trim(),hours:String(x.hours||'').trim(),status:String(x.status||'').trim().toLowerCase()})).filter(x=>x.day):[];
 const pairs=(v:string)=>v.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map(row=>{const [title,...rest]=row.split('|');return{title:title.trim(),text:rest.join('|').trim()}}).filter(x=>x.title);
 const lines=(v:string)=>v.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
 const wa=(v:string)=>v?`https://wa.me/${v.replace(/\D/g,'')}`:'#contato';
@@ -32,13 +33,13 @@ const DEMO_STATS=[
  {title:'1:1',text:'atenção individual durante o acompanhamento'}
 ];
 const DEMO_SCHEDULE=[
- {day:'Seg',hours:'06:00 — 20:00',open:true},
- {day:'Ter',hours:'06:00 — 20:00',open:true},
- {day:'Qua',hours:'06:00 — 20:00',open:true},
- {day:'Qui',hours:'06:00 — 20:00',open:true},
- {day:'Sex',hours:'06:00 — 18:00',open:true},
- {day:'Sáb',hours:'08:00 — 12:00',open:true},
- {day:'Dom',hours:'Fechado',open:false}
+ {day:'Seg',hours:'06:00 — 20:00',status:'aberta'},
+ {day:'Ter',hours:'06:00 — 20:00',status:'aberta'},
+ {day:'Qua',hours:'06:00 — 20:00',status:'aberta'},
+ {day:'Qui',hours:'06:00 — 20:00',status:'aberta'},
+ {day:'Sex',hours:'06:00 — 18:00',status:'aberta'},
+ {day:'Sáb',hours:'08:00 — 12:00',status:'aberta'},
+ {day:'Dom',hours:'Fechado',status:'fechada'}
 ];
 
 export function PerformanceTrainerTemplate(props:TemplateRenderProps){
@@ -50,6 +51,7 @@ export function PerformanceTrainerTemplate(props:TemplateRenderProps){
  const method=rawMethod.length?rawMethod:DEMO_METHOD;
  const credentials=items(data.content,'credentials').length?items(data.content,'credentials').map(x=>x.title):lines(value(data.content,'trainer_credentials'));
  const realStats=items(data.content,'results').filter(x=>x.title).slice(0,4),stats=realStats.length?realStats:DEMO_STATS;
+ const realSchedule=availabilityItems(data.content),schedule=realSchedule.length?realSchedule:DEMO_SCHEDULE;
  const gallery=c.gallery.filter(x=>x?.url),accent=c.accent;
  const mediaPool=[...gallery.map(x=>x.url).filter(Boolean),c.hero].filter(Boolean) as string[];
  const photo=(index:number)=>mediaPool.length?mediaPool[index%mediaPool.length]:'';
@@ -82,7 +84,7 @@ export function PerformanceTrainerTemplate(props:TemplateRenderProps){
 
    {(c.about||credentials.length||cref)&&<section id="treinador" className={styles.trainer}><div className={styles.trainerMedia}>{photo(2)&&<img src={photo(2)} alt={name}/>}</div><div className={`${styles.trainerCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Seu treinador</span><h2>{name}</h2><p className={styles.about}>{c.about||'Acompanhamento individual para transformar objetivos em um processo claro, consistente e sustentável.'}</p><dl>{cref&&<><dt>Registro</dt><dd>{cref}</dd></>}<dt>Especialidade</dt><dd>{specialty}</dd>{c.location&&<><dt>Atendimento</dt><dd>{c.location}</dd></>}</dl>{credentials.length>0&&<ul>{credentials.map((x,i)=><li key={`${x}-${i}`}>{x}</li>)}</ul>}</div></section>}
 
-   <section id="contato" className={styles.contact}><div className={`${styles.contactPitch} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Disponibilidade</span><h2>{c.scheduleTitle||'Horários disponíveis'}</h2><p>{c.scheduleText||'Confira a agenda semanal e envie seus dados para encontrarmos o melhor horário para você.'}</p><div className={styles.scheduleGrid}>{DEMO_SCHEDULE.map((slot)=><div className={`${styles.scheduleRow} ${slot.open?styles.scheduleOpen:styles.scheduleClosed}`} key={slot.day}><strong>{slot.day}</strong><span>{slot.hours}</span><em>{slot.open?'Agenda aberta':'Agenda fechada'}</em></div>)}</div>{c.whatsapp&&<a href={wa(c.whatsapp)}>Consultar horário no WhatsApp →</a>}</div><div className={`${styles.formWrap} ${styles.reveal}`} data-pt-reveal><PersonalTrainerLeadForm projectId={project.id}/></div></section>
+   <section id="contato" className={styles.contact}><div className={`${styles.contactPitch} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Disponibilidade</span><h2>{c.scheduleTitle||'Horários disponíveis'}</h2><p>{c.scheduleText||'Confira a agenda semanal e envie seus dados para encontrarmos o melhor horário para você.'}</p><div className={styles.scheduleGrid}>{schedule.map((slot)=><div className={`${styles.scheduleRow} ${slot.status.includes('fech')?styles.scheduleClosed:styles.scheduleOpen}`} key={`${slot.day}-${slot.hours}`}><strong>{slot.day}</strong><span>{slot.hours}</span><em>{slot.status.includes('fech')?'Agenda fechada':'Agenda aberta'}</em></div>)}</div>{c.whatsapp&&<a href={wa(c.whatsapp)}>Consultar horário no WhatsApp →</a>}</div><div className={`${styles.formWrap} ${styles.reveal}`} data-pt-reveal><PersonalTrainerLeadForm projectId={project.id}/></div></section>
    <section className={styles.final}><span>Seu próximo capítulo</span><h2>Começa<br/>agora.</h2><div>{c.whatsapp&&<a href={wa(c.whatsapp)}>WhatsApp →</a>}{c.instagramHref&&<a href={c.instagramHref}>Instagram →</a>}</div></section>
   </main><footer className={styles.footer}><span>{name} · {specialty}</span><span>WebAppCap</span></footer>
  </div>;
