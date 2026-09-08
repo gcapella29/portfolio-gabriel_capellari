@@ -22,7 +22,8 @@ const segmentOnly:Partial<Record<SegmentKey,RepeatableSection[]>>={
  'personal-trainer':[
   {key:'method',label:'Método / etapas',description:'Etapas do acompanhamento ou processo.',fields:[{key:'title',label:'Etapa'},{key:'description',label:'Descrição'}],max:16},
   {key:'credentials',label:'Credenciais',description:'Formações, registros e certificações.',fields:[{key:'title',label:'Credencial'},{key:'description',label:'Instituição / detalhe'}],max:20},
-  {key:'results',label:'Resultados',description:'Resultados, casos e conquistas.',fields:[{key:'title',label:'Resultado'},{key:'description',label:'Contexto'}],max:20}
+  {key:'results',label:'Resultados e números',description:'Números, resultados, casos e conquistas exibidos como prova.',fields:[{key:'title',label:'Número / resultado',placeholder:'Ex.: 10+ anos'},{key:'description',label:'Contexto',placeholder:'Ex.: de experiência com acompanhamento individual'}],max:20},
+  {key:'availability',label:'Agenda semanal',description:'Dias, horários e status de disponibilidade mostrados no site.',fields:[{key:'day',label:'Dia',placeholder:'Ex.: Segunda'},{key:'hours',label:'Horário',placeholder:'Ex.: 06:00 — 20:00'},{key:'status',label:'Status',placeholder:'aberta ou fechada'}],max:14}
  ],
  portfolio:[{key:'projects',label:'Projetos / trabalhos',description:'Trabalhos que podem ser apresentados em diferentes layouts.',fields:[{key:'title',label:'Projeto'},{key:'description',label:'Descrição'},{key:'url',label:'Link'}],max:40}],
  'food-business':[{key:'products',label:'Produtos / destaques',description:'Itens, pratos ou produtos principais.',fields:[{key:'title',label:'Nome'},{key:'description',label:'Descrição'},{key:'price',label:'Preço'}],max:50}],
