@@ -24,3 +24,16 @@ export async function uploadProjectImage(projectId:string,file:File,slot:string)
   const sb=await createSupabaseServerClient();const result=await sb.storage.from('webappcap-v2-sites').upload(path,bytes,{contentType:file.type,upsert:false,cacheControl:'31536000'});if(result.error)throw result.error;
   return {path,url:publicMediaUrl(path)};
 }
+
+const videoTypes:Record<string,string>={'video/mp4':'mp4','video/webm':'webm'};
+function hasVideoSignature(bytes:Buffer,type:string){if(type==='video/webm')return bytes.length>4&&bytes.subarray(0,4).equals(Buffer.from([0x1a,0x45,0xdf,0xa3]));if(type==='video/mp4')return bytes.length>12&&bytes.subarray(4,8).toString('ascii')==='ftyp';return false}
+export async function uploadProjectVideo(projectId:string,file:File,slot:string){
+  if(!file||file.size===0)return null;
+  const ext=videoTypes[file.type];if(!ext)throw new Error('Formato de vídeo não permitido. Use MP4 ou WebM.');
+  if(file.size>50*1024*1024)throw new Error('O vídeo deve ter no máximo 50 MB.');
+  const safeSlot=slot.replace(/[^a-z0-9-]/gi,'-').toLowerCase().slice(0,50)||'video';
+  const bytes=Buffer.from(await file.arrayBuffer());if(!hasVideoSignature(bytes,file.type))throw new Error('O arquivo enviado não corresponde a um vídeo válido.');
+  const path=`${projectId}/${safeSlot}-${crypto.randomUUID()}.${ext}`;
+  const sb=await createSupabaseServerClient();const result=await sb.storage.from('webappcap-v2-sites').upload(path,bytes,{contentType:file.type,upsert:false,cacheControl:'31536000'});if(result.error)throw result.error;
+  return {path,url:publicMediaUrl(path),type:file.type};
+}
