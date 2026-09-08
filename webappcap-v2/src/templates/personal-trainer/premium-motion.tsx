@@ -1,62 +1,15 @@
 'use client';
-
 import { useEffect } from 'react';
 
 export function PersonalTrainerPremiumMotion(){
-  useEffect(()=>{
-    const root=document.querySelector<HTMLElement>('[data-pt-premium-root]');
-    if(!root)return;
-    const nodes=Array.from(root.querySelectorAll<HTMLElement>('[data-pt-reveal]'));
-    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if(reduced){nodes.forEach(node=>node.dataset.visible='true');return;}
-
-    root.classList.add('jsMotion');
-    const observer=new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          (entry.target as HTMLElement).dataset.visible='true';
-          observer.unobserve(entry.target);
-        }
-      });
-    },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
-    nodes.forEach(node=>observer.observe(node));
-
-    const hero=root.querySelector<HTMLElement>('[class*="heroMedia"]');
-    const heroCopy=root.querySelector<HTMLElement>('[class*="heroCopy"]');
-    const evidence=root.querySelector<HTMLElement>('[class*="evidenceMedia"] img');
-    const featureImages=Array.from(root.querySelectorAll<HTMLElement>('[class*="featureMedia"] img'));
-    const trainerImage=root.querySelector<HTMLElement>('[class*="trainerMedia"] img');
-    const tape=root.querySelector<HTMLElement>('[class*="tapeTrack"]');
-    let frame=0;
-
-    const render=()=>{
-      frame=0;
-      const y=window.scrollY;
-      const vh=window.innerHeight;
-      if(hero){const p=Math.min(1,y/Math.max(vh,1));hero.style.transform=`translate3d(0,${p*7}%,0) scale(${1.035+p*.035})`;}
-      if(heroCopy){const p=Math.min(1,y/Math.max(vh*.9,1));heroCopy.style.transform=`translate3d(0,${p*42}px,0)`;heroCopy.style.opacity=String(1-p*.42);}
-      const parallax=(el:HTMLElement|null,factor:number)=>{if(!el)return;const r=el.getBoundingClientRect();if(r.bottom<0||r.top>vh)return;const center=r.top+r.height/2-vh/2;el.style.transform=`translate3d(0,${center*factor}px,0) scale(1.055)`;};
-      parallax(evidence,.035);
-      featureImages.forEach((el,i)=>parallax(el,i%2?.025:.04));
-      parallax(trainerImage,.03);
-      if(tape)tape.style.setProperty('--scroll-shift',`${Math.min(y*.025,90)}px`);
-    };
-    const onScroll=()=>{if(!frame)frame=requestAnimationFrame(render);};
-    render();
-    window.addEventListener('scroll',onScroll,{passive:true});
-
-    const magnetic=Array.from(root.querySelectorAll<HTMLElement>('a'));
-    const cleanups: Array<()=>void>=[];
-    magnetic.forEach(el=>{
-      const move=(event:PointerEvent)=>{if(event.pointerType==='touch')return;const r=el.getBoundingClientRect();const x=(event.clientX-r.left-r.width/2)*.08;const y=(event.clientY-r.top-r.height/2)*.12;el.style.transform=`translate3d(${x}px,${y}px,0)`;};
-      const leave=()=>{el.style.transform='';};
-      el.addEventListener('pointermove',move);el.addEventListener('pointerleave',leave);
-      cleanups.push(()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerleave',leave);});
-    });
-
-    return()=>{observer.disconnect();window.removeEventListener('scroll',onScroll);if(frame)cancelAnimationFrame(frame);cleanups.forEach(fn=>fn());};
-  },[]);
-
-  return null;
+ useEffect(()=>{
+  const root=document.querySelector<HTMLElement>('[data-pt-premium-root]');if(!root)return;const nodes=Array.from(root.querySelectorAll<HTMLElement>('[data-pt-reveal]')),reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){nodes.forEach(n=>n.dataset.visible='true');return}root.classList.add('jsMotion');
+  const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){const el=entry.target as HTMLElement;el.dataset.visible='true';reveal.unobserve(el)}}),{threshold:.1,rootMargin:'0px 0px -7% 0px'});nodes.forEach((n,i)=>{n.style.setProperty('--reveal-delay',`${Math.min((i%4)*55,165)}ms`);reveal.observe(n)});
+  const counters=Array.from(root.querySelectorAll<HTMLElement>('[class*="evidenceStats"] strong'));const countObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;const el=entry.target as HTMLElement,original=el.textContent||'',match=original.match(/^(\d+(?:[.,]\d+)?)(.*)$/);if(!match){countObserver.unobserve(el);return}const target=Number(match[1].replace(',','.'));if(!Number.isFinite(target)){countObserver.unobserve(el);return}const suffix=match[2],start=performance.now(),duration=900;const tick=(now:number)=>{const p=Math.min(1,(now-start)/duration),ease=1-Math.pow(1-p,3),val=target*ease;el.textContent=`${Number.isInteger(target)?Math.round(val):val.toFixed(1)}${suffix}`;if(p<1)requestAnimationFrame(tick);else el.textContent=original};requestAnimationFrame(tick);countObserver.unobserve(el)}),{threshold:.6});counters.forEach(el=>countObserver.observe(el));
+  const hero=root.querySelector<HTMLElement>('[class*="heroMedia"]'),heroCopy=root.querySelector<HTMLElement>('[class*="heroCopy"]'),evidence=root.querySelector<HTMLElement>('[class*="evidenceMedia"] img'),featureImages=Array.from(root.querySelectorAll<HTMLElement>('[class*="featureMedia"] img')),trainerImage=root.querySelector<HTMLElement>('[class*="trainerMedia"] img'),resultCards=Array.from(root.querySelectorAll<HTMLElement>('[class*="resultsRail"] figure')),tape=root.querySelector<HTMLElement>('[class*="tapeTrack"]');let frame=0;
+  const render=()=>{frame=0;const y=window.scrollY,vh=window.innerHeight;if(hero){const p=Math.min(1,y/Math.max(vh,1));hero.style.transform=`translate3d(0,${p*8}%,0) scale(${1.035+p*.045})`}if(heroCopy){const p=Math.min(1,y/Math.max(vh*.9,1));heroCopy.style.transform=`translate3d(0,${p*52}px,0)`;heroCopy.style.opacity=String(1-p*.5)}const parallax=(el:HTMLElement|null,factor:number)=>{if(!el)return;const r=el.getBoundingClientRect();if(r.bottom<0||r.top>vh)return;el.style.transform=`translate3d(0,${(r.top+r.height/2-vh/2)*factor}px,0) scale(1.07)`};parallax(evidence,.045);featureImages.forEach((el,i)=>parallax(el,i%2?.03:.05));parallax(trainerImage,.04);resultCards.forEach((el,i)=>{const r=el.getBoundingClientRect();if(r.bottom>0&&r.top<vh){const d=(r.top+r.height/2-vh/2)/vh;el.style.setProperty('--card-shift',`${d*(i%2?12:-12)}px`)}});if(tape)tape.style.setProperty('--scroll-shift',`${Math.min(y*.035,120)}px`)};const onScroll=()=>{if(!frame)frame=requestAnimationFrame(render)};render();window.addEventListener('scroll',onScroll,{passive:true});
+  const magnetic=Array.from(root.querySelectorAll<HTMLElement>('a')),cleanups:Array<()=>void>=[];magnetic.forEach(el=>{const move=(e:PointerEvent)=>{if(e.pointerType==='touch')return;const r=el.getBoundingClientRect();el.style.transform=`translate3d(${(e.clientX-r.left-r.width/2)*.08}px,${(e.clientY-r.top-r.height/2)*.12}px,0)`};const leave=()=>{el.style.transform=''};el.addEventListener('pointermove',move);el.addEventListener('pointerleave',leave);cleanups.push(()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerleave',leave)})});
+  return()=>{reveal.disconnect();countObserver.disconnect();window.removeEventListener('scroll',onScroll);if(frame)cancelAnimationFrame(frame);cleanups.forEach(fn=>fn())}
+ },[]);return null
 }
