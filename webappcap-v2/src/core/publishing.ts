@@ -13,16 +13,19 @@ export async function publishV2Project(projectId:string){
     sb.from('project_v2_content').select('identity,content,media,appearance,contact').eq('project_id',projectId).maybeSingle()
   ]);
   if(state.error)throw state.error;if(draft.error)throw draft.error;
-  if(!state.data?.template_key||!state.data.segment)throw new Error('Escolha um modelo antes de publicar.');
-  const template=getTemplate(state.data.segment as SegmentKey,state.data.template_key);
+  if(!state.data?.segment)throw new Error('O segmento do projeto não está configurado.');
+  if(!draft.data)throw new Error('O rascunho do projeto ainda não existe.');
+  const appearance=(draft.data.appearance||{}) as Record<string,unknown>;
+  const selectedTemplateKey=String(appearance.preview_template_key||state.data.template_key||'').trim();
+  if(!selectedTemplateKey)throw new Error('Escolha um modelo antes de publicar.');
+  const template=getTemplate(state.data.segment as SegmentKey,selectedTemplateKey);
   if(!template)throw new Error('O modelo selecionado não é compatível com este projeto.');
   if(template.status!=='ready')throw new Error('O modelo selecionado ainda não está disponível para publicação.');
   if(state.data.onboarding_step!=='completed')throw new Error('Conclua a configuração inicial antes de publicar.');
-  if(!draft.data)throw new Error('O rascunho do projeto ainda não existe.');
   const identity=draft.data.identity||{},content=draft.data.content||{};
   if(!String((identity as Record<string,unknown>).name||'').trim())throw new Error('Informe o nome do projeto antes de publicar.');
   if(!String((content as Record<string,unknown>).hero_title||'').trim())throw new Error('Informe o título principal do site antes de publicar.');
-  const now=new Date().toISOString(),snapshot=await sb.from('project_v2_public_content').upsert({project_id:projectId,identity,content,media:draft.data.media||{},appearance:draft.data.appearance||{},contact:draft.data.contact||{},published_at:now},{onConflict:'project_id'});if(snapshot.error)throw snapshot.error;
-  const a=await sb.from('project_v2_state').update({lifecycle:'published',onboarding_step:'completed',onboarding_completed_at:now,updated_at:now}).eq('project_id',projectId);if(a.error)throw a.error;
+  const now=new Date().toISOString(),snapshot=await sb.from('project_v2_public_content').upsert({project_id:projectId,identity,content,media:draft.data.media||{},appearance,contact:draft.data.contact||{},published_at:now},{onConflict:'project_id'});if(snapshot.error)throw snapshot.error;
+  const a=await sb.from('project_v2_state').update({template_key:selectedTemplateKey,lifecycle:'published',onboarding_step:'completed',onboarding_completed_at:now,updated_at:now}).eq('project_id',projectId);if(a.error)throw a.error;
   const b=await sb.from('projects').update({is_published:true}).eq('id',projectId);if(b.error)throw b.error;
 }
