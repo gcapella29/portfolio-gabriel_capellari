@@ -6,5 +6,6 @@ export default async function PreviewPage({params}:{params:Promise<{slug:string}
   const {slug}=await params;
   const {project}=await resolveProjectAccess(slug);
   const data=await readV2Content(project.id);
-  return renderTemplate({project:{id:project.id,slug:project.slug,name:project.name,segment:project.segment,templateKey:project.templateKey},data,preview:true});
+  const draftTemplateKey=String(data.appearance.preview_template_key||'').trim()||project.templateKey;
+  return renderTemplate({project:{id:project.id,slug:project.slug,name:project.name,segment:project.segment,templateKey:draftTemplateKey},data,preview:true});
 }
