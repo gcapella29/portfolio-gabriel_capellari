@@ -1,5 +1,7 @@
 import type { ComponentType } from 'react';
 import { PerformanceTrainerTemplate } from './personal-trainer/performance';
+import { EditorialTrainerTemplate } from './personal-trainer/editorial';
+import { VelocityTrainerTemplate } from './personal-trainer/velocity';
 import { LegacyPortfolioTemplate } from './portfolio/legacy';
 import { NativeMainParityPortfolioTemplate } from './portfolio/native-main-parity';
 import type { TemplateRenderProps } from './types';
@@ -7,7 +9,9 @@ import type { TemplateRenderProps } from './types';
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
   'portfolio-legacy-1': LegacyPortfolioTemplate,
   'portfolio-native-1': NativeMainParityPortfolioTemplate,
-  'trainer-performance-1': PerformanceTrainerTemplate
+  'trainer-performance-1': PerformanceTrainerTemplate,
+  'trainer-template-2': EditorialTrainerTemplate,
+  'trainer-template-3': VelocityTrainerTemplate
 };
 
 export function renderTemplate(props:TemplateRenderProps){
