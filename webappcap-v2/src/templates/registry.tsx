@@ -1,15 +1,16 @@
 import type { ComponentType } from 'react';
-import { LegacyPortfolioTemplate } from './portfolio/legacy';
 import { NativeMainParityPortfolioTemplate } from './portfolio/native-main-parity';
 import type { TemplateRenderProps } from './types';
 
 /**
- * WebAppCap v2 is intentionally focused on migrating the current portfolio
- * into the first native WebAppCap project. The legacy renderer remains only
- * as a temporary comparison/migration bridge until cutover is complete.
+ * WebAppCap v2 now has one product target: migrate the current root portfolio
+ * into the first native WebAppCap project with visual and behavioral parity.
+ *
+ * The old iframe renderer is no longer part of the active template registry.
+ * `portfolio-native-1` is the canonical renderer and main/index.html remains
+ * the external source of truth until the production cutover is approved.
  */
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
-  'portfolio-legacy-1': LegacyPortfolioTemplate,
   'portfolio-native-1': NativeMainParityPortfolioTemplate
 };
 
