@@ -31,6 +31,15 @@ const DEMO_STATS=[
  {title:'100%',text:'planejamento adaptado ao aluno'},
  {title:'1:1',text:'atenção individual durante o acompanhamento'}
 ];
+const DEMO_SCHEDULE=[
+ {day:'Seg',hours:'06:00 — 20:00',open:true},
+ {day:'Ter',hours:'06:00 — 20:00',open:true},
+ {day:'Qua',hours:'06:00 — 20:00',open:true},
+ {day:'Qui',hours:'06:00 — 20:00',open:true},
+ {day:'Sex',hours:'06:00 — 18:00',open:true},
+ {day:'Sáb',hours:'08:00 — 12:00',open:true},
+ {day:'Dom',hours:'Fechado',open:false}
+];
 
 export function PerformanceTrainerTemplate(props:TemplateRenderProps){
  const {project,data,preview=false}=props,c=trainerContent(props),name=c.name;
@@ -73,7 +82,7 @@ export function PerformanceTrainerTemplate(props:TemplateRenderProps){
 
    {(c.about||credentials.length||cref)&&<section id="treinador" className={styles.trainer}><div className={styles.trainerMedia}>{photo(2)&&<img src={photo(2)} alt={name}/>}</div><div className={`${styles.trainerCopy} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Seu treinador</span><h2>{name}</h2><p className={styles.about}>{c.about||'Acompanhamento individual para transformar objetivos em um processo claro, consistente e sustentável.'}</p><dl>{cref&&<><dt>Registro</dt><dd>{cref}</dd></>}<dt>Especialidade</dt><dd>{specialty}</dd>{c.location&&<><dt>Atendimento</dt><dd>{c.location}</dd></>}</dl>{credentials.length>0&&<ul>{credentials.map((x,i)=><li key={`${x}-${i}`}>{x}</li>)}</ul>}</div></section>}
 
-   <section id="contato" className={styles.contact}><div className={`${styles.contactPitch} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Comece por aqui</span><h2>{c.scheduleTitle||'Pronto para começar?'}</h2><p>{c.scheduleText||'Conte seu objetivo. A primeira conversa serve para entender seu momento e definir o melhor próximo passo.'}</p>{c.whatsapp&&<a href={wa(c.whatsapp)}>Falar no WhatsApp →</a>}</div><div className={`${styles.formWrap} ${styles.reveal}`} data-pt-reveal><PersonalTrainerLeadForm projectId={project.id}/></div></section>
+   <section id="contato" className={styles.contact}><div className={`${styles.contactPitch} ${styles.reveal}`} data-pt-reveal><span className={styles.sectionLabel}>Disponibilidade</span><h2>{c.scheduleTitle||'Horários disponíveis'}</h2><p>{c.scheduleText||'Confira a agenda semanal e envie seus dados para encontrarmos o melhor horário para você.'}</p><div className={styles.scheduleGrid}>{DEMO_SCHEDULE.map((slot)=><div className={`${styles.scheduleRow} ${slot.open?styles.scheduleOpen:styles.scheduleClosed}`} key={slot.day}><strong>{slot.day}</strong><span>{slot.hours}</span><em>{slot.open?'Agenda aberta':'Agenda fechada'}</em></div>)}</div>{c.whatsapp&&<a href={wa(c.whatsapp)}>Consultar horário no WhatsApp →</a>}</div><div className={`${styles.formWrap} ${styles.reveal}`} data-pt-reveal><PersonalTrainerLeadForm projectId={project.id}/></div></section>
    <section className={styles.final}><span>Seu próximo capítulo</span><h2>Começa<br/>agora.</h2><div>{c.whatsapp&&<a href={wa(c.whatsapp)}>WhatsApp →</a>}{c.instagramHref&&<a href={c.instagramHref}>Instagram →</a>}</div></section>
   </main><footer className={styles.footer}><span>{name} · {specialty}</span><span>WebAppCap</span></footer>
  </div>;
