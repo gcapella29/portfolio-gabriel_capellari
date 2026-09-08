@@ -17,7 +17,7 @@ export default async function AppearancePage({params,searchParams}:{params:Promi
     <section className="editor-section" style={{marginBottom:'1.5rem'}}>
       <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:'1rem',flexWrap:'wrap',marginBottom:'1rem'}}>
         <div><span className="eyebrow dark-text">MODELO DO SITE</span><h2 style={{margin:'.3rem 0'}}>Escolha a experiência visual</h2><p style={{margin:0,maxWidth:720}}>Todos os modelos abaixo usam o mesmo conteúdo do seu projeto. Você pode experimentar à vontade no preview antes de publicar.</p></div>
-        <Link className="action" href={`/preview/${encodeURIComponent(project.slug)}`} target="_blank">Abrir preview ↗</Link>
+        <div style={{display:'flex',gap:'.6rem',flexWrap:'wrap'}}><Link className="action" href={`/template-lab/${project.segment}/${encodeURIComponent(project.slug)}`} target="_blank">Comparar no Template Lab ↗</Link><Link className="action" href={`/preview/${encodeURIComponent(project.slug)}`} target="_blank">Abrir preview ↗</Link></div>
       </div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:'1rem'}}>
         {templates.map(item=>{
