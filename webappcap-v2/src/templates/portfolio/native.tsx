@@ -7,7 +7,7 @@ import type { TemplateRenderProps } from '../types';
 import { portfolioDefaults as defaults, type LocalizedText } from './native-data';
 import styles from './native.module.css';
 
-const headingFont=Fraunces({subsets:['latin'],weight:['500','600'],style:['normal','italic'],variable:'--portfolio-heading',display:'swap'});
+const headingFont=Fraunces({subsets:['latin'],weight:'variable',style:['normal','italic'],axes:['opsz'],variable:'--portfolio-heading',display:'swap'});
 const bodyFont=Inter({subsets:['latin'],weight:['400','500','600'],variable:'--portfolio-body',display:'swap'});
 const monoFont=IBM_Plex_Mono({subsets:['latin'],weight:['400','500','600','700'],variable:'--portfolio-mono',display:'swap'});
 
@@ -91,7 +91,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
       <div ref={heroBackgroundRef} className={styles.heroBackground} style={{backgroundImage:`linear-gradient(180deg,rgba(8,39,32,.55),rgba(8,39,32,.88) 62%,#082720),url(${hero})`,backgroundPosition:'center 18%'}}/>
       <div className={styles.heroContent}>
         <div className={styles.heroTop}><span>{location}</span></div>
-        <div className={styles.heroCopy}><h1>{firstName}<br/><em>{surname}&quot;</em></h1><p>{localized(role,language)}</p><div className={styles.chips}>{defaults.identity.languages.map(item=><span key={item.pt}>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
+        <div className={styles.heroCopy}><h1>{firstName}<br/><em>{surname}&quot;</em></h1><p>{localized(role,language)}</p><div className={styles.chips}>{defaults.identity.languages.map(item=><span key={item.pt}><i className={styles.chipFlag} data-country={item.country} aria-hidden="true"/>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
       </div>
     </header>
     <div className={styles.tickerWrap} aria-hidden="true">

@@ -7,7 +7,7 @@ export const portfolioDefaults={
     name:'Gabriel Capellari',
     location:'Ibitinga · SP · BR',
     role:{pt:'Jornalista de Poker · Professor · Redator · Curioso · Aprendiz .\'.',en:'Poker journalist · Live tournament reporter · SEO writer · Learner .·.'},
-    languages:[{pt:'🇧🇷 Português — nativo',en:'🇧🇷 Portuguese — native'},{pt:'🇬🇧 Inglês — B2',en:'🇬🇧 English — B2'},{pt:'🇪🇸 Espanhol — C2',en:'🇪🇸 Spanish — C2'}]
+    languages:[{country:'br',pt:'Português — nativo',en:'Portuguese — native'},{country:'gb',pt:'Inglês — B2',en:'English — B2'},{country:'es',pt:'Espanhol — C2',en:'Spanish — C2'}]
   },
   ticker:['WSOP Las Vegas','WSOP Brasil','BSOP Millions','LAPT Panamá','BSOP/LAPT Rio','LAPT Montevidéu','WPT World Championship'],
   stats:[
