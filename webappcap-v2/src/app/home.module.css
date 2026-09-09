@@ -81,7 +81,31 @@
 @media(max-width:760px){
   .nav{width:calc(100% - 24px)}.navScrolled{top:8px;height:64px}.nav .brand{font-size:.86rem}.nav .brand>span{width:29px;height:29px;font-size:1rem}.nav nav{right:0;left:0;min-width:0}.login{display:none}.menuButton{margin-left:auto}.projectCard:hover{transform:none}.controlSteps li:hover{padding-right:0;padding-left:0;background:transparent}
 }
-@media(hover:none){.processGrid article:hover,.assuranceStrip>span:hover,.dashboardDemo:hover,.projectCard:hover,.caseFacts span:hover{transform:none}.demoFields label:hover{transform:none;box-shadow:none}}
+@media(hover:none){.processGrid article:hover,.assuranceStrip>span:hover,.dashboardDemo:hover,.projectCard:hover,.caseFacts span:hover{transform:none}.processGrid article:hover{padding-right:1.5rem;background:transparent;box-shadow:none}.processGrid article:first-child:hover{padding-left:0}.processGrid article+article:hover{padding-left:1.5rem}.demoFields label:hover{transform:none;box-shadow:none}}
 @media(prefers-reduced-motion:reduce){
   .site[data-motion-ready="true"] [data-reveal],.site[data-motion-ready="true"] .heroVisual[data-reveal]{opacity:1;translate:0 0;transition:none!important}.nav,.navProgress,.menuButton span,.processGrid article>i,.assuranceStrip>span,.assuranceStrip i,.controlSteps li,.controlSteps li>span,.demoBody aside>span,.demoFields label,.demoActions button,.projectCard,.caseFacts span,.tags span,.contactDirect a{transition:none!important}.leadForm>button:after{animation:none!important}
+}
+
+/* Mobile audit: preserve media, avoid iOS zoom and keep every control touch-friendly. */
+@media(max-width:760px){
+  .hero{min-height:max(720px,100svh)}
+  .menuButton{width:44px;height:44px;flex:0 0 44px}
+  .heroActions a{width:100%;min-height:54px}
+  .projectPreview{min-height:clamp(380px,118vw,460px)}
+  .projectInfo{min-height:auto;padding:2rem 1.4rem}
+  .projectInfo>div:nth-child(2){margin:1rem 0 0}
+  .contact{padding-right:20px;padding-left:20px}
+  .contactForm{width:100%}
+  .leadForm input,.leadForm select,.leadForm textarea{font-size:16px}
+  .leadForm>button{width:100%;min-height:48px;justify-self:stretch;line-height:1.35;text-align:center}
+}
+@media(max-width:760px) and (hover:none){
+  .processGrid article:hover,.processGrid article:first-child:hover,.processGrid article+article:hover{padding:1.5rem 0}
+}
+@media(max-width:380px){
+  .hero h1{font-size:clamp(3.35rem,18vw,4.25rem)}
+  .dashboardDemo{margin-right:-16px;margin-left:-16px}
+  .demoContent{padding:.85rem}
+  .demoNotice{padding:.7rem}
+  .projectInfo{padding-right:1.15rem;padding-left:1.15rem}
 }

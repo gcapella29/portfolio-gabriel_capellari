@@ -48,3 +48,15 @@
 }
 @keyframes goldGlow{50%{text-shadow:0 0 26px rgba(227,187,61,.32)}}
 @keyframes mainTicker{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+
+@media(hover:none){
+  .mainParity :global(#destaques[data-visible="true"])>*:hover,.mainParity :global(#portfolio)>div:last-child>a:hover,.mainParity :global(#formacao) article:hover,.mainParity :global(#formacao [class*="skillStack"] span:hover),.mainParity :global(#instagram) a:hover{transform:none!important;box-shadow:none!important}
+  .mainParity :global(#sobre) div:hover>img,.mainParity :global(#contato) div:hover>img{transform:none!important}
+  .mainParity :global(#cobertura)>div>div:hover{padding-left:1.15rem!important;background:linear-gradient(90deg,rgba(255,255,255,.018),transparent)!important}
+  .mainParity :global(#experiencia) article:hover{padding-left:1.45rem!important;background:transparent!important}
+  .mainParity :global(#contato) a:hover,.mainParity :global(#contato) button:hover{padding-left:0!important;background:transparent!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .mainParity :global(#inicio) h1 em{animation:none!important}
+  .mainParity :global(#inicio)+div[aria-hidden="true"]>div{animation:none!important}
+}
