@@ -92,6 +92,7 @@
 .profile h3{font-size:1.35rem}.profile p{max-width:56ch;color:#3a342c;font-size:.92rem}
 .socialRow{display:flex;align-items:center;gap:.6rem;margin:1rem 0}.socialRow>span{color:var(--muted);font:500 .68rem/1 var(--portfolio-mono),'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
 .socialRow a{display:grid;place-items:center;width:33px;height:33px;border:1px solid #d8cfb5;border-radius:8px;text-decoration:none;font:700 .62rem/1 var(--portfolio-mono),'IBM Plex Mono',monospace;transition:transform .3s var(--ui-ease),background .25s ease,border-color .25s ease,box-shadow .3s ease}
+.socialRow svg{display:block;width:16px;height:16px}
 .socialRow a:hover{transform:translateY(-4px) scale(1.04);border-color:var(--brick);background:#fff;box-shadow:0 8px 22px rgba(168,60,46,.12)}
 .pressCards{display:grid;grid-template-columns:1fr;gap:.9rem}
 .pressCards>a{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.1rem 1.2rem;border:1px solid #e2dbc8;border-radius:14px;background:rgba(255,255,255,.55);text-decoration:none;position:relative;overflow:hidden;transition:transform .5s var(--ui-ease),box-shadow .5s var(--ui-ease),border-color .35s ease}
