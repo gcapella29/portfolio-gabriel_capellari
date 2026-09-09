@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { readPublicSiteBySlug } from '@/core/public-site';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const clean=(value:FormDataEntryValue|null,max:number)=>String(value||'').trim().replace(/[\u0000-\u001f\u007f]/g,' ').slice(0,max);
@@ -14,7 +15,13 @@ export async function POST(request:Request){
   const type=request.headers.get('content-type')||'';if(!type.includes('multipart/form-data')&&!type.includes('application/x-www-form-urlencoded'))return json({ok:false,error:'unsupported_media_type'},415);
   let form:FormData;try{form=await request.formData()}catch{return json({ok:false,error:'invalid_form'},400)}
   if(clean(form.get('website'),200))return json({ok:true});
-  const projectId=clean(form.get('projectId'),60),name=clean(form.get('name'),120),phoneValue=clean(form.get('phone'),40),message=clean(form.get('message'),1000);
+  let projectId=clean(form.get('projectId'),60);
+  const projectSlug=clean(form.get('projectSlug'),60).toLowerCase();
+  const name=clean(form.get('name'),120),phoneValue=clean(form.get('phone'),40),message=clean(form.get('message'),1000);
+  if(!uuid.test(projectId)&&/^[a-z0-9-]{2,60}$/.test(projectSlug)){
+    const publicSite=await readPublicSiteBySlug(projectSlug);
+    projectId=publicSite?.project.id||'';
+  }
   if(!uuid.test(projectId)||name.length<2||!phone.test(phoneValue)||message.length<3)return json({ok:false,error:'invalid_input'},400);
   if(limited(clientKey(request,projectId)))return json({ok:false,error:'rate_limited'},429);
 

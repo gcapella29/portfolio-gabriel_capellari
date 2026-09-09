@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Fraunces, IBM_Plex_Mono, Inter } from 'next/font/google';
+import { HomeLeadForm } from './home-lead-form';
 import styles from './home.module.css';
 
 const headingFont=Fraunces({subsets:['latin'],weight:'variable',axes:['opsz'],variable:'--home-heading',display:'swap'});
@@ -12,11 +13,14 @@ export const metadata:Metadata={
   description:'Sites profissionais, rápidos e fáceis de atualizar. Conheça os projetos criados pela WebAppCap.'
 };
 
-const benefits=[
-  {number:'01',title:'Seu site, de verdade',text:'Uma presença digital com identidade própria — sem cara de modelo pronto e sem depender de redes sociais.'},
-  {number:'02',title:'Você no controle',text:'Atualize textos, imagens e informações em um painel simples. Salve, confira no preview e publique quando estiver pronto.'},
-  {number:'03',title:'Preparado para crescer',text:'Estrutura rápida, responsiva e organizada para evoluir junto com o seu trabalho ou negócio.'}
+const steps=[
+  {number:'01',title:'Você conta sua ideia',text:'Entendemos seu trabalho, seu público e o que o site precisa alcançar.'},
+  {number:'02',title:'Criamos sua presença',text:'Conteúdo, identidade e estrutura são transformados em uma experiência feita para você.'},
+  {number:'03',title:'Você revisa no preview',text:'Confira cada detalhe em um endereço reservado antes de qualquer mudança ir ao ar.'},
+  {number:'04',title:'Publicamos e você assume',text:'O site entra no seu domínio e o painel fica pronto para as próximas atualizações.'}
 ];
+
+const assurances=['Identidade própria','Painel simples','Preview antes de publicar','Responsivo por padrão'];
 
 export default function HomePage(){
   return <main className={`${styles.site} ${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
@@ -24,6 +28,7 @@ export default function HomePage(){
       <a className={styles.brand} href="#inicio" aria-label="WebAppCap — início"><span>W</span>WebAppCap</a>
       <nav aria-label="Navegação principal">
         <a href="#como-funciona">Como funciona</a>
+        <a href="#painel">Painel</a>
         <a href="#projetos">Projetos</a>
         <a href="#contato">Contato</a>
       </nav>
@@ -52,18 +57,44 @@ export default function HomePage(){
     <div className={styles.marquee} aria-hidden="true"><div><span>IDENTIDADE DIGITAL ◆</span><span>DESIGN RESPONSIVO ◆</span><span>PAINEL DE CONTEÚDO ◆</span><span>DOMÍNIO PRÓPRIO ◆</span><span>IDENTIDADE DIGITAL ◆</span><span>DESIGN RESPONSIVO ◆</span><span>PAINEL DE CONTEÚDO ◆</span><span>DOMÍNIO PRÓPRIO ◆</span></div></div>
 
     <section className={styles.intro} id="como-funciona">
-      <div className={styles.sectionLabel}><span>01</span> Uma presença que é sua</div>
+      <div className={styles.sectionLabel}><span>01</span> Do primeiro contato à publicação</div>
       <div className={styles.introCopy}>
-        <h2>Mais do que uma página bonita.</h2>
-        <p>Construímos uma base digital para apresentar seu trabalho, conquistar confiança e transformar visitas em oportunidades.</p>
+        <h2>Um caminho simples até o seu site.</h2>
+        <p>Você não precisa entender de código, hospedagem ou configuração. A WebAppCap organiza o processo e deixa as decisões importantes nas suas mãos.</p>
       </div>
-      <div className={styles.benefitGrid}>{benefits.map(item=><article key={item.number}><span>{item.number}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+      <div className={styles.processGrid}>{steps.map(item=><article key={item.number}><span>{item.number}</span><i aria-hidden="true"/><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+      <div className={styles.assuranceStrip}>{assurances.map(item=><span key={item}><i aria-hidden="true">✓</i>{item}</span>)}</div>
+    </section>
+
+    <section className={styles.control} id="painel">
+      <div className={styles.controlCopy}>
+        <div className={`${styles.sectionLabel} ${styles.lightLabel}`}><span>02</span> Seu site continua nas suas mãos</div>
+        <h2>Mude o conteúdo.<br/><em>Não o código.</em></h2>
+        <p>O painel reúne o que você precisa para manter o site vivo. Edite com tranquilidade, confira o resultado e escolha quando publicar.</p>
+        <ol className={styles.controlSteps}>
+          <li><span>01</span><div><strong>Edite</strong><small>Textos, imagens e informações em campos claros.</small></div></li>
+          <li><span>02</span><div><strong>Confira</strong><small>O preview mostra as mudanças antes do público.</small></div></li>
+          <li><span>03</span><div><strong>Publique</strong><small>Quando estiver pronto, coloque a nova versão no ar.</small></div></li>
+        </ol>
+      </div>
+      <div className={styles.dashboardDemo} aria-label="Demonstração visual do painel WebAppCap">
+        <div className={styles.demoTop}><span><i/><i/><i/></span><small>painel.webappcap.com.br</small><b>ONLINE</b></div>
+        <div className={styles.demoBody}>
+          <aside><strong><i>W</i> WebAppCap</strong><span className={styles.demoActive}>▣ Conteúdo</span><span>▧ Aparência</span><span>◫ Mídia</span><span>◇ Domínio</span><span>◎ Leads</span></aside>
+          <div className={styles.demoContent}>
+            <div className={styles.demoHeader}><div><small>CONTEÚDO</small><h3>Seu site, do seu jeito.</h3></div><span>Preview ↗</span></div>
+            <div className={styles.demoNotice}><i/>Alterações salvas no rascunho. Confira no preview antes de publicar.</div>
+            <div className={styles.demoFields}><label><span>Título principal</span><b>Seu trabalho merece um site à altura.</b></label><label><span>Texto de apresentação</span><b>Uma presença digital feita para crescer com você.</b></label></div>
+            <div className={styles.demoActions}><span>Rascunho atualizado</span><button type="button" tabIndex={-1}>Publicar alterações</button></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section className={styles.projects} id="projetos">
       <div className={styles.projectsHeader}>
-        <div className={styles.sectionLabel}><span>02</span> Projetos no ar</div>
-        <div><h2>Criados para pessoas reais.</h2><p>Cada projeto nasce do conteúdo, dos objetivos e da personalidade de quem está por trás dele.</p></div>
+        <div className={styles.sectionLabel}><span>03</span> Projeto fundador</div>
+        <div><h2>Primeiro usamos em casa.</h2><p>O portfólio de Gabriel Capellari nasceu como site independente e se tornou o primeiro projeto completo construído sobre a base do WebAppCap.</p></div>
       </div>
       <article className={styles.projectCard}>
         <a className={styles.projectPreview} href="/native-preview/portfolio" aria-label="Abrir o portfólio de Gabriel Capellari">
@@ -72,22 +103,27 @@ export default function HomePage(){
           <div className={styles.previewName}><span>Gabriel</span><em>Capellari</em></div>
         </a>
         <div className={styles.projectInfo}>
-          <span className={styles.projectNumber}>PROJETO 01</span>
-          <div><span className={styles.live}><i/> NO AR</span><h3>Gabriel Capellari</h3><p>Portfólio editorial bilíngue para jornalista de poker, com experiências, coberturas internacionais e canais de contato.</p></div>
-          <div className={styles.tags}><span>Portfólio</span><span>Jornalismo</span><span>Bilíngue</span></div>
+          <span className={styles.projectNumber}>ESTUDO DE CASO · 01</span>
+          <div><span className={styles.live}><i/> NO AR</span><h3>Gabriel Capellari</h3><p>Um portfólio editorial que reúne trajetória, coberturas internacionais, trabalhos publicados e contato — com conteúdo gerenciado pelo próprio painel.</p></div>
+          <div className={styles.caseFacts}><span><b>PT / EN</b>Experiência bilíngue</span><span><b>100%</b>Responsivo</span><span><b>PAINEL</b>Conteúdo e mídia</span></div>
+          <div className={styles.tags}><span>Portfólio</span><span>Jornalismo</span><span>Leads integrados</span></div>
           <a href="/native-preview/portfolio">Visitar projeto <span>↗</span></a>
         </div>
       </article>
     </section>
 
     <section className={styles.contact} id="contato">
-      <span className={styles.contactKicker}>TEM UM PROJETO EM MENTE?</span>
-      <h2>Vamos colocar sua ideia <em>no ar.</em></h2>
-      <p>Conte o que você precisa. A gente conversa, organiza o projeto e transforma tudo em um site com a sua identidade.</p>
-      <div className={styles.contactActions}>
-        <a className={styles.primaryButton} href="https://wa.me/5516997168229?text=Ol%C3%A1%2C%20Gabriel!%20Quero%20conversar%20sobre%20um%20site." target="_blank" rel="noreferrer">Falar pelo WhatsApp <span>↗</span></a>
-        <a className={styles.contactEmail} href="mailto:gcapellari1@gmail.com">gcapellari1@gmail.com</a>
+      <div className={styles.contactPitch}>
+        <span className={styles.contactKicker}>04 · TEM UM PROJETO EM MENTE?</span>
+        <h2>Vamos colocar sua ideia <em>no ar.</em></h2>
+        <p>Conte o que você precisa. Eu organizo o projeto e retorno com os próximos passos para transformar a ideia em um site com identidade.</p>
+        <div className={styles.contactDirect}>
+          <span>Prefere conversar agora?</span>
+          <a href="https://wa.me/5516997168229?text=Ol%C3%A1%2C%20Gabriel!%20Quero%20conversar%20sobre%20um%20site." target="_blank" rel="noreferrer">WhatsApp ↗</a>
+          <a href="mailto:gcapellari1@gmail.com">gcapellari1@gmail.com</a>
+        </div>
       </div>
+      <HomeLeadForm/>
     </section>
 
     <footer className={styles.footer}><a className={styles.brand} href="#inicio"><span>W</span>WebAppCap</a><p>Sites com identidade. Gestão sem complicação.</p><span>© 2026 WEBAPPCAP</span></footer>
