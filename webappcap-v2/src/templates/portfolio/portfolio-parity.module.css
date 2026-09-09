@@ -10,6 +10,7 @@
 .mainParity :global(#destaques)>*{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease!important}
 .mainParity :global(#destaques[data-visible="true"])>*{opacity:1;transform:translateY(0)}
 .mainParity :global(#destaques[data-visible="true"])>*:nth-child(1){transition-delay:.03s!important}.mainParity :global(#destaques[data-visible="true"])>*:nth-child(2){transition-delay:.08s!important}.mainParity :global(#destaques[data-visible="true"])>*:nth-child(3){transition-delay:.13s!important}.mainParity :global(#destaques[data-visible="true"])>*:nth-child(4){transition-delay:.18s!important}
+.mainParity :global(#destaques[data-visible="true"])>*:hover{transform:translateY(-6px)!important;border-color:rgba(227,187,61,.24)!important;box-shadow:0 18px 45px rgba(0,0,0,.16)!important}
 
 /* Main ticker: exact height, spacing and 24s continuous motion. */
 .mainParity :global(#inicio)+div[aria-hidden="true"]{background:var(--gold)!important;color:var(--dark)!important;overflow:hidden!important;white-space:nowrap!important;border-top:1px solid var(--dark)!important;border-bottom:1px solid var(--dark)!important;box-shadow:none!important}
