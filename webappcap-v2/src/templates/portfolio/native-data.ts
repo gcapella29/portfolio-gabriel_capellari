@@ -26,7 +26,7 @@ export const portfolioDefaults={
   featured:{
     eyebrow:{pt:'Cobertura em destaque',en:'Featured coverage'},title:'WSOP Las Vegas',
     description:{pt:'Quatro edições consecutivas da World Series of Poker em Las Vegas, de 2022 a 2025 — com cobertura também do WPT World Championship em 2022. Experiência internacional em reportagem ao vivo, produção editorial e conteúdo para a audiência brasileira de poker.',en:'Four consecutive editions of the World Series of Poker in Las Vegas, from 2022 to 2025 — also covering the WPT World Championship in 2022. International experience in live reporting, editorial production and content for Brazilian poker audiences.'},
-    years:['2022','2023','2024','2025','Las Vegas · EUA']
+    years:[{pt:'2022',en:'2022'},{pt:'2023',en:'2023'},{pt:'2024',en:'2024'},{pt:'2025',en:'2025'},{pt:'Las Vegas · EUA',en:'Las Vegas · USA'}]
   },
   coverage:[
     ['WSOP — Las Vegas','2022 · 2023 · 2024 · 2025'],['WSOP & WPT World Championship — Las Vegas','2022'],['WSOP Brasil','2022'],['BSOP Millions','2022 · 2023 · 2025'],['BSOP São Paulo','2023 · 2024'],['BSOP Winter Millions','2023 · 2025 (remoto)'],['BSOP / LAPT Foz do Iguaçu','2023'],['BSOP / LAPT Rio','2024'],['LAPT Montevidéu','2023'],['LAPT Panamá','2024']
@@ -48,16 +48,16 @@ export const portfolioDefaults={
     {role:{pt:'Professor de Inglês',en:'English Teacher'},years:'2017 — 2022',organization:'Escola EDUCARE',description:{pt:'Conduzi aulas de inglês para o ensino fundamental, reforçando fundamentos de leitura, escrita e conversação.',en:'Taught English in elementary school, reinforcing foundations of reading, writing and conversation.'}},
     {role:{pt:'Assistente de Laboratório de TI',en:'IT Lab Assistant'},years:'2011 — 2013',organization:'Prescon Informática Assessoria LTDA',description:{pt:'Prestei suporte técnico e apoio operacional em laboratórios de informática.',en:'Provided technical and operational support in computer labs.'}}
   ] as CareerItem[],
-  education:[['Bacharelado e Licenciatura em Letras (Português/Inglês)','UNESP — Araraquara · 2018/2019'],['Técnico em Informática','Centro Paula Souza — ETEC Ibitinga · 2010'],['Certificação em SEO Best Practices','Better Collective · 2024']] as Array<[string,string]>,
-  skills:['Inglês B2','Espanhol C2','SEO','Cobertura ao vivo','ChatGPT · Gemini · Claude','Canva','CapCut','Google Workspace','Microsoft Office','CNH categoria AB'],
+  education:[[{pt:'Bacharelado e Licenciatura em Letras (Português/Inglês)',en:'Bachelor’s and Teaching Degree in Languages (Portuguese/English)'},'UNESP — Araraquara · 2018/2019'],[{pt:'Técnico em Informática',en:'IT Technician'},'Centro Paula Souza — ETEC Ibitinga · 2010'],[{pt:'Certificação em SEO Best Practices',en:'SEO Best Practices Certification'},'Better Collective · 2024']] as Array<[LocalizedText,string]>,
+  skills:[{pt:'Inglês B2',en:'English B2'},{pt:'Espanhol C2',en:'Spanish C2'},{pt:'SEO',en:'SEO'},{pt:'Cobertura ao vivo',en:'Live reporting'},{pt:'ChatGPT · Gemini · Claude',en:'ChatGPT · Gemini · Claude'},{pt:'Canva',en:'Canva'},{pt:'CapCut',en:'CapCut'},{pt:'Google Workspace',en:'Google Workspace'},{pt:'Microsoft Office',en:'Microsoft Office'},{pt:'CNH categoria AB',en:'Brazilian driver’s license — AB'}],
   galleryMeta:[
-    {year:'2022',alt:'Gabriel Capellari na WSOP Las Vegas em 2022'},
-    {year:'2022',alt:'Gabriel Capellari trabalhando na cobertura da WSOP Las Vegas em 2022'},
-    {year:'2023',alt:'Gabriel Capellari na equipe de cobertura da WSOP Las Vegas em 2023'},
-    {year:'2024',alt:'Gabriel Capellari durante a cobertura da WSOP Las Vegas em 2024'},
-    {year:'2025',alt:'Gabriel Capellari trabalhando com produção de vídeo na WSOP Las Vegas em 2025'},
-    {year:'2025',alt:'Gabriel Capellari realizando uma entrevista na WSOP Las Vegas em 2025'},
-    {year:'2025',alt:'Gabriel Capellari trabalhando no salão da WSOP Las Vegas em 2025'}
+    {year:'2022',alt:{pt:'Gabriel Capellari na WSOP Las Vegas em 2022',en:'Gabriel Capellari at the 2022 WSOP in Las Vegas'}},
+    {year:'2022',alt:{pt:'Gabriel Capellari trabalhando na cobertura da WSOP Las Vegas em 2022',en:'Gabriel Capellari reporting from the 2022 WSOP in Las Vegas'}},
+    {year:'2023',alt:{pt:'Gabriel Capellari na equipe de cobertura da WSOP Las Vegas em 2023',en:'Gabriel Capellari with the reporting team at the 2023 WSOP in Las Vegas'}},
+    {year:'2024',alt:{pt:'Gabriel Capellari durante a cobertura da WSOP Las Vegas em 2024',en:'Gabriel Capellari during coverage of the 2024 WSOP in Las Vegas'}},
+    {year:'2025',alt:{pt:'Gabriel Capellari trabalhando com produção de vídeo na WSOP Las Vegas em 2025',en:'Gabriel Capellari working on video production at the 2025 WSOP in Las Vegas'}},
+    {year:'2025',alt:{pt:'Gabriel Capellari realizando uma entrevista na WSOP Las Vegas em 2025',en:'Gabriel Capellari conducting an interview at the 2025 WSOP in Las Vegas'}},
+    {year:'2025',alt:{pt:'Gabriel Capellari trabalhando no salão da WSOP Las Vegas em 2025',en:'Gabriel Capellari working on the tournament floor at the 2025 WSOP in Las Vegas'}}
   ],
   media:{hero:'/assets/media/hero-gabriel.jpg',about:'/assets/media/about-gabriel.jpg',profile:'/assets/media/portfolio-gabriel.jpg',instagram:'/assets/media/instagram-gabriel.jpg',contact:'/assets/media/contact-gabriel.jpg',wsop:['/assets/media/wsop-01.jpg','/assets/media/wsop-02.jpg','/assets/media/wsop-03.png','/assets/media/wsop-04.jpg','/assets/media/wsop-05.jpg','/assets/media/wsop-06.jpg','/assets/media/wsop-07.jpg']},
   contact:{email:'gcapellari@hotmail.com',emailAlt:'gcapellari1@gmail.com',whatsapp:'5516997168229',whatsappLabel:'+55 16 99716-8229',instagram:'gabrielcapellari',linkedin:'https://www.linkedin.com/in/gabriel-capellari-5347ba14b/',reel:'https://www.instagram.com/p/DZK3eH_uRzP/embed',cv:'/legacy-portfolio/CV-Gabriel-Capellari.pdf'}
