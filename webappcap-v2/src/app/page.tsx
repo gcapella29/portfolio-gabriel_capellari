@@ -23,7 +23,11 @@ const steps=[
 ];
 
 const assurances=['Identidade própria','Painel simples','Preview antes de publicar','Responsivo por padrão'];
-const marqueeItems=['IDENTIDADE DIGITAL ◆','DESIGN RESPONSIVO ◆','PAINEL DE CONTEÚDO ◆','DOMÍNIO PRÓPRIO ◆'];
+const marqueeItems=[
+  'IDENTIDADE DIGITAL ◆','DESIGN RESPONSIVO ◆','PAINEL DE CONTEÚDO ◆','DOMÍNIO PRÓPRIO ◆',
+  'SITES COM IDENTIDADE ◆','GESTÃO SEM COMPLICAÇÃO ◆','PREVIEW ANTES DE PUBLICAR ◆','PERFORMANCE EM QUALQUER TELA ◆',
+  'IDENTIDADE DIGITAL ◆','DESIGN RESPONSIVO ◆','PAINEL DE CONTEÚDO ◆','DOMÍNIO PRÓPRIO ◆'
+];
 
 export default function HomePage(){
   return <main className={`${styles.site} ${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`} data-home-root>
