@@ -7,6 +7,8 @@ const links=[
   {href:'#como-funciona',label:'Como funciona'},
   {href:'#painel',label:'Painel'},
   {href:'#projetos',label:'Projetos'},
+  {href:'#servicos',label:'Serviços'},
+  {href:'#duvidas',label:'Dúvidas'},
   {href:'#contato',label:'Contato'}
 ];
 

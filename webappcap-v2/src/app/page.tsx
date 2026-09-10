@@ -29,6 +29,28 @@ const marqueeItems=[
   'IDENTIDADE DIGITAL ◆','DESIGN RESPONSIVO ◆','PAINEL DE CONTEÚDO ◆','DOMÍNIO PRÓPRIO ◆'
 ];
 
+const services=[
+  {number:'01',title:'Portfólio profissional',text:'Uma presença autoral para apresentar sua trajetória, projetos, serviços e formas de contato.',items:['Identidade sob medida','Conteúdo organizado','Painel para atualizar']},
+  {number:'02',title:'Site institucional',text:'Uma base sólida para negócios que precisam explicar o que fazem e transformar visitas em oportunidades.',items:['Páginas estratégicas','Formulário de leads','Experiência responsiva']},
+  {number:'03',title:'Landing page',text:'Uma página direta para divulgar um serviço, validar uma ideia ou conduzir uma campanha específica.',items:['Mensagem objetiva','Chamada para ação','Publicação rápida']}
+];
+
+const commitments=[
+  {label:'ESCOPO',title:'Tudo definido antes',text:'Você sabe o que será criado, quais conteúdos entram e como será a entrega.'},
+  {label:'PREVIEW',title:'Nada vai ao ar no escuro',text:'O site fica disponível para revisão em um endereço reservado antes da publicação.'},
+  {label:'CONTROLE',title:'O conteúdo continua seu',text:'Depois da entrega, o painel permite atualizar textos, imagens e informações.'},
+  {label:'SUPORTE',title:'Acompanhamento de verdade',text:'Você recebe orientação para revisar, publicar e assumir a gestão do projeto.'}
+];
+
+const questions=[
+  {question:'Preciso ter todo o conteúdo pronto?',answer:'Não. Podemos começar organizando sua ideia, suas referências e o material que já existe. A estrutura do site ajuda a revelar o que ainda precisa ser produzido.'},
+  {question:'Consigo atualizar o site sozinho?',answer:'Sim. Textos, imagens e informações principais ficam reunidos em um painel simples. Você confere as mudanças no preview e decide quando publicar.'},
+  {question:'O site funciona bem no celular?',answer:'Sim. Cada projeto é desenvolvido e revisado para computador, tablet e celular, com atenção a leitura, navegação, imagens e formulários.'},
+  {question:'Domínio e hospedagem estão incluídos?',answer:'A configuração é orientada conforme a necessidade do projeto. Antes de começar, você recebe uma definição clara do que será contratado, configurado e mantido.'},
+  {question:'Quanto tempo leva para ficar pronto?',answer:'O prazo depende do tamanho do site e da disponibilidade do conteúdo. Depois do briefing, você recebe um escopo com etapas e previsão de entrega.'},
+  {question:'Como começamos?',answer:'Envie o formulário ou chame pelo WhatsApp. Primeiro entendemos seu objetivo; depois você recebe os próximos passos, sem compromisso.'}
+];
+
 export default function HomePage(){
   return <main className={`${styles.site} ${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`} data-home-root>
     <HomeMotion/>
@@ -115,9 +137,35 @@ export default function HomePage(){
       </article>
     </section>
 
+    <section className={styles.services} id="servicos">
+      <div className={styles.servicesHeader} data-reveal>
+        <div className={`${styles.sectionLabel} ${styles.lightLabel}`}><span>04</span> Formatos de projeto</div>
+        <div><h2>O ponto de partida para a sua presença digital.</h2><p>Cada site nasce de uma necessidade diferente. Escolha o formato mais próximo da sua ideia — o escopo final é sempre ajustado ao seu projeto.</p></div>
+      </div>
+      <div className={styles.serviceGrid}>
+        {services.map((service,index)=><article key={service.number} data-reveal data-reveal-delay={String(index*90)}>
+          <div className={styles.serviceTop}><span>{service.number}</span><i aria-hidden="true">↗</i></div>
+          <h3>{service.title}</h3><p>{service.text}</p>
+          <ul>{service.items.map(item=><li key={item}>{item}</li>)}</ul>
+          <a href="#contato">Conversar sobre este formato <span>→</span></a>
+        </article>)}
+      </div>
+      <div className={styles.servicesNote} data-reveal><span>PROJETO SOB MEDIDA</span><p>Sem pacote engessado: conteúdo, quantidade de páginas, integrações e prazo são definidos depois de entendermos o que você realmente precisa.</p><a href="#contato">Pedir uma proposta ↘</a></div>
+    </section>
+
+    <section className={styles.trust}>
+      <div className={styles.trustIntro} data-reveal><span>CONFIANÇA / 001</span><h2>Clareza do primeiro contato à publicação.</h2><p>Um bom site também depende de um bom processo. Estes são os compromissos que orientam cada projeto WebAppCap.</p></div>
+      <div className={styles.commitmentGrid}>{commitments.map((item,index)=><article key={item.label} data-reveal data-reveal-delay={String(index*70)}><span>{item.label}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+    </section>
+
+    <section className={styles.faq} id="duvidas">
+      <div className={styles.faqHeading} data-reveal><div className={styles.sectionLabel}><span>05</span> Antes de começar</div><h2>Perguntas que ajudam a tirar a ideia do papel.</h2></div>
+      <div className={styles.faqList} data-reveal data-reveal-delay="100">{questions.map((item,index)=><details key={item.question}><summary><span>{String(index+1).padStart(2,'0')}</span>{item.question}<i aria-hidden="true">+</i></summary><p>{item.answer}</p></details>)}</div>
+    </section>
+
     <section className={styles.contact} id="contato">
       <div className={styles.contactPitch} data-reveal>
-        <span className={styles.contactKicker}>04 · TEM UM PROJETO EM MENTE?</span>
+        <span className={styles.contactKicker}>06 · TEM UM PROJETO EM MENTE?</span>
         <h2>Vamos colocar sua ideia <em>no ar.</em></h2>
         <p>Conte o que você precisa. Eu organizo o projeto e retorno com os próximos passos para transformar a ideia em um site com identidade.</p>
         <div className={styles.contactDirect}>
