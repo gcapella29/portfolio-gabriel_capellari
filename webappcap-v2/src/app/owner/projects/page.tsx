@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { logout } from '@/app/login/actions';
 import { requireUser } from '@/core/session';
 import { projectsForUser } from '@/core/projects';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -77,6 +78,7 @@ export default async function OwnerProjectsPage(){
         </div>
         <div className={styles.topActions}>
           <Link className={styles.buttonGhost} href="/entry">Área do cliente</Link>
+          <form action={logout}><button type="submit" className={styles.buttonGhost}>Sair</button></form>
           <Link className={styles.button} href="/owner/projects/new">+ Novo cliente</Link>
         </div>
       </header>
