@@ -11,8 +11,8 @@ export default async function AppearancePage({params,searchParams}:{params:Promi
   const selectedTemplate=v(data.appearance,'preview_template_key')||project.templateKey||'';
   return <div className="editor-page">
     <header><span className="eyebrow dark-text">APARÊNCIA</span><h1>Personalize sem quebrar o template.</h1><p>Troque o modelo visual sem perder textos, fotos, contatos ou dados do projeto. A mudança aparece primeiro no preview e só chega ao site publicado quando você clicar em Publicar.</p></header>
-    {saved&&<div className="notice success">Aparência salva.</div>}
-    {template&&<div className="notice success">Modelo alterado no preview. O site publicado continua igual até a próxima publicação.</div>}
+    {saved&&<div className="notice success"><strong>Rascunho salvo.</strong> A aparência foi atualizada no Preview; o site público ainda não mudou.</div>}
+    {template&&<div className="notice success"><strong>Modelo salvo no rascunho.</strong> Confira no Preview e publique quando estiver tudo certo.</div>}
 
     <section className="editor-section" style={{marginBottom:'1.5rem'}}>
       <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:'1rem',flexWrap:'wrap',marginBottom:'1rem'}}>

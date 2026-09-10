@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './backend-interactions.css';
 
 export const metadata: Metadata = {
   title: 'WebAppCap v2',
