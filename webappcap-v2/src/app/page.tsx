@@ -23,6 +23,7 @@ const steps=[
 ];
 
 const assurances=['Identidade própria','Painel simples','Preview antes de publicar','Responsivo por padrão'];
+const marqueeItems=['IDENTIDADE DIGITAL ◆','DESIGN RESPONSIVO ◆','PAINEL DE CONTEÚDO ◆','DOMÍNIO PRÓPRIO ◆'];
 
 export default function HomePage(){
   return <main className={`${styles.site} ${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`} data-home-root>
@@ -48,7 +49,11 @@ export default function HomePage(){
       </div>
     </section>
 
-    <div className={styles.marquee} aria-hidden="true"><div><span>IDENTIDADE DIGITAL ◆</span><span>DESIGN RESPONSIVO ◆</span><span>PAINEL DE CONTEÚDO ◆</span><span>DOMÍNIO PRÓPRIO ◆</span><span>IDENTIDADE DIGITAL ◆</span><span>DESIGN RESPONSIVO ◆</span><span>PAINEL DE CONTEÚDO ◆</span><span>DOMÍNIO PRÓPRIO ◆</span></div></div>
+    <div className={styles.marquee} aria-hidden="true">
+      <div className={styles.marqueeTrack}>
+        {[0,1].map(group=><div className={styles.marqueeGroup} key={group}>{marqueeItems.map(item=><span key={item}>{item}</span>)}</div>)}
+      </div>
+    </div>
 
     <section className={styles.intro} id="como-funciona">
       <div className={styles.sectionLabel} data-reveal><span>01</span> Do primeiro contato à publicação</div>
