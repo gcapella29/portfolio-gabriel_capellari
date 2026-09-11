@@ -8,7 +8,8 @@ import styles from '../owner.module.css';
 
 const fmtDate=(value:string|null)=>value?new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(value)):'—';
 
-export default async function OwnerProjectsPage(){
+export default async function OwnerProjectsPage({searchParams}:{searchParams:Promise<{deleted?:string}>}){
+  const query=await searchParams;
   const user=await requireUser();
   const projects=(await projectsForUser(user.id)).filter(project=>project.owner_id===user.id);
   const ids=projects.map(project=>project.id);
@@ -101,6 +102,8 @@ export default async function OwnerProjectsPage(){
         <article className={styles.stat}><span>Novos leads</span><strong>{newLeads}</strong><small>aguardando atendimento</small></article>
         <article className={styles.stat}><span>Precisam de atenção</span><strong>{attention}</strong><small>leads, domínio ou publicação</small></article>
       </section>
+
+      {query.deleted&&<div className={styles.ownerNotice} role="status"><strong>Projeto excluído.</strong> {query.deleted} foi removido da operação e não está mais publicado.</div>}
 
       <div className={styles.operationGrid}>
         <section className={styles.section}>

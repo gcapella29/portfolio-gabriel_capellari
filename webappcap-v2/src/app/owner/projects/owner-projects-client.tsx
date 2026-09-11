@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import DeleteProjectDialog from './delete-project-dialog';
 import styles from '../owner.module.css';
 
 export type OwnerProjectView = {
@@ -74,6 +75,7 @@ export default function OwnerProjectsClient({projects}:{projects:OwnerProjectVie
           <Link href={`/dashboard/${encodeURIComponent(project.slug)}`} className={styles.cardAction}>Dashboard</Link>
           {project.leadsTotal>0&&<Link href={`/dashboard/${encodeURIComponent(project.slug)}/leads`} className={styles.cardAction}>Leads</Link>}
           {project.published&&<a href={`https://${host}`} target="_blank" rel="noopener noreferrer" className={styles.cardAction}>Ver site ↗</a>}
+          {project.siteType!=='portfolio'&&<DeleteProjectDialog target={{slug:project.slug,name:project.name}}/>}
         </div>
       </article>})}</div>}
   </>;
