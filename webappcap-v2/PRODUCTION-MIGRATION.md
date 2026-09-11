@@ -1,5 +1,13 @@
 # WebAppCap v2 — Production Migration Runbook
 
+> **Status em 11/09/2026:** migração de domínios concluída e homologada. A raiz
+> `webappcap.com.br`, `www.webappcap.com.br` e o wildcard `*.webappcap.com.br`
+> estão no projeto v2; o portfólio está publicado em
+> `capellari.webappcap.com.br`. O projeto Fábio e seu domínio foram removidos.
+> As etapas abaixo permanecem como histórico e plano de rollback; instruções
+> que mandam manter apex ou wildcard no projeto legado não representam mais o
+> estado atual.
+
 ## Current safety boundary
 
 - Keep `main` unchanged until the final cutover is explicitly approved.

@@ -2,7 +2,7 @@ name: WebAppCap v2 CI
 
 on:
   push:
-    branches: [refactor/webappcap-core-v2]
+    branches: [main, refactor/webappcap-core-v2]
     paths:
       - 'webappcap-v2/**'
       - '.github/workflows/webappcap-v2-ci.yml'
@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: webappcap-v2/package.json
-      - run: npm install --no-audit --no-fund
+          cache-dependency-path: webappcap-v2/package-lock.json
+      - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
       - run: npm run build

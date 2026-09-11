@@ -1,6 +1,14 @@
 # WebAppCap v2 — Release Gate
 
-Status: **homologação estrutural pronta; migração de produção bloqueada até aprovação explícita.**
+Status: **migração funcional e de domínios homologada; auditoria final em andamento antes da integração com `main`.**
+
+Estado confirmado em 11/09/2026:
+- `webappcap.com.br` e `www.webappcap.com.br` servem a plataforma v2.
+- `capellari.webappcap.com.br` serve o portfólio nativo publicado.
+- `*.webappcap.com.br` está vinculado ao projeto v2.
+- Projetos de teste e o domínio Fábio foram removidos.
+- Rascunho, preview, publicação, login/logout, leads, exclusão e layouts desktop/mobile foram homologados.
+- A branch `main` permanece inalterada.
 
 ## 1. Segurança e isolamento
 - [x] Acesso de projeto resolvido server-side por usuário + projeto.

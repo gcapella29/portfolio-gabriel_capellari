@@ -3,8 +3,8 @@ import './globals.css';
 import './backend-interactions.css';
 
 export const metadata: Metadata = {
-  title: 'WebAppCap v2',
-  description: 'Nova base do WebAppCap'
+  title: 'WebAppCap',
+  description: 'Sites profissionais com identidade própria e gestão simples.'
 };
 
 export default function RootLayout({children}:{children:React.ReactNode}) {

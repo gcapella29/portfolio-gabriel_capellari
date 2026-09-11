@@ -12,7 +12,16 @@ const monoFont=IBM_Plex_Mono({subsets:['latin'],weight:['400','500','600','700']
 
 export const metadata:Metadata={
   title:'WebAppCap — Sites que trabalham por você',
-  description:'Sites profissionais, rápidos e fáceis de atualizar. Conheça os projetos criados pela WebAppCap.'
+  description:'Sites profissionais, rápidos e fáceis de atualizar. Conheça os projetos criados pela WebAppCap.',
+  alternates:{canonical:'https://www.webappcap.com.br'},
+  openGraph:{
+    title:'WebAppCap — Sites que trabalham por você',
+    description:'Sites profissionais, rápidos e fáceis de atualizar. Conheça os projetos criados pela WebAppCap.',
+    url:'https://www.webappcap.com.br',
+    siteName:'WebAppCap',
+    locale:'pt_BR',
+    type:'website'
+  }
 };
 
 const steps=[
