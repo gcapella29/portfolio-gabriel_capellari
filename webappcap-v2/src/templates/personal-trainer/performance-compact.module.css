@@ -1,0 +1,113 @@
+.scope{display:contents}
+
+/* Compact fidelity pass: preserve the editorial language while removing oversized empty vertical space. */
+@media(min-width:901px){
+ .scope :global([class*="intro"]){padding-top:88px;padding-bottom:88px}
+ .scope :global([class*="introBody"]){padding-top:38px}
+ .scope :global([class*="evidence"]),.scope :global([class*="evidenceMedia"]){min-height:68svh}
+ .scope :global([class*="features"]){padding:64px 0}
+ .scope :global([class*="feature"]){margin-bottom:58px}
+ .scope :global([class*="featureCopy"]){min-height:440px;padding:54px clamp(38px,5vw,76px)}
+ .scope :global([class*="featureMedia"]){min-height:520px}
+ .scope :global([class*="quote"]){padding-top:88px;padding-bottom:88px}
+ .scope :global([class*="results"]){padding:88px 0}
+ .scope :global([class*="resultsRail"]){height:min(62svh,640px)}
+ .scope :global([class*="method"]){padding-top:88px;padding-bottom:88px}
+ .scope :global([class*="goals"]){padding-top:82px;padding-bottom:82px}
+ .scope :global([class*="goalGrid"] article){min-height:320px}
+ .scope :global([class*="trainer"]),.scope :global([class*="trainerMedia"]){min-height:72svh}
+ .scope :global([class*="contact"]){padding-top:78px;padding-bottom:78px}
+ .scope :global([class*="final"]){padding-top:88px;padding-bottom:48px}
+}
+
+@media(max-width:900px){
+ .scope :global([class*="hero"]){min-height:76svh!important}
+ .scope :global([class*="heroCopy"]){padding-top:118px!important;padding-bottom:74px!important}
+ .scope :global([class*="heroCopy"] h1){font-size:clamp(48px,12.5vw,72px)!important;line-height:.84!important;max-width:9ch!important}
+ .scope :global([class*="heroCopy"] p){font-size:13px!important;line-height:1.48!important;max-width:32ch!important;margin-top:16px!important}
+ .scope :global([class*="primary"]){min-height:42px!important;padding:12px 16px!important;margin-top:20px!important}
+ .scope :global([class*="heroFoot"]){bottom:14px!important}
+ .scope :global([class*="tape"]){height:34px!important}
+
+ .scope :global([class*="intro"]){padding:48px 18px!important;gap:10px!important}
+ .scope :global([class*="intro"] h2){font-size:46px!important;line-height:.82!important;max-width:8ch!important}
+ .scope :global([class*="introBody"]){padding-top:8px!important}
+ .scope :global([class*="introBody"] h3){font-size:22px!important;margin-bottom:10px!important}
+ .scope :global([class*="introBody"] p){font-size:13px!important;line-height:1.55!important;margin-bottom:0!important}
+
+ .scope :global([class*="evidenceMedia"]){min-height:36svh!important}
+ .scope :global([class*="evidenceStats"]){display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;padding:30px 18px!important;gap:0 12px!important}
+ .scope :global([class*="evidenceStats"] [class*="sectionLabel"]){grid-column:1/-1;margin-bottom:18px!important}
+ .scope :global([class*="evidenceStats"] article){display:block!important;padding:14px 0!important;border-top:1px solid rgba(255,255,255,.18)!important}
+ .scope :global([class*="evidenceStats"] strong){display:block;font-size:38px!important;line-height:.85!important;margin-bottom:9px!important}
+ .scope :global([class*="evidenceStats"] p){font-size:10px!important;line-height:1.35!important;max-width:14ch!important}
+
+ .scope :global([class*="features"]){display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:0!important;gap:1px!important;background:#d7d3cb!important}
+ .scope :global([class*="feature"]){display:flex!important;flex-direction:column!important;margin:0!important;background:var(--up-paper)!important;min-width:0!important}
+ .scope :global([class*="featureMedia"]){order:1!important;min-height:0!important;height:38vw!important;max-height:190px!important;margin:0!important;clip-path:none!important}
+ .scope :global([class*="featureCopy"]){order:2!important;min-height:0!important;padding:20px 14px 24px!important;justify-content:flex-start!important}
+ .scope :global([class*="featureCopy"] [class*="sectionLabel"]){font-size:7px!important;margin-bottom:10px!important}
+ .scope :global([class*="featureCopy"] h2){font-size:28px!important;line-height:.88!important;max-width:8ch!important;margin-bottom:10px!important}
+ .scope :global([class*="featureCopy"] p){font-size:11px!important;line-height:1.45!important;margin:0 0 14px!important;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+ .scope :global([class*="featureCopy"] a){font-size:7px!important;margin-top:auto!important}
+
+ .scope :global([class*="quote"]){padding:48px 18px!important}
+ .scope :global([class*="quote"] blockquote){font-size:30px!important;line-height:.98!important;max-width:17ch!important}
+
+ .scope :global([class*="results"]){padding:52px 0!important}
+ .scope :global([class*="resultsIntro"]){padding:0 18px!important;margin-bottom:24px!important;gap:10px!important}
+ .scope :global([class*="resultsIntro"] h2){font-size:44px!important;line-height:.84!important}
+ .scope :global([class*="resultsIntro"] p){font-size:12px!important;line-height:1.5!important;margin-top:0!important}
+ .scope :global([class*="resultsRail"]){height:46svh!important;min-height:360px!important;padding:0 18px 8px!important;gap:8px!important}
+ .scope :global([class*="resultsRail"] figure),.scope :global([class*="resultsRail"] article){flex-basis:72vw!important}
+ .scope :global([class*="resultsRail"] figure[data-active="true"]),.scope :global([class*="resultsRail"] article[data-active="true"]){flex-basis:72vw!important}
+ .scope :global([class*="resultsRail"] figcaption){padding:16px!important}
+
+ .scope :global([class*="method"]){padding:50px 18px!important;gap:24px!important}
+ .scope :global([class*="methodIntro"] h2){font-size:44px!important;line-height:.84!important}
+ .scope :global([class*="methodIntro"] p){font-size:12px!important;line-height:1.5!important;margin-top:14px!important}
+ .scope :global([class*="methodList"] article){grid-template-columns:34px 1fr!important;padding:17px 0!important;gap:10px!important}
+ .scope :global([class*="methodList"] h3){font-size:24px!important;line-height:.95!important}
+ .scope :global([class*="methodList"] p){font-size:11px!important;line-height:1.45!important;margin-top:4px!important}
+
+ .scope :global([class*="goals"]){padding:50px 18px!important;overflow:hidden!important}
+ .scope :global([class*="goalsHead"]){margin-bottom:24px!important;gap:10px!important}
+ .scope :global([class*="goalsHead"] h2){font-size:42px!important;line-height:.84!important;max-width:9ch!important}
+ .scope :global([class*="goalsHead"] p){font-size:12px!important;line-height:1.5!important}
+ .scope :global([class*="goalGrid"]){display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory!important;gap:8px!important;border-top:0!important;padding-bottom:6px!important;scrollbar-width:none}
+ .scope :global([class*="goalGrid"]::-webkit-scrollbar){display:none}
+ .scope :global([class*="goalGrid"] article){flex:0 0 72vw!important;scroll-snap-align:start!important;padding:24px 18px!important;min-height:240px!important;border:1px solid #d4d0c8!important;background:#f7f6f3!important}
+ .scope :global([class*="goalGrid"] h3){font-size:34px!important;line-height:.9!important;margin:30px 0 12px!important}
+ .scope :global([class*="goalGrid"] p){font-size:11px!important;line-height:1.45!important}
+
+ .scope :global([class*="trainerMedia"]){min-height:42svh!important}
+ .scope :global([class*="trainerCopy"]){padding:46px 18px!important}
+ .scope :global([class*="trainerCopy"] h2){font-size:46px!important;line-height:.84!important}
+ .scope :global([class*="trainerCopy"] [class*="about"]){font-size:12px!important;line-height:1.55!important}
+ .scope :global([class*="trainerCopy"] dl){margin-top:20px!important}
+ .scope :global([class*="trainerCopy"] dt),.scope :global([class*="trainerCopy"] dd){padding:9px 0!important;font-size:10px!important}
+
+ .scope :global([class*="contact"]){padding:50px 18px!important;gap:26px!important}
+ .scope :global([class*="contact"] h2){font-size:44px!important;line-height:.84!important}
+ .scope :global([class*="contactPitch"] p){font-size:12px!important;line-height:1.5!important}
+ .scope :global([class*="scheduleGrid"]){margin-top:20px!important}
+ .scope :global([class*="scheduleRow"]){padding:8px 0!important;grid-template-columns:42px 1fr auto!important;gap:8px!important}
+ .scope :global([class*="scheduleRow"] strong),.scope :global([class*="scheduleRow"] span){font-size:10px!important}
+ .scope :global([class*="scheduleRow"] em){font-size:6px!important;grid-column:auto!important}
+ .scope :global([class*="formWrap"]){padding:20px!important}
+
+ .scope :global([class*="final"]){padding:48px 18px 32px!important}
+ .scope :global([class*="final"] h2){font-size:70px!important;line-height:.72!important;margin:14px 0 24px!important}
+ .scope :global([class*="footer"]){padding:16px 18px!important}
+}
+
+@media(max-width:420px){
+ .scope :global([class*="features"]){grid-template-columns:1fr 1fr!important}
+ .scope :global([class*="featureMedia"]){height:40vw!important}
+ .scope :global([class*="featureCopy"]){padding:16px 12px 20px!important}
+ .scope :global([class*="featureCopy"] h2){font-size:25px!important}
+ .scope :global([class*="featureCopy"] p){-webkit-line-clamp:3}
+ .scope :global([class*="evidenceStats"]){gap:0 8px!important}
+ .scope :global([class*="evidenceStats"] strong){font-size:34px!important}
+ .scope :global([class*="resultsRail"]){min-height:330px!important;height:44svh!important}
+}

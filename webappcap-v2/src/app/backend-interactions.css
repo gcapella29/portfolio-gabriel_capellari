@@ -1,0 +1,179 @@
+/* Shared motion and feedback language for the authenticated WebAppCap UI. */
+@keyframes backend-notice-in {
+  from { opacity: 0; transform: translateY(-10px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.action,
+.text-link,
+.segment-card,
+.setup-actions a,
+[class*="dashboard_button"],
+[class*="dashboard_publish"],
+[class*="dashboard_logout"],
+[class*="dashboard_nav__"] a,
+[class*="dashboard_sidebarBottom__"] a,
+[class*="dashboard_tool__"],
+[class*="owner_button"],
+[class*="owner_cardPrimary"],
+[class*="owner_cardAction"],
+[class*="owner_filter"],
+[class*="owner_activityItem"],
+[class*="owner_ownerShortcuts__"] a {
+  transition: transform .22s cubic-bezier(.2,.75,.25,1), box-shadow .22s ease,
+    background-color .22s ease, border-color .22s ease, color .22s ease;
+}
+
+.action:focus-visible,
+.text-link:focus-visible,
+.segment-card:focus-visible,
+.setup-actions a:focus-visible,
+[class*="dashboard_button"]:focus-visible,
+[class*="dashboard_publish"]:focus-visible,
+[class*="dashboard_logout"]:focus-visible,
+[class*="dashboard_nav__"] a:focus-visible,
+[class*="dashboard_sidebarBottom__"] a:focus-visible,
+[class*="dashboard_tool__"]:focus-visible,
+[class*="owner_button"]:focus-visible,
+[class*="owner_cardPrimary"]:focus-visible,
+[class*="owner_cardAction"]:focus-visible,
+[class*="owner_filter"]:focus-visible,
+[class*="owner_activityItem"]:focus-visible,
+[class*="owner_ownerShortcuts__"] a:focus-visible {
+  outline: 3px solid rgba(84,93,255,.3);
+  outline-offset: 3px;
+}
+
+.action:active:not(:disabled),
+.text-link:active,
+.segment-card:active,
+.setup-actions a:active,
+[class*="dashboard_button"]:active,
+[class*="dashboard_publish"]:active,
+[class*="dashboard_logout"]:active,
+[class*="dashboard_nav__"] a:active,
+[class*="dashboard_sidebarBottom__"] a:active,
+[class*="dashboard_tool__"]:active,
+[class*="owner_button"]:active,
+[class*="owner_cardPrimary"]:active,
+[class*="owner_cardAction"]:active,
+[class*="owner_filter"]:active,
+[class*="owner_activityItem"]:active,
+[class*="owner_ownerShortcuts__"] a:active {
+  transform: translateY(1px) scale(.98);
+}
+
+.editor-page > .notice {
+  position: relative;
+  margin: 1rem 0;
+  padding: 1rem 1.1rem 1rem 3.25rem;
+  border: 1px solid #d7ddd9;
+  border-radius: 15px;
+  background: #fff;
+  color: #35423b;
+  box-shadow: 0 14px 34px rgba(10,22,18,.09);
+  line-height: 1.5;
+  animation: backend-notice-in .38s cubic-bezier(.2,.75,.25,1) both;
+}
+
+.editor-page > .notice::before {
+  content: "i";
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  width: 1.45rem;
+  height: 1.45rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e8ece9;
+  color: #435149;
+  font-size: .72rem;
+  font-weight: 900;
+  transform: translateY(-50%);
+}
+
+.editor-page > .notice.success {
+  border-color: #bfe4cc;
+  background: linear-gradient(135deg,#f5fff8,#eaf7ee);
+  color: #1f6038;
+}
+
+.editor-page > .notice.success::before,
+div[class*="dashboard_notice__"]::before {
+  content: "✓";
+  background: #1f7a46;
+  color: #fff;
+  box-shadow: 0 0 0 5px rgba(31,122,70,.1);
+}
+
+.editor-page > .notice strong { font-weight: 900; }
+
+div[class*="dashboard_notice__"] {
+  position: relative;
+  padding: 14px 16px 14px 46px;
+  border-color: #bfe6ce;
+  background: linear-gradient(135deg,#f4fff7,#e8f8ee);
+  box-shadow: 0 14px 34px rgba(23,102,58,.1);
+  animation: backend-notice-in .38s cubic-bezier(.2,.75,.25,1) both;
+}
+
+div[class*="dashboard_notice__"]::before {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 900;
+  transform: translateY(-50%);
+}
+
+@media (hover: hover) {
+  .action:hover:not(:disabled),
+  .setup-actions a:hover,
+  [class*="dashboard_button"]:hover,
+  [class*="dashboard_publish"]:hover,
+  [class*="owner_button"]:hover,
+  [class*="owner_cardPrimary"]:hover,
+  [class*="owner_cardAction"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(17,24,39,.16);
+  }
+
+  [class*="dashboard_buttonGhost"]:hover,
+  [class*="owner_buttonGhost"]:hover {
+    background: #fff;
+    border-color: #cbd2dd;
+  }
+
+  [class*="dashboard_publish"]:hover,
+  [class*="dashboard_button__"]:hover,
+  [class*="owner_button__"]:hover {
+    background: #202b3d;
+  }
+
+  [class*="dashboard_tool__"]:hover b { transform: translateX(3px); }
+  [class*="dashboard_tool__"] b { transition: transform .22s ease; }
+  [class*="dashboard_sidebarBottom__"] a:hover,
+  [class*="dashboard_logout"]:hover,
+  [class*="owner_activityItem"]:hover,
+  [class*="owner_ownerShortcuts__"] a:hover { transform: translateX(3px); }
+  [class*="owner_filter"]:hover { transform: translateY(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action,
+  .text-link,
+  .segment-card,
+  .setup-actions a,
+  [class*="dashboard_"],
+  [class*="owner_"],
+  .editor-page > .notice {
+    animation: none !important;
+    transition: none !important;
+  }
+}

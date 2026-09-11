@@ -1,0 +1,215 @@
+.scope{display:contents}
+.scope :global([data-pt-premium-root]){--up-paper:#f7f6f3;--up-ink:#151513;--up-muted:#66655f;--up-beige:#d8d4c8;--type-hero:clamp(64px,7.2vw,116px);--type-section:clamp(42px,4.6vw,72px);--type-card:clamp(26px,2.4vw,38px);--type-body:15px;background:var(--up-ink)}
+.scope :global([class*="topBar"]){height:38px;background:#151513!important;color:#fff!important;border-bottom:1px solid rgba(255,255,255,.12)}
+.scope :global([class*="topBar"] a){border-left:1px solid rgba(255,255,255,.14)!important}
+.scope :global([class*="topAction"]){background:var(--pt-accent)!important;color:#111!important}
+.scope :global([class*="header"]){top:38px;height:68px;background:rgba(15,15,14,.38);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.scope :global([class*="hero"]){min-height:78svh}
+.scope :global([class*="heroMedia"]){overflow:hidden}
+.scope :global([class*="heroMedia"] img),.scope :global([class*="heroMedia"] video){filter:saturate(.84) contrast(1.06);object-position:center;transform:scale(1.01)}
+.scope :global([class*="heroPoster"]){position:absolute;inset:0;z-index:0}
+.scope :global([class*="heroMedia"] video){position:absolute;inset:0;z-index:1}
+.scope :global([class*="heroShade"]){background:linear-gradient(90deg,rgba(10,10,9,.86),rgba(10,10,9,.45) 45%,rgba(10,10,9,.08) 72%),linear-gradient(0deg,rgba(10,10,9,.62),transparent 48%)}
+.scope :global([class*="heroCopy"]){width:min(760px,68%);padding-left:clamp(24px,5vw,80px);padding-bottom:clamp(82px,10vh,120px)}
+.scope :global([class*="heroCopy"] h1){font-size:var(--type-hero);line-height:.82;max-width:9ch;letter-spacing:-.045em}
+.scope :global([class*="heroCopy"] p){font-size:var(--type-body);max-width:40ch;line-height:1.55}
+.scope :global([class*="primary"]){min-width:220px;padding:15px 18px;background:#fff!important;color:#151513!important}
+.scope :global([class*="heroFoot"]){left:clamp(24px,5vw,80px)}
+.scope :global([class*="tape"]){height:38px;background:var(--pt-accent)!important}
+.scope :global([class*="tape"] span){font-size:7px}
+
+/* 01 — proposition + proof: one compact chapter */
+.scope :global([class*="intro"]){background:var(--up-paper);padding:clamp(64px,7vw,104px) clamp(24px,6vw,96px);grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,90px);align-items:center}
+.scope :global([class*="intro"] h2){font-size:var(--type-section);line-height:.88;max-width:8ch;color:var(--up-ink);letter-spacing:-.035em}
+.scope :global([class*="introBody"]){padding-top:0}
+.scope :global([class*="introBody"] h3){font-size:var(--type-card);line-height:.95;max-width:15ch}
+.scope :global([class*="introBody"] p){font-size:var(--type-body);line-height:1.6;color:var(--up-muted);max-width:42ch}
+.scope :global([class*="evidence"]){min-height:0;height:clamp(420px,48vw,620px);background:var(--up-ink);grid-template-columns:1.15fr .85fr}
+.scope :global([class*="evidenceMedia"]){min-height:0;height:100%;position:relative}
+.scope :global([class*="evidenceMedia"] img){object-position:center}
+.scope :global([class*="evidenceStats"]){padding:clamp(34px,4vw,60px)}
+.scope :global([class*="evidenceStats"] article){grid-template-columns:minmax(105px,.7fr) 1fr;padding:18px 0;gap:18px}
+.scope :global([class*="evidenceStats"] strong){font-size:clamp(42px,4.8vw,72px);line-height:.8;color:#fff!important}
+.scope :global([class*="evidenceStats"] p){font-size:12px;line-height:1.45;color:#d6d2c4;text-transform:none}
+
+/* 02 — services: all offers visible at once; no four full-screen chapters */
+.scope :global([class*="features"]){background:var(--up-paper);padding:clamp(64px,7vw,104px) clamp(24px,6vw,96px);display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.scope :global([class*="feature"]){display:flex!important;flex-direction:column;width:auto;margin:0!important;min-height:0!important;border:1px solid rgba(22,20,18,.12);background:#fff}
+.scope :global([class*="featureMedia"]){order:1!important;min-height:0!important;height:clamp(180px,20vw,290px);margin:0!important;clip-path:none!important;background:#d8d5ce}
+.scope :global([class*="featureMedia"] img){transform:none;object-position:center}
+.scope :global([class*="featureCopy"]){order:2!important;min-height:0!important;padding:24px 20px 26px;display:block}
+.scope :global([class*="featureCopy"] h2){font-size:var(--type-card);line-height:.9;max-width:10ch;color:var(--up-ink);letter-spacing:-.025em}
+.scope :global([class*="featureCopy"] p){font-size:13px;line-height:1.5;color:#595652;max-width:none;margin:14px 0 18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.scope :global([class*="featureCopy"] a){font-size:8px;padding-bottom:5px}
+.scope :global([class*="quote"]){display:none}
+
+/* 03 — results: one strong proof section */
+.scope :global([class*="results"]){background:var(--up-ink);color:#fff;padding:clamp(64px,7vw,104px) 0}
+.scope :global([class*="resultsIntro"]){margin-bottom:36px}
+.scope :global([class*="resultsIntro"] h2){color:#fff;font-size:var(--type-section);line-height:.88;max-width:10ch}
+.scope :global([class*="resultsIntro"] p){color:#c5c1ba;font-size:var(--type-body);line-height:1.55}
+.scope :global([class*="resultsIntro"] [class*="sectionLabel"]){color:var(--pt-accent)}
+.scope :global([class*="resultsRail"]){display:flex;gap:8px;overflow:visible;padding:0 clamp(24px,6vw,96px);height:clamp(300px,38vw,480px)}
+.scope :global([class*="resultsRail"] figure),.scope :global([class*="resultsRail"] article){flex:1 1 0;min-width:0;height:100%;transition:flex .55s cubic-bezier(.16,1,.3,1)}
+.scope :global([class*="resultsRail"] figure[data-active="true"]),.scope :global([class*="resultsRail"] article[data-active="true"]){flex:2.6 1 0}
+.scope :global([class*="resultsRail"] img){height:104%;top:-2%;position:relative;object-fit:cover}
+.scope :global([class*="resultsRail"] figcaption){padding:18px;background:linear-gradient(transparent,rgba(0,0,0,.82))}
+.scope :global([class*="resultsRail"] figcaption span){writing-mode:horizontal-tb!important;transform:none!important}
+.scope :global([class*="resultsRail"] figure[data-active="true"] figcaption small){opacity:.82;max-height:70px}
+
+/* 04 — method: compact explanation; goals are folded into this chapter */
+.scope :global([class*="method"]){background:var(--up-paper);color:var(--up-ink);padding:clamp(64px,7vw,104px) clamp(24px,6vw,96px);grid-template-columns:.8fr 1.2fr;gap:clamp(36px,6vw,90px)}
+.scope :global([class*="methodIntro"]){position:static!important}
+.scope :global([class*="methodIntro"] [class*="sectionLabel"]){color:#77736d!important}
+.scope :global([class*="methodIntro"] h2){color:var(--up-ink);font-size:var(--type-section);line-height:.88}
+.scope :global([class*="methodIntro"] p),.scope :global([class*="methodList"] p){color:#625f5a!important;font-size:13px;line-height:1.5}
+.scope :global([class*="methodList"]){border-color:rgba(22,20,18,.18)}
+.scope :global([class*="methodList"] article){border-color:rgba(22,20,18,.18);padding:20px 0;grid-template-columns:52px minmax(130px,.65fr) 1fr;gap:16px}
+.scope :global([class*="methodList"] article>span){color:#6d6963!important;font-size:8px}
+.scope :global([class*="methodList"] h3){font-size:clamp(24px,2.2vw,34px);line-height:.95}
+.scope :global([class*="goals"]){display:none}
+
+/* 05 — professional */
+.scope :global([class*="trainer"]){background:#fff;color:var(--up-ink);min-height:0;height:clamp(440px,48vw,620px)}
+.scope :global([class*="trainerMedia"]){min-height:0;height:100%;position:relative}
+.scope :global([class*="trainerMedia"] img){object-position:center}
+.scope :global([class*="trainerCopy"]){padding:clamp(38px,5vw,72px)}
+.scope :global([class*="trainerCopy"] h2){font-size:var(--type-section);line-height:.88}
+.scope :global([class*="trainerCopy"] [class*="about"]){font-size:14px;line-height:1.55}
+.scope :global([class*="trainerCopy"] dl){margin-top:20px}
+.scope :global([class*="trainerCopy"] dt),.scope :global([class*="trainerCopy"] dd){padding:9px 0}
+.scope :global([class*="trainerCopy"] ul){padding-top:10px;font-size:13px}
+
+/* 06 — conversion: contact is the ending; duplicate giant final CTA is removed */
+.scope :global([class*="contact"]){background:var(--pt-accent)!important;color:var(--up-ink)!important;border-top:0;padding:clamp(56px,6vw,88px) clamp(24px,6vw,96px);gap:clamp(32px,6vw,80px);align-items:start}
+.scope :global([class*="contact"] h2){font-size:var(--type-section);line-height:.88}
+.scope :global([class*="scheduleGrid"]){margin-top:20px;border-top:1px solid rgba(22,20,18,.2)}
+.scope :global([class*="scheduleRow"]){display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(22,20,18,.18)}
+.scope :global([class*="scheduleRow"] strong){font-size:10px;text-transform:uppercase}
+.scope :global([class*="scheduleRow"] span){font-size:11px}
+.scope :global([class*="scheduleRow"] em){font:600 7px var(--pt-util-font);text-transform:uppercase;font-style:normal;opacity:.65}
+.scope :global([class*="formWrap"]){background:var(--up-ink)!important;position:static;padding:clamp(20px,2.5vw,34px)}
+.scope :global([class*="final"]){display:none}
+.scope :global([class*="footer"]){background:#151513;color:#a7a39d}
+
+@media(max-width:900px){
+ .scope :global([class*="topBar"]){height:36px;padding:0}
+ .scope :global([class*="topBar"]>span){display:none}
+ .scope :global([class*="topBar"]>div){width:100%}
+ .scope :global([class*="topBar"] a){flex:1;justify-content:center;padding:0 8px}
+ .scope :global([class*="header"]){top:36px;height:58px;padding-inline:18px;background:rgba(15,15,14,.52)}
+ .scope :global([class*="nav"]){display:none}
+ .scope :global([class*="hero"]){min-height:68svh}
+ .scope :global([class*="heroCopy"]){width:100%;padding:116px 20px 76px}
+ .scope :global([class*="heroCopy"] h1){font-size:clamp(50px,12vw,72px);line-height:.84;max-width:9ch}
+ .scope :global([class*="heroCopy"] p){font-size:14px;max-width:32ch;margin-top:16px}
+ .scope :global([class*="primary"]){margin-top:20px}
+ .scope :global([class*="heroFoot"]){left:20px;right:20px;bottom:14px}
+ .scope :global([class*="tape"]){height:34px}
+ .scope :global([class*="intro"]){grid-template-columns:1fr;gap:18px;padding:48px 20px}
+ .scope :global([class*="intro"] h2){font-size:clamp(38px,10vw,52px)}
+ .scope :global([class*="introBody"] h3){font-size:26px;margin-bottom:10px}
+ .scope :global([class*="introBody"] p){font-size:14px;margin-bottom:0}
+ .scope :global([class*="evidence"]){grid-template-columns:1fr 1fr;height:300px}
+ .scope :global([class*="evidenceMedia"]){height:300px}
+ .scope :global([class*="evidenceStats"]){padding:20px 16px}
+ .scope :global([class*="evidenceStats"] [class*="sectionLabel"]){margin-bottom:8px}
+ .scope :global([class*="evidenceStats"] article){display:block;padding:10px 0}
+ .scope :global([class*="evidenceStats"] strong){font-size:34px}
+ .scope :global([class*="evidenceStats"] p){font-size:9px;margin:5px 0 0;line-height:1.3}
+ .scope :global([class*="features"]){padding:48px 20px;grid-template-columns:1fr 1fr;gap:8px}
+ .scope :global([class*="featureMedia"]){height:150px}
+ .scope :global([class*="featureCopy"]){padding:16px}
+ .scope :global([class*="featureCopy"] [class*="sectionLabel"]){display:none}
+ .scope :global([class*="featureCopy"] h2){font-size:26px;max-width:none}
+ .scope :global([class*="featureCopy"] p){font-size:11px;margin:9px 0 0;-webkit-line-clamp:2}
+ .scope :global([class*="featureCopy"] a){display:none}
+ .scope :global([class*="results"]){padding:52px 0}
+ .scope :global([class*="resultsIntro"]){display:block;padding:0 20px;margin-bottom:24px}
+ .scope :global([class*="resultsIntro"] h2){font-size:clamp(38px,10vw,52px)}
+ .scope :global([class*="resultsIntro"] p){font-size:13px;margin-top:12px}
+ .scope :global([class*="resultsRail"]){overflow-x:auto;height:280px;scroll-snap-type:x mandatory;padding:0 20px 8px;gap:8px}
+ .scope :global([class*="resultsRail"] figure),.scope :global([class*="resultsRail"] article){flex:0 0 72vw;scroll-snap-align:center}
+ .scope :global([class*="resultsRail"] figure[data-active="true"]),.scope :global([class*="resultsRail"] article[data-active="true"]){flex-basis:72vw}
+ .scope :global([class*="method"]){grid-template-columns:1fr;padding:48px 20px;gap:24px}
+ .scope :global([class*="methodIntro"] h2){font-size:clamp(38px,10vw,52px)}
+ .scope :global([class*="methodIntro"] p){margin-top:12px}
+ .scope :global([class*="methodList"] article){grid-template-columns:36px 1fr;padding:14px 0;gap:10px}
+ .scope :global([class*="methodList"] h3){font-size:24px}
+ .scope :global([class*="methodList"] article p){grid-column:2;font-size:11px;margin-top:3px}
+ .scope :global([class*="trainer"]){grid-template-columns:42% 58%;height:340px}
+ .scope :global([class*="trainerMedia"]){height:340px}
+ .scope :global([class*="trainerCopy"]){padding:24px 18px;overflow:hidden}
+ .scope :global([class*="trainerCopy"] [class*="sectionLabel"]){margin-bottom:8px}
+ .scope :global([class*="trainerCopy"] h2){font-size:36px}
+ .scope :global([class*="trainerCopy"] [class*="about"]){font-size:11px;line-height:1.4;margin:10px 0}
+ .scope :global([class*="trainerCopy"] dl){grid-template-columns:72px 1fr;margin-top:10px}
+ .scope :global([class*="trainerCopy"] dt),.scope :global([class*="trainerCopy"] dd){font-size:9px;padding:5px 0}
+ .scope :global([class*="trainerCopy"] ul){display:none}
+ .scope :global([class*="contact"]){grid-template-columns:1fr;padding:48px 20px;gap:24px}
+ .scope :global([class*="contact"] h2){font-size:clamp(38px,10vw,52px)}
+ .scope :global([class*="scheduleGrid"]){display:grid;grid-template-columns:repeat(2,1fr);gap:0 14px}
+ .scope :global([class*="scheduleRow"]){grid-template-columns:38px 1fr;padding:6px 0}
+ .scope :global([class*="scheduleRow"] em){display:none}
+ .scope :global([class*="formWrap"]){padding:18px}
+}
+
+@media(max-width:560px){
+ .scope :global([class*="topBar"] a){font-size:6px;padding-inline:4px}
+ .scope :global([class*="topBar"] a:first-child){display:none}
+ .scope :global([class*="header"]){height:54px;padding-inline:14px}
+ .scope :global([class*="headerCta"]){display:none}
+ .scope :global([class*="brand"] small){display:none}
+ .scope :global([class*="hero"]){min-height:62svh}
+ .scope :global([class*="heroMedia"] video){display:none}
+ .scope :global([class*="heroPoster"]){display:block!important;z-index:1}
+ .scope :global([class*="heroMedia"] img){object-position:center 30%;transform:none}
+ .scope :global([class*="heroShade"]){background:linear-gradient(0deg,rgba(12,12,11,.93),rgba(12,12,11,.28) 72%)}
+ .scope :global([class*="heroCopy"]){padding:102px 16px 62px}
+ .scope :global([class*="heroCopy"] h1){font-size:clamp(44px,12vw,58px);line-height:.85;max-width:9ch}
+ .scope :global([class*="heroCopy"] p){font-size:12px;line-height:1.45;max-width:30ch}
+ .scope :global([class*="primary"]){min-width:0;padding:12px 14px;font-size:7px}
+ .scope :global([class*="heroFoot"]){display:none}
+ .scope :global([class*="tape"]){height:30px}
+ .scope :global([class*="intro"]){padding:38px 16px}
+ .scope :global([class*="intro"] h2),.scope :global([class*="resultsIntro"] h2),.scope :global([class*="methodIntro"] h2),.scope :global([class*="contact"] h2){font-size:38px;line-height:.9}
+ .scope :global([class*="introBody"] h3){font-size:23px}
+ .scope :global([class*="introBody"] p){font-size:12px;line-height:1.5}
+ .scope :global([class*="sectionLabel"]){font-size:7px;margin-bottom:10px}
+ .scope :global([class*="evidence"]){height:250px;grid-template-columns:44% 56%}
+ .scope :global([class*="evidenceMedia"]){height:250px}
+ .scope :global([class*="evidenceStats"]){padding:14px 12px}
+ .scope :global([class*="evidenceStats"] strong){font-size:28px}
+ .scope :global([class*="evidenceStats"] p){font-size:8px}
+ .scope :global([class*="features"]){padding:38px 12px;gap:6px}
+ .scope :global([class*="featureMedia"]){height:112px}
+ .scope :global([class*="featureCopy"]){padding:12px 10px 14px}
+ .scope :global([class*="featureCopy"] h2){font-size:22px;line-height:.92}
+ .scope :global([class*="featureCopy"] p){font-size:9px;line-height:1.35;-webkit-line-clamp:2}
+ .scope :global([class*="results"]){padding:42px 0}
+ .scope :global([class*="resultsIntro"]){padding:0 16px;margin-bottom:18px}
+ .scope :global([class*="resultsIntro"] p){font-size:11px;line-height:1.45}
+ .scope :global([class*="resultsRail"]){height:230px;padding-inline:16px}
+ .scope :global([class*="resultsRail"] figure),.scope :global([class*="resultsRail"] article){flex-basis:76vw}
+ .scope :global([class*="resultsRail"] figure[data-active="true"]),.scope :global([class*="resultsRail"] article[data-active="true"]){flex-basis:76vw}
+ .scope :global([class*="method"]){padding:38px 16px;gap:18px}
+ .scope :global([class*="methodList"] article){padding:11px 0}
+ .scope :global([class*="methodList"] h3){font-size:21px}
+ .scope :global([class*="methodList"] article p){font-size:9px;line-height:1.35}
+ .scope :global([class*="trainer"]){height:280px;grid-template-columns:40% 60%}
+ .scope :global([class*="trainerMedia"]){height:280px}
+ .scope :global([class*="trainerCopy"]){padding:18px 12px}
+ .scope :global([class*="trainerCopy"] h2){font-size:30px}
+ .scope :global([class*="trainerCopy"] [class*="about"]){font-size:9px}
+ .scope :global([class*="trainerCopy"] dl){grid-template-columns:58px 1fr}
+ .scope :global([class*="trainerCopy"] dt),.scope :global([class*="trainerCopy"] dd){font-size:7px;padding:4px 0}
+ .scope :global([class*="contact"]){padding:38px 16px;gap:18px}
+ .scope :global([class*="contactPitch"] p){font-size:11px;line-height:1.45}
+ .scope :global([class*="scheduleGrid"]){margin-top:12px}
+ .scope :global([class*="scheduleRow"]){font-size:8px;padding:4px 0}
+ .scope :global([class*="scheduleRow"] strong),.scope :global([class*="scheduleRow"] span){font-size:8px}
+ .scope :global([class*="formWrap"]){padding:14px}
+ .scope :global([class*="footer"]){padding:14px 16px;font-size:6px}
+}
+
+@media(prefers-reduced-motion:reduce){.scope :global([class*="resultsRail"] figure),.scope :global([class*="resultsRail"] article){transition:none}.scope :global([class*="heroMedia"] video){display:none}}

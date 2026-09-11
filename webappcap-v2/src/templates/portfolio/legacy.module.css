@@ -1,0 +1,8 @@
+.shell{position:relative;width:100%;min-height:100svh;background:#082720;overflow:hidden}
+.frame{display:block;width:100%;height:100svh;border:0;background:#082720;opacity:0;transition:opacity .25s ease}
+.ready{opacity:1}
+.loader{position:absolute;inset:0;z-index:2;display:grid;place-content:center;justify-items:center;gap:.8rem;color:#f3eee2;font:500 .82rem/1.4 system-ui,sans-serif;letter-spacing:.04em}
+.loader span{width:38px;height:38px;border:3px solid rgba(243,238,226,.18);border-top-color:#e3bb3d;border-radius:50%;animation:spin .8s linear infinite}
+.preview{position:absolute;z-index:3;top:.75rem;left:50%;transform:translateX(-50%);padding:.48rem .8rem;border-radius:999px;background:#e3bb3d;color:#082720;font:700 .68rem/1 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.22);white-space:nowrap}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.frame{transition:none}.loader span{animation:none}}

@@ -1,0 +1,1 @@
+export default function EmptyPage(){return <main className="shell"><section className="segment-card"><span>WEBAPPCAP</span><h2>Nenhum projeto vinculado.</h2><p>Quando um convite for aceito ou um projeto for criado para esta conta, ele aparecerá aqui automaticamente.</p></section></main>}
