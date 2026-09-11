@@ -8,9 +8,12 @@ import type { TemplateRenderProps } from './types';
  *
  * The old iframe renderer is no longer part of the active template registry.
  * `portfolio-native-1` is the canonical renderer and main/index.html remains
- * the external source of truth until the production cutover is approved.
+ * the external source of truth until the production cutover is approved. The
+ * legacy database key is kept only as an alias to the same native renderer so
+ * migrated projects cannot fall through while their state is normalized.
  */
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
+  'portfolio-legacy-1': NativeMainParityPortfolioTemplate,
   'portfolio-native-1': NativeMainParityPortfolioTemplate
 };
 
