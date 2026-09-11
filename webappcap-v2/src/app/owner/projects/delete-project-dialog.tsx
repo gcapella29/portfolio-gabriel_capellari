@@ -1,10 +1,11 @@
 'use client';
 
 import { useActionState, useEffect, useRef, useState } from 'react';
-import { deleteOwnerProjectAction, initialDeleteProjectState } from './actions';
+import { deleteOwnerProjectAction, type DeleteProjectState } from './actions';
 import styles from '../owner.module.css';
 
 type ProjectTarget = { slug: string; name: string };
+const initialDeleteProjectState: DeleteProjectState = { error: null };
 
 export default function DeleteProjectDialog({ target }: { target: ProjectTarget }) {
   const [open, setOpen] = useState(false);
