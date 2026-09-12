@@ -3,6 +3,9 @@ import { createServerClient } from '@supabase/ssr';
 import { classifyHost, isPublicAssetPath } from '@/core/host-routing';
 
 const protectedPrefixes = ['/owner', '/projects', '/dashboard', '/setup'];
+const canonicalHostAliases: Record<string, string> = {
+  'gabriel-capellari.webappcap.com.br': 'capellari.webappcap.com.br',
+};
 
 type MiddlewareCookieOptions = Parameters<NextResponse['cookies']['set']>[2];
 type MiddlewareCookieToSet = {
@@ -16,6 +19,15 @@ export async function middleware(request: NextRequest) {
   const host = classifyHost(request.headers.get('host') || '');
   const isTenantRoute = path === '/tenant' || path.startsWith('/tenant/');
   const isApiRoute = path === '/api' || path.startsWith('/api/');
+
+  const canonicalHost = canonicalHostAliases[host.host];
+  if (canonicalHost) {
+    const target = request.nextUrl.clone();
+    target.protocol = 'https:';
+    target.hostname = canonicalHost;
+    target.port = '';
+    return NextResponse.redirect(target, 308);
+  }
 
   // Tenant hosts never enter the platform UI. Resolve the hostname in one public route
   // before React renders anything, preventing the old project/portfolio flash.

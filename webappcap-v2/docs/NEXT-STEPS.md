@@ -1,5 +1,10 @@
 # WebAppCap v2 — Próximos passos após estabilização
 
+> **Atualização em 12/09/2026:** a migração do portfólio, dos domínios e da
+> branch `main` foi concluída. Os itens de migração abaixo permanecem como
+> registro histórico; a expansão de templates continua reservada para uma fase
+> futura.
+
 Este documento registra a sequência recomendada após o bloco curto de estabilização concluído em setembro de 2026. O objetivo é evitar nova refatoração estrutural sem necessidade e avançar de plataforma funcional para produto comercial homologado.
 
 ## Fase A — Fechar o Portfolio nativo

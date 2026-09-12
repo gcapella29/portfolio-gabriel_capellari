@@ -3,8 +3,7 @@ import { NativeMainParityPortfolioTemplate } from './portfolio/native-main-parit
 import type { TemplateRenderProps } from './types';
 
 /**
- * WebAppCap v2 now has one product target: migrate the current root portfolio
- * into the first native WebAppCap project with visual and behavioral parity.
+ * The current WebAppCap product has one active template surface: Portfolio.
  *
  * The old iframe renderer is no longer part of the active template registry.
  * `portfolio-native-1` is the canonical renderer. The legacy database key is
@@ -20,7 +19,7 @@ export function renderTemplate(props:TemplateRenderProps){
   const key=props.project.templateKey||'';
   const Renderer=renderers[key];
   if(!Renderer){
-    return <main style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:'2rem',fontFamily:'Arial,sans-serif'}}><div style={{maxWidth:620}}><strong>WebAppCap</strong><h1>Projeto não disponível nesta fase.</h1><p>Esta versão está dedicada exclusivamente à migração do portfólio para o primeiro projeto nativo do WebAppCap.</p></div></main>;
+    return <main style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:'2rem',fontFamily:'Arial,sans-serif'}}><div style={{maxWidth:620}}><strong>WebAppCap</strong><h1>Modelo ainda não disponível.</h1><p>Este projeto utiliza um modelo que não está ativo na versão atual da plataforma.</p></div></main>;
   }
   return <Renderer {...props}/>;
 }

@@ -1,6 +1,6 @@
 # WebAppCap v2 — Release Gate
 
-Status: **migração funcional e de domínios homologada; auditoria final em andamento antes da integração com `main`.**
+Status: **migração funcional, de domínios e da branch `main` concluída.**
 
 Estado confirmado em 11/09/2026:
 - `webappcap.com.br` e `www.webappcap.com.br` servem a plataforma v2.
@@ -8,7 +8,8 @@ Estado confirmado em 11/09/2026:
 - `*.webappcap.com.br` está vinculado ao projeto v2.
 - Projetos de teste e o domínio Fábio foram removidos.
 - Rascunho, preview, publicação, login/logout, leads, exclusão e layouts desktop/mobile foram homologados.
-- A branch `main` permanece inalterada.
+- A branch `main` recebeu a versão homologada pelo PR #20 em 11/09/2026.
+- A branch `backup/main-before-webappcap-v2-2026-09-11` preserva o ponto de restauração anterior.
 
 ## 1. Segurança e isolamento
 - [x] Acesso de projeto resolvido server-side por usuário + projeto.
@@ -18,31 +19,29 @@ Estado confirmado em 11/09/2026:
 - [x] Conteúdo público separado do rascunho.
 - [x] Publicação valida onboarding, segmento/modelo e conteúdo mínimo.
 
-## 2. Regressão funcional obrigatória
-Executar no `webappcap-v2-preview` antes de qualquer migração:
-- [ ] Login owner e logout.
-- [ ] Owner abre Fabio e navega por todas as áreas.
-- [ ] Salvar Conteúdo e confirmar alteração somente no Preview.
-- [ ] Upload de JPG/PNG válido; rejeitar arquivo não-imagem renomeado.
-- [ ] Alterar Aparência e conferir Preview.
-- [ ] Publicar e confirmar sincronização rascunho → público.
-- [ ] Enviar lead real pelo site publicado e confirmar em Leads.
-- [ ] Confirmar `fabio-ferrari.webappcap.com.br` no desktop e mobile.
-- [ ] Confirmar que `webappcap.com.br` legado permanece inalterado.
+## 2. Regressão funcional concluída
+- [x] Login owner e logout.
+- [x] Salvar Conteúdo e confirmar alteração somente no Preview.
+- [x] Upload e troca de mídia.
+- [x] Alterar Aparência e conferir Preview.
+- [x] Publicar e confirmar sincronização rascunho → público.
+- [x] Enviar lead real pelo site publicado e confirmar em Leads.
+- [x] Confirmar `capellari.webappcap.com.br` no desktop e mobile.
+- [x] Confirmar a raiz comercial em `webappcap.com.br` e `www.webappcap.com.br`.
 
 ## 3. Domínios
-- [x] Canary nativo Fabio funcional.
 - [x] Automação Vercel configurada no projeto v2.
-- [ ] Homologar attach/verify/remove de domínio externo quando houver domínio controlado disponível.
-- [ ] Antes do wildcard: inventariar todos os subdomínios atualmente servidos pelo projeto legado.
+- [x] Wildcard transferido e tenant inexistente validado com resposta 404.
+- [x] Endereço canônico do portfólio definido como `capellari.webappcap.com.br`.
+- [x] Alias histórico redirecionado para o endereço canônico.
+- [ ] Homologar attach/verify/remove de domínio externo quando um projeto futuro precisar desse recurso.
 
-## 4. Gate de migração
-Não executar automaticamente:
-1. Não fazer merge em `main`.
-2. Não mover `webappcap.com.br` apex.
-3. Não remover o wildcard do projeto legado.
-4. Somente após regressão acima e inventário, solicitar aprovação explícita para mover `*.webappcap.com.br` ao v2.
-5. Manter plano de rollback: wildcard volta ao projeto legado; branch v2 permanece isolada.
+## 4. Resultado da migração
+1. `main` é a branch oficial de produção.
+2. `webappcap.com.br` e `www.webappcap.com.br` servem a raiz comercial.
+3. `*.webappcap.com.br` resolve projetos publicados.
+4. `capellari.webappcap.com.br` é o endereço canônico do portfólio.
+5. O projeto legado e a branch de backup permanecem temporariamente como rollback.
 
 ## 5. Critério de conclusão
-O v2 é candidato a produção quando CI/Vercel estiverem verdes, checklist de regressão estiver concluído e não houver falhas de isolamento, publicação, leads ou roteamento. A migração de infraestrutura continua sendo uma decisão separada e explícita.
+Concluído em 12/09/2026: CI/Vercel verdes, regressão homologada e produção controlada pela `main`, sem falhas conhecidas de isolamento, publicação, leads ou roteamento.

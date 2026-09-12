@@ -22,7 +22,7 @@ export async function deleteOwnerProjectAction(
 
   const { user, project, role } = await resolveProjectAccess(slug);
   if (role !== 'owner' || !user.email) return { error: 'Apenas o owner pode excluir este projeto.' };
-  if (project.segment === 'portfolio') return { error: 'O portfólio principal está protegido durante a migração.' };
+  if (project.segment === 'portfolio') return { error: 'O portfólio principal é protegido e não pode ser excluído.' };
 
   try {
     const sb = await createSupabaseServerClient();

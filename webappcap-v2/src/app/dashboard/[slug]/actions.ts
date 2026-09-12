@@ -77,5 +77,5 @@ export async function validateDomainAction(formData:FormData){
   redirect(`${path(slug,'settings')}?domain=pending`)
 }
 
-export async function publishDashboardAction(formData:FormData){const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'publish'))throw new Error('Sem permissão para publicar.');await publishV2Project(access.project.id);revalidatePath(path(slug));revalidatePath(path(slug,'appearance'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);revalidatePath(`/site/${encodeURIComponent(slug)}`);if(slug==='gabriel-capellari')revalidatePath('/native-preview/portfolio');redirect(`${path(slug)}?published=1`)}
+export async function publishDashboardAction(formData:FormData){const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'publish'))throw new Error('Sem permissão para publicar.');await publishV2Project(access.project.id);revalidatePath(path(slug));revalidatePath(path(slug,'appearance'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);revalidatePath(`/site/${encodeURIComponent(slug)}`);redirect(`${path(slug)}?published=1`)}
 export async function logoutDashboardAction(){const sb=await createSupabaseServerClient();await sb.auth.signOut();redirect('/login')}
