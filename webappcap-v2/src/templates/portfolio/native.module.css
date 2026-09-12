@@ -170,4 +170,5 @@
   .timeline article:hover{padding-left:1.45rem;background:transparent}
   .contactLinks a:hover,.contactLinks button:hover{padding-left:0;background:transparent}
 }
-@media(prefers-reduced-motion:reduce){.tickerTrack{animation:none!important}}
+/* The identity ticker remains continuous, matching the approved platform marquee. */
+@media(prefers-reduced-motion:reduce){.tickerTrack{animation:tickerContinuous 38s linear infinite!important;animation-play-state:running!important}}

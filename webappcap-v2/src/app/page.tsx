@@ -9,6 +9,7 @@ import styles from './home.module.css';
 const headingFont=Fraunces({subsets:['latin'],weight:'variable',axes:['opsz'],variable:'--home-heading',display:'swap'});
 const bodyFont=Inter({subsets:['latin'],weight:['400','500','600','700'],variable:'--home-body',display:'swap'});
 const monoFont=IBM_Plex_Mono({subsets:['latin'],weight:['400','500','600','700'],variable:'--home-mono',display:'swap'});
+const PORTFOLIO_URL='https://capellari.webappcap.com.br';
 
 export const metadata:Metadata={
   title:'WebAppCap — Sites que trabalham por você',
@@ -131,7 +132,7 @@ export default function HomePage(){
         <div><h2>Primeiro usamos em casa.</h2><p>O portfólio de Gabriel Capellari nasceu como site independente e se tornou o primeiro projeto completo construído sobre a base do WebAppCap.</p></div>
       </div>
       <article className={styles.projectCard} data-reveal>
-        <a className={styles.projectPreview} href="/native-preview/portfolio" aria-label="Abrir o portfólio de Gabriel Capellari">
+        <a className={styles.projectPreview} href={PORTFOLIO_URL} aria-label="Abrir o portfólio de Gabriel Capellari">
           <Image src="/assets/media/hero-gabriel.jpg" alt="Portfólio de Gabriel Capellari" fill sizes="(max-width: 800px) 100vw, 58vw"/>
           <div className={styles.browserBar}><i/><i/><i/><span>capellari.webappcap.com.br</span></div>
           <div className={styles.previewName}><span>Gabriel</span><em>Capellari</em></div>
@@ -141,7 +142,7 @@ export default function HomePage(){
           <div><span className={styles.live}><i/> NO AR</span><h3>Gabriel Capellari</h3><p>Um portfólio editorial que reúne trajetória, coberturas internacionais, trabalhos publicados e contato — com conteúdo gerenciado pelo próprio painel.</p></div>
           <div className={styles.caseFacts}><span><b>PT / EN</b>Experiência bilíngue</span><span><b>100%</b>Responsivo</span><span><b>PAINEL</b>Conteúdo e mídia</span></div>
           <div className={styles.tags}><span>Portfólio</span><span>Jornalismo</span><span>Leads integrados</span></div>
-          <a href="/native-preview/portfolio">Visitar projeto <span>↗</span></a>
+          <a href={PORTFOLIO_URL}>Visitar projeto <span>↗</span></a>
         </div>
       </article>
     </section>
