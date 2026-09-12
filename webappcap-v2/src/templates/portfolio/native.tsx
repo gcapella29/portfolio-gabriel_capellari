@@ -14,6 +14,11 @@ const monoFont=IBM_Plex_Mono({subsets:['latin'],weight:['400','500','600','700']
 type Language='pt'|'en';
 type CssVariables=CSSProperties&{'--accent'?:string};
 const sectionLinks=[['destaques',{pt:'Destaques',en:'Highlights'}],['sobre',{pt:'Sobre',en:'About'}],['wsop-featured',{pt:'WSOP',en:'WSOP'}],['cobertura',{pt:'Cobertura',en:'Coverage'}],['portfolio',{pt:'Portfólio',en:'Portfolio'}],['experiencia',{pt:'Experiência',en:'Experience'}],['formacao',{pt:'Formação',en:'Education'}],['instagram',{pt:'Instagram',en:'Instagram'}],['contato',{pt:'Contato',en:'Contact'}]] as const;
+const compactEnglishRole='Poker journalist · Reporter · SEO writer · Curious · Learner .\'.';
+const legacyEnglishRoles=new Set([
+  'Poker journalist · Live tournament reporter · SEO writer · Learner .·.',
+  'Poker journalist · Live tournament reporter · SEO writer · Learner .\'.',
+]);
 const localized=(item:LocalizedText,language:Language)=>item[language];
 const stringValue=(record:Record<string,unknown>,key:string,fallback:string)=>String(record[key]??'').trim()||fallback;
 const mediaValue=(record:Record<string,unknown>,key:string,fallback:string)=>{const item=record[key];return item&&typeof item==='object'&&'url' in item?String((item as {url?:unknown}).url||fallback):typeof item==='string'&&item?item:fallback};
@@ -42,7 +47,8 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const linkedin=stringValue(data.contact,'linkedin',defaults.contact.linkedin);
   const cv=stringValue(data.contact,'cv',defaults.contact.cv);
   const reel=stringValue(data.contact,'reel',defaults.contact.reel);
-  const role:LocalizedText={pt:stringValue(data.content,'hero_text',defaults.identity.role.pt),en:stringValue(data.content,'hero_text_en',defaults.identity.role.en)};
+  const storedEnglishRole=stringValue(data.content,'hero_text_en',defaults.identity.role.en);
+  const role:LocalizedText={pt:stringValue(data.content,'hero_text',defaults.identity.role.pt),en:legacyEnglishRoles.has(storedEnglishRole)?compactEnglishRole:storedEnglishRole};
   const aboutTitle:LocalizedText={pt:stringValue(data.content,'hero_title',defaults.about.title.pt),en:stringValue(data.content,'hero_title_en',defaults.about.title.en)};
   const aboutParagraphs:LocalizedText[]=[
     {pt:stringValue(data.identity,'description',defaults.about.paragraphs[0].pt),en:stringValue(data.identity,'description_en',defaults.about.paragraphs[0].en)},
