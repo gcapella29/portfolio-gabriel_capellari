@@ -1,12 +1,17 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { requireUser } from '@/core/session';
+import { projectsForUser } from '@/core/projects';
 import { segments } from '@/core/segments';
 import { createClientProject } from './actions';
 import styles from '../../owner.module.css';
 
 export default async function NewProjectPage(){
-  await requireUser();
-  const available=Object.values(segments).filter(segment=>segment.key!=='portfolio');
+  const user=await requireUser();
+  const isOwner=(await projectsForUser(user.id)).some(project=>project.owner_id===user.id);
+  if(!isOwner) redirect('/unauthorized');
+  const available=Object.values(segments).filter(segment=>segment.key!=='portfolio'&&segment.templates.some(template=>template.status==='ready'));
+  if(available.length===0)redirect('/owner/projects');
 
   return <main className={styles.page}>
     <div className={styles.workspace}>
