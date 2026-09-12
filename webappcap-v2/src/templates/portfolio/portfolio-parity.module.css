@@ -58,5 +58,5 @@
 }
 @media(prefers-reduced-motion:reduce){
   .mainParity :global(#inicio) h1 em{animation:none!important}
-  .mainParity :global(#inicio)+div[aria-hidden="true"]>div{animation:none!important}
+  .mainParity :global(#inicio)+div[aria-hidden="true"]>div{animation:mainTicker 38s linear infinite!important;animation-play-state:running!important}
 }
