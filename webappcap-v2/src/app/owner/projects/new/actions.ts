@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { requireUser } from '@/core/session';
+import { projectsForUser } from '@/core/projects';
 import { segments } from '@/core/segments';
 import type { SegmentKey } from '@/core/domain';
 
@@ -13,8 +14,11 @@ const siteType=(segment:SegmentKey)=>({'portfolio':'portfolio','personal-trainer
 async function requestOrigin(){const h=await headers(),host=h.get('x-forwarded-host')||h.get('host');if(!host)throw new Error('Não foi possível determinar o endereço da aplicação.');const proto=h.get('x-forwarded-proto')||'https';return `${proto}://${host}`}
 
 export async function createClientProject(formData:FormData){
-  await requireUser();const name=String(formData.get('name')||'').trim(),segment=String(formData.get('segment')||'') as SegmentKey,adminEmail=String(formData.get('adminEmail')||'').trim().toLowerCase();
-  if(!name)throw new Error('Informe o nome do projeto.');if(!segments[segment]||segment==='portfolio')throw new Error('Escolha um segmento disponível para novos clientes.');if(!/^\S+@\S+\.\S+$/.test(adminEmail))throw new Error('Informe um e-mail válido para o administrador.');
+  const user=await requireUser();
+  if(!(await projectsForUser(user.id)).some(project=>project.owner_id===user.id))throw new Error('Apenas o owner pode criar projetos.');
+  const name=String(formData.get('name')||'').trim(),segment=String(formData.get('segment')||'') as SegmentKey,adminEmail=String(formData.get('adminEmail')||'').trim().toLowerCase();
+  const segmentDefinition=segments[segment];
+  if(!name)throw new Error('Informe o nome do projeto.');if(!segmentDefinition||segment==='portfolio'||!segmentDefinition.templates.some(template=>template.status==='ready'))throw new Error('Escolha um segmento disponível para novos clientes.');if(!/^\S+@\S+\.\S+$/.test(adminEmail))throw new Error('Informe um e-mail válido para o administrador.');
   const slug=slugify(String(formData.get('slug')||name));if(!slug)throw new Error('Não foi possível gerar o identificador do projeto.');
   const sb=await createSupabaseServerClient();const exists=await sb.from('projects').select('id').eq('slug',slug).maybeSingle();if(exists.error)throw exists.error;if(exists.data)throw new Error('Esse identificador já está em uso.');
   const created=await sb.functions.invoke('create-project',{body:{slug,name,site_type:siteType(segment),subdomain:null,snapshot:{},template_key:'v2-pending',template_version:1}});if(created.error)throw created.error;
