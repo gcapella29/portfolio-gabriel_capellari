@@ -26,5 +26,5 @@ export async function createClientProject(formData:FormData){
   const state=await sb.from('project_v2_state').upsert({project_id:project.id,segment,template_key:null,lifecycle:'invited',onboarding_step:'account',domain_status:'unconfigured'},{onConflict:'project_id'});if(state.error)throw state.error;
   const content=await sb.from('project_v2_content').upsert({project_id:project.id},{onConflict:'project_id'});if(content.error)throw content.error;
   const origin=await requestOrigin();const invite=await sb.functions.invoke('manage-project-member',{body:{project_id:project.id,action:'invite',email:adminEmail,role:'admin',redirect_to:`${origin}/auth/callback?next=${encodeURIComponent(`/invite/${slug}`)}`}});if(invite.error)throw invite.error;
-  redirect(`/owner/projects/${encodeURIComponent(slug)}`);
+  redirect(`/dashboard/${encodeURIComponent(slug)}/content`);
 }
