@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { logout } from '@/app/login/actions';
 import { projectsForUser } from '@/core/projects';
 import { segments } from '@/core/segments';
@@ -12,7 +13,9 @@ const needsAttention=(project:OwnerProjectView)=>project.domainStatus==='error'|
 
 export default async function OwnerProjectsPage({searchParams}:{searchParams:Promise<{deleted?:string}>}){
  const query=await searchParams,user=await requireUser();
- const projects=(await projectsForUser(user.id)).filter(project=>project.owner_id===user.id),ids=projects.map(project=>project.id),sb=await createSupabaseServerClient();
+ const projects=(await projectsForUser(user.id)).filter(project=>project.owner_id===user.id);
+ if(!projects.length)redirect('/unauthorized');
+ const ids=projects.map(project=>project.id),sb=await createSupabaseServerClient();
  const [stateResult,leadResult]=await Promise.all([
   ids.length?sb.from('project_v2_state').select('project_id,segment,template_key,lifecycle,onboarding_step,native_subdomain,custom_domain,domain_status,updated_at').in('project_id',ids):Promise.resolve({data:[],error:null}),
   ids.length?sb.from('site_leads').select('id,project_id,name,status,created_at').in('project_id',ids).order('created_at',{ascending:false}).limit(500):Promise.resolve({data:[],error:null})
