@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import type { TemplateRenderProps } from '../types';
 import { NativePortfolioTemplate } from './native';
+import { SiteAnalytics } from '../site-analytics';
 import parity from './portfolio-parity.module.css';
 
 /**
@@ -66,6 +67,7 @@ export function NativeMainParityPortfolioTemplate(props:TemplateRenderProps){
 
   return <div ref={wrapperRef}>
     <NativePortfolioTemplate {...props}/>
+    {!props.preview?<SiteAnalytics projectId={props.project.id}/>:null}
     <div ref={glowRef} className={parity.pointerGlow} aria-hidden="true"/>
   </div>;
 }
