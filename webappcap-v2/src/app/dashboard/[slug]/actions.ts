@@ -41,7 +41,7 @@ export async function uploadMediaAction(formData:FormData){
  await saveV2Section(access.project.id,'media',media);revalidatePath(path(slug,'media'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);redirect(`${path(slug,'media')}?saved=1`)}
 
 export async function saveSettingsAction(formData:FormData){
-  const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'manageDomain'))throw new Error('Sem permissão para editar configurações.');
+  const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'manageDomain'))throw new Error('Sem permissão para editar o domínio.');
   const native=text(formData,'nativeSubdomain').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'').slice(0,63),custom=normalizeDomain(text(formData,'customDomain'));
   const sb=await createSupabaseServerClient();
   if(native){const dupe=await sb.from('project_v2_state').select('project_id').eq('native_subdomain',native).neq('project_id',access.project.id).maybeSingle();if(dupe.data)throw new Error('Esse subdomínio já está em uso.')}
