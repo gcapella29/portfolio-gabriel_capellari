@@ -1,6 +1,6 @@
 # WebAppCap v2 — Release Gate
 
-Status: **migração funcional, de domínios e da branch `main` concluída.**
+Status: **migração funcional, de domínios e da branch `main` concluída; fechamento técnico em 13/09/2026.**
 
 Estado confirmado em 11/09/2026:
 - `webappcap.com.br` e `www.webappcap.com.br` servem a plataforma v2.
@@ -10,6 +10,7 @@ Estado confirmado em 11/09/2026:
 - Rascunho, preview, publicação, login/logout, leads, exclusão e layouts desktop/mobile foram homologados.
 - A branch `main` recebeu a versão homologada pelo PR #20 em 11/09/2026.
 - A branch `backup/main-before-webappcap-v2-2026-09-11` preserva o ponto de restauração anterior.
+- A branch `backup/migration-complete-2026-09-13` preserva o ponto final, após o fechamento técnico.
 
 ## 1. Segurança e isolamento
 - [x] Acesso de projeto resolvido server-side por usuário + projeto.
@@ -45,3 +46,7 @@ Estado confirmado em 11/09/2026:
 
 ## 5. Critério de conclusão
 Concluído em 12/09/2026: CI/Vercel verdes, regressão homologada e produção controlada pela `main`, sem falhas conhecidas de isolamento, publicação, leads ou roteamento.
+
+## 6. Fechamento técnico
+
+O inventário definitivo de rotas, permissões, código removido/preservado e restauração está em `docs/ARVORE-DEFINITIVA.md`. A aplicação ativa tem somente o renderer de Portfólio; protótipos sem rota de execução foram removidos. O legado da raiz foi preservado por ainda compor a estratégia de rollback do projeto Vercel antigo.
