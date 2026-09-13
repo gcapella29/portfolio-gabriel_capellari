@@ -2,11 +2,12 @@ export type LocalizedText={pt:string;en:string};
 export type PortfolioLink={name:string;description:LocalizedText;href:string};
 export type CareerItem={role:LocalizedText;years:string;organization:string;description:LocalizedText};
 
+export const compactPortfolioEnglishRole='Poker journalist · Reporter · SEO writer · Curious · Learner .\'.';
 export const portfolioDefaults={
   identity:{
     name:'Gabriel Capellari',
     location:'Ibitinga · SP · BR',
-    role:{pt:'Jornalista de Poker · Professor · Redator · Curioso · Aprendiz .\'.',en:'Poker journalist · Live tournament reporter · SEO writer · Learner .·.'},
+    role:{pt:'Jornalista de Poker · Professor · Redator · Curioso · Aprendiz .\'.',en:compactPortfolioEnglishRole},
     languages:[{country:'br',pt:'Português — nativo',en:'Portuguese — native'},{country:'gb',pt:'Inglês — B2',en:'English — B2'},{country:'es',pt:'Espanhol — C2',en:'Spanish — C2'}]
   },
   ticker:['WSOP Las Vegas','WSOP Brasil','BSOP Millions','LAPT Panamá','BSOP/LAPT Rio','LAPT Montevidéu','WPT World Championship'],
@@ -23,6 +24,7 @@ export const portfolioDefaults={
       {pt:'No poker, trouxe comigo muito do que aprendi como professor: didática, clareza e atenção aos detalhes, habilidades desenvolvidas ao longo de anos trabalhando com centenas de alunos. Hoje, já são mais de quatro anos cobrindo eventos em países como Brasil, Estados Unidos, Panamá e Uruguai, produzindo conteúdo editorial e SEO para alguns dos principais veículos do setor.',en:'In poker, I brought much of what I learned as a teacher: clarity, attention to detail and an educational approach developed over years working with hundreds of students. I now have more than four years covering events in Brazil, the United States, Panama and Uruguay, producing editorial and SEO content for leading outlets in the industry.'}
     ]
   },
+  profileBio:{pt:'Formado em Letras (Português/Inglês), sempre fui apaixonado por esportes e comunicação. Através das palavras, encontrei uma forma de contar histórias, aproximar pessoas e transformar experiências em conexão.',en:'With a degree in Languages (Portuguese/English), I have always been passionate about sports and communication. Through words, I found a way to tell stories, bring people together and turn experiences into connection.'},
   featured:{
     eyebrow:{pt:'Cobertura em destaque',en:'Featured coverage'},title:'WSOP Las Vegas',
     description:{pt:'Quatro edições consecutivas da World Series of Poker em Las Vegas, de 2022 a 2025 — com cobertura também do WPT World Championship em 2022. Experiência internacional em reportagem ao vivo, produção editorial e conteúdo para a audiência brasileira de poker.',en:'Four consecutive editions of the World Series of Poker in Las Vegas, from 2022 to 2025 — also covering the WPT World Championship in 2022. International experience in live reporting, editorial production and content for Brazilian poker audiences.'},
