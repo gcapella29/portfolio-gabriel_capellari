@@ -1,29 +1,44 @@
-import type { ProjectRole } from './domain';
+export type Role = "owner" | "admin" | "editor" | "viewer";
 
 export type Capability =
-  | 'manageProject'
-  | 'inviteMembers'
-  | 'chooseTemplate'
-  | 'editContent'
-  | 'editAppearance'
-  | 'manageMedia'
-  | 'manageDomain'
-  | 'viewLeads'
-  | 'publish'
-  | 'view';
+  | "manageProject"
+  | "inviteMembers"
+  | "chooseTemplate"
+  | "editContent"
+  | "editAppearance"
+  | "manageMedia"
+  | "manageDomain"
+  | "viewLeads"
+  | "publish"
+  | "view";
 
-const grants: Record<ProjectRole, ReadonlySet<Capability>> = {
-  owner: new Set(['manageProject','inviteMembers','chooseTemplate','editContent','editAppearance','manageMedia','manageDomain','viewLeads','publish','view']),
-  admin: new Set(['chooseTemplate','editContent','editAppearance','manageMedia','manageDomain','viewLeads','publish','view']),
-  editor: new Set(['editContent','manageMedia','view']),
-  viewer: new Set(['view'])
+export const ROLE_CAPABILITIES: Record<Role, Capability[]> = {
+  owner: [
+    "manageProject",
+    "inviteMembers",
+    "chooseTemplate",
+    "editContent",
+    "editAppearance",
+    "manageMedia",
+    "manageDomain",
+    "viewLeads",
+    "publish",
+    "view",
+  ],
+  admin: [
+    "inviteMembers",
+    "chooseTemplate",
+    "editContent",
+    "editAppearance",
+    "manageMedia",
+    "viewLeads",
+    "publish",
+    "view",
+  ],
+  editor: ["editContent", "manageMedia", "view"],
+  viewer: ["view"],
 };
 
-export function can(role: ProjectRole, capability: Capability) {
-  return grants[role].has(capability);
-}
-
-export function normalizeRole(value: unknown): ProjectRole | null {
-  const role = String(value || '').toLowerCase();
-  return role === 'owner' || role === 'admin' || role === 'editor' || role === 'viewer' ? role : null;
+export function can(role: Role, capability: Capability) {
+  return ROLE_CAPABILITIES[role].includes(capability);
 }
