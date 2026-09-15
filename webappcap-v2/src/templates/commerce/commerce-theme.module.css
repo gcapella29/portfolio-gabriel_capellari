@@ -21,4 +21,41 @@
 .palette #redes-sociais{background:color-mix(in srgb,var(--accent) 12%,#fff)}
 .palette #redes-sociais>div{background:color-mix(in srgb,var(--accent) 5%,#fff)}
 .palette>footer{background:color-mix(in srgb,var(--accent) 38%,#12100f)}
-@media(max-width:850px){.heroTitle{max-width:100%;font-size:clamp(42px,calc(15vw * var(--commerce-title-scale)),calc(74px * var(--commerce-title-scale)))!important;line-height:.88!important}}
+
+.palette[data-motion-ready="true"] [data-reveal]{
+  opacity:0;
+  transition:opacity .85s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1);
+  will-change:opacity,transform;
+}
+.palette[data-motion-ready="true"] [data-reveal="left"]{transform:translate3d(-72px,0,0)}
+.palette[data-motion-ready="true"] [data-reveal="right"]{transform:translate3d(72px,0,0)}
+.palette[data-motion-ready="true"] [data-reveal][data-visible="true"]{
+  opacity:1;
+  transform:translate3d(0,0,0);
+  will-change:auto;
+}
+
+.palette :is(#inicio a,#cardapio button,#cardapio>a,#pedido button,#pedido aside a,#redes-sociais a){
+  transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease,filter .28s ease;
+  transform-origin:center;
+}
+.palette :is(#inicio a,#cardapio button,#cardapio>a,#pedido button,#pedido aside a,#redes-sociais a):is(:hover,:focus-visible){
+  transform:translateY(-4px) scale(1.025);
+  filter:brightness(1.05);
+  box-shadow:0 14px 32px color-mix(in srgb,var(--accent) 26%,transparent);
+}
+.palette :is(#inicio a,#cardapio button,#cardapio>a,#pedido button,#pedido aside a,#redes-sociais a):active{
+  transform:translateY(-1px) scale(.97);
+}
+
+@media(max-width:850px){
+  .heroTitle{max-width:100%;font-size:clamp(42px,calc(15vw * var(--commerce-title-scale)),calc(74px * var(--commerce-title-scale)))!important;line-height:.88!important}
+  .palette[data-motion-ready="true"] [data-reveal="left"]{transform:translate3d(-36px,0,0)}
+  .palette[data-motion-ready="true"] [data-reveal="right"]{transform:translate3d(36px,0,0)}
+  .palette[data-motion-ready="true"] [data-reveal][data-visible="true"]{transform:translate3d(0,0,0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .palette[data-motion-ready="true"] [data-reveal]{opacity:1;transform:none;transition:none;will-change:auto}
+  .palette :is(#inicio a,#cardapio button,#cardapio>a,#pedido button,#pedido aside a,#redes-sociais a){transform:none;transition:none}
+}

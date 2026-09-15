@@ -21,7 +21,6 @@ export async function publishV2Project(projectId:string){
   const template=getTemplate(state.data.segment as SegmentKey,selectedTemplateKey);
   if(!template)throw new Error('O modelo selecionado não é compatível com este projeto.');
   if(template.status!=='ready')throw new Error('O modelo selecionado ainda não está disponível para publicação.');
-  if(state.data.onboarding_step!=='completed')throw new Error('Conclua a configuração inicial antes de publicar.');
   const identity=draft.data.identity||{},content=draft.data.content||{};
   if(!String((identity as Record<string,unknown>).name||'').trim())throw new Error('Informe o nome do projeto antes de publicar.');
   if(state.data.segment==='food-business'){
