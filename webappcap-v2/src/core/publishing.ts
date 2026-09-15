@@ -24,7 +24,9 @@ export async function publishV2Project(projectId:string){
   if(state.data.onboarding_step!=='completed')throw new Error('Conclua a configuração inicial antes de publicar.');
   const identity=draft.data.identity||{},content=draft.data.content||{};
   if(!String((identity as Record<string,unknown>).name||'').trim())throw new Error('Informe o nome do projeto antes de publicar.');
-  if(!String((content as Record<string,unknown>).hero_title||'').trim())throw new Error('Informe o título principal do site antes de publicar.');
+  if(state.data.segment==='food-business'){
+    if(!String((identity as Record<string,unknown>).tagline||'').trim())throw new Error('Informe a frase principal do comércio antes de publicar.');
+  }else if(!String((content as Record<string,unknown>).hero_title||'').trim())throw new Error('Informe o título principal do site antes de publicar.');
   const now=new Date().toISOString(),snapshot=await sb.from('project_v2_public_content').upsert({project_id:projectId,identity,content,media:draft.data.media||{},appearance,contact:draft.data.contact||{},published_at:now},{onConflict:'project_id'});if(snapshot.error)throw snapshot.error;
   const a=await sb.from('project_v2_state').update({template_key:selectedTemplateKey,lifecycle:'published',onboarding_step:'completed',onboarding_completed_at:now,updated_at:now}).eq('project_id',projectId);if(a.error)throw a.error;
   const b=await sb.from('projects').update({is_published:true}).eq('id',projectId);if(b.error)throw b.error;
