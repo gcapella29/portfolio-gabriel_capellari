@@ -10,6 +10,7 @@ const dateParts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Sao_Paulo',ye
 const dayLabel=new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',weekday:'short',day:'2-digit',month:'short'});
 const dayKey=(value:Date|string)=>{const parts=dateParts.formatToParts(new Date(value)),part=(type:string)=>parts.find(item=>item.type===type)?.value||'';return `${part('year')}-${part('month')}-${part('day')}`};
 const label=(value:string|null,fallback:string)=>value?.trim()||fallback;
+const pagePath=(value:string|null)=>{const raw=label(value,'/');try{const pathname=new URL(raw,'https://webappcap.local').pathname.replace(/\/{2,}/g,'/');return pathname.length>1?pathname.replace(/\/$/,''):pathname}catch{const pathname=raw.split(/[?#]/,1)[0].trim()||'/';return pathname.length>1?pathname.replace(/\/$/,''):pathname}};
 const eventNames:Record<string,string>={contact_click:'Contato',whatsapp_click:'WhatsApp',instagram_click:'Instagram',linkedin_click:'LinkedIn',email_click:'E-mail',cv_click:'Download do CV',external_click:'Link externo'};
 const ranking=(rows:EventRow[],pick:(row:EventRow)=>string,limit=6)=>[...rows.reduce((map,row)=>{const key=pick(row);map.set(key,(map.get(key)||0)+1);return map},new Map<string,number>())].sort((a,b)=>b[1]-a[1]).slice(0,limit);
 
@@ -26,7 +27,7 @@ export default async function AnalyticsPage({params}:{params:Promise<{slug:strin
  const unique=new Set(views.map(row=>row.session_id).filter(Boolean)).size,conversion=unique?Math.round(leads.length/unique*1000)/10:0;
  const now=new Date(),days=Array.from({length:7},(_,index)=>{const date=new Date(now);date.setDate(date.getDate()-(6-index));return{label:new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',weekday:'short'}).format(date).replace('.',''),count:views.filter(row=>dayKey(row.occurred_at)===dayKey(date)).length}}),max=Math.max(1,...days.map(day=>day.count));
  const referrers=ranking(views,row=>label(row.referrer_host,'Direto'));
- const pages=ranking(views,row=>label(row.path,'/'));
+ const pages=ranking(views,row=>pagePath(row.path));
  const actions=ranking(clicks,row=>eventNames[row.event_type]||row.event_type);
  const daily=Array.from({length:30},(_,index)=>{const date=new Date(now);date.setDate(date.getDate()-index);const key=dayKey(date),dayViews=views.filter(row=>dayKey(row.occurred_at)===key),dayClicks=clicks.filter(row=>dayKey(row.occurred_at)===key),dayLeads=leads.filter(row=>dayKey(row.created_at)===key);return{key,date,views:dayViews.length,visitors:new Set(dayViews.map(row=>row.session_id).filter(Boolean)).size,clicks:dayClicks.length,leads:dayLeads.length,sources:ranking(dayClicks,row=>label(row.referrer_host,'Direto'),20),actions:ranking(dayClicks,row=>eventNames[row.event_type]||row.event_type,20)}}).filter(day=>day.views||day.clicks||day.leads);
  return <div className={styles.analyticsPage}>
