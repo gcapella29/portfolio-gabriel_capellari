@@ -22,11 +22,12 @@ O produto atual oferece somente o segmento Portfólio. As chaves dos demais segm
 
 ## Migrações
 
-As migrações em `supabase/migrations` são ordenadas e cumulativas. A `014_harden_public_lead_project_state.sql` é o fechamento de segurança da migração e exige que projeto e estado v2 estejam simultaneamente ativos antes de aceitar um lead anônimo.
+As migrações em `supabase/migrations` são ordenadas e cumulativas. A `014_harden_public_lead_project_state.sql` fecha a segurança dos leads; a `015_root_cms_and_project_analytics.sql` adiciona o CMS da raiz e métricas anônimas isoladas por projeto.
 
 ## Operação
 
 - Owner: `/owner/projects`
+- Editor da raiz: `/owner/root`
 - Entrada autenticada: `/entry`
 - Editor de projeto: `/dashboard/[slug]/content`
 - Preview privado: `/preview/[slug]`

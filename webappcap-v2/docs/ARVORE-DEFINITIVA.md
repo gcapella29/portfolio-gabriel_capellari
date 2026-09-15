@@ -32,7 +32,7 @@ portfolio-gabriel_capellari/
 │   │   │   ├── registry.tsx
 │   │   │   └── types.ts
 │   │   └── middleware.ts                 # separação plataforma/tenant e proteção de sessão
-│   ├── supabase/migrations/              # 001–014, cumulativas
+│   ├── supabase/migrations/              # 001–015, cumulativas
 │   └── docs/
 └── arquivos legados na raiz              # preservados para rollback do projeto Vercel antigo
 ```
@@ -48,6 +48,8 @@ Os arquivos legados da raiz não participam do build oficial, porque a Vercel ex
 | `/owner/projects` | owner | central dos projetos pertencentes ao owner |
 | `/owner/projects/[slug]` | owner | compatibilidade; redireciona para edição de conteúdo |
 | `/owner/projects/new` | owner | criação; inativa enquanto não houver novo template pronto |
+| `/owner/root` | owner | conteúdo, rascunho e publicação da raiz WebAppCap |
+| `/owner/root/preview` | owner | preview privado do rascunho da raiz |
 | `/projects` | autenticado | seletor quando o usuário participa de mais de um projeto |
 | `/dashboard/[slug]/*` | membro autorizado | conteúdo, fotos, aparência, domínio, leads e analytics |
 | `/setup/[slug]/[step]` | membro autorizado | onboarding de projetos futuros |
@@ -81,6 +83,7 @@ Controles revisados:
 6. O resolver público retorna somente projeto não arquivado, publicado, com lifecycle publicado e template definido.
 7. O retorno de login/callback aceita somente caminhos internos; URLs absolutas, protocol-relative e barras invertidas caem em `/entry`.
 8. A migration 014 aplica ao RPC de leads o mesmo conjunto de condições do resolver público.
+9. A migration 015 isola o CMS da raiz e os eventos anônimos de Analytics por projeto.
 
 ## Código removido com evidência de desuso
 
