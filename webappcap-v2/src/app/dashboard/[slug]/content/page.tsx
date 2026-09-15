@@ -11,7 +11,7 @@ const v=(o:Record<string,unknown>,k:string)=>String(o[k]??'');
 const storedOr=<T,>(content:Record<string,unknown>,key:string,fallback:T)=>Array.isArray(content[key])?content[key] as T:fallback;
 const legacyEnglishRoles=new Set(['Poker journalist · Live tournament reporter · SEO writer · Learner .·.','Poker journalist · Live tournament reporter · SEO writer · Learner .\'.']);
 const commerceTextFields=[
- ['hero_kicker','Texto acima do nome','COMÉRCIO LOCAL · FEITO PERTO'],['hero_whatsapp','Botão do WhatsApp','Falar no WhatsApp ↗'],['hero_discover','Chamada para rolar','Descobrir ↓'],
+ ['hero_kicker','Texto acima do nome','COMÉRCIO LOCAL · FEITO PERTO'],['hero_whatsapp','Botão do WhatsApp','Falar no WhatsApp ↗'],['hero_instagram','Botão do Instagram','Siga no Instagram ↗'],['hero_discover','Chamada para rolar','Descobrir ↓'],
  ['nav_home','Menu — Início','Início'],['nav_news','Menu — Novidades','Novidades'],['nav_highlights','Menu — Destaques','Destaques'],['nav_menu','Menu — Cardápio','Cardápio'],['nav_order','Menu — Pedido','Pedido'],
  ['news_kicker','Novidades — identificação','01 · AGORA'],['news_title','Novidades — título','Novidades'],['news_intro','Novidades — introdução','O que acabou de chegar por aqui.'],['news_link','Novidades — link','Ver no cardápio →'],
  ['highlights_kicker','Destaques — identificação','02 · ESCOLHAS DA CASA'],['highlights_title','Destaques — título','Destaques'],['highlights_intro','Destaques — introdução','Os favoritos de quem já conhece.'],['highlight_label','Rótulo de cada destaque','DESTAQUE'],['highlights_link','Destaques — link','Escolher no cardápio ↘'],
