@@ -5,6 +5,7 @@ import { useEffect,useMemo,useRef,useState,type CSSProperties } from 'react';
 import type { TemplateRenderProps } from '../types';
 import styles from './commerce.module.css';
 import sections from './commerce-sections.module.css';
+import theme from './commerce-theme.module.css';
 
 type Row=Record<string,unknown>;
 type Cart=Record<number,number>;
@@ -45,6 +46,7 @@ export function CommerceTemplate({project,data}:TemplateRenderProps){
  const whatsapp=text(data.contact,'whatsapp','5516999999999').replace(/\D/g,'');
  const instagram=text(data.contact,'instagram','@casaaurora');
  const instagramUrl=instagram.startsWith('http')?instagram:`https://instagram.com/${instagram.replace(/^@/,'')}`;
+ const scale=text(data.appearance,'scale','normal');
  const hero=image(data.media,'hero','/commerce/commerce-hero.png');
  const logo=image(data.media,'logo','/commerce/commerce-menu.png');
  const creator=image(data.media,'creator','/commerce/commerce-feature.png');
@@ -72,10 +74,10 @@ export function CommerceTemplate({project,data}:TemplateRenderProps){
   return()=>observer.disconnect();
  },[]);
 
- return <div ref={siteRef} className={styles.site} data-variant={variant} style={vars}>
-  <header className={styles.topbar}><a className={styles.wordmark} href="#inicio">{name}</a><nav aria-label="Navegação principal"><a href="#inicio">{copy('nav_home','Início')}</a><a href="#novidades">{copy('nav_news','Novidades')}</a><a href="#destaques">{copy('nav_highlights','Destaques')}</a><a href="#cardapio">{copy('nav_menu','Cardápio')}</a><a href="#pedido">{copy('nav_order','Pedido')} <span>{chosen.reduce((sum,item)=>sum+item.quantity,0)}</span></a></nav></header>
+ return <div ref={siteRef} className={`${styles.site} ${theme.palette}`} data-variant={variant} data-scale={scale} style={vars}>
+  <header className={`${styles.topbar} ${theme.topbar}`}><a className={styles.wordmark} href="#inicio">{name}</a><nav aria-label="Navegação principal"><a href="#inicio">{copy('nav_home','Início')}</a><a href="#novidades">{copy('nav_news','Novidades')}</a><a href="#destaques">{copy('nav_highlights','Destaques')}</a><a href="#cardapio">{copy('nav_menu','Cardápio')}</a><a href="#pedido">{copy('nav_order','Pedido')} <span>{chosen.reduce((sum,item)=>sum+item.quantity,0)}</span></a></nav></header>
   <main>
-   <section className={styles.hero} id="inicio"><Image src={hero} alt={`Ambiente de ${name}`} fill priority sizes="100vw"/><div className={styles.heroShade}/><div className={styles.heroCopy}><span>{copy('hero_kicker','COMÉRCIO LOCAL · FEITO PERTO')}</span><h1>{name}</h1><p>{tagline}</p><div className={styles.heroMeta}><span>{location}</span><a href={`tel:${phone.replace(/\D/g,'')}`}>{phone}</a><a className={styles.whatsapp} href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer">{copy('hero_whatsapp','Falar no WhatsApp ↗')}</a><a className={styles.whatsapp} href={instagramUrl} target="_blank" rel="noreferrer">{copy('hero_instagram','Siga no Instagram ↗')}</a></div></div><a className={styles.scrollCue} href="#novidades">{copy('hero_discover','Descobrir ↓')}</a></section>
+   <section className={styles.hero} id="inicio"><Image src={hero} alt={`Ambiente de ${name}`} fill priority sizes="100vw"/><div className={`${styles.heroShade} ${theme.heroShade}`}/><div className={styles.heroCopy}><span>{copy('hero_kicker','COMÉRCIO LOCAL · FEITO PERTO')}</span><h1 className={theme.heroTitle}>{name}</h1><p>{tagline}</p><div className={styles.heroMeta}><span>{location}</span><a href={`tel:${phone.replace(/\D/g,'')}`}>{phone}</a><a className={styles.whatsapp} href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer">{copy('hero_whatsapp','Falar no WhatsApp ↗')}</a><a className={styles.whatsapp} href={instagramUrl} target="_blank" rel="noreferrer">{copy('hero_instagram','Siga no Instagram ↗')}</a></div></div><a className={styles.scrollCue} href="#novidades">{copy('hero_discover','Descobrir ↓')}</a></section>
 
    <section className={styles.section} id="novidades" data-reveal="left"><header className={styles.sectionHead}><span>{copy('news_kicker','01 · AGORA')}</span><h2>{copy('news_title','Novidades')}</h2><p>{copy('news_intro','O que acabou de chegar por aqui.')}</p></header><div className={styles.gallery}>{news.map((item,index)=><article className={styles.galleryCard} key={index}><div><Image src={text(item,'image','/commerce/commerce-hero.png')} alt={text(item,'title','Novidade')} fill sizes="(max-width: 760px) 90vw, 33vw"/></div><span>0{index+1}</span><h3>{text(item,'title',`Novidade ${index+1}`)}</h3><p>{text(item,'description')}</p><a href="#cardapio">{copy('news_link','Ver no cardápio →')}</a></article>)}</div></section>
 
