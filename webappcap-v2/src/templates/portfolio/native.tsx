@@ -69,6 +69,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const featuredDescription:LocalizedText={pt:stringValue(data.content,'proof',defaults.featured.description.pt),en:stringValue(data.content,'proof_en',defaults.featured.description.en)};
   const gallery=useMemo(()=>{const custom=Array.isArray(data.media.gallery)?data.media.gallery.map(item=>item&&typeof item==='object'&&'url' in item?String((item as {url?:unknown}).url||''):typeof item==='string'?item:'').filter(Boolean):[];return custom.length?custom:defaults.media.wsop},[data.media.gallery]);
   const accent=stringValue(data.appearance,'accent','#e3bb3d');
+  const footerText:LocalizedText={pt:stringValue(data.content,'footer_text_pt',`${name.toUpperCase()} · JORNALISMO DE POKER · IBITINGA, SP — BRASIL`),en:stringValue(data.content,'footer_text_en',`${name.toUpperCase()} · POKER JOURNALISM · IBITINGA, SP — BRAZIL`)};
 
   useEffect(()=>{const stored=window.localStorage.getItem('portfolio-language');if(stored==='en')setLanguage('en')},[]);
   useEffect(()=>{if(gallery.length<2)return;const timer=window.setInterval(()=>setSlide(current=>(current+1)%gallery.length),10000);return()=>window.clearInterval(timer)},[gallery.length]);
@@ -142,6 +143,6 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
       </section>
     </main>
     <nav className={styles.sectionNav} aria-label={language==='pt'?'Navegação rápida':'Quick navigation'}>{sectionLinks.map(([id,label])=><a href={`#${id}`} className={activeSection===id?styles.activeNav:undefined} aria-label={localized(label,language)} key={id}/>)}</nav>
-    <footer className={styles.footer}>{name.toUpperCase()} · {language==='pt'?'JORNALISMO DE POKER · IBITINGA, SP — BRASIL':'POKER JOURNALISM · IBITINGA, SP — BRAZIL'}</footer>
+    <footer className={styles.footer}>{localized(footerText,language)}</footer>
   </div>;
 }
