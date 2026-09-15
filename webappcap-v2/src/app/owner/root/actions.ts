@@ -47,3 +47,9 @@ export async function publishRootAction() {
   revalidatePath('/owner/root');
   redirect('/owner/root?published=1');
 }
+
+export async function logoutRootAction() {
+  const sb = await createSupabaseServerClient();
+  await sb.auth.signOut();
+  redirect('/login');
+}
