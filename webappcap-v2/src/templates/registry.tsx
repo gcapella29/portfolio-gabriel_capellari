@@ -3,20 +3,10 @@ import { NativeMainParityPortfolioTemplate } from './portfolio/native-main-parit
 import { CommerceTemplate } from './commerce/commerce';
 import type { TemplateRenderProps } from './types';
 
-/**
- * The current WebAppCap product has one active template surface: Portfolio.
- *
- * The old iframe renderer is no longer part of the active template registry.
- * `portfolio-native-1` is the canonical renderer. The legacy database key is
- * kept only as an alias to the same native renderer so migrated projects cannot
- * fall through while their state is normalized.
- */
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
   'portfolio-legacy-1': NativeMainParityPortfolioTemplate,
   'portfolio-native-1': NativeMainParityPortfolioTemplate,
   'commerce-main-1': CommerceTemplate,
-  'commerce-night-1': CommerceTemplate,
-  'commerce-classic-1': CommerceTemplate,
   'commerce-sales-1': CommerceTemplate
 };
 
