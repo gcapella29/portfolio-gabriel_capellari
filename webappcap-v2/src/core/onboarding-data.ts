@@ -1,11 +1,11 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { OnboardingStep, ProjectContext } from './domain';
 import { getTemplate } from './segments';
+import { normalizeV2Content } from './content-snapshot';
 
 export type V2Content = {identity:Record<string,unknown>;content:Record<string,unknown>;media:Record<string,unknown>;appearance:Record<string,unknown>;contact:Record<string,unknown>};
-const emptyContent=():V2Content=>({identity:{},content:{},media:{},appearance:{},contact:{}});
 
-export async function readV2Content(projectId:string):Promise<V2Content>{const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_content').select('identity,content,media,appearance,contact').eq('project_id',projectId).maybeSingle();if(q.error&&q.error.code!=='PGRST116')throw q.error;return q.data?{identity:q.data.identity||{},content:q.data.content||{},media:q.data.media||{},appearance:q.data.appearance||{},contact:q.data.contact||{}}:emptyContent()}
+export async function readV2Content(projectId:string):Promise<V2Content>{const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_content').select('identity,content,media,appearance,contact').eq('project_id',projectId).maybeSingle();if(q.error&&q.error.code!=='PGRST116')throw q.error;return normalizeV2Content(q.data)}
 export async function ensureV2Content(projectId:string){const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_content').upsert({project_id:projectId},{onConflict:'project_id'});if(q.error)throw q.error}
 export async function saveV2Section(projectId:string,section:keyof V2Content,value:Record<string,unknown>){const sb=await createSupabaseServerClient();await ensureV2Content(projectId);const q=await sb.from('project_v2_content').update({[section]:value,updated_at:new Date().toISOString()}).eq('project_id',projectId);if(q.error)throw q.error}
 export async function updateOnboardingState(projectId:string,step:OnboardingStep,patch:Record<string,unknown>={}){const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_state').update({onboarding_step:step,lifecycle:step==='completed'?'ready-to-publish':'onboarding',updated_at:new Date().toISOString(),...patch}).eq('project_id',projectId);if(q.error)throw q.error}

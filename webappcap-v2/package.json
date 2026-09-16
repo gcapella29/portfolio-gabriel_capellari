@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test src/core/*.test.ts",
+    "check": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
