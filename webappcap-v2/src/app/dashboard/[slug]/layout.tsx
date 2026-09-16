@@ -5,9 +5,14 @@ import {readProjectState,publicProjectUrl} from '@/core/publishing';
 import {logoutDashboardAction,publishDashboardAction} from './actions';
 import styles from './dashboard.module.css';
 
+const platformUrl=(path:string)=>{
+ const origin=(process.env.NEXT_PUBLIC_APP_URL||'https://www.webappcap.com.br').replace(/\/$/,'');
+ return `${origin}${path.startsWith('/')?path:`/${path}`}`;
+};
+
 export default async function DashboardLayout({children,params}:{children:React.ReactNode;params:Promise<{slug:string}>}){
  const {slug}=await params,{project,role}=await resolveProjectAccess(slug),state=await readProjectState(project.id),base=`/dashboard/${encodeURIComponent(project.slug)}`;
- const siteUrl=publicProjectUrl(state,project.slug),commerce=project.segment==='food-business';
+ const siteUrl=publicProjectUrl(state,project.slug),commerce=project.segment==='food-business',switchProjectUrl=platformUrl(role==='owner'?'/owner/projects':'/projects');
  const nav=commerce?
   [['⌂','Visão geral',base,true],['✎','Editar site',`${base}/editor`,can(role,'editContent')],['◎','Leads',`${base}/leads`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const:
   [['⌂','Visão geral',base,true],['≡','Conteúdo',`${base}/content`,can(role,'editContent')],['▧','Fotos',`${base}/media`,can(role,'manageMedia')],['◐','Aparência',`${base}/appearance`,can(role,'editAppearance')],['◎','Leads',`${base}/leads`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const;
@@ -16,7 +21,7 @@ export default async function DashboardLayout({children,params}:{children:React.
    <Link href={base} className={styles.brand}><span className={styles.brandMark}>W</span><span className={styles.brandText}><strong>WebAppCap</strong><small>Área do cliente</small></span></Link>
    <div className={styles.projectMini}><span>{role==='owner'?'Owner':'Cliente'}</span><strong>{project.name}</strong><small>{project.isPublished?'Site publicado':'Em configuração'}</small></div>
    <nav className={styles.nav} aria-label="Gerenciamento do projeto">{nav.filter(([, , ,show])=>show).map(([icon,label,href])=><Link key={label} href={href}><i aria-hidden="true">{icon}</i><span>{label}</span></Link>)}</nav>
-   <div className={styles.sidebarBottom}><Link href={role==='owner'?'/owner/projects':'/projects'}>← Trocar projeto</Link><form action={logoutDashboardAction}><button type="submit" className={styles.logout}>Sair</button></form></div>
+   <div className={styles.sidebarBottom}><a href={switchProjectUrl}>← Trocar projeto</a><form action={logoutDashboardAction}><button type="submit" className={styles.logout}>Sair</button></form></div>
   </aside>
   <main className={styles.main}>
    <header className={styles.topbar}><div className={styles.topIdentity}><span>PROJETO</span><strong>{project.name}</strong></div><div className={styles.topActions}>
