@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { classifyHost } from '@/core/host-routing';
 import { projectForUser } from '@/core/projects';
-import { destinationForUser } from '@/core/onboarding';
+import { onboardingPath } from '@/core/onboarding';
 import { entryDestination } from '@/core/session';
 
 export default async function EntryPage() {
@@ -19,7 +19,10 @@ export default async function EntryPage() {
   if (host.kind === 'native') {
     const access = await projectForUser(host.subdomain, data.user.id);
     if (!access) redirect('/unauthorized');
-    redirect(destinationForUser(access.project, access.role));
+    if (access.project.onboardingStep !== 'completed') {
+      redirect(onboardingPath(access.project.onboardingStep, access.project.slug));
+    }
+    redirect(`/dashboard/${encodeURIComponent(access.project.slug)}`);
   }
 
   redirect(await entryDestination(data.user.id));
