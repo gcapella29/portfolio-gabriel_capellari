@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyHost, isPublicAssetPath } from './host-routing';
+import { classifyHost, isPublicAssetPath } from './host-routing.ts';
 
 test('classifies platform hosts', () => {
   assert.deepEqual(classifyHost('webappcap.com.br'), { kind: 'platform', host: 'webappcap.com.br' });
