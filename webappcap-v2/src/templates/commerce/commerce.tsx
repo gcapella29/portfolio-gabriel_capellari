@@ -6,6 +6,7 @@ import type { TemplateRenderProps } from '../types';
 import styles from './commerce.module.css';
 import sections from './commerce-sections.module.css';
 import theme from './commerce-theme.module.css';
+import {CommerceSalesTemplate} from './commerce-sales';
 
 type Row=Record<string,unknown>;
 type Cart=Record<number,number>;
@@ -35,9 +36,14 @@ const fallbackMenu=[
  {title:'Pão de queijo',description:'Porção com seis unidades assadas na hora.',price:'R$ 16,00',image:'/commerce/commerce-hero.png'}
 ];
 
-export function CommerceTemplate({project,data}:TemplateRenderProps){
+export function CommerceTemplate(props:TemplateRenderProps){
+ const key=text(props.data.appearance,'preview_template_key',props.project.templateKey||'commerce-main-1');
+ return key.includes('sales')?<CommerceSalesTemplate {...props}/>:<CommerceEditorialTemplate {...props}/>;
+}
+
+function CommerceEditorialTemplate({project,data}:TemplateRenderProps){
  const siteRef=useRef<HTMLDivElement>(null);
- const key=project.templateKey||text(data.appearance,'preview_template_key','commerce-main-1');
+ const key=text(data.appearance,'preview_template_key',project.templateKey||'commerce-main-1');
  const variant=key.includes('night')?'night':key.includes('classic')?'classic':'main';
  const name=text(data.identity,'name',project.name||'Casa Aurora');
  const tagline=text(data.identity,'tagline','Feito hoje. Servido com calma.');
@@ -89,7 +95,7 @@ export function CommerceTemplate({project,data}:TemplateRenderProps){
 
    <section className={`${styles.section} ${sections.social}`} id="redes-sociais" data-reveal="left"><header className={styles.sectionHead}><span>{copy('social_kicker','05 · REDES SOCIAIS')}</span><h2>{copy('social_title','Acompanhe de perto')}</h2><p>{copy('social_intro','Novidades, bastidores e criações direto no Instagram.')}</p></header><div className={sections.instagramCard}><div className={sections.instagramProfile}><div className={sections.instagramAvatar}><Image src={logo} alt={`Perfil de ${name}`} fill sizes="72px"/></div><div><strong>{instagram.replace(/^https?:\/\/(www\.)?instagram\.com\//,'@').replace(/\/$/,'')}</strong><span>{name}</span></div><a href={instagramUrl} target="_blank" rel="noreferrer">{copy('social_follow','Seguir no Instagram ↗')}</a></div><div className={sections.instagramGrid}>{socialImages.map((src,index)=><div key={`${src}-${index}`}><Image src={src} alt={`Publicação ${index+1} de ${name}`} fill sizes="(max-width: 760px) 33vw, 20vw"/></div>)}</div></div></section>
 
-   <section className={`${styles.section} ${sections.about}`} id="sobre" data-reveal="right"><header className={styles.sectionHead}><span>{copy('about_kicker','06 · SOBRE')}</span><h2>{copy('about_title','Feito por quem acredita nos detalhes')}</h2></header><div className={sections.aboutGrid}><p className={sections.aboutMain}>{copy('about_main','Cada produto nasce de uma ideia simples: criar algo especial, útil e cheio de personalidade.')}</p><article className={sections.creator}><div><Image src={creator} alt={copy('creator_name','Marina Aurora')} fill sizes="(max-width: 760px) 92vw, 42vw"/></div><h3>{copy('creator_name','Marina Aurora')}</h3><p>{copy('creator_bio','Criadora da marca, apaixonada por transformar ideias em peças que fazem parte da rotina.')}</p></article></div></section>
+   <section className={`${styles.section} ${sections.about}`} id="sobre" data-reveal="right"><header className={styles.sectionHead}><span>{copy('about_kicker','06 · SOBRE')}</span><h2>{copy('about_title','Feito por quem acredita nos detalhes')}</h2></header><div className={sections.aboutGrid}><p className={sections.aboutMain}>{copy('about_main','Cada produto nasce de uma ideia simples: criar algo especial, útil e cheio de personalidade.')}</p><article className={sections.creator}><div><Image src={creator} alt={copy('creator_name','Marina Aurora')} fill sizes="(max-width: 760px) 92vw, 42vw"/></div><h3>{copy('creator_name','Marina Aurora')}</h3><p>{copy('creator_bio','Criadora da marca, apaixonada por transformar ideias em peças que fazem parte da rotina.')}</p><a className={sections.creatorInstagram} href={copy('creator_instagram','https://instagram.com/')} target="_blank" rel="noreferrer">{copy('creator_instagram_label','Siga a criadora no Instagram ↗')}</a></article></div></section>
   </main>
   <footer><strong>{name}</strong><span>{location} · {phone}</span><a href="#inicio">{copy('footer_back','Voltar ao início ↑')}</a></footer>
  </div>;

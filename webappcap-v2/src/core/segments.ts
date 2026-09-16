@@ -9,7 +9,8 @@ export const segments:Record<SegmentKey,SegmentDefinition>={
  'food-business':{key:'food-business',name:'Comércio',description:'Lojas, cafés, restaurantes e negócios locais com cardápio e pedidos.',templates:[
   {key:'commerce-main-1',segment:'food-business',name:'Bistrô editorial',description:'Fotografia ampla, tipografia marcante e movimentos suaves.',status:'ready'},
   {key:'commerce-night-1',segment:'food-business',name:'Noite vibrante',description:'Fundo escuro, cores elétricas e transições mais rápidas.',status:'ready'},
-  {key:'commerce-classic-1',segment:'food-business',name:'Clássico artesanal',description:'Tons naturais, formas arredondadas e movimento discreto.',status:'ready'}
+  {key:'commerce-classic-1',segment:'food-business',name:'Clássico artesanal',description:'Tons naturais, formas arredondadas e movimento discreto.',status:'ready'},
+  {key:'commerce-sales-1',segment:'food-business',name:'Venda rápida',description:'Catálogo compacto, personalização dos itens e pedido direto pelo WhatsApp.',status:'ready'}
  ]},
  'personal-trainer':{key:'personal-trainer',name:'Personal Trainer',description:'Treinos, agenda, método e resultados. Em breve.',templates:[]},
  school:{key:'school',name:'Escola',description:'Cursos, turmas, estrutura e matrículas. Em breve.',templates:[]}
