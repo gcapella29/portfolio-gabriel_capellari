@@ -1,7 +1,7 @@
 import { resolveProjectAccess } from '@/core/session';
 import { readProjectState } from '@/core/publishing';
 import { isVercelDomainAutomationConfigured } from '@/core/vercel-domains';
-import { saveSettingsAction, validateDomainAction } from '../actions';
+import { saveSettingsAction, validateDomainAction } from './actions';
 
 export default async function SettingsPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{saved?:string;domain?:string;vercel?:string}>}){
   const {slug}=await params,{saved,domain,vercel}=await searchParams,{project}=await resolveProjectAccess(slug),state=await readProjectState(project.id),automation=isVercelDomainAutomationConfigured();
