@@ -8,6 +8,8 @@
 .text-link,
 .segment-card,
 .setup-actions a,
+.editor-page button,
+.editor-page [role="button"],
 [class*="dashboard_button"],
 [class*="dashboard_publish"],
 [class*="dashboard_logout"],
@@ -20,14 +22,17 @@
 [class*="owner_filter"],
 [class*="owner_activityItem"],
 [class*="owner_ownerShortcuts__"] a {
-  transition: transform .22s cubic-bezier(.2,.75,.25,1), box-shadow .22s ease,
-    background-color .22s ease, border-color .22s ease, color .22s ease;
+  transition: transform .14s cubic-bezier(.2,.75,.25,1), box-shadow .18s ease,
+    background-color .18s ease, border-color .18s ease, color .18s ease, opacity .18s ease;
+  transform-origin: center;
 }
 
 .action:focus-visible,
 .text-link:focus-visible,
 .segment-card:focus-visible,
 .setup-actions a:focus-visible,
+.editor-page button:focus-visible,
+.editor-page [role="button"]:focus-visible,
 [class*="dashboard_button"]:focus-visible,
 [class*="dashboard_publish"]:focus-visible,
 [class*="dashboard_logout"]:focus-visible,
@@ -48,19 +53,31 @@
 .text-link:active,
 .segment-card:active,
 .setup-actions a:active,
-[class*="dashboard_button"]:active,
-[class*="dashboard_publish"]:active,
-[class*="dashboard_logout"]:active,
+.editor-page button:active:not(:disabled),
+.editor-page [role="button"]:active,
+[class*="dashboard_button"]:active:not(:disabled),
+[class*="dashboard_publish"]:active:not(:disabled),
+[class*="dashboard_logout"]:active:not(:disabled),
 [class*="dashboard_nav__"] a:active,
 [class*="dashboard_sidebarBottom__"] a:active,
 [class*="dashboard_tool__"]:active,
-[class*="owner_button"]:active,
+[class*="owner_button"]:active:not(:disabled),
 [class*="owner_cardPrimary"]:active,
 [class*="owner_cardAction"]:active,
 [class*="owner_filter"]:active,
 [class*="owner_activityItem"]:active,
 [class*="owner_ownerShortcuts__"] a:active {
-  transform: translateY(1px) scale(.98);
+  transform: translateY(2px) scale(.955) !important;
+  box-shadow: 0 2px 7px rgba(17,24,39,.13) !important;
+  opacity: .9;
+  transition-duration: .055s;
+}
+
+.editor-page button:disabled,
+[class*="dashboard_button"]:disabled,
+[class*="dashboard_publish"]:disabled,
+[class*="owner_button"]:disabled {
+  cursor: not-allowed;
 }
 
 .editor-page > .notice {
@@ -135,9 +152,10 @@ div[class*="dashboard_notice__"]::before {
 @media (hover: hover) {
   .action:hover:not(:disabled),
   .setup-actions a:hover,
-  [class*="dashboard_button"]:hover,
-  [class*="dashboard_publish"]:hover,
-  [class*="owner_button"]:hover,
+  .editor-page button:hover:not(:disabled),
+  [class*="dashboard_button"]:hover:not(:disabled),
+  [class*="dashboard_publish"]:hover:not(:disabled),
+  [class*="owner_button"]:hover:not(:disabled),
   [class*="owner_cardPrimary"]:hover,
   [class*="owner_cardAction"]:hover {
     transform: translateY(-2px);
@@ -170,6 +188,8 @@ div[class*="dashboard_notice__"]::before {
   .text-link,
   .segment-card,
   .setup-actions a,
+  .editor-page button,
+  .editor-page [role="button"],
   [class*="dashboard_"],
   [class*="owner_"],
   .editor-page > .notice {
