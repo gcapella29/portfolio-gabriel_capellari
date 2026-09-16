@@ -6,7 +6,7 @@ export type CommerceSettings = {
 const clean=(value:unknown)=>String(value??'').trim();
 
 export function commerceSettings(content:Record<string,unknown>):CommerceSettings{
-  const catalogLabel=clean(content.catalog_label)||'Catálogo';
+  const catalogLabel=clean(content.catalog_label)||clean(content.menu_title)||clean(content.nav_menu)||'Cardápio';
   return {catalogLabel,catalogLabelLower:catalogLabel.toLocaleLowerCase('pt-BR')};
 }
 
