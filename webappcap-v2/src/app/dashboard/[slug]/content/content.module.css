@@ -20,3 +20,13 @@
 .sectionNav a{flex:0 0 auto;grid-template-columns:8px auto auto;gap:6px;padding:8px 9px;white-space:nowrap}
 
 @media(max-width:920px){.sectionNav{gap:6px;padding:7px}.navHead{display:grid;flex-basis:92px;grid-template-columns:1fr;padding-right:7px}.navHead span,.navHead>i{display:none}.navHead strong{font-size:9px}.sectionNav nav{padding:0}.sectionNav a small{display:none}}
+@media(max-width:620px){
+ .sectionNav{margin-inline:-4px;border-radius:11px}.navHead{display:none}.sectionNav nav{width:100%;gap:2px}.sectionNav a{padding:9px 10px;font-size:10px}
+ .form :global(.form-grid),.sectionBody :global(.form-grid){grid-template-columns:minmax(0,1fr)!important}
+ .form :global(.upload-grid){grid-template-columns:minmax(0,1fr)!important}
+ .form :global(.upload-card img){max-height:180px;object-fit:cover}
+ .disclosure,.form :global(.repeatable-section){border-radius:12px}
+ .disclosure>summary,.form :global(.repeatable-section>summary){grid-template-columns:30px minmax(0,1fr) auto;gap:8px;padding:10px}
+ .disclosure>summary:before,.form :global(.repeatable-section>summary:before){width:28px;height:28px}
+ .sectionBody,.form :global(.repeatable-body){padding:3px 10px 10px}
+}
