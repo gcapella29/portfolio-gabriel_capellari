@@ -24,6 +24,11 @@
 .polish :global(main section[aria-label="Produtos"] article:nth-child(6)){animation-delay:.4s}
 .polish :global(nav[aria-label="Categorias"] button[aria-pressed="true"]){border-color:color-mix(in srgb,var(--sales-accent) 62%,#fff);background:linear-gradient(135deg,var(--sales-accent),color-mix(in srgb,var(--sales-accent) 70%,#101923));box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 8px 20px color-mix(in srgb,var(--sales-accent) 26%,transparent)}
 .polish :global(header img){object-position:var(--sales-logo-position,center)}
+.polish[data-project="vet-se"] :global(:is(main h1,main h2,div[role="dialog"] h2)){color:rgb(150,171,200)}
+.polish[data-project="vet-se"] :global(header>button),
+.polish[data-project="vet-se"]>button,
+.polish[data-project="vet-se"] :global(div[role="presentation"] section>button:last-child),
+.polish[data-project="vet-se"] :global(div[role="presentation"] section>a[target="_blank"]){color:#172230}
 
 @keyframes salesCardIn{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 

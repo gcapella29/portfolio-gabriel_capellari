@@ -32,7 +32,7 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
  const tagline=text(data.identity,'tagline','Escolha, personalize e peça pelo WhatsApp.');
  const whatsapp=text(data.contact,'whatsapp','5516999999999').replace(/\D/g,'');
  const logo=media(data.media,'logo','/commerce/commerce-menu.png');
- const accent=text(data.appearance,'accent','#159447');
+ const accent=project.slug==='vet-se'?'rgb(150, 171, 200)':text(data.appearance,'accent','#159447');
  const vars={'--sales-accent':accent,'--sales-logo-position':mediaPosition(data.media,'logo')} as CSSProperties;
  const categories=useMemo(()=>['Todos',...Array.from(new Set(products.map(item=>text(item,'category','Outros'))))],[products]);
  const [category,setCategory]=useState('Todos'),[query,setQuery]=useState(''),[selected,setSelected]=useState<number|null>(null),[cartOpen,setCartOpen]=useState(false);
@@ -56,9 +56,9 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
   return encodeURIComponent([`Olá! Quero fazer um pedido na ${name}.`,'',`👤 Cliente: ${customer.name||'Não informado'}`,`📦 Tipo: ${customer.type}`,customer.type==='Entrega'?`📍 Endereço: ${customer.address||'Não informado'}`:'',`💳 Pagamento: ${customer.payment||'Não informado'}`,'','ITENS DO PEDIDO',...itemLines,'',`💰 TOTAL: ${brl(cartTotal)}`,customer.note?`📝 Observação geral: ${customer.note}`:''].filter(Boolean).join('\n'));
  };
 
- return <div className={`${styles.site} ${polish.polish}`} style={vars}>
+ return <div className={`${styles.site} ${polish.polish}`} data-project={project.slug} style={vars}>
   <header className={styles.header}><div className={styles.brand}><div><Image src={logo} alt={`Logo de ${name}`} fill sizes="64px"/></div><span><strong>{name}</strong><small>{tagline}</small></span></div><button type="button" onClick={()=>setCartOpen(true)} aria-label={`Abrir pedido com ${cartCount} itens`}>Pedido <b>{cartCount}</b></button></header>
-  <main><section className={styles.intro}><span>CATÁLOGO ONLINE</span><h1>{text(data.content,'menu_title','Peça do seu jeito')}</h1><p>{text(data.content,'menu_intro','Escolha seus produtos, personalize e envie o pedido direto pelo WhatsApp.')}</p><label><span>Buscar no cardápio</span><input type="search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="O que você procura?"/></label></section>
+  <main><section className={styles.intro}><span>CATÁLOGO ONLINE</span><h1>{text(data.content,'menu_title','Peça do seu jeito').replace(/cardápio/gi,'catálogo')}</h1><p>{text(data.content,'menu_intro','Escolha seus produtos, personalize e envie o pedido direto pelo WhatsApp.').replace(/cardápio/gi,'catálogo')}</p><label><span>Buscar no catálogo</span><input type="search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="O que você procura?"/></label></section>
    <nav className={styles.categories} aria-label="Categorias">{categories.map(item=><button type="button" key={item} aria-pressed={category===item} onClick={()=>setCategory(item)}>{item}</button>)}</nav>
    <section className={styles.catalog} aria-label="Produtos">{filtered.map(item=>{const index=products.indexOf(item);return <article className={styles.card} key={index}><button type="button" onClick={()=>openProduct(index)} aria-label={`Ver ${text(item,'title')}`}><div className={styles.photo}><Image src={text(item,'image','/commerce/commerce-feature.png')} alt={text(item,'title','Produto')} fill sizes="(max-width: 700px) 100vw, 33vw"/></div><div className={styles.cardBody}><small>{text(item,'category','Outros')}</small><h2>{text(item,'title',`Produto ${index+1}`)}</h2><p>{text(item,'description')}</p><footer><strong>{text(item,'price','R$ 0,00')}</strong><span>Adicionar</span></footer></div></button></article>})}{!filtered.length?<p className={styles.empty}>Nenhum produto encontrado.</p>:null}</section>
   </main>
