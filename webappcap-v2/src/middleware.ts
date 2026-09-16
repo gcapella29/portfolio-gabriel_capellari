@@ -3,6 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { classifyHost, isPublicAssetPath } from '@/core/host-routing';
 
 const protectedPrefixes = ['/owner', '/projects', '/dashboard', '/setup'];
+const tenantPlatformPrefixes = ['/login', '/entry', '/dashboard', '/setup', '/projects', '/auth', '/invite'];
 
 type MiddlewareCookieOptions = Parameters<NextResponse['cookies']['set']>[2];
 type MiddlewareCookieToSet = {
@@ -11,15 +12,27 @@ type MiddlewareCookieToSet = {
   options?: MiddlewareCookieOptions;
 };
 
+function matchesPrefix(path: string, prefixes: string[]) {
+  return prefixes.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+}
+
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const host = classifyHost(request.headers.get('host') || '');
   const isTenantRoute = path === '/tenant' || path.startsWith('/tenant/');
   const isApiRoute = path === '/api' || path.startsWith('/api/');
+  const isTenantPlatformRoute = matchesPrefix(path, tenantPlatformPrefixes);
 
-  // Tenant hosts never enter the platform UI. Resolve the hostname in one public route
-  // before React renders anything, preventing the old project/portfolio flash.
-  if (host.kind !== 'platform' && !isPublicAssetPath(path) && !isTenantRoute && !isApiRoute) {
+  // Tenant domains render the public site by default, but explicit client-admin routes
+  // stay on the same hostname. This lets /login -> /entry -> /dashboard work without
+  // losing the Supabase session cookie created on the tenant domain.
+  if (
+    host.kind !== 'platform' &&
+    !isPublicAssetPath(path) &&
+    !isTenantRoute &&
+    !isApiRoute &&
+    !isTenantPlatformRoute
+  ) {
     const target = request.nextUrl.clone();
     target.pathname = '/tenant';
     target.search = '';
@@ -49,9 +62,7 @@ export async function middleware(request: NextRequest) {
   });
 
   const { data } = await supabase.auth.getUser();
-  const protectedRoute = protectedPrefixes.some(
-    (prefix) => path === prefix || path.startsWith(`${prefix}/`),
-  );
+  const protectedRoute = matchesPrefix(path, protectedPrefixes);
 
   if (protectedRoute && !data.user) {
     const target = request.nextUrl.clone();
