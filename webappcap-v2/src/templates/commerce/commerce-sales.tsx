@@ -4,6 +4,7 @@ import Image from 'next/image';
 import {useEffect,useMemo,useRef,useState,type CSSProperties} from 'react';
 import type {TemplateRenderProps} from '../types';
 import styles from './commerce-sales.module.css';
+import polish from './commerce-sales-polish.module.css';
 
 type Row=Record<string,unknown>;
 type Extra={name:string;price:number};
@@ -12,6 +13,7 @@ type CartLine={id:number;productIndex:number;quantity:number;removed:string[];ex
 const rows=(value:unknown)=>Array.isArray(value)?value.filter(item=>item&&typeof item==='object') as Row[]:[];
 const text=(record:Record<string,unknown>,key:string,fallback='')=>String(record[key]??'').trim()||fallback;
 const media=(record:Record<string,unknown>,key:string,fallback:string)=>{const value=record[key];return value&&typeof value==='object'&&'url' in value?String((value as {url?:unknown}).url||fallback):typeof value==='string'&&value?value:fallback};
+const mediaPosition=(record:Record<string,unknown>,key:string)=>{const value=record[key];return value&&typeof value==='object'&&'position' in value?String((value as {position?:unknown}).position||'center'):'center'};
 const number=(value:string)=>Number.parseFloat(value.replace(/[^0-9,.-]/g,'').replace(/\.(?=.*\.)/g,'').replace(',','.'))||0;
 const brl=(value:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
 const lines=(value:unknown)=>String(value||'').split(/\r?\n|;/).map(item=>item.trim()).filter(Boolean);
@@ -31,7 +33,7 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
  const whatsapp=text(data.contact,'whatsapp','5516999999999').replace(/\D/g,'');
  const logo=media(data.media,'logo','/commerce/commerce-menu.png');
  const accent=text(data.appearance,'accent','#159447');
- const vars={'--sales-accent':accent} as CSSProperties;
+ const vars={'--sales-accent':accent,'--sales-logo-position':mediaPosition(data.media,'logo')} as CSSProperties;
  const categories=useMemo(()=>['Todos',...Array.from(new Set(products.map(item=>text(item,'category','Outros'))))],[products]);
  const [category,setCategory]=useState('Todos'),[query,setQuery]=useState(''),[selected,setSelected]=useState<number|null>(null),[cartOpen,setCartOpen]=useState(false);
  const [quantity,setQuantity]=useState(1),[removed,setRemoved]=useState<string[]>([]),[chosenExtras,setChosenExtras]=useState<Extra[]>([]),[note,setNote]=useState(''),[cart,setCart]=useState<CartLine[]>([]);
@@ -54,7 +56,7 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
   return encodeURIComponent([`Olá! Quero fazer um pedido na ${name}.`,'',`👤 Cliente: ${customer.name||'Não informado'}`,`📦 Tipo: ${customer.type}`,customer.type==='Entrega'?`📍 Endereço: ${customer.address||'Não informado'}`:'',`💳 Pagamento: ${customer.payment||'Não informado'}`,'','ITENS DO PEDIDO',...itemLines,'',`💰 TOTAL: ${brl(cartTotal)}`,customer.note?`📝 Observação geral: ${customer.note}`:''].filter(Boolean).join('\n'));
  };
 
- return <div className={styles.site} style={vars}>
+ return <div className={`${styles.site} ${polish.polish}`} style={vars}>
   <header className={styles.header}><div className={styles.brand}><div><Image src={logo} alt={`Logo de ${name}`} fill sizes="64px"/></div><span><strong>{name}</strong><small>{tagline}</small></span></div><button type="button" onClick={()=>setCartOpen(true)} aria-label={`Abrir pedido com ${cartCount} itens`}>Pedido <b>{cartCount}</b></button></header>
   <main><section className={styles.intro}><span>CATÁLOGO ONLINE</span><h1>{text(data.content,'menu_title','Peça do seu jeito')}</h1><p>{text(data.content,'menu_intro','Escolha seus produtos, personalize e envie o pedido direto pelo WhatsApp.')}</p><label><span>Buscar no cardápio</span><input type="search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="O que você procura?"/></label></section>
    <nav className={styles.categories} aria-label="Categorias">{categories.map(item=><button type="button" key={item} aria-pressed={category===item} onClick={()=>setCategory(item)}>{item}</button>)}</nav>

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { resolveProjectAccess } from '@/core/session';
 import { can } from '@/core/permissions';
-import { readV2Content, saveV2Section, uploadProjectImage, uploadProjectVideo } from '@/core/onboarding-data';
+import { publicMediaUrl,readV2Content,saveV2Section,uploadProjectImage,uploadProjectVideo } from '@/core/onboarding-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { publishV2Project } from '@/core/publishing';
 import { validateCustomDomain } from '@/core/domain-validation';
@@ -18,13 +18,20 @@ const path=(slug:string,area='')=>`/dashboard/${encodeURIComponent(slug)}${area?
 const normalizeDomain=(v:string)=>v.toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/\.$/,'');
 const repeatables=(formData:FormData,segment:Parameters<typeof sectionsForSegment>[0])=>Object.fromEntries(sectionsForSegment(segment).map(def=>{const raw=text(formData,`section:${def.key}`);if(!raw)return[def.key,[]];try{const parsed=JSON.parse(raw);return[def.key,Array.isArray(parsed)?parsed.slice(0,def.max||50).filter(x=>x&&typeof x==='object'):[]]}catch{return[def.key,[]]}}));
 const commerceTextKeys=['nav_home','nav_news','nav_highlights','nav_menu','nav_order','hero_kicker','hero_whatsapp','hero_instagram','hero_discover','news_title','news_intro','news_link','highlights_title','highlights_intro','highlights_link','menu_title','menu_intro','menu_selected_label','menu_add','menu_whatsapp_cta','order_title','order_intro','receipt_title','receipt_empty','receipt_total','receipt_send','receipt_choose','receipt_notice','social_title','social_intro','social_follow','about_title','about_main','creator_name','creator_bio','creator_instagram','creator_instagram_label','footer_back'] as const;
+type DirectImage={path:string;url:string};
+const directImage=(form:FormData,key:string,projectId:string):DirectImage|null=>{const raw=text(form,key);if(!raw||raw==='null')return null;try{const value=JSON.parse(raw) as Partial<DirectImage>;const imagePath=String(value.path||''),url=String(value.url||'');if(!imagePath.startsWith(`${projectId}/`)||url!==publicMediaUrl(imagePath))return null;return{path:imagePath,url}}catch{return null}};
+const directImages=(form:FormData,key:string,projectId:string):DirectImage[]=>{const raw=text(form,key);if(!raw)return[];try{const values=JSON.parse(raw);return Array.isArray(values)?values.map(value=>{const imagePath=String(value?.path||''),url=String(value?.url||'');return imagePath.startsWith(`${projectId}/`)&&url===publicMediaUrl(imagePath)?{path:imagePath,url}:null}).filter((value):value is DirectImage=>Boolean(value)):[]}catch{return[]}};
+const imagePosition=(form:FormData,slot:string)=>{const value=text(form,`mediaPosition:${slot}`);return ['top','center','bottom'].includes(value)?value:'center'};
+const positioned=(value:unknown,position:string)=>value&&typeof value==='object'?{...(value as Record<string,unknown>),position}:typeof value==='string'&&value?{url:value,position}:null;
 
 export async function saveContentAction(formData:FormData){
  const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'editContent'))throw new Error('Sem permissão para editar conteúdo.');
  const current=await readV2Content(access.project.id),portfolio=access.project.segment==='portfolio';
  const structured=repeatables(formData,access.project.segment) as Record<string,Record<string,unknown>[]>;
  const uploadFields=Array.from(formData.entries()).filter(([,value])=>value instanceof File&&value.size) as [string,File][];
- if(uploadFields.length&&!can(access.role,'manageMedia'))throw new Error('Sem permissão para editar as fotos.');
+ const imageSlots=['hero','logo','creator'] as const;
+ const hasDirectImages=['uploadedMedia:hero','uploadedMedia:logo','uploadedMedia:creator','uploadedGallery'].some(key=>{const value=text(formData,key);return value&&value!=='null'&&value!=='[]'}),hasMediaControls=imageSlots.some(slot=>formData.has(`mediaPosition:${slot}`)||formData.has(`removeMedia:${slot}`));
+ if((uploadFields.length||hasDirectImages||hasMediaControls)&&!can(access.role,'manageMedia'))throw new Error('Sem permissão para editar as fotos.');
  for(const definition of sectionsForSegment(access.project.segment))for(const [index,item] of (structured[definition.key]||[]).entries()){
   const file=formData.get(`section-image:${definition.key}:${index}`);
   if(file instanceof File&&file.size){const uploaded=await uploadProjectImage(access.project.id,file,`${definition.key}-${index+1}`);if(uploaded)item.image=uploaded.url}
@@ -36,7 +43,14 @@ export async function saveContentAction(formData:FormData){
  if(access.project.segment==='food-business')Object.assign(content,Object.fromEntries(commerceTextKeys.map(key=>[key,text(formData,key)])));
  await saveV2Section(access.project.id,'content',content);
  const media={...current.media};let mediaChanged=false;
- for(const [field,slot] of [['logo','logo'],['heroImage','hero'],['creatorImage','creator']] as const){const file=formData.get(field);if(file instanceof File&&file.size){media[slot]=await uploadProjectImage(access.project.id,file,slot);mediaChanged=true}}
+ for(const slot of ['logo','hero','creator'] as const){
+  if(text(formData,`removeMedia:${slot}`)==='yes'){delete media[slot];mediaChanged=true;continue}
+  const position=imagePosition(formData,slot),uploaded=directImage(formData,`uploadedMedia:${slot}`,access.project.id),existing=positioned(media[slot],position);
+  if(uploaded){media[slot]={...uploaded,position};mediaChanged=true}else if(existing&&text(formData,`mediaPosition:${slot}`)){media[slot]=existing;mediaChanged=true}
+ }
+ for(const [field,slot] of [['logo','logo'],['heroImage','hero'],['creatorImage','creator']] as const){const file=formData.get(field);if(file instanceof File&&file.size){const uploaded=await uploadProjectImage(access.project.id,file,slot);media[slot]=uploaded?{...uploaded,position:imagePosition(formData,slot)}:uploaded;mediaChanged=true}}
+ const directGallery=directImages(formData,'uploadedGallery',access.project.id);
+ if(directGallery.length){const old=Array.isArray(media.gallery)?media.gallery:[];media.gallery=[...old,...directGallery].slice(-12);mediaChanged=true}
  const galleryFiles=formData.getAll('socialGallery').filter(value=>value instanceof File&&value.size) as File[];
  if(galleryFiles.length){const old=Array.isArray(media.gallery)?media.gallery:[],uploaded=[];for(const [index,file] of galleryFiles.slice(0,12).entries())uploaded.push(await uploadProjectImage(access.project.id,file,`social-${index+1}`));media.gallery=[...old,...uploaded].slice(-12);mediaChanged=true}
  if(mediaChanged)await saveV2Section(access.project.id,'media',media);

@@ -21,6 +21,9 @@
 .palette :global(#redes-sociais){background:color-mix(in srgb,var(--accent) 12%,#fff)}
 .palette :global(#redes-sociais)>div{background:color-mix(in srgb,var(--accent) 5%,#fff)}
 .palette>footer{background:color-mix(in srgb,var(--accent) 38%,#12100f)}
+.palette :global(#inicio>img){object-position:var(--commerce-hero-position,center)}
+.palette :global(#redes-sociais img){object-position:var(--commerce-logo-position,center)}
+.palette :global(#sobre article>div>img){object-position:var(--commerce-creator-position,center)}
 .palette :global(main > section:not(:first-child) > header > span){display:none}
 .palette :global(main > section:not(:first-child) > header){display:block}
 .palette :global(main > section:not(:first-child) > header > p){max-width:54ch;margin-top:12px}
@@ -32,7 +35,8 @@
 
 .palette[data-motion-ready="true"] [data-reveal]{
   opacity:0;
-  transition:opacity .85s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1);
+  filter:blur(4px);
+  transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1),filter .9s ease;
   will-change:opacity,transform;
 }
 .palette[data-motion-ready="true"] [data-reveal="left"]{transform:translate3d(-72px,0,0)}
@@ -40,8 +44,31 @@
 .palette[data-motion-ready="true"] [data-reveal][data-visible="true"]{
   opacity:1;
   transform:translate3d(0,0,0);
+  filter:blur(0);
   will-change:auto;
 }
+
+.palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article{animation:commerceCardIn .7s cubic-bezier(.22,1,.36,1) both}
+.palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article:nth-child(2){animation-delay:.09s}
+.palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article:nth-child(3){animation-delay:.18s}
+.palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article:nth-child(4){animation-delay:.27s}
+
+.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio aside button,#cardapio>a,#pedido aside a,#redes-sociais a,#sobre a)){
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--accent) 58%,rgba(255,255,255,.72))!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 66%,rgba(25,18,15,.8)),color-mix(in srgb,var(--accent) 30%,rgba(25,18,15,.88)))!important;
+  color:#fff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 10px 26px color-mix(in srgb,var(--accent) 24%,transparent)!important;
+  backdrop-filter:blur(12px) saturate(150%);
+}
+.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio aside button,#cardapio>a,#pedido aside a,#redes-sociais a,#sobre a)):before{content:"";position:absolute;z-index:-1;inset:-2px auto -2px -45%;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);transform:skewX(-18deg);transition:left .5s ease}
+.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio aside button,#cardapio>a,#pedido aside a,#redes-sociais a,#sobre a)):is(:hover,:focus-visible):before{left:120%}
+.palette :global(#pedido button){border-color:color-mix(in srgb,var(--accent) 55%,#8e8175);background:color-mix(in srgb,var(--accent) 18%,rgba(255,255,255,.72));box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 7px 18px color-mix(in srgb,var(--accent) 16%,transparent);backdrop-filter:blur(8px)}
+.palette :global(#pedido button:is(:hover,:focus-visible)){transform:translateY(-2px) scale(1.08);box-shadow:0 11px 22px color-mix(in srgb,var(--accent) 26%,transparent)}
+
+@keyframes commerceCardIn{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 .palette :global(:is(#inicio a,#cardapio button,#cardapio>a,#pedido button,#pedido aside a,#redes-sociais a)){
   transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease,filter .28s ease;
@@ -64,6 +91,8 @@
 }
 
 @media(prefers-reduced-motion:reduce){
-  .palette[data-motion-ready="true"] [data-reveal]{opacity:1;transform:none;transition:none;will-change:auto}
+  .palette[data-motion-ready="true"] [data-reveal]{opacity:1;transform:none;filter:none;transition:none;will-change:auto}
+  .palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article{animation:none}
+  .palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio aside button,#cardapio>a,#pedido aside a,#redes-sociais a,#sobre a)):before{display:none}
   .palette :global(:is(#inicio a,#cardapio button,#cardapio>a,#pedido button,#pedido aside a,#redes-sociais a)){transform:none;transition:none}
 }

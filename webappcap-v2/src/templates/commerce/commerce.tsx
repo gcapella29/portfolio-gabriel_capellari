@@ -10,11 +10,12 @@ import {CommerceSalesTemplate} from './commerce-sales';
 
 type Row=Record<string,unknown>;
 type Cart=Record<number,number>;
-type Vars=CSSProperties&{'--commerce-accent'?:string;'--commerce-heading'?:string;'--commerce-body'?:string};
+type Vars=CSSProperties&{'--commerce-accent'?:string;'--commerce-heading'?:string;'--commerce-body'?:string;'--commerce-hero-position'?:string;'--commerce-logo-position'?:string;'--commerce-creator-position'?:string};
 
 const rows=(value:unknown)=>Array.isArray(value)?value.filter(item=>item&&typeof item==='object') as Row[]:[];
 const text=(record:Record<string,unknown>,key:string,fallback='')=>String(record[key]??'').trim()||fallback;
 const image=(record:Record<string,unknown>,key:string,fallback:string)=>{const value=record[key];return value&&typeof value==='object'&&'url' in value?String((value as {url?:unknown}).url||fallback):typeof value==='string'&&value?value:fallback};
+const imagePosition=(record:Record<string,unknown>,key:string)=>{const value=record[key];return value&&typeof value==='object'&&'position' in value?String((value as {position?:unknown}).position||'center'):'center'};
 const money=(value:string)=>{const cleaned=value.replace(/[^0-9,.-]/g,'').replace(/\.(?=.*\.)/g,'').replace(',','.');return Number.parseFloat(cleaned)||0};
 const currency=(value:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
 
@@ -68,7 +69,7 @@ function CommerceEditorialTemplate({project,data}:TemplateRenderProps){
  const chosen=menu.map((item,index)=>({...item,index,quantity:cart[index]||0})).filter(item=>item.quantity>0);
  const change=(index:number,delta:number)=>setCart(current=>({...current,[index]:Math.max(0,(current[index]||0)+delta)}));
  const message=encodeURIComponent(['Olá! Quero fazer este pedido:',...chosen.map(item=>`• ${item.quantity}x ${text(item,'title')} — ${currency(money(text(item,'price'))*item.quantity)}`),`Total: ${currency(total)}`].join('\n'));
- const vars:Vars={'--commerce-accent':text(data.appearance,'accent',variant==='night'?'#ff6b35':variant==='classic'?'#9d3b2e':'#ef5b3f'),'--commerce-heading':text(data.appearance,'heading_font',variant==='night'?'Space Grotesk':variant==='classic'?'Georgia':'Arial Black'),'--commerce-body':text(data.appearance,'body_font','Arial')};
+ const vars:Vars={'--commerce-accent':text(data.appearance,'accent',variant==='night'?'#ff6b35':variant==='classic'?'#9d3b2e':'#ef5b3f'),'--commerce-heading':text(data.appearance,'heading_font',variant==='night'?'Space Grotesk':variant==='classic'?'Georgia':'Arial Black'),'--commerce-body':text(data.appearance,'body_font','Arial'),'--commerce-hero-position':imagePosition(data.media,'hero'),'--commerce-logo-position':imagePosition(data.media,'logo'),'--commerce-creator-position':imagePosition(data.media,'creator')};
 
  useEffect(()=>{
   const root=siteRef.current;if(!root)return;

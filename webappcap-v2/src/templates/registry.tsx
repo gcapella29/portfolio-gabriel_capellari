@@ -16,7 +16,8 @@ const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
   'portfolio-native-1': NativeMainParityPortfolioTemplate,
   'commerce-main-1': CommerceTemplate,
   'commerce-night-1': CommerceTemplate,
-  'commerce-classic-1': CommerceTemplate
+  'commerce-classic-1': CommerceTemplate,
+  'commerce-sales-1': CommerceTemplate
 };
 
 export function renderTemplate(props:TemplateRenderProps){
