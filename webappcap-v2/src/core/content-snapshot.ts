@@ -1,9 +1,5 @@
 import type { V2Content } from './onboarding-data';
 
-export function emptyV2Content(): V2Content {
-  return { identity: {}, content: {}, media: {}, appearance: {}, contact: {} };
-}
-
 export function normalizeV2Content(value: Partial<V2Content> | null | undefined): V2Content {
   return {
     identity: value?.identity || {},
