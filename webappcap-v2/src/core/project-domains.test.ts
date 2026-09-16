@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeCustomDomain, normalizeNativeSubdomain } from './project-domains';
+import { normalizeCustomDomain, normalizeNativeSubdomain } from './domain-normalization.ts';
 
 test('normalizes native subdomains consistently', () => {
   assert.equal(normalizeNativeSubdomain(' Vet Sé '), 'vet-se');
