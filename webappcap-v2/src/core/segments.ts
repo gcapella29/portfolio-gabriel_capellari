@@ -6,11 +6,9 @@ export const segments:Record<SegmentKey,SegmentDefinition>={
   {key:'portfolio-legacy-1',segment:'portfolio',name:'Compatibilidade do portfólio',description:'Chave histórica preservada.',status:'ready'},
   {key:'portfolio-native-1',segment:'portfolio',name:'Portfólio WebAppCap',description:'Versão nativa e gerenciável do portfólio.',status:'ready'}
  ]},
- 'food-business':{key:'food-business',name:'Comércio',description:'Lojas, cafés, restaurantes e negócios locais com cardápio e pedidos.',templates:[
-  {key:'commerce-main-1',segment:'food-business',name:'Bistrô editorial',description:'Fotografia ampla, tipografia marcante e movimentos suaves.',status:'ready'},
-  {key:'commerce-night-1',segment:'food-business',name:'Noite vibrante',description:'Fundo escuro, cores elétricas e transições mais rápidas.',status:'ready'},
-  {key:'commerce-classic-1',segment:'food-business',name:'Clássico artesanal',description:'Tons naturais, formas arredondadas e movimento discreto.',status:'ready'},
-  {key:'commerce-sales-1',segment:'food-business',name:'Venda rápida',description:'Catálogo compacto, personalização dos itens e pedido direto pelo WhatsApp.',status:'ready'}
+ 'food-business':{key:'food-business',name:'Comércio',description:'Lojas, cafés, restaurantes e negócios locais com catálogo e pedidos.',templates:[
+  {key:'commerce-main-1',segment:'food-business',name:'Completo',description:'Bistrô editorial: presença completa, catálogo, destaques, conteúdo institucional e pedidos.',status:'ready'},
+  {key:'commerce-sales-1',segment:'food-business',name:'Venda rápida',description:'Versão enxuta focada em produto, oferta e conversão pelo WhatsApp.',status:'ready'}
  ]},
  'personal-trainer':{key:'personal-trainer',name:'Personal Trainer',description:'Treinos, agenda, método e resultados. Em breve.',templates:[]},
  school:{key:'school',name:'Escola',description:'Cursos, turmas, estrutura e matrículas. Em breve.',templates:[]}
