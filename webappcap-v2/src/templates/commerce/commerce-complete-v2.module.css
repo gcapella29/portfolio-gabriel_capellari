@@ -60,10 +60,11 @@
 .cartSummary>a{display:flex;align-items:center;justify-content:center;min-height:42px;padding:10px 12px;border-radius:999px;background:var(--accent);color:#fff;font-size:12px;font-weight:900;text-decoration:none}
 .cartSummary small{display:block;margin-top:14px;color:rgba(255,255,255,.7);font-size:9px;line-height:1.35}
 .whatsappPending{display:block;padding:11px 12px;border-radius:999px;background:#eef1f4;color:#68717a;font-size:11px;font-weight:800;text-align:center}
-.whatsappAfterCart{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 18px;width:calc(100% - 368px);min-height:52px;margin:18px 0 0 368px;padding:10px 18px;border:1px solid #d8dde4;border-radius:999px;background:#fff;color:#5f666d;text-align:left;text-decoration:none}
-.whatsappAfterCart span{grid-column:1;font-size:11px;font-weight:650;line-height:1.2}
-.whatsappAfterCart strong{grid-column:1;font-size:13px;font-weight:850;line-height:1.2}
-.whatsappAfterCart>b{grid-column:2;grid-row:1/3;align-self:center;width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--accent) 12%,#fff);font-size:19px}
+.whatsappAfterCart{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:2px 12px;width:min(430px,100%);min-height:64px;margin:18px 0 0 auto;padding:10px 12px 10px 16px;border:1px solid color-mix(in srgb,#25d366 38%,#d8dde4);border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,#25d366 8%,#fff),#fff);color:#415048;text-align:left;text-decoration:none;box-shadow:0 8px 22px rgba(37,211,102,.08);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+.whatsappAfterCart:hover{transform:translateY(-2px);border-color:color-mix(in srgb,#25d366 58%,#d8dde4);box-shadow:0 12px 28px rgba(37,211,102,.14)}
+.whatsappAfterCart span{grid-column:1;font-size:10px;font-weight:700;line-height:1.2;color:#6d7771}
+.whatsappAfterCart strong{grid-column:1;font-size:13px;font-weight:850;line-height:1.25}
+.whatsappAfterCart>b{grid-column:2;grid-row:1/3;align-self:center;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#25d366;color:#fff;font-size:18px;box-shadow:0 6px 14px rgba(37,211,102,.24)}
 .whatsappPendingContact{opacity:.58;cursor:default}
 
 /* Instagram + About */
@@ -163,4 +164,20 @@
  .storyAbout{grid-template-columns:1fr;gap:22px}
  .storyAbout>header,.aboutCopy,.creatorCard{grid-column:1;grid-row:auto}
  .creatorCard{max-width:420px}
+}
+
+/* Motion polish */
+.productCard{transition:transform .32s cubic-bezier(.22,1,.36,1),box-shadow .32s ease,border-color .32s ease}
+.productCard:hover{transform:translateY(-7px);box-shadow:0 18px 38px rgba(22,28,36,.11);border-color:#d6dbe1}
+.productImage img{transition:transform .65s cubic-bezier(.22,1,.36,1),filter .35s ease}
+.productCard:hover .productImage img{transform:scale(1.045);filter:saturate(1.04)}
+.instagramSlot{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background .3s ease}
+.instagramSlot:hover{transform:translateY(-5px) rotate(.35deg);box-shadow:0 14px 30px rgba(26,35,48,.09)}
+.creatorPhoto img{transition:transform .7s cubic-bezier(.22,1,.36,1),filter .35s ease}
+.creatorPhoto:hover img{transform:scale(1.035)}
+.socialButton,.creatorButton{transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease}
+.socialButton:hover,.creatorButton:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(26,35,48,.09)}
+@media(prefers-reduced-motion:reduce){
+ .productCard,.productImage img,.instagramSlot,.creatorPhoto img,.socialButton,.creatorButton,.whatsappAfterCart{transition:none}
+ .productCard:hover,.productCard:hover .productImage img,.instagramSlot:hover,.creatorPhoto:hover img,.socialButton:hover,.creatorButton:hover,.whatsappAfterCart:hover{transform:none}
 }
