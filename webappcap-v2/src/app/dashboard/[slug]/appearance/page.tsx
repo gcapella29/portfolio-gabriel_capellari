@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { resolveProjectAccess } from '@/core/session';
 import { readV2Content } from '@/core/onboarding-data';
 import { templatesForSegment } from '@/core/segments';
+import {commerceHeroControls} from '@/core/commerce-hero-controls';
 import { saveAppearanceAction, saveTemplateAction } from '../actions';
 import AppearanceControls from './appearance-controls';
 import styles from './appearance.module.css';
@@ -12,7 +13,8 @@ export default async function AppearancePage({params,searchParams}:{params:Promi
   const {slug}=await params,{saved,template}=await searchParams,{project}=await resolveProjectAccess(slug),data=await readV2Content(project.id);
   const templates=templatesForSegment(project.segment).filter(item=>item.status==='ready');
   const selectedTemplate=v(data.appearance,'preview_template_key')||project.templateKey||'';
-  const appearance={accent:color(v(data.appearance,'accent')),scale:v(data.appearance,'scale')||'normal',alignment:v(data.appearance,'alignment')||'left',density:v(data.appearance,'density')||'normal',supportSize:v(data.appearance,'support_size')||'14',supportBold:v(data.appearance,'support_bold')==='true',supportItalic:v(data.appearance,'support_italic')==='true',buttonSize:v(data.appearance,'button_size')||'12',buttonBold:v(data.appearance,'button_bold')!=='false',buttonItalic:v(data.appearance,'button_italic')==='true'};
+  const completeCommerce=project.segment==='food-business'&&!selectedTemplate.includes('sales');
+  const appearance={accent:color(v(data.appearance,'accent')),scale:v(data.appearance,'scale')||'normal',alignment:v(data.appearance,'alignment')||'left',density:v(data.appearance,'density')||'normal',supportSize:v(data.appearance,'support_size')||'14',supportBold:v(data.appearance,'support_bold')==='true',supportItalic:v(data.appearance,'support_italic')==='true',buttonSize:v(data.appearance,'button_size')||'12',buttonBold:v(data.appearance,'button_bold')!=='false',buttonItalic:v(data.appearance,'button_italic')==='true',hero:completeCommerce?commerceHeroControls(data.appearance):undefined};
   return <div className="editor-page">
     <header className={styles.pageIntro}><div><span className="eyebrow dark-text">APARÊNCIA</span><h1>Veja o estilo antes de salvar.</h1><p>Experimente modelo, cores e proporções. Tudo chega primeiro ao Preview e só muda o site quando você publicar.</p></div><div className={styles.introActions}><Link className="action" href={`/template-lab/${project.segment}/${encodeURIComponent(project.slug)}`} target="_blank">Comparar modelos ↗</Link><Link className="action" href={`/preview/${encodeURIComponent(project.slug)}`} target="_blank">Abrir Preview ↗</Link></div></header>
     {saved&&<div className="notice success"><strong>Rascunho salvo.</strong> A aparência foi atualizada no Preview; o site público ainda não mudou.</div>}
