@@ -193,3 +193,44 @@
  .catalogGrid{padding:0 76px 18px!important}
  .catalogArrow{top:48%!important}
 }
+
+
+/* Block 3 — cart locked to approved Vet-se reference. */
+@media(min-width:851px){
+ .cartCompact{grid-template-columns:minmax(360px,.52fr) minmax(620px,1.48fr)!important;gap:64px!important;align-items:start!important}
+ .cartHeading{padding-top:4px!important}
+ .cartHeading h2{font-size:clamp(50px,4.4vw,66px)!important;line-height:.95!important;white-space:nowrap!important;gap:16px!important}
+ .cartHeading>p{max-width:25ch!important;margin:12px 0 0 72px!important;font-size:15px!important;line-height:1.45!important}
+ .cartIcon{width:56px!important;height:56px!important}
+ .cartIcon svg{width:28px!important;height:28px!important}
+ .cartCompact>.cartShell{display:grid!important;grid-template-columns:minmax(0,1fr) 240px!important;gap:18px!important;align-items:start!important}
+ .cartList{display:flex!important;flex-direction:column!important;gap:8px!important}
+ .cartItem{grid-template-columns:220px minmax(170px,1fr) auto!important;gap:22px!important;min-height:54px!important;padding:5px 18px 5px 34px!important;border:1px solid #dedede!important;border-radius:999px!important;background:#fff!important;box-shadow:none!important}
+ .cartItem:hover{transform:none!important;box-shadow:0 8px 20px rgba(30,34,40,.05)!important}
+ .cartThumb{width:220px!important;height:44px!important;border-radius:999px!important}
+ .cartInfo{align-self:center!important}
+ .cartInfo strong{font-size:16px!important;line-height:1.05!important}
+ .cartInfo span{margin-top:2px!important;font-size:12px!important}
+ .cartControls{gap:18px!important;align-self:center!important}
+ .cartControls button{width:64px!important;height:28px!important;border-radius:999px!important;font-size:16px!important}
+ .cartControls b{min-width:20px!important;font-size:16px!important}
+ .cartSummary{position:relative!important;top:auto!important;padding:16px!important;border-radius:20px!important}
+ .cartSummary h3{margin:0 0 12px!important;font-size:20px!important}
+ .cartSummary p{padding:6px 0!important;font-size:11px!important}
+ .cartTotal{margin:14px 0 12px!important}
+ .cartTotal strong{font-size:22px!important}
+ .cartSummary>a{min-height:42px!important;padding:10px 12px!important;font-size:12px!important}
+ .cartSummary small{font-size:9px!important;line-height:1.35!important}
+ .cartCompact~.whatsappAfterCart{display:flex!important;align-items:center!important;gap:12px!important;width:max-content!important;max-width:calc(100% - 424px)!important;margin:18px 0 0 424px!important;padding:12px 18px!important;border:1px solid color-mix(in srgb,var(--accent) 42%,#d7dce2)!important;border-radius:999px!important;background:#fff!important;color:#17191d!important;box-shadow:none!important}
+ .cartCompact~.whatsappAfterCart span,.cartCompact~.whatsappAfterCart strong{font-size:12px!important;line-height:1.2!important}
+ .cartCompact~.whatsappAfterCart b{margin-left:auto!important}
+}
+/* Zoom polish carried with Block 3 to save a deployment. */
+.imageLightbox{padding:clamp(28px,5vw,72px)!important}
+.lightboxImage{width:min(82vw,860px)!important;height:min(76vh,700px)!important;border-radius:16px!important;overflow:hidden!important}
+.lightboxClose{top:clamp(36px,6vw,76px)!important;right:clamp(36px,6vw,76px)!important;width:40px!important;height:40px!important;display:grid!important;place-items:center!important}
+@media(max-width:850px){
+ .cartCompact~.whatsappAfterCart{display:flex!important;align-items:center!important;gap:8px!important}
+ .lightboxImage{width:90vw!important;height:72vh!important}
+ .lightboxClose{top:18px!important;right:18px!important}
+}
