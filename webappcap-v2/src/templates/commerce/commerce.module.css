@@ -257,4 +257,9 @@ to{opacity:1;transform:none}
 
 
 /* Block 2 — hide editorial catalog heading on approved desktop storefront. */
-@media(min-width:851px){.menu>.sectionHead{display:none!important}.menu{padding-top:42px!important;padding-bottom:44px!important;overflow:hidden!important}}
+@media(min-width:851px){
+ .menu{padding-top:34px!important;padding-bottom:38px!important;overflow:hidden!important}
+ .menu>.sectionHead{display:flex!important;align-items:baseline!important;gap:28px!important;margin:0 0 24px!important;padding:0 2%!important}
+ .menu>.sectionHead h2{margin:0!important;font-size:clamp(38px,3.4vw,52px)!important;line-height:1!important;white-space:nowrap!important}
+ .menu>.sectionHead p{margin:0!important;max-width:none!important;font-size:13px!important;color:#6d625d!important}
+}
