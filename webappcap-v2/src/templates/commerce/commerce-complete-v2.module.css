@@ -281,26 +281,6 @@
  .cartCompact~.whatsappAfterCart span{font-size:11px!important;font-weight:650!important}
  .cartCompact~.whatsappAfterCart strong{font-size:13px!important;font-weight:850!important}
 
- .storyRow{display:grid!important;grid-template-columns:minmax(0,1.42fr) minmax(520px,.98fr)!important;gap:40px!important;padding:54px 4%!important;align-items:stretch!important;background:#fff!important;border-top:1px solid #edf0f3!important}
- .storyPanel{min-height:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
- .storyPanel:first-child{display:grid!important;grid-template-columns:minmax(260px,.72fr) minmax(520px,1.28fr)!important;gap:42px!important;align-items:stretch!important}
- .socialCopy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;min-height:100%!important;padding:8px 0 2px!important}
- .storyPanel header{margin:0!important}
- .storyPanel header span{font-size:12px!important;letter-spacing:.15em!important}
- .storyPanel header h2{max-width:8ch!important;margin:10px 0 12px!important;font-size:clamp(46px,4.2vw,64px)!important;line-height:.94!important;letter-spacing:-.045em!important}
- .storyPanel header p{max-width:27ch!important;margin:0!important;color:#756a63!important;font-size:15px!important;line-height:1.5!important}
- .socialButton{margin-top:auto!important;min-height:46px!important;padding:0 20px!important;align-items:center!important}
- .instagramGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:8px!important;height:100%!important;min-height:390px!important}
- .instagramGrid>div{aspect-ratio:auto!important;min-height:0!important;border-radius:14px!important;background:#f1f4f8!important}
- .storyPanel:last-child{display:block!important;padding:8px 0 2px!important}
- .storyPanel:last-child>header h2{max-width:none!important;font-size:clamp(44px,3.7vw,58px)!important}
- .creatorCompact{display:grid!important;grid-template-columns:minmax(0,1fr) 245px!important;gap:26px!important;align-items:start!important;margin-top:20px!important}
- .creatorCopy{grid-column:1!important;grid-row:1!important}
- .creatorPhoto{grid-column:2!important;grid-row:1!important;width:245px!important;height:auto!important;aspect-ratio:1/1!important;border-radius:20px!important}
- .creatorCopy h3{margin:0 0 10px!important;font-size:clamp(30px,2.6vw,42px)!important;line-height:.96!important;letter-spacing:-.035em!important}
- .creatorCopy>p{max-width:30ch!important;margin:0 0 16px!important;color:#756a63!important;font-size:15px!important;line-height:1.5!important}
- .creatorInstagramButton{display:inline-flex!important;align-items:center!important;min-height:46px!important;margin-top:12px!important;padding:0 20px!important}
-}
 @media(max-width:850px){
  .imageLightbox{padding:16px!important}
  .lightboxImage{max-width:calc(100vw - 32px)!important;max-height:calc(100vh - 32px)!important}
@@ -308,470 +288,145 @@
  .lightboxClose{top:10px!important;right:10px!important;width:38px!important;height:38px!important}
 }
 
-
-/* Block 4 — symmetric desktop sub-blocks; compact Instagram preview. */
-@media(min-width:851px){
- .storyRow{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  gap:56px!important;
-  align-items:stretch!important;
- }
- .storyPanel:first-child{
-  grid-template-columns:minmax(250px,.9fr) minmax(360px,1.1fr)!important;
-  gap:30px!important;
-  align-items:stretch!important;
- }
- .instagramGrid{
-  width:100%!important;
-  min-height:0!important;
-  height:auto!important;
-  align-self:center!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  grid-template-rows:repeat(2,1fr)!important;
-  gap:7px!important;
- }
- .instagramGrid>div{
-  aspect-ratio:1/1!important;
-  min-height:0!important;
- }
- .storyPanel:last-child{
-  display:flex!important;
-  flex-direction:column!important;
-  padding:8px 0 2px!important;
- }
- .creatorCompact{
-  grid-template-columns:minmax(0,1fr) minmax(210px,245px)!important;
-  gap:30px!important;
-  align-items:start!important;
-  flex:1!important;
- }
- .creatorPhoto{
-  width:100%!important;
-  max-width:245px!important;
-  justify-self:end!important;
- }
+/* Block 4 — canonical Story layout. One implementation only. */
+.storyRow{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+ gap:clamp(42px,4vw,72px);
+ padding:clamp(48px,4vw,68px) 4%;
+ background:#fff;
+ border-top:1px solid #edf0f3;
 }
-
-
-/* Block 4 — typography safety and cleaner balanced composition. */
-@media(min-width:851px){
- .storyRow{overflow:visible!important}
- .storyPanel{overflow:visible!important;min-width:0!important}
- .storyPanel:first-child{
-  grid-template-columns:minmax(290px,.94fr) minmax(330px,1.06fr)!important;
-  gap:34px!important;
- }
- .socialCopy{min-width:0!important;padding-left:2px!important;overflow:visible!important}
- .storyPanel:first-child header h2{
-  max-width:7.4ch!important;
-  font-size:clamp(42px,3.45vw,54px)!important;
-  line-height:.98!important;
-  letter-spacing:-.04em!important;
-  overflow:visible!important;
-  overflow-wrap:normal!important;
-  word-break:normal!important;
-  text-wrap:balance!important;
- }
- .instagramGrid{max-width:450px!important;justify-self:end!important}
- .storyPanel:last-child{min-width:0!important;overflow:visible!important;padding-left:4px!important}
- .storyPanel:last-child>header{padding-left:2px!important;overflow:visible!important}
- .storyPanel:last-child>header h2{
-  margin-left:0!important;
-  padding-left:0!important;
-  overflow:visible!important;
- }
- .creatorCompact{min-width:0!important}
- .creatorCopy{min-width:0!important;overflow:visible!important;padding-left:2px!important}
- .creatorCopy h3{
-  padding-left:0!important;
-  overflow:visible!important;
- }
+.storyPanel{
+ min-width:0;
+ padding:0;
+ border:0;
+ border-radius:0;
+ background:transparent;
+ box-shadow:none;
 }
-
-
-/* Block 4 — exact clean two-column reference composition. */
-@media(min-width:851px){
- .storyRow{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
-  gap:64px!important;
-  padding:54px 4%!important;
-  align-items:start!important;
-  overflow:hidden!important;
- }
- .storyPanel{
-  min-width:0!important;
-  overflow:hidden!important;
- }
- .storyPanel:first-child{
-  display:grid!important;
-  grid-template-columns:minmax(250px,.86fr) minmax(330px,1.14fr)!important;
-  gap:30px!important;
-  align-items:start!important;
- }
- .socialCopy{
-  display:flex!important;
-  flex-direction:column!important;
-  min-width:0!important;
-  height:100%!important;
-  padding:4px 0 0!important;
-  overflow:visible!important;
- }
- .storyPanel:first-child header h2{
-  max-width:7.6ch!important;
-  margin:10px 0 14px!important;
-  font-size:clamp(38px,3vw,50px)!important;
-  line-height:.98!important;
-  letter-spacing:-.04em!important;
-  white-space:normal!important;
-  text-wrap:balance!important;
-  overflow:visible!important;
- }
- .storyPanel:first-child header p{
-  max-width:28ch!important;
-  font-size:15px!important;
-  line-height:1.5!important;
- }
- .socialButton{
-  margin-top:56px!important;
- }
- .instagramGrid{
-  width:100%!important;
-  max-width:420px!important;
-  justify-self:end!important;
-  align-self:start!important;
-  grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  grid-template-rows:repeat(2,1fr)!important;
-  gap:8px!important;
- }
- .instagramGrid>div{
-  width:100%!important;
-  aspect-ratio:1/1!important;
-  border-radius:14px!important;
- }
-
- .storyPanel:last-child{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) 245px!important;
-  grid-template-rows:auto 1fr!important;
-  column-gap:30px!important;
-  align-items:start!important;
-  padding:4px 0 0 12px!important;
-  overflow:visible!important;
- }
- .storyPanel:last-child>header{
-  grid-column:1!important;
-  grid-row:1!important;
-  min-width:0!important;
-  padding:0!important;
-  overflow:visible!important;
- }
- .storyPanel:last-child>header h2{
-  max-width:none!important;
-  margin:10px 0 0!important;
-  font-size:clamp(38px,3vw,50px)!important;
-  line-height:.98!important;
-  letter-spacing:-.04em!important;
- }
- .creatorCompact{
-  display:contents!important;
- }
- .creatorPhoto{
-  grid-column:2!important;
-  grid-row:1 / span 2!important;
-  width:245px!important;
-  max-width:100%!important;
-  aspect-ratio:1/1!important;
-  justify-self:end!important;
-  align-self:center!important;
-  border-radius:20px!important;
- }
- .creatorCopy{
-  grid-column:1!important;
-  grid-row:2!important;
-  min-width:0!important;
-  padding:20px 0 0!important;
-  overflow:visible!important;
- }
- .creatorCopy h3{
-  margin:0 0 12px!important;
-  font-size:clamp(28px,2.2vw,38px)!important;
-  line-height:.98!important;
-  letter-spacing:-.035em!important;
- }
- .creatorCopy>p{
-  max-width:30ch!important;
-  margin:0 0 14px!important;
-  font-size:15px!important;
-  line-height:1.5!important;
- }
- .creatorInstagramButton{
-  margin-top:12px!important;
- }
+.storyPanel header{margin:0}
+.storyPanel header span{
+ color:var(--accent);
+ font-size:12px;
+ font-weight:900;
+ letter-spacing:.15em;
 }
-
-
-/* Block 4 — lock to the user-approved reference: text+grid | about+photo. */
-@media(min-width:851px){
- .storyRow{
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
-  gap:52px!important;
-  padding:52px 4%!important;
- }
- .storyPanel:first-child{
-  grid-template-columns:340px minmax(0,1fr)!important;
-  gap:28px!important;
- }
- .socialCopy{padding:4px 0 0!important}
- .storyPanel:first-child header h2{
-  max-width:7ch!important;
-  margin:10px 0 14px!important;
-  font-size:clamp(44px,3.35vw,56px)!important;
-  line-height:.94!important;
- }
- .storyPanel:first-child header p{max-width:26ch!important}
- .socialButton{margin-top:54px!important}
- .instagramGrid{
-  max-width:390px!important;
-  width:100%!important;
-  justify-self:end!important;
-  gap:8px!important;
- }
- .instagramGrid>div{aspect-ratio:1/1!important}
-
- .storyPanel:last-child{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) 245px!important;
-  grid-template-rows:auto auto!important;
-  column-gap:28px!important;
-  padding:4px 0 0!important;
-  align-items:start!important;
- }
- .storyPanel:last-child>header{
-  grid-column:1!important;
-  grid-row:1!important;
- }
- .storyPanel:last-child>header h2{
-  margin:10px 0 0!important;
-  font-size:clamp(44px,3.35vw,56px)!important;
-  line-height:.94!important;
- }
- .creatorCompact{display:contents!important}
- .creatorPhoto{
-  grid-column:2!important;
-  grid-row:1 / span 2!important;
-  width:245px!important;
-  align-self:start!important;
-  margin-top:4px!important;
- }
- .creatorCopy{
-  grid-column:1!important;
-  grid-row:2!important;
-  padding:18px 0 0!important;
- }
- .creatorCopy h3{
-  margin:0 0 12px!important;
-  font-size:clamp(30px,2.4vw,40px)!important;
- }
- .creatorCopy>p{max-width:31ch!important}
+.storyPanel header h2{
+ margin:10px 0 14px;
+ font-size:clamp(44px,3.35vw,56px);
+ line-height:.95;
+ letter-spacing:-.045em;
 }
-
-
-/* Block 4 canonical layout.
-   Dedicated classes isolate this block from the legacy .storyPanel:first/last-child cascade. */
-@media(min-width:851px){
- .storyRow{
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
-  gap:64px!important;
-  padding:54px 4%!important;
-  align-items:start!important;
-  overflow:visible!important;
- }
- .storyInstagram{
-  display:grid!important;
-  grid-template-columns:minmax(300px,340px) minmax(330px,390px)!important;
-  gap:28px!important;
-  align-items:start!important;
-  justify-content:space-between!important;
-  overflow:visible!important;
-  padding:0!important;
- }
- .storyInstagram .socialCopy{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:flex-start!important;
-  height:100%!important;
-  min-height:390px!important;
-  padding:4px 0 0!important;
- }
- .storyInstagram .socialCopy header h2{
-  width:300px!important;
-  max-width:300px!important;
-  margin:12px 0 16px!important;
-  font-size:50px!important;
-  line-height:.94!important;
-  letter-spacing:-.045em!important;
-  white-space:normal!important;
-  text-wrap:wrap!important;
- }
- .storyInstagram .socialCopy header p{
-  width:270px!important;
-  max-width:270px!important;
-  margin:0!important;
-  font-size:15px!important;
-  line-height:1.5!important;
- }
- .storyInstagram .socialButton{margin-top:auto!important}
- .storyInstagram .instagramGrid{
-  display:grid!important;
-  grid-template-columns:repeat(3,1fr)!important;
-  grid-template-rows:repeat(2,1fr)!important;
-  gap:8px!important;
-  width:390px!important;
-  max-width:390px!important;
-  height:auto!important;
-  min-height:0!important;
-  justify-self:end!important;
-  align-self:start!important;
- }
- .storyInstagram .instagramGrid>div{
-  width:100%!important;
-  min-height:0!important;
-  aspect-ratio:1/1!important;
-  border-radius:14px!important;
- }
-
- .storyAbout{
-  display:grid!important;
-  grid-template-columns:minmax(300px,1fr) 245px!important;
-  grid-template-rows:auto auto!important;
-  column-gap:34px!important;
-  align-items:start!important;
-  overflow:visible!important;
-  padding:4px 0 0!important;
- }
- .storyAbout>header{
-  grid-column:1!important;
-  grid-row:1!important;
-  padding:0!important;
-  margin:0!important;
-  overflow:visible!important;
- }
- .storyAbout>header h2{
-  max-width:none!important;
-  margin:12px 0 0!important;
-  padding:0!important;
-  font-size:50px!important;
-  line-height:.94!important;
-  letter-spacing:-.045em!important;
- }
- .storyAbout .creatorCompact{display:contents!important}
- .storyAbout .creatorPhoto{
-  grid-column:2!important;
-  grid-row:1 / span 2!important;
-  width:245px!important;
-  max-width:245px!important;
-  aspect-ratio:1/1!important;
-  margin:0!important;
-  justify-self:end!important;
-  align-self:start!important;
-  border-radius:20px!important;
- }
- .storyAbout .creatorCopy{
-  grid-column:1!important;
-  grid-row:2!important;
-  width:auto!important;
-  min-width:0!important;
-  padding:22px 0 0!important;
-  overflow:visible!important;
- }
- .storyAbout .creatorCopy h3{
-  margin:0 0 12px!important;
-  padding:0!important;
-  font-size:38px!important;
-  line-height:.98!important;
-  letter-spacing:-.035em!important;
- }
- .storyAbout .creatorCopy>p{
-  max-width:31ch!important;
-  margin:0 0 16px!important;
-  font-size:15px!important;
-  line-height:1.5!important;
- }
- .storyAbout .creatorInstagramButton{margin-top:10px!important}
+.storyPanel header p{
+ margin:0;
+ color:#756a63;
+ font-size:15px;
+ line-height:1.5;
 }
-
-
-/* Block 4 — final visual lock to supplied reference. */
-@media(min-width:851px){
- .storyRow{
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
-  gap:54px!important;
-  padding:52px 36px!important;
- }
- .storyInstagram{
-  grid-template-columns:380px 420px!important;
-  gap:26px!important;
-  justify-content:start!important;
- }
- .storyInstagram .socialCopy{
-  min-height:356px!important;
-  padding:4px 0 0!important;
- }
- .storyInstagram .socialCopy header h2{
-  width:720px!important;
-  max-width:720px!important;
-  margin:12px 0 14px!important;
-  font-size:50px!important;
-  line-height:.96!important;
-  white-space:nowrap!important;
-  position:relative!important;
-  z-index:2!important;
- }
- .storyInstagram .socialCopy header p{
-  width:430px!important;
-  max-width:430px!important;
-  white-space:nowrap!important;
- }
- .storyInstagram .instagramGrid{
-  width:420px!important;
-  max-width:420px!important;
-  margin-top:108px!important;
-  justify-self:start!important;
-  position:relative!important;
-  z-index:1!important;
- }
- .storyInstagram .socialButton{
-  margin-top:auto!important;
- }
-
- .storyAbout{
-  grid-template-columns:minmax(420px,1fr) 310px!important;
-  column-gap:48px!important;
-  padding-top:4px!important;
- }
- .storyAbout>header h2{
-  margin-top:12px!important;
-  font-size:50px!important;
- }
- .storyAbout .creatorPhoto{
-  width:310px!important;
-  max-width:310px!important;
-  margin-top:0!important;
- }
- .storyAbout .creatorCopy{
-  padding-top:18px!important;
- }
- .storyAbout .creatorCopy h3{
-  font-size:36px!important;
-  margin-bottom:14px!important;
- }
- .storyAbout .creatorCopy>p{
-  max-width:34ch!important;
-  margin-bottom:16px!important;
- }
- .storyAbout .creatorInstagramButton{
-  margin-top:12px!important;
- }
+.storyInstagram{
+ display:flex;
+ flex-direction:column;
+ align-items:flex-start;
+}
+.storyInstagram .socialCopy{width:100%}
+.storyInstagram .socialCopy header h2{
+ max-width:none;
+ white-space:nowrap;
+}
+.storyInstagram .socialCopy header p{
+ max-width:none;
+ white-space:nowrap;
+}
+.storyInstagram .instagramGrid{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:8px;
+ width:min(100%,420px);
+ margin-top:10px;
+}
+.storyInstagram .instagramGrid>div{
+ position:relative;
+ width:100%;
+ aspect-ratio:1/1;
+ overflow:hidden;
+ border-radius:14px;
+ background:#f1f4f8;
+}
+.storyInstagram .socialButton,
+.storyAbout .creatorInstagramButton{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ min-height:46px;
+ margin-top:20px;
+ padding:0 20px;
+ border:1px solid color-mix(in srgb,var(--accent) 72%,#d8d1ca);
+ border-radius:999px;
+ background:#fff;
+ color:var(--ink);
+ font-size:var(--commerce-button-size);
+ font-weight:var(--commerce-button-weight);
+ font-style:var(--commerce-button-style);
+ text-decoration:none;
+}
+.storyAbout{
+ display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(230px,310px);
+ gap:34px;
+ align-items:start;
+}
+.storyAbout>header{grid-column:1}
+.storyAbout>header h2{max-width:none}
+.aboutCopy{
+ grid-column:1;
+ color:#756a63;
+ font-size:15px;
+ line-height:1.5;
+}
+.aboutCopy p{
+ max-width:34ch;
+ margin:0 0 16px;
+}
+.creatorCard{
+ grid-column:2;
+ grid-row:1 / span 2;
+ display:flex;
+ flex-direction:column;
+ min-width:0;
+}
+.storyAbout .creatorPhoto{
+ position:relative;
+ width:100%;
+ aspect-ratio:1/1;
+ overflow:hidden;
+ border-radius:20px;
+ background:#f1f4f8;
+}
+.creatorCard h3{
+ margin:14px 0 10px;
+ font-size:clamp(30px,2.4vw,40px);
+ line-height:.98;
+ letter-spacing:-.035em;
+}
+.creatorCard>p{
+ margin:0;
+ color:#756a63;
+ font-size:15px;
+ line-height:1.5;
+}
+@media(max-width:1100px) and (min-width:851px){
+ .storyRow{gap:36px}
+ .storyInstagram .socialCopy header h2{font-size:42px}
+ .storyInstagram .socialCopy header p{white-space:normal}
+ .storyAbout{grid-template-columns:minmax(0,1fr) minmax(190px,240px);gap:24px}
+}
+@media(max-width:850px){
+ .storyRow{grid-template-columns:1fr;gap:42px;padding:44px 22px}
+ .storyInstagram .socialCopy header h2,
+ .storyInstagram .socialCopy header p{white-space:normal}
+ .storyInstagram .instagramGrid{width:100%}
+ .storyAbout{grid-template-columns:1fr;gap:22px}
+ .storyAbout>header,.aboutCopy,.creatorCard{grid-column:1;grid-row:auto}
+ .creatorCard{max-width:420px}
 }
