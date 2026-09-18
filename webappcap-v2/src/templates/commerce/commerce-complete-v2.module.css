@@ -89,6 +89,8 @@
 }
 @media(max-width:850px){
  .catalogRail{grid-template-columns:minmax(0,1fr);position:relative;margin:0}.catalogGrid{padding-inline:0}.catalogArrow{display:none}.catalogGrid .productCard{flex:0 0 min(78vw,292px)}
+ .productIndex,.productBody>p{display:none}.productBody h3{margin:0!important;font-size:17px!important}.productBottom{margin-top:12px}
+ .cartCompact,.cartCompact>.cartShell,.cartList,.cartEmpty{width:100%!important;max-width:none!important;min-width:0!important}.cartCompact{display:block!important}.cartCompact>.cartShell{display:block!important}.cartEmpty{min-height:132px!important;display:flex!important;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:24px!important;text-align:center;line-height:1.4}
  .cartCompact~.whatsappAfterCart{position:relative;width:100%;margin-top:18px!important;min-height:76px;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff}
- .storyRow{padding:34px 20px!important}.storyPanel{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}.storyPanel:first-child{grid-template-columns:1fr!important}.instagramGrid{margin-top:20px}.creatorCompact{grid-template-columns:1fr!important}.creatorPhoto{aspect-ratio:4/3!important}
+ .storyRow{padding:34px 20px!important;gap:44px!important}.storyPanel{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}.storyPanel:first-child{grid-template-columns:1fr!important}.instagramGrid{margin-top:20px}.creatorCompact{grid-template-columns:1fr!important}.creatorPhoto{aspect-ratio:4/3!important}.creatorCompact h3{font-size:24px!important}
 }
