@@ -16,7 +16,6 @@
 .palette :global(#cardapio){background:#fff}
 .palette :global(#carrinho){position:relative;background:color-mix(in srgb,var(--accent) 11%,#f8f7f4)}
 .palette>footer{background:color-mix(in srgb,var(--accent) 26%,#17191d)}
-.palette :global(#inicio>img){object-position:var(--commerce-hero-position,center)}
 .palette :global(#redes-sociais img){object-position:var(--commerce-logo-position,center)}
 .palette :global(#sobre article>div>img){object-position:var(--commerce-creator-position,center)}
 
