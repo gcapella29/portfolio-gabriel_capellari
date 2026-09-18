@@ -169,3 +169,17 @@
  .productBottom>button{width:40px!important;height:40px!important}
 }
 @media(max-width:850px){.imageLightbox{padding:18px}.lightboxImage{width:96vw;height:80vh}.lightboxClose{top:14px;right:14px}}
+
+
+/* Block 2 — final reference spacing after visual validation. */
+@media(min-width:851px){
+ .catalogRail{margin-top:0!important}
+ .catalogGrid{gap:20px!important;padding:44px 76px 34px!important;align-items:flex-start!important}
+ .catalogGrid .productCard{flex:0 0 clamp(238px,15.6vw,276px)!important;min-width:238px!important;max-width:276px!important}
+ .catalogArrow{top:50%!important}
+ .productImage{aspect-ratio:1.18/1!important}
+ .productBody{padding:10px 13px 10px!important}
+ .productBody h3{font-size:14px!important}
+ .productBottom{margin-top:11px!important}
+ .productBottom strong{font-size:16px!important}
+}
