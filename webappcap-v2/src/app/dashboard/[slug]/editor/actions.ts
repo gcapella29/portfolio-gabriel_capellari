@@ -25,7 +25,7 @@ export async function saveEditorAppearanceAction(formData:FormData){
  const slug=text(formData,'slug'),access=await resolveProjectAccess(slug);
  if(!can(access.role,'editAppearance'))throw new Error('Sem permissão para editar aparência.');
  const current=await readV2Content(access.project.id);
- await saveV2Section(access.project.id,'appearance',{...current.appearance,accent:text(formData,'accent')||'#d9ff43',heading_font:text(formData,'heading_font')||'Montserrat',body_font:text(formData,'body_font')||'DM Sans',scale:text(formData,'scale')||'normal',alignment:text(formData,'alignment')||'left',density:text(formData,'density')||'normal'});
+ await saveV2Section(access.project.id,'appearance',{...current.appearance,accent:text(formData,'accent')||'#d9ff43',heading_font:text(formData,'heading_font')||'Montserrat',body_font:text(formData,'body_font')||'DM Sans',scale:text(formData,'scale')||'normal',alignment:text(formData,'alignment')||'left',density:text(formData,'density')||'normal',support_font:text(formData,'support_font')||text(formData,'body_font')||'DM Sans',support_size:text(formData,'support_size')||'14',support_bold:formData.has('support_bold')?'true':'false',support_italic:formData.has('support_italic')?'true':'false',button_font:text(formData,'button_font')||text(formData,'body_font')||'DM Sans',button_size:text(formData,'button_size')||'12',button_bold:formData.has('button_bold')?'true':'false',button_italic:formData.has('button_italic')?'true':'false'});
  revalidatePath(editorPath(slug));revalidatePath(`/preview/${encodeURIComponent(slug)}`);
  redirect(`${editorPath(slug)}?savedAppearance=1#appearance`);
 }
