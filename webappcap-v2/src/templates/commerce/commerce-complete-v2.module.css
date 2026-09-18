@@ -74,10 +74,12 @@
 .storyPanel header span{color:var(--accent);font-size:12px;font-weight:900;letter-spacing:.15em}
 .storyPanel header h2{margin:10px 0 14px;font-size:clamp(44px,3.35vw,56px);line-height:.95;letter-spacing:-.045em}
 .storyPanel header p{margin:0;color:#756a63;font-size:15px;line-height:1.5}
-.storyInstagram{display:flex;flex-direction:column;align-items:flex-start}
-.socialCopy{width:100%;min-width:0}
+.storyInstagram{display:grid;grid-template-columns:minmax(0,1fr);align-content:start;justify-items:start}
+.socialCopy{display:contents}
+.storyInstagram .socialCopy header{width:100%;min-width:0}
 .storyInstagram .socialCopy header h2,.storyInstagram .socialCopy header p{max-width:none;white-space:nowrap}
-.instagramGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(100%,420px);margin-top:10px}
+.instagramGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(100%,540px);margin-top:10px}
+.storyInstagram .socialButton{justify-self:end;margin-top:18px;margin-right:max(0px,calc(100% - 540px))}
 .instagramGrid>div{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:14px;background:#f1f4f8}
 .instagramGrid>div>div{border:0;background:color-mix(in srgb,var(--accent) 7%,#f8fafc)}
 .instagramGrid>div>div span{width:25px;height:25px;font-size:15px}
@@ -86,10 +88,10 @@
 .instagramGrid>div:hover img{transform:scale(1.05)}
 .socialButton,.creatorInstagramButton{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;min-height:46px;margin-top:20px;padding:0 20px;border:1px solid color-mix(in srgb,var(--accent) 72%,#d8d1ca);border-radius:999px;background:#fff;color:var(--ink);font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:var(--commerce-button-size);font-weight:var(--commerce-button-weight);font-style:var(--commerce-button-style);line-height:1.2;text-align:center;text-decoration:none;transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
 .socialButton:hover,.socialButton:focus-visible,.creatorInstagramButton:hover,.creatorInstagramButton:focus-visible{transform:translateY(-3px);background:color-mix(in srgb,var(--accent) 8%,#fff);box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 22%,transparent)}
-.storyAbout{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,310px);gap:34px;align-items:start}
-.storyAbout>header{grid-column:1}
+.storyAbout{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,310px);grid-template-rows:auto 1fr;column-gap:34px;row-gap:16px;align-items:start}
+.storyAbout>header{grid-column:1;grid-row:1}
 .storyAbout>header h2{max-width:none}
-.aboutCopy{grid-column:1;color:#756a63;font-size:15px;line-height:1.5}
+.aboutCopy{grid-column:1;grid-row:2;align-self:start;color:#756a63;font-size:15px;line-height:1.5}
 .aboutCopy p{max-width:34ch;margin:0 0 16px}
 .creatorCard{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;min-width:0}
 .creatorPhoto{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:20px;background:#f1f4f8}
