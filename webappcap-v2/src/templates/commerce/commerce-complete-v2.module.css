@@ -37,3 +37,7 @@
 
 /* Fine typography controls from the editor */
 :global([data-variant="main"]) :global(.commerceSupportText){font-family:var(--commerce-support-font),Arial,sans-serif;font-size:var(--commerce-support-size);font-weight:var(--commerce-support-weight);font-style:var(--commerce-support-style)}
+
+#redes-sociais .storyPanel header{}
+.storyPanel header h2+p{margin-top:10px!important}
+@media(max-width:620px){.storyPanel header h2{font-size:clamp(31px,11vw,44px);line-height:1.02}.storyPanel header p{margin-top:10px!important;font-size:12px;line-height:1.45}}
