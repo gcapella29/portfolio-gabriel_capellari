@@ -147,3 +147,8 @@ to{opacity:1;transform:none}
 /* Editor-driven micro typography */
 .heroCopy>p{font-family:var(--commerce-support-font,var(--commerce-body)),Arial,sans-serif!important;font-size:var(--commerce-support-size,14px)!important;font-weight:var(--commerce-support-weight,400)!important;font-style:var(--commerce-support-style,normal)!important;line-height:1.45!important}
 .site button,.site a.scrollCue,.site a.whatsapp{font-family:var(--commerce-button-font,var(--commerce-body)),Arial,sans-serif!important;font-size:var(--commerce-button-size,12px)!important;font-weight:var(--commerce-button-weight,900)!important;font-style:var(--commerce-button-style,normal)!important}
+
+/* Production spacing polish */
+.section{padding-top:clamp(48px,6vw,76px)!important;padding-bottom:clamp(48px,6vw,76px)!important}
+.sectionHead{margin-bottom:clamp(24px,3vw,38px)!important}.sectionHead h2{line-height:.98!important}.sectionHead p{margin-top:8px!important;line-height:1.5!important}
+@media(max-width:620px){.section{padding-top:40px!important;padding-bottom:40px!important}.sectionHead{margin-bottom:22px!important}}
