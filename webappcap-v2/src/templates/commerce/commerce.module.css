@@ -152,3 +152,6 @@ to{opacity:1;transform:none}
 .section{padding-top:clamp(48px,6vw,76px)!important;padding-bottom:clamp(48px,6vw,76px)!important}
 .sectionHead{margin-bottom:clamp(24px,3vw,38px)!important}.sectionHead h2{line-height:.98!important}.sectionHead p{margin-top:8px!important;line-height:1.5!important}
 @media(max-width:620px){.section{padding-top:40px!important;padding-bottom:40px!important}.sectionHead{margin-bottom:22px!important}}
+
+/* Storefront proportions */
+@media(min-width:851px){.topbar{top:18px;left:3%;width:94%;height:58px;border:1px solid rgba(255,255,255,.18);border-radius:22px;padding-inline:24px}.hero{min-height:48vw;max-height:620px;padding:120px 4% 34px}.heroCopy h1{font-size:clamp(54px,6vw,86px);line-height:.88}.heroCopy>p{margin:12px 0;font-size:var(--commerce-support-size,14px)!important}.scrollCue{right:5%;bottom:auto;top:22px;writing-mode:horizontal-tb;padding:11px 18px;border:1px solid rgba(255,255,255,.65);border-radius:999px}.section{padding-left:4%!important;padding-right:4%!important}.sectionHead{display:block;margin-bottom:22px!important}.sectionHead h2{font-size:clamp(42px,5vw,66px)}.sectionHead p{margin-top:5px!important}.order{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.65fr);gap:28px;align-items:center}.order>.whatsappAfterCart{width:100%;margin:0!important}.site>footer{padding:24px 4%}}
