@@ -307,3 +307,47 @@
  .lightboxImage>img{max-width:calc(100vw - 32px)!important;max-height:calc(100vh - 32px)!important;border-radius:14px!important}
  .lightboxClose{top:10px!important;right:10px!important;width:38px!important;height:38px!important}
 }
+
+
+/* Block 4 — symmetric desktop sub-blocks; compact Instagram preview. */
+@media(min-width:851px){
+ .storyRow{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:56px!important;
+  align-items:stretch!important;
+ }
+ .storyPanel:first-child{
+  grid-template-columns:minmax(250px,.9fr) minmax(360px,1.1fr)!important;
+  gap:30px!important;
+  align-items:stretch!important;
+ }
+ .instagramGrid{
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  align-self:center!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:repeat(2,1fr)!important;
+  gap:7px!important;
+ }
+ .instagramGrid>div{
+  aspect-ratio:1/1!important;
+  min-height:0!important;
+ }
+ .storyPanel:last-child{
+  display:flex!important;
+  flex-direction:column!important;
+  padding:8px 0 2px!important;
+ }
+ .creatorCompact{
+  grid-template-columns:minmax(0,1fr) minmax(210px,245px)!important;
+  gap:30px!important;
+  align-items:start!important;
+  flex:1!important;
+ }
+ .creatorPhoto{
+  width:100%!important;
+  max-width:245px!important;
+  justify-self:end!important;
+ }
+}
