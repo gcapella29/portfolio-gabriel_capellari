@@ -1,7 +1,7 @@
 .site{--ink:#211a17;--paper:#f6f0e7;--soft:#eadfce;--accent:var(--commerce-accent,#ef5b3f);min-height:100vh;background:var(--paper);color:var(--ink);font-family:var(--commerce-body),Arial,sans-serif;overflow-x:clip;scroll-behavior:smooth}
 .site *{box-sizing:border-box}
 .site a{color:inherit}
-.site h1,.site h2,.site h3{margin:0;font-family:var(--commerce-heading),Arial Black,sans-serif;letter-spacing:-.055em}
+.site h1,.site h2,.site h3{margin:0;font-family:var(--commerce-heading),Arial Black,sans-serif;letter-spacing:-.04em;text-wrap:balance}.site p{letter-spacing:.005em}
 .topbar{position:fixed;z-index:50;top:0;left:0;width:100%;height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 clamp(18px,4vw,64px);border-bottom:1px solid rgba(255,255,255,.22);background:rgba(25,18,15,.54);color:#fff;backdrop-filter:blur(18px) saturate(140%);transition:background .3s}
 .wordmark{max-width:34vw;overflow:hidden;font-weight:900;text-decoration:none;text-overflow:ellipsis;white-space:nowrap}
 .topbar nav{display:flex;align-items:center;gap:clamp(12px,2.4vw,34px)}
@@ -110,16 +110,18 @@ to{transform:scale(1);filter:none}
 @keyframes previewIn{from{opacity:0;transform:translateY(8px)}
 to{opacity:1;transform:none}
 }
-@media(max-width:850px){.topbar{height:auto;min-height:58px;padding:10px 16px;align-items:flex-start}
-.wordmark{padding-top:7px}
-.topbar nav{max-width:70vw;overflow-x:auto;padding:7px 0 10px}
-.topbar nav a{white-space:nowrap}
-.hero{min-height:92svh;padding-inline:20px}
+@media(max-width:850px){.topbar{height:auto;min-height:76px;padding:10px 12px 9px;display:grid;grid-template-columns:1fr;gap:7px;align-items:center}
+.wordmark{max-width:100%;padding:0 3px;font-size:15px;line-height:1.2}
+.topbar nav{width:100%;max-width:none;gap:7px;overflow-x:auto;padding:0 2px 2px;scrollbar-width:none}
+.topbar nav::-webkit-scrollbar{display:none}
+.topbar nav a{flex:0 0 auto;padding:7px 10px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:rgba(255,255,255,.07);font-size:10px;white-space:nowrap}
+.topbar nav a:after{display:none}
+.hero{min-height:92svh;padding:148px 20px 9vh}
 .heroCopy h1{font-size:clamp(52px,18vw,88px)}
 .scrollCue{display:none}
-.section{padding:78px 20px}
+.section{padding:64px 20px}
 .sectionHead{display:block;margin-bottom:38px}
-.sectionHead h2{margin-top:9px;font-size:clamp(42px,14vw,68px);line-height:.94}
+.sectionHead h2{margin-top:9px;font-size:clamp(40px,12vw,60px);line-height:.98;letter-spacing:-.035em}
 .sectionHead p{margin-top:14px}
 .gallery{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:15px}
 .galleryCard{min-width:82vw;scroll-snap-align:start}
