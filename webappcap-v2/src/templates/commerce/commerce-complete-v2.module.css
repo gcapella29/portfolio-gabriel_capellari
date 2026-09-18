@@ -109,3 +109,35 @@
 
 .storyPanel header>span{font-size:13px!important;letter-spacing:.14em!important}
 .socialButton,.creatorInstagramButton{width:max-content!important;max-width:100%!important;min-height:42px!important;margin-top:16px!important;padding:10px 16px!important;font-family:var(--commerce-fixed-body),Arial,sans-serif!important;font-size:12px!important;font-weight:850!important;font-style:normal!important;line-height:1.2!important;white-space:normal;text-align:center}
+
+/* Canonical desktop proportions from the approved references. */
+@media(min-width:851px){
+ .catalogRail{padding:0!important}
+ .catalogGrid{gap:20px!important;padding:8px 0 12px!important}
+ .catalogGrid .productCard{flex:0 0 clamp(230px,15vw,258px)!important;min-width:230px!important;max-width:258px!important}
+ .catalogArrow{top:-64px!important}
+ .productCard{border-radius:16px!important}
+ .productImage{aspect-ratio:1.12/1!important}
+ .productBody{padding:11px 13px 12px!important}
+ .productBody h3{font-size:14px!important;line-height:1.15!important}
+ .productBottom{margin-top:12px!important}.productBottom strong{font-size:16px!important}
+ .cartCompact{display:grid!important;grid-template-columns:minmax(330px,.42fr) minmax(560px,1.25fr)!important;gap:70px!important;max-width:none!important;width:100%!important;align-items:start}
+ .cartHeading h2{font-size:clamp(46px,4.5vw,62px)!important;white-space:nowrap}
+ .cartHeading p{max-width:27ch!important;font-size:15px!important;line-height:1.45!important}
+ .cartCompact>.cartShell{display:block!important;width:100%!important}.cartList{gap:10px!important}
+ .cartItem{grid-template-columns:220px minmax(0,1fr) auto!important;min-height:58px;padding:6px 26px 6px 42px!important;border-radius:999px!important}
+ .cartThumb{width:220px!important;height:46px!important;border-radius:999px!important}
+ .cartInfo strong{font-size:16px}.cartInfo span{font-size:12px}
+ .cartControls{gap:28px!important}.cartControls button{width:72px!important;height:28px!important;border-radius:999px!important}.cartControls b{min-width:22px;font-size:16px}
+ .cartCompact~.whatsappAfterCart{display:none!important}
+ .storyRow{grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr)!important;gap:40px!important;padding:46px 4%!important;align-items:center!important}
+ .storyPanel:first-child{grid-template-columns:minmax(270px,.72fr) minmax(460px,1.28fr)!important;gap:36px!important}
+ .storyPanel header span{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:13px!important;font-weight:900!important;letter-spacing:.14em}
+ .storyPanel header h2{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(42px,3.8vw,58px)!important;font-weight:400;line-height:.94!important}
+ .storyPanel header p,.creatorCopy p{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:15px!important;line-height:1.55!important}
+ .instagramGrid{gap:8px!important}.instagramGrid>div{border-radius:14px!important}
+ .creatorCompact{grid-template-columns:minmax(0,1fr) 245px!important;gap:30px!important}
+ .creatorPhoto{width:245px!important;aspect-ratio:1/1!important;border-radius:20px!important}
+ .creatorCopy h3{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(28px,2.4vw,38px)!important;font-weight:400}
+ .socialButton,.creatorInstagramButton{min-height:46px;padding:0 20px!important;border-radius:999px!important;font-family:var(--commerce-fixed-body),Arial,sans-serif!important;font-size:13px!important;font-weight:800!important}
+}

@@ -75,3 +75,9 @@
  .palette :global(#carrinho){position:relative;padding-top:28px!important;padding-bottom:28px!important;background:color-mix(in srgb,var(--accent) 11%,#f8f7f4)}
  .palette>footer{width:100%;margin:0;padding:22px 4%!important;border:0;border-radius:0;background:color-mix(in srgb,var(--accent) 26%,#17191d)!important;box-shadow:none}
 }
+
+/* Desktop reference: navigation is a flat strip in the page flow. */
+@media(min-width:851px){
+ .topbar{top:0!important;left:0!important;width:100%!important;height:56px!important;padding:0 4%!important;border:0!important;border-radius:0!important;background:#171411!important;box-shadow:none!important;backdrop-filter:none!important}
+ .heroShade{background:linear-gradient(90deg,rgba(14,24,32,.22),rgba(14,24,32,.04) 54%,transparent 78%)!important}
+}

@@ -221,3 +221,22 @@ to{opacity:1;transform:none}
 .heroCopy>.heroDescriptor{font-size:var(--hero-descriptor-size)!important;font-weight:var(--hero-descriptor-bold)!important;font-style:var(--hero-descriptor-italic)!important}
 .heroCopy>.heroSlogan{font-size:var(--hero-slogan-size)!important;font-weight:var(--hero-slogan-bold)!important;font-style:var(--hero-slogan-italic)!important}
 @media(max-width:850px){.site{--hero-text-x:var(--hero-text-x-mobile);--hero-text-y:var(--hero-text-y-mobile);--hero-text-width:var(--hero-text-width-mobile);--hero-text-align:var(--hero-text-align-mobile);--hero-title-size:var(--hero-title-size-mobile);--hero-title-bold:var(--hero-title-bold-mobile);--hero-title-italic:var(--hero-title-italic-mobile);--hero-descriptor-size:var(--hero-descriptor-size-mobile);--hero-descriptor-bold:var(--hero-descriptor-bold-mobile);--hero-descriptor-italic:var(--hero-descriptor-italic-mobile);--hero-slogan-size:var(--hero-slogan-size-mobile);--hero-slogan-bold:var(--hero-slogan-bold-mobile);--hero-slogan-italic:var(--hero-slogan-italic-mobile);--hero-image-x:var(--hero-image-x-mobile);--hero-image-y:var(--hero-image-y-mobile);--hero-image-zoom:var(--hero-image-zoom-mobile)}}
+
+/* Canonical desktop storefront. */
+@media(min-width:851px){
+ .topbar{position:relative!important;z-index:20!important;top:auto!important;left:auto!important;width:100%!important;height:56px!important;padding:0 4%!important;border:0!important;border-radius:0!important;background:#171411!important;box-shadow:none!important;backdrop-filter:none!important}
+ .wordmark{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:25px!important;font-weight:400!important;letter-spacing:-.045em}
+ .topbar nav{margin-left:auto;gap:clamp(24px,2.5vw,42px)}
+ .topbar nav a{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:12px!important;font-weight:800}
+ .topbarCta{min-width:120px;margin-left:34px;padding:9px 20px;border-color:rgba(255,255,255,.72);font-size:12px!important}
+ .hero{height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:4.76/1;padding:0!important;align-items:initial;background:color-mix(in srgb,var(--accent) 20%,#eaf0f5)}
+ .heroMedia{object-fit:contain!important;object-position:center center!important;transform:none!important}
+ .heroCopy{left:4%!important;top:58%!important;width:43%!important;max-width:43%!important;transform:translateY(-50%)!important;text-align:left!important}
+ .heroCopy h1{margin:0 0 10px!important;font-size:clamp(48px,5vw,68px)!important;font-weight:400!important;font-style:normal!important;line-height:.9!important}
+ .heroCopy>.heroDescriptor{margin:0!important;font-family:var(--commerce-fixed-body),Arial,sans-serif!important;font-size:clamp(14px,1.4vw,18px)!important;font-weight:700!important;line-height:1.25!important}
+ .heroCopy>.heroSlogan{margin:12px 0 0!important;font-family:var(--commerce-fixed-handwritten),cursive!important;font-size:clamp(23px,2.4vw,32px)!important;font-weight:500!important;line-height:1!important}
+ .heroMeta{display:none!important}
+ .section{padding-left:4%!important;padding-right:4%!important}
+ .sectionHead h2{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(46px,4.5vw,62px)!important;font-weight:400;line-height:.92!important;letter-spacing:-.055em}
+ .sectionHead p{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:14px;line-height:1.45}
+}
