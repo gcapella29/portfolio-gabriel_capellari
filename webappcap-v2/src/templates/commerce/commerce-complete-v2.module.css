@@ -64,3 +64,31 @@
 }
 
 .creatorInstagramButton{display:inline-flex!important;align-items:center;justify-content:center;width:max-content;max-width:100%;margin-top:12px!important;padding:11px 16px;border:1px solid color-mix(in srgb,var(--accent) 58%,#b8c2cf);border-radius:999px;background:color-mix(in srgb,var(--accent) 8%,#fff);font-family:var(--commerce-button-font,var(--commerce-body)),Arial,sans-serif;font-size:var(--commerce-button-size,12px)!important;font-weight:var(--commerce-button-weight,900)!important;font-style:var(--commerce-button-style,normal);text-decoration:none;box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 10%,transparent)}
+
+/* Final compact storefront matching the approved visual reference. */
+.catalogEmpty{min-height:180px;display:grid;place-items:center;padding:28px;border:1px dashed color-mix(in srgb,var(--accent) 42%,#a8b0ba);border-radius:18px;background:color-mix(in srgb,var(--accent) 5%,#fff);color:#657080;text-align:center;font-size:14px;font-weight:750}
+.productCard{border-color:#e3e5e8;background:#fff;box-shadow:0 8px 24px rgba(26,35,48,.07)}
+.productBody h3{font-family:var(--commerce-body),Arial,sans-serif!important;font-weight:850;letter-spacing:-.015em!important}
+.productBottom>button{background:var(--accent);box-shadow:none}
+.cartEmpty{background:#fff;color:#59616c}.cartEmpty a{font-weight:850;text-decoration:none}
+.whatsappAfterCart{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 18px;text-align:left!important}
+.whatsappAfterCart span{grid-column:1;color:rgba(255,255,255,.76);font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.whatsappAfterCart strong{grid-column:1;font-size:inherit}.whatsappAfterCart>b{grid-column:2;grid-row:1/3;align-self:center;width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:rgba(255,255,255,.22);font-size:19px}
+.storyRow{border-top:1px solid #edf0f3}.storyPanel header span{color:var(--accent)}
+.instagramGrid>div{background:#f4f6f8}.instagramGrid>div>div{border:0;background:color-mix(in srgb,var(--accent) 7%,#f8fafc)}
+.instagramGrid>div>div span{width:25px;height:25px;font-size:15px}.instagramGrid>div>div strong{font-size:8px}
+.socialButton,.creatorInstagramButton{border:1px solid var(--accent)!important;background:#fff!important;color:color-mix(in srgb,var(--accent) 70%,#1d2733)!important;transition:transform .25s ease,box-shadow .25s ease,background .25s ease!important}
+.socialButton:hover,.socialButton:focus-visible,.creatorInstagramButton:hover,.creatorInstagramButton:focus-visible{transform:translateY(-3px);background:color-mix(in srgb,var(--accent) 8%,#fff)!important;box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 22%,transparent)}
+
+@media(min-width:851px){
+ .catalogGrid .productCard{flex-basis:calc((100% - 80px)/6)}
+ .productImage{aspect-ratio:1.12/1}.productBody{padding:11px 12px 10px}.productBody h3{font-size:12px!important}.productBottom strong{font-size:14px}
+ .cartCompact~.whatsappAfterCart{display:grid!important}
+ .storyRow{padding:34px 4%!important}.storyPanel:first-child{grid-template-columns:minmax(210px,.72fr) minmax(300px,1.28fr)!important}.storyPanel header h2{font-size:clamp(32px,3.2vw,46px)}
+ .creatorCompact{grid-template-columns:minmax(0,1fr) 210px!important}.creatorPhoto{grid-column:2;grid-row:1;aspect-ratio:1/1!important}.creatorCompact>div:last-child{grid-column:1;grid-row:1}
+}
+@media(max-width:850px){
+ .catalogRail{grid-template-columns:minmax(0,1fr);position:relative;margin:0}.catalogGrid{padding-inline:0}.catalogArrow{display:none}.catalogGrid .productCard{flex:0 0 min(78vw,292px)}
+ .cartCompact~.whatsappAfterCart{position:relative;width:100%;margin-top:18px!important;min-height:76px;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff}
+ .storyRow{padding:34px 20px!important}.storyPanel{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}.storyPanel:first-child{grid-template-columns:1fr!important}.instagramGrid{margin-top:20px}.creatorCompact{grid-template-columns:1fr!important}.creatorPhoto{aspect-ratio:4/3!important}
+}
