@@ -41,3 +41,10 @@
 #redes-sociais .storyPanel header{}
 .storyPanel header h2+p{margin-top:10px!important}
 @media(max-width:620px){.storyPanel header h2{font-size:clamp(31px,11vw,44px);line-height:1.02}.storyPanel header p{margin-top:10px!important;font-size:12px;line-height:1.45}}
+
+/* Compact storefront composition */
+.cartCompact{display:grid;grid-template-columns:minmax(230px,.55fr) minmax(0,1.45fr);gap:34px;align-items:start}.cartCompact>.cartShell{grid-template-columns:minmax(0,1fr) minmax(280px,.75fr);gap:18px}.cartCompact~.whatsappAfterCart{margin-top:22px}
+.storyRow{grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr)!important;gap:28px!important}.storyPanel{display:grid!important;align-content:start;min-height:0!important}.storyPanel:first-child{grid-template-columns:minmax(220px,.75fr) minmax(300px,1.25fr);gap:30px;align-items:center}.socialCopy{min-width:0}.socialButton{display:inline-flex;margin-top:20px;padding:12px 18px;border:1px solid color-mix(in srgb,var(--accent) 55%,#b9c6d8);border-radius:999px;color:var(--ink);font-weight:900;text-decoration:none}.instagramGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.instagramGrid>div{position:relative;aspect-ratio:1;overflow:hidden;border-radius:13px;background:#eee}.instagramGrid img{transition:transform .45s ease}.instagramGrid>div:hover img{transform:scale(1.05)}
+.creatorCompact{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:14px!important}.creatorPhoto{aspect-ratio:16/10!important;border-radius:18px!important}.creatorCompact h3{margin-top:2px!important}.creatorCompact p{margin:7px 0!important}.storyPanel header{margin-bottom:14px!important}
+@media(max-width:1000px){.cartCompact{grid-template-columns:1fr}.storyRow{grid-template-columns:1fr!important}.storyPanel:first-child{grid-template-columns:minmax(190px,.7fr) minmax(280px,1.3fr)}}
+@media(max-width:620px){.cartCompact{gap:16px}.storyPanel:first-child{grid-template-columns:1fr}.instagramGrid{grid-template-columns:repeat(3,minmax(0,1fr))}.creatorPhoto{aspect-ratio:4/3!important}.socialButton{margin-top:12px}}
