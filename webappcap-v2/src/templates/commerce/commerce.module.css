@@ -236,19 +236,20 @@ to{opacity:1;transform:none}
 
 /* Canonical desktop storefront — approved Vet-se reference. */
 @media(min-width:851px){
- .topbar{position:relative;z-index:20;top:auto;left:auto;width:100%;height:56px;padding:0 4%;border:0;border-radius:0;background:#171411;color:#fff;box-shadow:none;backdrop-filter:none;overflow:visible}
- .wordmark{display:flex;align-items:center;max-width:none;overflow:visible;padding:0 0 3px;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:30px;font-weight:400;line-height:1.05;letter-spacing:-.055em;text-overflow:clip}
- .topbar nav{margin-left:auto;gap:clamp(24px,2.5vw,42px)}
- .topbar nav a{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:12px;font-weight:800}
- .topbarCta{min-width:120px;margin-left:34px;padding:9px 20px;border-color:rgba(255,255,255,.72);font-size:12px}
- .hero{position:relative;width:100%;height:auto;min-height:0;max-height:none;aspect-ratio:4/1;padding:0;display:block;overflow:hidden;background:#dbe4ed;color:#fff}
- .hero>.heroMedia{object-fit:contain;object-position:center center;transform:none;transition:none}
- .heroShade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,31,43,.12) 0%,rgba(20,31,43,.035) 40%,transparent 67%)}
- .heroCopy{position:absolute;z-index:2;left:4%;top:53%;width:44%;max-width:44%;transform:translateY(-50%);text-align:left;animation:none}
- .heroCopy h1{max-width:none;margin:0 0 9px;padding:0;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(52px,5vw,72px);font-weight:400;font-style:normal;line-height:.92;letter-spacing:-.055em;text-wrap:nowrap}
- .heroCopy>.heroDescriptor{margin:0;padding:0;font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:clamp(14px,1.3vw,18px);font-weight:700;font-style:normal;line-height:1.25;letter-spacing:-.025em;white-space:nowrap}
- .heroCopy>.heroSlogan{display:block;margin:12px 0 0;padding:0;font-family:var(--commerce-fixed-handwritten),cursive;font-size:clamp(25px,2.3vw,32px);font-weight:500;font-style:normal;line-height:1;letter-spacing:.01em;white-space:nowrap}
- .heroMeta{display:none}
+ .topbar{position:relative!important;z-index:20!important;top:auto!important;left:auto!important;width:100%!important;height:56px!important;padding:0 4%!important;border:0!important;border-radius:0!important;background:#171411!important;color:#fff!important;box-shadow:none!important;backdrop-filter:none!important;overflow:visible!important}
+ .wordmark{display:flex!important;align-items:center!important;max-width:none!important;overflow:visible!important;padding:0 0 3px!important;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif!important;font-size:30px!important;font-weight:400!important;line-height:1.05!important;letter-spacing:-.055em!important;text-overflow:clip!important}
+ .topbar nav{margin-left:auto!important;gap:clamp(24px,2.5vw,42px)!important}
+ .topbar nav a{font-family:var(--commerce-fixed-body),Arial,sans-serif!important;font-size:12px!important;font-weight:800!important}
+ .topbarCta{min-width:120px!important;margin-left:34px!important;padding:9px 20px!important;border-color:rgba(255,255,255,.72)!important;font-size:12px!important}
+ .hero{position:relative!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:auto!important;padding:0!important;display:block!important;overflow:hidden!important;background:#dbe4ed!important;color:#fff!important}
+ .heroMediaFrame{position:relative;width:100%;line-height:0}
+ .heroMedia{position:relative!important;display:block!important;width:100%!important;height:auto!important;max-width:none!important;object-fit:initial!important;object-position:initial!important;transform:none!important;animation:none!important;transition:none!important}
+ .heroShade{position:absolute!important;z-index:1;inset:0!important;background:linear-gradient(90deg,rgba(20,31,43,.12) 0%,rgba(20,31,43,.035) 40%,transparent 67%)!important}
+ .heroCopy{position:absolute!important;z-index:2!important;left:4%!important;top:48%!important;width:44%!important;max-width:44%!important;transform:translateY(-50%)!important;text-align:left!important;animation:none!important}
+ .heroCopy h1{max-width:none!important;margin:0 0 9px!important;padding:0!important;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif!important;font-size:clamp(52px,5vw,72px)!important;font-weight:400!important;font-style:normal!important;line-height:.92!important;letter-spacing:-.055em!important;text-wrap:nowrap!important}
+ .heroCopy>.heroDescriptor{margin:0!important;padding:0!important;font-family:var(--commerce-fixed-body),Arial,sans-serif!important;font-size:clamp(14px,1.3vw,18px)!important;font-weight:700!important;font-style:normal!important;line-height:1.25!important;letter-spacing:-.025em!important;white-space:nowrap!important}
+ .heroCopy>.heroSlogan{display:block!important;margin:12px 0 0!important;padding:0!important;font-family:var(--commerce-fixed-handwritten),cursive!important;font-size:clamp(25px,2.3vw,32px)!important;font-weight:500!important;font-style:normal!important;line-height:1!important;letter-spacing:.01em!important;white-space:nowrap!important}
+ .heroMeta{display:none!important}
  .section{padding-left:4%;padding-right:4%}
  .sectionHead h2{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(46px,4.5vw,62px);font-weight:400;line-height:.92;letter-spacing:-.055em}
  .sectionHead p{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:14px;line-height:1.45}
