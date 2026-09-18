@@ -701,3 +701,77 @@
  }
  .storyAbout .creatorInstagramButton{margin-top:10px!important}
 }
+
+
+/* Block 4 — final visual lock to supplied reference. */
+@media(min-width:851px){
+ .storyRow{
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:54px!important;
+  padding:52px 36px!important;
+ }
+ .storyInstagram{
+  grid-template-columns:380px 420px!important;
+  gap:26px!important;
+  justify-content:start!important;
+ }
+ .storyInstagram .socialCopy{
+  min-height:356px!important;
+  padding:4px 0 0!important;
+ }
+ .storyInstagram .socialCopy header h2{
+  width:720px!important;
+  max-width:720px!important;
+  margin:12px 0 14px!important;
+  font-size:50px!important;
+  line-height:.96!important;
+  white-space:nowrap!important;
+  position:relative!important;
+  z-index:2!important;
+ }
+ .storyInstagram .socialCopy header p{
+  width:430px!important;
+  max-width:430px!important;
+  white-space:nowrap!important;
+ }
+ .storyInstagram .instagramGrid{
+  width:420px!important;
+  max-width:420px!important;
+  margin-top:108px!important;
+  justify-self:start!important;
+  position:relative!important;
+  z-index:1!important;
+ }
+ .storyInstagram .socialButton{
+  margin-top:auto!important;
+ }
+
+ .storyAbout{
+  grid-template-columns:minmax(420px,1fr) 310px!important;
+  column-gap:48px!important;
+  padding-top:4px!important;
+ }
+ .storyAbout>header h2{
+  margin-top:12px!important;
+  font-size:50px!important;
+ }
+ .storyAbout .creatorPhoto{
+  width:310px!important;
+  max-width:310px!important;
+  margin-top:0!important;
+ }
+ .storyAbout .creatorCopy{
+  padding-top:18px!important;
+ }
+ .storyAbout .creatorCopy h3{
+  font-size:36px!important;
+  margin-bottom:14px!important;
+ }
+ .storyAbout .creatorCopy>p{
+  max-width:34ch!important;
+  margin-bottom:16px!important;
+ }
+ .storyAbout .creatorInstagramButton{
+  margin-top:12px!important;
+ }
+}
