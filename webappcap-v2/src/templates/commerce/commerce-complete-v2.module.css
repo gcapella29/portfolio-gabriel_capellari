@@ -149,3 +149,23 @@
  .productControls button{width:31px!important;height:31px!important;background:#f2f5f8!important;color:#111820!important;font-size:16px!important}
  .productControls b{min-width:20px!important;font-size:13px!important}
 }
+
+
+/* Block 2 — catalog reference corrections and image lightbox. */
+.imageLightbox{position:fixed;z-index:1000;inset:0;display:grid;place-items:center;padding:clamp(24px,4vw,64px);background:rgba(10,12,15,.86);backdrop-filter:blur(8px);cursor:zoom-out}
+.lightboxImage{position:relative;width:min(92vw,1100px);height:min(84vh,820px);cursor:default}
+.lightboxClose{position:fixed;z-index:2;top:22px;right:26px;width:46px;height:46px;border:1px solid rgba(255,255,255,.5);border-radius:50%;background:rgba(20,22,26,.7);color:#fff;font:300 30px/1 Arial,sans-serif;cursor:pointer}
+@media(min-width:851px){
+ .catalogRail{margin-top:-86px!important}
+ .catalogGrid{gap:20px!important;padding-top:0!important;padding-bottom:8px!important}
+ .catalogGrid .productCard{flex-basis:clamp(250px,16.4vw,288px)!important}
+ .productCard{border-radius:18px 18px 0 0!important}
+ .productImage{position:relative!important;display:block!important;width:100%!important;padding:0!important;border:0!important;border-radius:0!important;aspect-ratio:1.12/1!important;background:#f4f5f7!important;overflow:hidden!important;cursor:zoom-in!important}
+ .productImage:disabled{cursor:default!important}
+ .productImage img{transition:transform .28s ease!important}
+ .productImage:not(:disabled):hover img{transform:scale(1.025)!important}
+ .productBody{padding:12px 14px 11px!important}
+ .productBottom{margin-top:12px!important}
+ .productBottom>button{width:40px!important;height:40px!important}
+}
+@media(max-width:850px){.imageLightbox{padding:18px}.lightboxImage{width:96vw;height:80vh}.lightboxClose{top:14px;right:14px}}
