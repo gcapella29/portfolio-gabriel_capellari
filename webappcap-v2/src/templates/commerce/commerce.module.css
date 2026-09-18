@@ -223,14 +223,16 @@ to{opacity:1;transform:none}
  .hero{padding-top:84px!important}.heroCopy>.heroDescriptor{font-size:14px!important}.heroCopy>.heroSlogan{font-size:clamp(23px,7vw,31px)!important}.heroMeta{font-family:var(--commerce-fixed-body),Arial,sans-serif}
 }
 
-/* Responsive hero controls from Aparência. */
-.site{--hero-text-x:var(--hero-text-x-desktop);--hero-text-y:var(--hero-text-y-desktop);--hero-text-width:var(--hero-text-width-desktop);--hero-text-align:var(--hero-text-align-desktop);--hero-title-size:var(--hero-title-size-desktop);--hero-title-bold:var(--hero-title-bold-desktop);--hero-title-italic:var(--hero-title-italic-desktop);--hero-descriptor-size:var(--hero-descriptor-size-desktop);--hero-descriptor-bold:var(--hero-descriptor-bold-desktop);--hero-descriptor-italic:var(--hero-descriptor-italic-desktop);--hero-slogan-size:var(--hero-slogan-size-desktop);--hero-slogan-bold:var(--hero-slogan-bold-desktop);--hero-slogan-italic:var(--hero-slogan-italic-desktop);--hero-image-x:var(--hero-image-x-desktop);--hero-image-y:var(--hero-image-y-desktop);--hero-image-zoom:var(--hero-image-zoom-desktop)}
-.hero{overflow:hidden}.heroMedia{object-position:var(--hero-image-x) var(--hero-image-y)!important;transform:scale(var(--hero-image-zoom));transition:transform .35s ease,object-position .35s ease}
-.heroCopy{position:absolute!important;z-index:2;left:var(--hero-text-x)!important;top:var(--hero-text-y)!important;width:var(--hero-text-width)!important;max-width:calc(100% - var(--hero-text-x))!important;transform:translateY(-50%)!important;text-align:var(--hero-text-align)!important;animation:none!important}
-.heroCopy h1{max-width:100%!important;font-size:var(--hero-title-size)!important;font-weight:var(--hero-title-bold)!important;font-style:var(--hero-title-italic)!important}
-.heroCopy>.heroDescriptor{font-size:var(--hero-descriptor-size)!important;font-weight:var(--hero-descriptor-bold)!important;font-style:var(--hero-descriptor-italic)!important}
-.heroCopy>.heroSlogan{font-size:var(--hero-slogan-size)!important;font-weight:var(--hero-slogan-bold)!important;font-style:var(--hero-slogan-italic)!important}
-@media(max-width:850px){.site{--hero-text-x:var(--hero-text-x-mobile);--hero-text-y:var(--hero-text-y-mobile);--hero-text-width:var(--hero-text-width-mobile);--hero-text-align:var(--hero-text-align-mobile);--hero-title-size:var(--hero-title-size-mobile);--hero-title-bold:var(--hero-title-bold-mobile);--hero-title-italic:var(--hero-title-italic-mobile);--hero-descriptor-size:var(--hero-descriptor-size-mobile);--hero-descriptor-bold:var(--hero-descriptor-bold-mobile);--hero-descriptor-italic:var(--hero-descriptor-italic-mobile);--hero-slogan-size:var(--hero-slogan-size-mobile);--hero-slogan-bold:var(--hero-slogan-bold-mobile);--hero-slogan-italic:var(--hero-slogan-italic-mobile);--hero-image-x:var(--hero-image-x-mobile);--hero-image-y:var(--hero-image-y-mobile);--hero-image-zoom:var(--hero-image-zoom-mobile)}}
+/* Editor hero controls are mobile-only for the approved Complete storefront.
+   Desktop is intentionally locked to the reference composition below. */
+@media(max-width:850px){
+ .site{--hero-text-x:var(--hero-text-x-mobile);--hero-text-y:var(--hero-text-y-mobile);--hero-text-width:var(--hero-text-width-mobile);--hero-text-align:var(--hero-text-align-mobile);--hero-title-size:var(--hero-title-size-mobile);--hero-title-bold:var(--hero-title-bold-mobile);--hero-title-italic:var(--hero-title-italic-mobile);--hero-descriptor-size:var(--hero-descriptor-size-mobile);--hero-descriptor-bold:var(--hero-descriptor-bold-mobile);--hero-descriptor-italic:var(--hero-descriptor-italic-mobile);--hero-slogan-size:var(--hero-slogan-size-mobile);--hero-slogan-bold:var(--hero-slogan-bold-mobile);--hero-slogan-italic:var(--hero-slogan-italic-mobile);--hero-image-x:var(--hero-image-x-mobile);--hero-image-y:var(--hero-image-y-mobile);--hero-image-zoom:var(--hero-image-zoom-mobile)}
+ .heroMedia{object-position:var(--hero-image-x) var(--hero-image-y);transform:scale(var(--hero-image-zoom));transition:transform .35s ease,object-position .35s ease}
+ .heroCopy{position:absolute;z-index:2;left:var(--hero-text-x);top:var(--hero-text-y);width:var(--hero-text-width);max-width:calc(100% - var(--hero-text-x));transform:translateY(-50%);text-align:var(--hero-text-align);animation:none}
+ .heroCopy h1{max-width:100%;font-size:var(--hero-title-size);font-weight:var(--hero-title-bold);font-style:var(--hero-title-italic)}
+ .heroCopy>.heroDescriptor{font-size:var(--hero-descriptor-size);font-weight:var(--hero-descriptor-bold);font-style:var(--hero-descriptor-italic)}
+ .heroCopy>.heroSlogan{font-size:var(--hero-slogan-size);font-weight:var(--hero-slogan-bold);font-style:var(--hero-slogan-italic)}
+}
 
 /* Canonical desktop storefront — approved Vet-se reference. */
 @media(min-width:851px){
@@ -240,7 +242,7 @@ to{opacity:1;transform:none}
  .topbar nav a{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:12px;font-weight:800}
  .topbarCta{min-width:120px;margin-left:34px;padding:9px 20px;border-color:rgba(255,255,255,.72);font-size:12px}
  .hero{position:relative;width:100%;height:auto;min-height:0;max-height:none;aspect-ratio:4/1;padding:0;display:block;overflow:hidden;background:#dbe4ed;color:#fff}
- .heroMedia{object-fit:contain;object-position:center center;transform:none;transition:none}
+ .hero>.heroMedia{object-fit:contain;object-position:center center;transform:none;transition:none}
  .heroShade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,31,43,.12) 0%,rgba(20,31,43,.035) 40%,transparent 67%)}
  .heroCopy{position:absolute;z-index:2;left:4%;top:53%;width:44%;max-width:44%;transform:translateY(-50%);text-align:left;animation:none}
  .heroCopy h1{max-width:none;margin:0 0 9px;padding:0;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(52px,5vw,72px);font-weight:400;font-style:normal;line-height:.92;letter-spacing:-.055em;text-wrap:nowrap}
