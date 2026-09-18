@@ -232,21 +232,22 @@ to{opacity:1;transform:none}
 .heroCopy>.heroSlogan{font-size:var(--hero-slogan-size)!important;font-weight:var(--hero-slogan-bold)!important;font-style:var(--hero-slogan-italic)!important}
 @media(max-width:850px){.site{--hero-text-x:var(--hero-text-x-mobile);--hero-text-y:var(--hero-text-y-mobile);--hero-text-width:var(--hero-text-width-mobile);--hero-text-align:var(--hero-text-align-mobile);--hero-title-size:var(--hero-title-size-mobile);--hero-title-bold:var(--hero-title-bold-mobile);--hero-title-italic:var(--hero-title-italic-mobile);--hero-descriptor-size:var(--hero-descriptor-size-mobile);--hero-descriptor-bold:var(--hero-descriptor-bold-mobile);--hero-descriptor-italic:var(--hero-descriptor-italic-mobile);--hero-slogan-size:var(--hero-slogan-size-mobile);--hero-slogan-bold:var(--hero-slogan-bold-mobile);--hero-slogan-italic:var(--hero-slogan-italic-mobile);--hero-image-x:var(--hero-image-x-mobile);--hero-image-y:var(--hero-image-y-mobile);--hero-image-zoom:var(--hero-image-zoom-mobile)}}
 
-/* Canonical desktop storefront. */
+/* Canonical desktop storefront — approved Vet-se reference. */
 @media(min-width:851px){
- .topbar{position:relative!important;z-index:20!important;top:auto!important;left:auto!important;width:100%!important;height:56px!important;padding:0 4%!important;border:0!important;border-radius:0!important;background:#171411!important;box-shadow:none!important;backdrop-filter:none!important}
- .wordmark{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:25px!important;font-weight:400!important;letter-spacing:-.045em}
+ .topbar{position:relative;z-index:20;top:auto;left:auto;width:100%;height:56px;padding:0 4%;border:0;border-radius:0;background:#171411;box-shadow:none;backdrop-filter:none}
+ .wordmark{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:30px;font-weight:400;line-height:1;letter-spacing:-.055em}
  .topbar nav{margin-left:auto;gap:clamp(24px,2.5vw,42px)}
- .topbar nav a{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:12px!important;font-weight:800}
- .topbarCta{min-width:120px;margin-left:34px;padding:9px 20px;border-color:rgba(255,255,255,.72);font-size:12px!important}
- .hero{height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:4.76/1;padding:0!important;align-items:initial;background:color-mix(in srgb,var(--accent) 20%,#eaf0f5)}
- .heroMedia{object-fit:contain!important;object-position:center center!important;transform:none!important}
- .heroCopy{left:4%!important;top:58%!important;width:43%!important;max-width:43%!important;transform:translateY(-50%)!important;text-align:left!important}
- .heroCopy h1{margin:0 0 10px!important;font-size:clamp(48px,5vw,68px)!important;font-weight:400!important;font-style:normal!important;line-height:.9!important}
- .heroCopy>.heroDescriptor{margin:0!important;font-family:var(--commerce-fixed-body),Arial,sans-serif!important;font-size:clamp(14px,1.4vw,18px)!important;font-weight:700!important;line-height:1.25!important}
- .heroCopy>.heroSlogan{margin:12px 0 0!important;font-family:var(--commerce-fixed-handwritten),cursive!important;font-size:clamp(23px,2.4vw,32px)!important;font-weight:500!important;line-height:1!important}
- .heroMeta{display:none!important}
- .section{padding-left:4%!important;padding-right:4%!important}
- .sectionHead h2{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(46px,4.5vw,62px)!important;font-weight:400;line-height:.92!important;letter-spacing:-.055em}
+ .topbar nav a{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:12px;font-weight:800}
+ .topbarCta{min-width:120px;margin-left:34px;padding:9px 20px;border-color:rgba(255,255,255,.72);font-size:12px}
+ .hero{height:auto;min-height:0;max-height:none;aspect-ratio:4/1;padding:0;align-items:initial;background:color-mix(in srgb,var(--accent) 20%,#eaf0f5)}
+ .heroMedia{object-fit:cover;object-position:center center;transform:none}
+ .heroShade{background:linear-gradient(90deg,rgba(14,24,32,.13),rgba(14,24,32,.02) 48%,transparent 70%)}
+ .heroCopy{left:4%;top:57%;width:43%;max-width:43%;transform:translateY(-50%);text-align:left}
+ .heroCopy h1{margin:0 0 10px;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(52px,5vw,72px);font-weight:400;font-style:normal;line-height:.9;letter-spacing:-.06em}
+ .heroCopy>.heroDescriptor{margin:0;font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:clamp(14px,1.35vw,18px);font-weight:700;font-style:normal;line-height:1.25;letter-spacing:-.025em}
+ .heroCopy>.heroSlogan{margin:12px 0 0;font-family:var(--commerce-fixed-handwritten),cursive;font-size:clamp(25px,2.35vw,32px);font-weight:500;font-style:normal;line-height:1;letter-spacing:.01em}
+ .heroMeta{display:none}
+ .section{padding-left:4%;padding-right:4%}
+ .sectionHead h2{font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(46px,4.5vw,62px);font-weight:400;line-height:.92;letter-spacing:-.055em}
  .sectionHead p{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:14px;line-height:1.45}
 }
