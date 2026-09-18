@@ -197,9 +197,14 @@ to{opacity:1;transform:none}
  .wordmark{font-size:22px}.hero{height:330px!important;padding:102px 4% 28px!important}.heroCopy{width:min(680px,58%)}
 }
 @media(max-width:850px){
- .topbar{position:fixed!important;z-index:1000!important;top:8px!important;left:8px!important;width:calc(100% - 16px)!important;height:auto!important;max-height:none;overflow:visible;border-radius:18px!important;transform:translateZ(0);will-change:transform;isolation:isolate}
+ .topbar{position:absolute!important;z-index:100!important;top:8px!important;left:8px!important;width:calc(100% - 16px)!important;height:auto!important;max-height:none;overflow:visible;border-radius:18px!important;transform:none;will-change:auto;isolation:isolate}
  .hero{min-height:360px!important;height:auto!important;padding:124px 20px 38px!important;align-items:flex-end}.heroCopy h1{font-size:clamp(48px,16vw,74px)!important}
  .heroMeta .whatsapp{display:none}
  .site>footer{width:100%!important;margin:0!important;padding:22px 20px!important;border:0!important;border-radius:0!important}
  .imagePlaceholder strong{font-size:10px}
 }
+
+/* The storefront bar belongs to the hero and scrolls away with it. */
+.topbar{position:absolute!important}
+.heroCopy>p{font-family:var(--commerce-fixed-handwritten),cursive!important;font-size:clamp(22px,2.25vw,32px)!important;font-weight:500!important;font-style:normal!important;line-height:1.05!important;letter-spacing:.01em!important}
+@media(max-width:850px){.heroCopy>p{font-size:clamp(22px,7vw,31px)!important}.heroMeta{font-family:var(--commerce-fixed-body),Arial,sans-serif}}
