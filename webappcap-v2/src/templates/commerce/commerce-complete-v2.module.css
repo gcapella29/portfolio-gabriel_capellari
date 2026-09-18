@@ -183,3 +183,13 @@
  .productBottom{margin-top:11px!important}
  .productBottom strong{font-size:16px!important}
 }
+
+
+/* Block 2 — polished lightbox and heading-aware catalog spacing. */
+.imageLightbox{padding:24px!important;background:rgba(10,12,15,.82)!important;backdrop-filter:blur(10px)!important}
+.lightboxImage{width:min(88vw,920px)!important;height:min(82vh,760px)!important;border-radius:18px!important;overflow:hidden!important;background:transparent!important}
+.lightboxClose{top:20px!important;right:20px!important;width:42px!important;height:42px!important;border:1px solid rgba(255,255,255,.72)!important;background:rgba(18,20,24,.88)!important;font-size:25px!important;box-shadow:0 8px 24px rgba(0,0,0,.2)!important}
+@media(min-width:851px){
+ .catalogGrid{padding:0 76px 18px!important}
+ .catalogArrow{top:48%!important}
+}
