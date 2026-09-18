@@ -351,3 +351,39 @@
   justify-self:end!important;
  }
 }
+
+
+/* Block 4 — typography safety and cleaner balanced composition. */
+@media(min-width:851px){
+ .storyRow{overflow:visible!important}
+ .storyPanel{overflow:visible!important;min-width:0!important}
+ .storyPanel:first-child{
+  grid-template-columns:minmax(290px,.94fr) minmax(330px,1.06fr)!important;
+  gap:34px!important;
+ }
+ .socialCopy{min-width:0!important;padding-left:2px!important;overflow:visible!important}
+ .storyPanel:first-child header h2{
+  max-width:7.4ch!important;
+  font-size:clamp(42px,3.45vw,54px)!important;
+  line-height:.98!important;
+  letter-spacing:-.04em!important;
+  overflow:visible!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  text-wrap:balance!important;
+ }
+ .instagramGrid{max-width:450px!important;justify-self:end!important}
+ .storyPanel:last-child{min-width:0!important;overflow:visible!important;padding-left:4px!important}
+ .storyPanel:last-child>header{padding-left:2px!important;overflow:visible!important}
+ .storyPanel:last-child>header h2{
+  margin-left:0!important;
+  padding-left:0!important;
+  overflow:visible!important;
+ }
+ .creatorCompact{min-width:0!important}
+ .creatorCopy{min-width:0!important;overflow:visible!important;padding-left:2px!important}
+ .creatorCopy h3{
+  padding-left:0!important;
+  overflow:visible!important;
+ }
+}
