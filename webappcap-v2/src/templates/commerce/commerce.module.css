@@ -143,3 +143,7 @@ to{opacity:1;transform:none}
 }
 @media(prefers-reduced-motion:reduce){.site *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Editor-driven micro typography */
+.heroCopy>p{font-family:var(--commerce-support-font,var(--commerce-body)),Arial,sans-serif!important;font-size:var(--commerce-support-size,14px)!important;font-weight:var(--commerce-support-weight,400)!important;font-style:var(--commerce-support-style,normal)!important;line-height:1.45!important}
+.site button,.site a.scrollCue,.site a.whatsapp{font-family:var(--commerce-button-font,var(--commerce-body)),Arial,sans-serif!important;font-size:var(--commerce-button-size,12px)!important;font-weight:var(--commerce-button-weight,900)!important;font-style:var(--commerce-button-style,normal)!important}
