@@ -90,16 +90,17 @@
 .instagramGrid>div:hover img{transform:scale(1.05)}
 .socialButton,.creatorInstagramButton{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;min-height:46px;margin-top:20px;padding:0 20px;border:1px solid color-mix(in srgb,var(--accent) 72%,#d8d1ca);border-radius:999px;background:#fff;color:var(--ink);font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:var(--commerce-button-size);font-weight:var(--commerce-button-weight);font-style:var(--commerce-button-style);line-height:1.2;text-align:center;text-decoration:none;transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
 .socialButton:hover,.socialButton:focus-visible{transform:translateY(-3px) scale(1.015);background:color-mix(in srgb,var(--ink) 92%,#fff);box-shadow:0 14px 30px rgba(17,24,32,.16)}
+.creatorInstagramButton{margin-top:28px}
 .creatorInstagramButton:hover,.creatorInstagramButton:focus-visible{transform:translateY(-3px);background:color-mix(in srgb,var(--accent) 8%,#fff);box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 22%,transparent)}
-.storyAbout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);grid-template-rows:auto 1fr;column-gap:clamp(30px,2.8vw,46px);row-gap:14px;align-items:start}
+.storyAbout{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,380px);grid-template-rows:auto 1fr;column-gap:clamp(34px,3vw,52px);row-gap:18px;align-items:start}
 .storyAbout>header{grid-column:1;grid-row:1}
 .storyAbout>header h2{max-width:none}
 .aboutCopy{grid-column:1;grid-row:2;align-self:start;color:#756a63;font-size:15px;line-height:1.5}
 .aboutCopy p{max-width:34ch;margin:0 0 16px}
 .creatorCard{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;min-width:0}
 .creatorPhoto{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:20px;background:#f1f4f8}
-.creatorCard h3{margin:16px 0 10px;font-size:clamp(27px,2vw,34px);line-height:1.02;letter-spacing:-.025em;white-space:normal}
-.creatorCard>p{max-width:32ch;margin:0;color:#756a63;font-size:15px;line-height:1.55}
+.creatorCard h3{margin:22px 0 0;font-size:clamp(27px,2vw,34px);line-height:1.04;letter-spacing:-.025em;white-space:normal}
+.creatorCard>p{max-width:34ch;margin:14px 0 0;color:#756a63;font-size:15px;line-height:1.65}
 
 /* Desktop catalog composition */
 @media(min-width:851px){
@@ -118,7 +119,7 @@
  .storyInstagram .socialCopy header h2{font-size:42px}
  .storyInstagram .socialCopy header p{white-space:normal}
  .instagramGrid{width:min(100%,460px)}
- .storyAbout{grid-template-columns:minmax(0,1fr) minmax(230px,280px);gap:26px}
+ .storyAbout{grid-template-columns:minmax(0,1fr) minmax(250px,300px);gap:28px}
  .cartCompact{grid-template-columns:280px minmax(0,1fr);gap:34px}
  .cartItem{grid-template-columns:130px minmax(120px,1fr) auto;padding-left:16px}
  .cartThumb{width:130px}
