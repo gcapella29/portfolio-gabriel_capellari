@@ -22,7 +22,7 @@
 .site button,.site a.whatsapp{font-family:var(--commerce-fixed-body),Arial,sans-serif;font-size:var(--commerce-button-size,12px);font-weight:var(--commerce-button-weight,900);font-style:var(--commerce-button-style,normal)}
 
 /* Navigation */
-.topbar{position:relative;z-index:20;width:100%;height:56px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 4%;border:0;background:#171411;color:#fff}
+.topbar{position:relative;z-index:20;width:100%;height:56px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 4%;border:0;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(90deg,#171411,#1d1916 54%,#171411);color:#fff;box-shadow:0 10px 28px rgba(20,16,14,.10)}
 .wordmark{display:flex;align-items:center;max-width:none;padding:0 0 2px;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:29px;font-weight:400;line-height:1.08;letter-spacing:-.055em;text-decoration:none;white-space:nowrap}
 .topbar nav{display:flex;align-items:center;gap:clamp(28px,2.7vw,46px);margin-left:auto}
 .topbar nav a{position:relative;padding:0;font-size:12px;font-weight:800;line-height:1;text-decoration:none}
@@ -33,7 +33,7 @@
 .topbarCta:hover,.topbarCta:focus-visible{transform:translateY(-2px);border-color:#fff;background:rgba(255,255,255,.1)}
 
 /* Hero */
-.hero{position:relative;width:100%;height:clamp(270px,20.8vw,320px);max-height:320px;display:block;overflow:hidden;padding:0;background:#dbe4ed;color:#fff}
+.hero{position:relative;width:100%;height:clamp(270px,20.8vw,320px);max-height:320px;display:block;overflow:hidden;padding:0;background:#dbe4ed;color:#fff;box-shadow:inset 0 -1px 0 rgba(17,24,32,.08)}
 .heroMediaFrame{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;line-height:0}
 .heroMedia{position:absolute;display:block;left:0;top:50%;width:100%;height:auto;max-width:none;transform:translateY(-42%);transform-origin:center}
 .heroShade{position:absolute;z-index:1;inset:0;background:linear-gradient(90deg,rgba(20,31,43,.12),rgba(20,31,43,.035) 42%,transparent 70%)}
@@ -50,8 +50,8 @@
 .sectionHead{display:grid;grid-template-columns:150px minmax(0,1fr);gap:0 40px;margin-bottom:clamp(24px,3vw,38px)}
 .sectionHead h2{max-width:100%;padding:.06em .04em .08em;font-size:clamp(46px,4.5vw,62px);font-weight:400;line-height:.98;letter-spacing:-.055em}
 .sectionHead p{grid-column:2;margin:8px 0 0;max-width:52ch;color:#6f625a;font-size:14px;line-height:1.5}
-.menu{overflow:hidden;background:#fff}
-.order{background:var(--soft)}
+.menu{overflow:hidden;background:linear-gradient(180deg,#fff 0%,color-mix(in srgb,var(--accent) 2.5%,#fff) 100%)}
+.order{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 10%,#faf9f7),color-mix(in srgb,var(--accent) 14%,#f7f7f5))}
 .menu>.sectionHead{display:flex;align-items:baseline;gap:28px;margin:0 0 24px;padding:0 2%}
 .menu>.sectionHead h2{margin:0;padding:0;font-size:clamp(38px,3.4vw,52px);line-height:1;white-space:nowrap}
 .menu>.sectionHead p{margin:0;max-width:none;font-size:13px;color:#6d625d}
@@ -62,7 +62,7 @@
 .imagePlaceholder strong{font:800 11px/1.2 var(--commerce-fixed-body),Arial,sans-serif;letter-spacing:.02em}
 
 /* Footer */
-.site>footer{display:flex;justify-content:space-between;gap:20px;padding:35px 4%;background:#15100e;color:#fff;font-size:12px}
+.site>footer{display:flex;justify-content:space-between;gap:20px;padding:35px 4%;border-top:1px solid rgba(255,255,255,.08);background:linear-gradient(90deg,#17191d,color-mix(in srgb,var(--accent) 24%,#17191d),#17191d);color:#fff;font-size:12px}
 .site>footer a{text-decoration:none}
 
 /* Mobile hero uses the editor's responsive controls. */
@@ -94,3 +94,12 @@
 @media(prefers-reduced-motion:reduce){
  .site *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+@media(min-width:851px) and (prefers-reduced-motion:no-preference){
+ .heroMedia{animation:commerceHeroDrift 1.15s cubic-bezier(.22,1,.36,1) both}
+ .heroCopy h1{animation:commerceHeroCopyIn .72s .12s cubic-bezier(.22,1,.36,1) both}
+ .heroCopy>.heroDescriptor{animation:commerceHeroCopyIn .72s .2s cubic-bezier(.22,1,.36,1) both}
+ .heroCopy>.heroSlogan{animation:commerceHeroCopyIn .72s .29s cubic-bezier(.22,1,.36,1) both}
+}
+@keyframes commerceHeroDrift{from{opacity:.82;transform:translateY(-42%) scale(1.035);filter:saturate(.92)}to{opacity:1;transform:translateY(-42%) scale(1);filter:saturate(1)}}
+@keyframes commerceHeroCopyIn{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
