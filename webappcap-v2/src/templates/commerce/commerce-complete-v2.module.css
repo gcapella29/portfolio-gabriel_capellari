@@ -31,13 +31,14 @@
 .lightboxClose{position:absolute;z-index:6;top:14px;right:14px;width:42px;height:42px;display:grid;place-items:center;margin:0;border:1px solid rgba(255,255,255,.72);border-radius:50%;background:rgba(18,20,24,.88);color:#fff;font:300 25px/1 Arial,sans-serif;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.22)}
 
 /* Cart */
-.cartCompact{display:grid;grid-template-columns:340px minmax(0,1fr);grid-template-rows:auto auto;gap:18px 42px;width:100%;align-items:start}
-.cartHeading{grid-column:1;grid-row:1;display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:0}
+.cartCompact{display:grid;grid-template-columns:340px minmax(0,1fr);gap:42px;width:100%;align-items:start}
+.cartSidebar{display:flex;min-width:0;flex-direction:column;align-items:flex-start;gap:24px}
+.cartMain{display:flex;min-width:0;flex-direction:column;align-items:stretch}
+.cartHeading{display:flex;flex-direction:column;align-items:flex-start;min-width:0;padding:0}
 .cartHeading h2{display:flex;align-items:center;gap:14px;width:100%;margin:0;font-size:clamp(48px,4vw,62px);line-height:1;letter-spacing:-.045em;white-space:nowrap}
 .cartHeading>p{display:block;width:auto;max-width:250px;margin:16px 0 0 68px;color:#6f625a;font-size:14px;line-height:1.45}
 .cartIcon{flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;border-radius:50%;background:#fff;box-shadow:0 8px 22px rgba(25,34,46,.08)}
 .cartIcon svg{width:28px;height:28px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.cartShell{grid-column:2;grid-row:1 / span 2;display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:20px;min-width:0;align-items:start}
 .cartList{display:flex;flex-direction:column;gap:9px;min-width:0}
 .cartEmpty{min-height:72px;display:flex;align-items:center;padding:22px 28px;border:1px dashed #cfd5dc;border-radius:24px;background:#fff;color:#59616c;line-height:1.5}
 .cartEmpty a{margin-left:5px;font-weight:850;text-decoration:none}
@@ -52,7 +53,7 @@
 .cartControls{display:flex;align-items:center;align-self:center;gap:18px}
 .cartControls button{width:64px;height:28px;border:1px solid color-mix(in srgb,var(--accent) 35%,#a89a8c);border-radius:999px;background:#fff;font-size:16px;cursor:pointer}
 .cartControls b{min-width:20px;text-align:center;font-size:16px}
-.cartSummary{grid-column:1;grid-row:2;align-self:start;width:250px;min-width:0;margin:0 0 0 14px;padding:20px;border-radius:24px;background:#171411;color:#fff;box-shadow:0 18px 42px rgba(25,22,20,.12)}
+.cartSummary{align-self:flex-start;width:250px;min-width:0;margin:0 0 0 14px;padding:20px;border-radius:24px;background:#171411;color:#fff;box-shadow:0 18px 42px rgba(25,22,20,.12)}
 .cartSummary h3{margin:0 0 12px;font-size:21px}
 .cartSummary p{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.16);color:#fff;font-size:11px}
 .cartTotal{display:flex;align-items:flex-end;justify-content:space-between;margin:14px 0 12px;border-color:rgba(255,255,255,.2)}
@@ -60,7 +61,7 @@
 .cartSummary>a{display:flex;align-items:center;justify-content:center;min-height:42px;padding:10px 12px;border-radius:999px;background:var(--accent);color:#fff;font-size:12px;font-weight:900;text-decoration:none}
 .cartSummary small{display:block;margin-top:14px;color:rgba(255,255,255,.7);font-size:9px;line-height:1.35}
 .whatsappPending{display:block;padding:11px 12px;border-radius:999px;background:#eef1f4;color:#68717a;font-size:11px;font-weight:800;text-align:center}
-.whatsappAfterCart{grid-column:2;grid-row:2;justify-self:end;display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:2px 12px;width:min(390px,100%);min-height:62px;margin:18px 0 0 auto;padding:10px 11px 10px 16px;border:1px solid rgba(37,211,102,.34);border-radius:18px;background:#25d366;color:#fff;text-align:left;text-decoration:none;box-shadow:0 10px 24px rgba(37,211,102,.18);transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
+.whatsappAfterCart{align-self:flex-end;display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:2px 12px;width:min(390px,100%);min-height:62px;margin:18px 0 0 auto;padding:10px 11px 10px 16px;border:1px solid rgba(37,211,102,.34);border-radius:18px;background:#25d366;color:#fff;text-align:left;text-decoration:none;box-shadow:0 10px 24px rgba(37,211,102,.18);transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
 .whatsappAfterCart:hover{transform:translateY(-3px);background:#20c45a;box-shadow:0 14px 30px rgba(37,211,102,.26)}
 .whatsappAfterCart span{grid-column:1;font-size:10px;font-weight:750;line-height:1.2;color:rgba(255,255,255,.78)}
 .whatsappAfterCart strong{grid-column:1;font-size:13px;font-weight:900;line-height:1.25;color:#fff}
@@ -80,7 +81,7 @@
 .storyInstagram .socialCopy header h2{max-width:none;white-space:nowrap}
 .storyInstagram .socialCopy header p{max-width:none;white-space:nowrap}
 .instagramGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;width:min(100%,510px);margin-top:10px}
-.storyInstagram .socialButton{order:3;align-self:flex-start;margin:22px 0 0;padding:0 26px;min-height:50px;background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 10px 24px rgba(17,24,32,.10)}
+.storyInstagram .socialButton{align-self:flex-start;margin:22px 0 0;padding:0 26px;min-height:50px;background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 10px 24px rgba(17,24,32,.10)}
 .instagramGrid>div{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:14px;background:#f1f4f8}
 .instagramGrid>div>div{border:0;background:color-mix(in srgb,var(--accent) 7%,#f8fafc)}
 .instagramGrid>div>div span{width:25px;height:25px;font-size:15px}
@@ -119,7 +120,6 @@
  .instagramGrid{width:min(100%,460px)}
  .storyAbout{grid-template-columns:minmax(0,1fr) minmax(230px,280px);gap:26px}
  .cartCompact{grid-template-columns:280px minmax(0,1fr);gap:34px}
- .cartShell{grid-template-columns:minmax(0,1fr) 220px}
  .cartItem{grid-template-columns:130px minmax(120px,1fr) auto;padding-left:16px}
  .cartThumb{width:130px}
  .cartControls{gap:8px}
@@ -142,14 +142,15 @@
  .lightboxImage,.lightboxImage>img{max-width:calc(100vw - 32px);max-height:calc(100vh - 32px)}
  .lightboxImage>img{border-radius:14px}
  .lightboxClose{top:10px;right:10px;width:38px;height:38px}
- .cartCompact{display:block;width:100%}
- .cartHeading{margin-bottom:22px}
+ .cartCompact{display:flex;width:100%;flex-direction:column}
+ .cartSidebar,.cartMain{display:contents}
+ .cartHeading{order:1;margin-bottom:22px}
  .cartHeading h2{font-size:clamp(38px,12vw,52px)}
  .cartHeading>p{width:auto;max-width:32ch;margin:10px 0 0}
  .cartIcon{width:34px;height:34px;flex-basis:34px}
  .cartIcon svg{width:20px;height:20px}
  .cartShell{display:block;width:100%}
- .cartList{width:100%;gap:8px}
+ .cartList{order:2;width:100%;gap:8px}
  .cartEmpty{min-height:132px;justify-content:center;flex-direction:column;gap:4px;padding:24px;text-align:center}
  .cartEmpty a{margin-left:0}
  .cartItem{grid-template-columns:48px minmax(0,1fr) auto;gap:10px;min-height:0;padding:9px 10px;border-radius:17px}
@@ -159,13 +160,13 @@
  .cartControls{gap:4px}
  .cartControls button{width:28px;height:28px;border-radius:50%;font-size:15px}
  .cartControls b{min-width:16px;font-size:11px}
- .cartSummary{margin-top:14px;padding:23px;border-radius:23px}
+ .cartSummary{order:3;width:100%;margin:14px 0 0;padding:23px;border-radius:23px}
  .cartSummary h3{font-size:28px}
- .whatsappAfterCart{position:relative;width:100%;min-height:76px;margin:18px 0 0;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff}
+ .whatsappAfterCart{order:4;position:relative;width:100%;min-height:76px;margin:18px 0 0;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff}
  .whatsappAfterCart>b{background:rgba(255,255,255,.22)}
  .storyRow{grid-template-columns:1fr;gap:42px;padding:44px 22px}
  .storyInstagram{grid-template-columns:1fr;grid-template-rows:auto}
- .storyInstagram .socialCopy header,.instagramGrid,.storyInstagram .socialButton{grid-column:1;grid-row:auto}
+ .storyInstagram .socialCopy header,.instagramGrid{grid-column:1;grid-row:auto}
  .storyInstagram .socialCopy header h2,.storyInstagram .socialCopy header p{white-space:normal}
  .instagramGrid{width:100%;margin-top:20px}
  .storyInstagram .socialButton{align-self:auto;margin-top:18px}
