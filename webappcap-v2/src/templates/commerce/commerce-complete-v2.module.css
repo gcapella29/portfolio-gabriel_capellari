@@ -131,51 +131,68 @@
  .whatsappAfterCart{width:min(390px,100%);margin-left:0}
 }
 
-/* Mobile */
+/* Mobile — same visual language and hierarchy as desktop, only reflowed. */
 @media(max-width:850px){
- .catalogRail{display:block;margin:0}
- .catalogGrid{gap:10px;padding:4px 0 18px;scroll-padding-left:2px;overscroll-behavior-inline:contain}
- .catalogGrid .productCard{flex:0 0 min(78vw,292px);min-width:0;max-width:none;border-radius:24px}
- .catalogArrow{display:none}
- .productImage{aspect-ratio:1.12/1}
- .productBody{padding:17px}
- .productBody h3{font-size:17px}
- .productBottom{margin-top:12px}
- .productBottom strong{font-size:17px}
+ .catalogRail{display:grid;width:100%;grid-template-columns:minmax(0,1fr) 38px 38px minmax(0,1fr);grid-template-rows:auto 38px;column-gap:9px;row-gap:14px;align-items:center;margin:0;overflow:visible}
+ .catalogGrid{grid-column:1/-1;grid-row:1;width:100%;gap:12px;padding:0 1px 4px;scroll-padding-left:1px;overscroll-behavior-inline:contain}
+ .catalogGrid .productCard{flex:0 0 min(76vw,270px);min-width:0;max-width:270px;border-radius:20px}
+ .catalogArrow{display:block;position:static;width:38px;height:38px;margin:0;font-size:16px}
+ .catalogArrow:first-child{grid-column:2;grid-row:2}
+ .catalogArrow:last-child{grid-column:3;grid-row:2}
+ .productImage{aspect-ratio:1.18/1}
+ .productBody{padding:10px 13px}
+ .productBody h3{font-size:14px}
+ .productBottom{margin-top:11px}
+ .productBottom strong{font-size:16px}
+ .productBottom>button{width:38px;height:38px}
  .imageLightbox{padding:16px}
  .lightboxImage{width:min(calc(100vw - 32px),calc(100vh - 32px));max-width:none;max-height:none;border-radius:18px}
  .lightboxImage>img{width:100%;height:100%;max-width:none;max-height:none;padding:12px;border-radius:18px}
  .lightboxClose{top:12px;right:12px;width:36px;height:36px}
- .cartCompact{display:flex;width:100%;flex-direction:column}
- .cartSidebar,.cartMain{display:contents}
- .cartHeading{order:1;margin-bottom:22px}
- .cartHeading h2{display:flex;align-items:center;gap:10px;padding-right:0;font-size:clamp(38px,12vw,52px)}
- .cartHeading>p{width:auto;max-width:32ch;margin:12px 0 0}
- .cartIcon{position:static;width:34px;height:34px;flex:0 0 34px;transform:none}
- .cartIcon svg{width:20px;height:20px}
- .cartList{order:2;width:100%;gap:8px}
- .cartEmpty{min-height:132px;justify-content:center;flex-direction:column;gap:4px;padding:24px;text-align:center}
- .cartEmpty a{margin-left:0}
- .cartItem{grid-template-columns:48px minmax(0,1fr) auto;gap:10px;min-height:0;padding:9px 10px;border-radius:17px}
- .cartThumb{width:48px;height:48px;border-radius:12px}
+
+ .cartCompact{display:grid;grid-template-columns:1fr;gap:28px;width:100%;align-items:start}
+ .cartSidebar{display:flex;min-width:0;flex-direction:column;align-items:flex-start;gap:18px}
+ .cartMain{display:flex;min-width:0;flex-direction:column;align-items:stretch;gap:14px}
+ .cartHeading{margin:0}
+ .cartHeading h2{display:block;width:100%;padding-right:48px;font-size:clamp(38px,11vw,50px);white-space:nowrap}
+ .cartHeading>p{width:auto;max-width:31ch;margin:12px 0 0;padding-left:12px;font-size:12px}
+ .cartIcon{right:0;width:38px;height:38px}
+ .cartIcon svg{width:21px;height:21px}
+ .cartList{width:100%;gap:8px}
+ .cartEmpty{min-height:92px;justify-content:center;padding:20px;border-radius:20px;text-align:center}
+ .cartItem{grid-template-columns:72px minmax(0,1fr) auto;gap:10px;min-height:58px;padding:6px 10px;border-radius:999px}
+ .cartThumb{width:72px;height:46px;border-radius:999px}
  .cartInfo strong{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
- .cartInfo span{margin-top:3px;font-size:10px}
- .cartControls{gap:4px}
- .cartControls button{width:28px;height:28px;border-radius:50%;font-size:15px}
- .cartControls b{min-width:16px;font-size:11px}
- .cartSummary{order:3;width:100%;margin:14px 0 0;padding:23px;border-radius:23px}
- .cartSummary h3{font-size:28px}
- .whatsappAfterCart{order:4;position:relative;width:100%;min-height:76px;margin:18px 0 0;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff}
- .whatsappAfterCart>b{background:rgba(255,255,255,.22)}
- .storyRow{grid-template-columns:1fr;gap:42px;padding:44px 20px}
+ .cartInfo span{margin-top:2px;font-size:10px}
+ .cartControls{gap:5px}
+ .cartControls button{width:30px;height:26px;border-radius:999px;font-size:14px}
+ .cartControls b{min-width:15px;font-size:11px}
+ .cartSummary{width:min(280px,100%);margin:0;padding:19px;border-radius:22px}
+ .cartSummary h3{font-size:20px}
+ .whatsappAfterCart{align-self:flex-end;width:min(390px,100%);min-height:68px;margin:0;padding:11px 11px 11px 16px;border-radius:18px}
+ .whatsappAfterCart span{font-size:9px}
+ .whatsappAfterCart strong{font-size:11px}
+ .whatsappAfterCart>b{width:34px;height:34px;font-size:17px}
+
+ .storyRow{grid-template-columns:1fr;gap:0;padding:44px 18px;background:radial-gradient(circle at 10% 15%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 30%),linear-gradient(180deg,#fff,color-mix(in srgb,var(--accent) 3%,#fff))}
  .storyPanel:first-child{padding-right:0}
- .storyPanel+.storyPanel{padding:42px 0 0;border-top:1px solid color-mix(in srgb,var(--accent) 18%,#dfe4ea);border-left:0}
+ .storyPanel+.storyPanel{margin-top:42px;padding:42px 0 0;border-top:1px solid color-mix(in srgb,var(--accent) 24%,#dfe4ea);border-left:0}
+ .storyPanel header span{font-size:10px}
+ .storyPanel header h2{margin:9px 0 10px;font-size:clamp(34px,10vw,44px)}
+ .storyPanel header p{margin-top:12px;padding-left:12px;font-size:12px}
  .storyInstagram .socialCopy header h2,.storyInstagram .socialCopy header p{white-space:normal}
- .instagramGrid{width:100%;margin-top:20px}
- .storyInstagram .socialButton{align-self:auto;margin-top:18px}
- .storyAbout{grid-template-columns:1fr;gap:22px}
- .storyAbout>header,.aboutCopy,.creatorCard{grid-column:1;grid-row:auto}
- .creatorCard{max-width:420px}
+ .instagramGrid{width:100%;margin-top:12px;gap:7px}
+ .instagramGrid>div{border-radius:14px}
+ .storyInstagram .socialButton{align-self:flex-start;margin-top:18px}
+ .socialButton,.creatorInstagramButton{min-height:42px;margin-top:18px;padding:0 18px}
+ .storyAbout{grid-template-columns:1fr;grid-template-rows:auto auto auto;gap:18px}
+ .storyAbout>header{grid-column:1;grid-row:1}
+ .aboutCopy{grid-column:1;grid-row:2;margin-top:0;padding:11px 0 11px 12px;font-size:12px;line-height:1.55}
+ .aboutCopy p{max-width:38ch}
+ .creatorCard{grid-column:1;grid-row:3;max-width:320px}
+ .creatorPhoto{border-radius:20px}
+ .creatorCard .creatorPhoto+h3{margin-top:16px;font-size:24px}
+ .creatorCard>p{margin-top:8px;font-size:12px;line-height:1.55}
 }
 
 /* Motion polish */
