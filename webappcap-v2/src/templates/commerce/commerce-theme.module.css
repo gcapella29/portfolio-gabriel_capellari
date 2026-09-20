@@ -38,13 +38,13 @@
 .palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article:nth-child(5){animation-delay:.28s}
 .palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article:nth-child(6){animation-delay:.35s}
 
-.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio button,#carrinho a,#redes-sociais a,#sobre a)){position:relative;isolation:isolate;overflow:hidden}
-.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio button,#carrinho a,#redes-sociais a,#sobre a)):before{content:"";position:absolute;z-index:-1;inset:-2px auto -2px -45%;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);transition:left .5s ease}
-.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio button,#carrinho a,#redes-sociais a,#sobre a)):is(:hover,:focus-visible):before{left:120%}
+.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio button:not([data-lightbox-control]),#carrinho a,#redes-sociais a,#sobre a)){position:relative;isolation:isolate;overflow:hidden}
+.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio button:not([data-lightbox-control]),#carrinho a,#redes-sociais a,#sobre a)):before{content:"";position:absolute;z-index:-1;inset:-2px auto -2px -45%;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);transition:left .5s ease}
+.palette :global(:is(#inicio a[href*="wa.me"],#inicio a[href*="instagram.com"],#cardapio button:not([data-lightbox-control]),#carrinho a,#redes-sociais a,#sobre a)):is(:hover,:focus-visible):before{left:120%}
 .palette :global(#carrinho button){transition:transform .2s ease,box-shadow .2s ease}
 .palette :global(#carrinho button:is(:hover,:focus-visible)){transform:translateY(-2px) scale(1.07);box-shadow:0 10px 22px color-mix(in srgb,var(--accent) 20%,transparent)}
-.palette :global(:is(#inicio a,#cardapio button,#carrinho button,#carrinho a,#redes-sociais a,#sobre a)){transition:transform .28s var(--commerce-motion-ease),box-shadow .28s ease,filter .28s ease;transform-origin:center}
-.palette :global(:is(#inicio a,#cardapio button,#carrinho button,#carrinho a,#redes-sociais a,#sobre a):active){transform:translateY(1px) scale(.96)}
+.palette :global(:is(#inicio a,#cardapio button:not([data-lightbox-control]),#carrinho button,#carrinho a,#redes-sociais a,#sobre a)){transition:transform .28s var(--commerce-motion-ease),box-shadow .28s ease,filter .28s ease;transform-origin:center}
+.palette :global(:is(#inicio a,#cardapio button:not([data-lightbox-control]),#carrinho button,#carrinho a,#redes-sociais a,#sobre a):active){transform:translateY(1px) scale(.96)}
 
 @keyframes commerceCardIn{from{opacity:0;transform:translateY(24px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 
@@ -60,5 +60,5 @@
 @media(prefers-reduced-motion:reduce){
   .palette[data-motion-ready="true"] [data-reveal]{opacity:1;transform:none;filter:none;transition:none;will-change:auto}
   .palette[data-motion-ready="true"] [data-reveal][data-visible="true"] article{animation:none}
-  .palette :global(:is(#inicio a,#cardapio button,#carrinho button,#carrinho a,#redes-sociais a,#sobre a)){transform:none;transition:none}
+  .palette :global(:is(#inicio a,#cardapio button:not([data-lightbox-control]),#carrinho button,#carrinho a,#redes-sociais a,#sobre a)){transform:none;transition:none}
 }
