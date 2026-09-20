@@ -10,11 +10,11 @@ import blocks from '../editor-blocks.module.css';
 export default async function SalesEditorPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{template?:string;savedContent?:string}>}){
  const {slug}=await params,query=await searchParams,{project,role}=await resolveProjectAccess(slug);
  if(project.segment!=='food-business')redirect(`/dashboard/${encodeURIComponent(project.slug)}/content`);
- const data=await readV2Content(project.id),selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),active=selected==='commerce-sales-1';
+ const data=await readV2Content(project.id),selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),active=selected==='commerce-sales-1',canSwitch=can(role,'editAppearance');
  return <div className={styles.page}>
   {query.template?<div className={styles.success}>Venda rápida selecionada no rascunho.</div>:null}
   {query.savedContent?<div className={styles.success}>Conteúdo salvo no rascunho. Confira no Preview.</div>:null}
-  <section className={blocks.versionBar}><div><span>VERSÃO DO SITE</span><strong>{active?'Venda rápida ativa no Preview':'Site completo ativo no Preview'}</strong><p>A troca preserva os dados do site completo.</p></div><form action={saveEditorTemplateAction}><input type="hidden" name="slug" value={project.slug}/><input type="hidden" name="templateKey" value="commerce-sales-1"/><input type="hidden" name="returnTo" value="sales"/><button disabled={active}>{active?'Esta versão já está selecionada':'Alterar para esta versão e salvar'}</button></form></section>
+  <section className={blocks.versionBar}><div><span>VERSÃO DO SITE</span><strong>{active?'Venda rápida ativa no Preview':'Site completo ativo no Preview'}</strong><p>A troca preserva os dados do site completo.</p></div><form action={saveEditorTemplateAction}><input type="hidden" name="slug" value={project.slug}/><input type="hidden" name="templateKey" value="commerce-sales-1"/><input type="hidden" name="returnTo" value="sales"/><button disabled={active||!canSwitch}>{!canSwitch?'Somente owner/admin pode trocar':active?'Esta versão já está selecionada':'Alterar para esta versão e salvar'}</button></form></section>
   <section className={styles.realEditor} id="blocks"><div className={styles.sequenceHead}><span>CONTEÚDO</span><h2>Blocos da venda rápida</h2><p>Edite somente o que aparece nesta versão. O restante continua compartilhado com o projeto.</p></div><SalesContentEditor slug={project.slug} projectId={project.id} canManageMedia={can(role,'manageMedia')} data={{identity:data.identity,content:data.content,contact:data.contact}}/></section>
  </div>;
 }
