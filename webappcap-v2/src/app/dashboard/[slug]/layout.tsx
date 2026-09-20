@@ -6,15 +6,11 @@ import {projectsForUser} from '@/core/projects';
 import {logoutDashboardAction,publishDashboardAction} from './actions';
 import styles from './dashboard.module.css';
 
-const platformUrl=(path:string)=>{
- const origin=(process.env.NEXT_PUBLIC_APP_URL||'https://www.webappcap.com.br').replace(/\/$/,'');
- return `${origin}${path.startsWith('/')?path:`/${path}`}`;
-};
 
 export default async function DashboardLayout({children,params}:{children:React.ReactNode;params:Promise<{slug:string}>}){
  const {slug}=await params,{project,role,user}=await resolveProjectAccess(slug),state=await readProjectState(project.id),base=`/dashboard/${encodeURIComponent(project.slug)}`;
  const ownedProjects=(await projectsForUser(user.id)).filter(item=>item.owner_id===user.id&&item.id!==project.id);
- const siteUrl=publicProjectUrl(state,project.slug),commerce=project.segment==='food-business',switchProjectUrl=platformUrl(`/projects?owned=1&from=${encodeURIComponent(project.slug)}`);
+ const siteUrl=publicProjectUrl(state,project.slug),commerce=project.segment==='food-business',switchProjectUrl=`/projects?owned=1&from=${encodeURIComponent(project.slug)}`;
  const nav=commerce?
   [['✎','Editar site',`${base}/editor`,can(role,'editContent')],['⚡','Editar venda rápida',`${base}/editor/sales`,can(role,'editContent')],['◎','Histórico de pedidos',`${base}/orders`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const:
   [['⌂','Visão geral',base,true],['≡','Conteúdo',`${base}/content`,can(role,'editContent')],['▧','Fotos',`${base}/media`,can(role,'manageMedia')],['◐','Aparência',`${base}/appearance`,can(role,'editAppearance')],['◎','Leads',`${base}/leads`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const;
