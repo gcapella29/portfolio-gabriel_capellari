@@ -7,6 +7,7 @@ import styles from './editor-blocks.module.css';
 
 const v=(o:Record<string,unknown>,key:string)=>String(o[key]??'');
 const stored=(value:unknown)=>Array.isArray(value)?value:[];
+const defaultSalesWhatsappMessage='Olá! Quero fazer um pedido na {loja}.\n\n👤 Cliente: {cliente}\n📦 Tipo: {tipo}\n{endereco}\n💳 Pagamento: {pagamento}\n\nITENS DO PEDIDO\n{itens}\n\n💰 TOTAL: {total}\n{observacao}';
 
 function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){
  return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>;
@@ -14,9 +15,9 @@ function Block({id,number,title,summary,children,open=false}:{id:string;number:s
 
 function productDefinition():RepeatableSection{
  const source=sectionsForSegment('food-business').find(def=>def.key==='menu_items')!;
- const order=['image','title','price','description','category','removals','additions'];
- const labels:Record<string,string>={title:'Nome',price:'Preço',description:'Descrição',category:'Categoria',removals:'Opções para retirar',additions:'Adicionais'};
- return {...source,label:'Produtos',description:'Cadastre foto, nome, preço e, se precisar, opções de personalização.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))};
+ const order=['image','title','price','description'];
+ const labels:Record<string,string>={title:'Nome',price:'Preço',description:'Descrição'};
+ return {...source,label:'Produtos',description:'Cadastre foto, nome, preço e uma descrição opcional.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))};
 }
 
 export default function SalesContentEditor({slug,projectId,canManageMedia,data}:{slug:string;projectId:string;canManageMedia:boolean;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>}}){
@@ -32,8 +33,9 @@ export default function SalesContentEditor({slug,projectId,canManageMedia,data}:
    <label className="field"><span>Texto de apoio</span><textarea name="menu_intro" rows={3} defaultValue={v(data.content,'menu_intro')||'Escolha seus produtos, personalize e envie o pedido direto pelo WhatsApp.'}/></label>
    <RepeatableSections definitions={[productDefinition()]} initial={initial} embedded projectId={canManageMedia?projectId:undefined} variant="product-cards"/>
   </Block>
-  <Block id="sales-block-3" number="03" title="WhatsApp" summary="Número usado para receber os pedidos">
+  <Block id="sales-block-3" number="03" title="WhatsApp" summary="Número e mensagem enviada com o pedido">
    <label className="field"><span>WhatsApp com DDI</span><input name="whatsapp" inputMode="tel" defaultValue={v(data.contact,'whatsapp')} placeholder="5516999999999"/><small>Use somente números, incluindo o código do país e o DDD.</small></label>
+   <label className="field"><span>Mensagem de envio do pedido</span><textarea name="sales_whatsapp_message" rows={9} maxLength={2000} defaultValue={v(data.content,'sales_whatsapp_message')||defaultSalesWhatsappMessage}/><small>Você pode usar: <b>{'{loja}'}</b>, <b>{'{cliente}'}</b>, <b>{'{tipo}'}</b>, <b>{'{endereco}'}</b>, <b>{'{pagamento}'}</b>, <b>{'{itens}'}</b>, <b>{'{total}'}</b> e <b>{'{observacao}'}</b>.</small></label>
   </Block>
  </ContentWorkspace>;
 }
