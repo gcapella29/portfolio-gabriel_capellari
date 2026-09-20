@@ -72,6 +72,11 @@
 /* Instagram + About */
 .storyRow{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;padding:clamp(60px,6vw,84px) max(var(--commerce-gutter),calc((100vw - var(--commerce-container))/2));overflow:hidden;background:radial-gradient(circle at 10% 15%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 30%),linear-gradient(180deg,#fff,color-mix(in srgb,var(--accent) 3%,#fff));border-top:1px solid #edf0f3}
 .storyPanel{min-width:0;padding:0;border:0;background:transparent;box-shadow:none}
+.storyRowSingle{grid-template-columns:minmax(0,1fr)}
+.storyRowSingle .storyPanel{width:100%;padding-left:0;padding-right:0;border-left:0}
+.storyRowSingle .instagramGrid{width:100%;max-width:none;grid-template-columns:repeat(6,minmax(0,1fr))}
+.storyRowSingle .storyAbout{grid-template-columns:minmax(0,1fr) minmax(280px,360px)}
+.storyRowSingle .aboutCopy p{max-width:54ch}
 .storyPanel:first-child{padding-right:clamp(34px,4vw,64px)}
 .storyPanel+.storyPanel{padding-left:clamp(34px,4vw,64px);border-left:1px solid color-mix(in srgb,var(--accent) 24%,#dfe4ea)}
 .storyPanel header{margin:0}
@@ -175,6 +180,8 @@
  .whatsappAfterCart>b{width:34px;height:34px;font-size:17px}
 
  .storyRow{grid-template-columns:1fr;gap:0;padding:44px 18px;background:radial-gradient(circle at 10% 15%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 30%),linear-gradient(180deg,#fff,color-mix(in srgb,var(--accent) 3%,#fff))}
+ .storyRowSingle .instagramGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .storyRowSingle .storyAbout{grid-template-columns:1fr;grid-template-rows:auto auto auto}
  .storyPanel:first-child{padding-right:0}
  .storyPanel+.storyPanel{margin-top:42px;padding:42px 0 0;border-top:1px solid color-mix(in srgb,var(--accent) 24%,#dfe4ea);border-left:0}
  .storyPanel header span{font-size:10px}
