@@ -16,7 +16,7 @@ const tempPassword=()=>`${randomBytes(10).toString('base64url')}Aa7!`;
 export async function inviteMemberAction(formData:FormData){
  const slug=String(formData.get('slug')||''),access=await base(slug),email=String(formData.get('email')||'').trim().toLowerCase(),role=normalizeRole(formData.get('role'));
  if(!email||!role||role==='owner')throw new Error('Convite inválido.');
- const admin=createSupabaseAdminClient(),users=await admin.auth.admin.listUsers({page:1,perPage:1000});
+ let admin;try{admin=createSupabaseAdminClient()}catch(error){console.error('[team:invite] admin configuration missing',error);redirect(`/dashboard/${encodeURIComponent(slug)}/team?inviteError=config`)}const users=await admin.auth.admin.listUsers({page:1,perPage:1000});
  if(users.error)throw users.error;
  let user=users.data.users.find(item=>String(item.email||'').toLowerCase()===email)||null,newUser=false,password:string|undefined;
  if(!user){
@@ -49,7 +49,9 @@ export async function inviteMemberAction(formData:FormData){
   await sendProjectAccessEmail({to:email,projectName:access.project.name,loginUrl,temporaryPassword:password});
  }catch(error){
   if(previousRow){
-   await admin.from('project_members').update({email:previousRow.email,role:previousRow.role}).eq('project_id',access.project.id).eq('user_id',user.id);
+   const restore={email:previousRow.email,role:previousRow.role,...('invited_by' in previousRow?{invited_by:previousRow.invited_by}: {})};
+   let restored=await admin.from('project_members').update(restore).eq('project_id',access.project.id).eq('user_id',user.id);
+   if(restored.error?.code==='42703')restored=await admin.from('project_members').update({email:previousRow.email,role:previousRow.role}).eq('project_id',access.project.id).eq('user_id',user.id);
   }else{
    await admin.from('project_members').delete().eq('project_id',access.project.id).eq('user_id',user.id);
   }
