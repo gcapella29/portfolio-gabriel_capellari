@@ -46,12 +46,14 @@ begin
      or p_template_key not in ('commerce-main-1','commerce-sales-1')
      or p_items is null
      or jsonb_typeof(p_items)<>'array'
-     or jsonb_array_length(p_items)=0
-     or jsonb_array_length(p_items)>80
      or p_total is null
      or p_total<0
      or p_total>10000000 then
     raise exception 'invalid commerce order payload';
+  end if;
+
+  if jsonb_array_length(p_items)=0 or jsonb_array_length(p_items)>80 then
+    raise exception 'invalid commerce order items';
   end if;
 
   if not exists(
