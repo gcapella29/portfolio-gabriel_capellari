@@ -33,7 +33,8 @@ export async function saveSalesContentAction(formData:FormData){
  if(provided(formData,'whatsapp'))contact.whatsapp=text(formData,'whatsapp');
  await saveV2Section(access.project.id,'contact',contact);
  revalidatePath(`/dashboard/${encodeURIComponent(slug)}/editor`);
+ revalidatePath(`/dashboard/${encodeURIComponent(slug)}/editor/sales`);
  revalidatePath(`/dashboard/${encodeURIComponent(slug)}/content`);
  revalidatePath(`/preview/${encodeURIComponent(slug)}`);
- redirect(`/dashboard/${encodeURIComponent(slug)}/editor?savedContent=1#content`);
+ redirect(`/dashboard/${encodeURIComponent(slug)}/editor/sales?savedContent=1`);
 }

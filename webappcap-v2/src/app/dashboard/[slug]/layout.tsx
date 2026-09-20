@@ -14,7 +14,7 @@ export default async function DashboardLayout({children,params}:{children:React.
  const {slug}=await params,{project,role}=await resolveProjectAccess(slug),state=await readProjectState(project.id),base=`/dashboard/${encodeURIComponent(project.slug)}`;
  const siteUrl=publicProjectUrl(state,project.slug),commerce=project.segment==='food-business',switchProjectUrl=platformUrl(role==='owner'?'/owner/projects':'/projects');
  const nav=commerce?
-  [['⌂','Visão geral',base,true],['✎','Editar site',`${base}/editor`,can(role,'editContent')],['◎','Leads',`${base}/leads`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const:
+  [['✎','Editar site',`${base}/editor`,can(role,'editContent')],['⚡','Editar venda rápida',`${base}/editor/sales`,can(role,'editContent')],['◎','Leads',`${base}/leads`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const:
   [['⌂','Visão geral',base,true],['≡','Conteúdo',`${base}/content`,can(role,'editContent')],['▧','Fotos',`${base}/media`,can(role,'manageMedia')],['◐','Aparência',`${base}/appearance`,can(role,'editAppearance')],['◎','Leads',`${base}/leads`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const;
  return <div className={styles.shell}>
   <aside className={styles.sidebar}>
