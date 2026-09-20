@@ -59,7 +59,7 @@
 .cartSummary p{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.16);color:#fff;font-size:11px}
 .cartTotal{display:flex;align-items:flex-end;justify-content:space-between;margin:14px 0 12px;border-color:rgba(255,255,255,.2)}
 .cartTotal strong{font-size:22px}
-.cartSummary>a{display:flex;align-items:center;justify-content:center;min-height:42px;padding:10px 12px;border-radius:999px;background:var(--accent);color:#fff;font-size:12px;font-weight:900;text-decoration:none}
+.cartSummary>a{display:flex;align-items:center;justify-content:flex-start;min-height:42px;padding:10px 14px;border-radius:999px;background:var(--accent);color:#fff;font-size:11px;font-weight:900;line-height:1;white-space:nowrap;text-decoration:none}
 .cartSummary small{display:block;margin-top:14px;color:rgba(255,255,255,.7);font-size:9px;line-height:1.35}
 .whatsappPending{display:block;padding:11px 12px;border-radius:999px;background:#eef1f4;color:#68717a;font-size:11px;font-weight:800;text-align:center}
 .whatsappAfterCart{align-self:flex-end;display:grid;grid-template-columns:minmax(0,1fr) 38px;gap:2px 12px;width:min(390px,100%);min-height:72px;margin:0;padding:12px 12px 12px 18px;border:1px solid color-mix(in srgb,var(--accent) 58%,rgba(255,255,255,.72));border-radius:20px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 92%,#fff),color-mix(in srgb,var(--accent) 70%,#111820));backdrop-filter:blur(14px) saturate(155%);color:#fff;text-align:left;text-decoration:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 14px 32px color-mix(in srgb,var(--accent) 28%,transparent);transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
