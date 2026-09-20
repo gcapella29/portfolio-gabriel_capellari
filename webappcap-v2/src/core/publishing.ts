@@ -24,7 +24,8 @@ export async function publishV2Project(projectId:string){
   if(template.status!=='ready')throw new Error('O modelo selecionado ainda não está disponível para publicação.');
   if(!String(data.identity.name||'').trim())throw new Error('Informe o nome do projeto antes de publicar.');
   if(state.data.segment==='food-business'){
-    if(!String(data.identity.tagline||'').trim())throw new Error('Informe a frase principal do comércio antes de publicar.');
+    const tagline=selectedTemplate==='commerce-sales-1'?String(data.content.sales_tagline||data.identity.tagline||'').trim():String(data.identity.tagline||'').trim();
+    if(!tagline)throw new Error('Informe a frase principal do comércio antes de publicar.');
   }else if(!String(data.content.hero_title||'').trim())throw new Error('Informe o título principal do site antes de publicar.');
   const now=new Date().toISOString(),snapshot=await sb.from('project_v2_public_content').upsert({project_id:projectId,...data,published_at:now},{onConflict:'project_id'});if(snapshot.error)throw snapshot.error;
   const a=await sb.from('project_v2_state').update({template_key:selectedTemplate,lifecycle:'published',onboarding_step:'completed',onboarding_completed_at:now,updated_at:now}).eq('project_id',projectId);if(a.error)throw a.error;
