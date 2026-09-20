@@ -127,7 +127,7 @@
  .cartThumb{width:130px}
  .cartControls{gap:8px}
  .cartControls button{width:38px}
- .whatsappAfterCart{width:calc(100% - 314px);margin-left:314px}
+ .whatsappAfterCart{width:min(390px,100%);margin-left:0}
 }
 
 /* Mobile */
@@ -152,7 +152,6 @@
  .cartHeading>p{width:auto;max-width:32ch;margin:10px 0 0}
  .cartIcon{width:34px;height:34px;flex-basis:34px}
  .cartIcon svg{width:20px;height:20px}
- .cartShell{display:block;width:100%}
  .cartList{order:2;width:100%;gap:8px}
  .cartEmpty{min-height:132px;justify-content:center;flex-direction:column;gap:4px;padding:24px;text-align:center}
  .cartEmpty a{margin-left:0}
@@ -168,8 +167,6 @@
  .whatsappAfterCart{order:4;position:relative;width:100%;min-height:76px;margin:18px 0 0;padding:16px 18px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 82%,#fff),var(--accent));color:#fff}
  .whatsappAfterCart>b{background:rgba(255,255,255,.22)}
  .storyRow{grid-template-columns:1fr;gap:42px;padding:44px 22px}
- .storyInstagram{grid-template-columns:1fr;grid-template-rows:auto}
- .storyInstagram .socialCopy header,.instagramGrid{grid-column:1;grid-row:auto}
  .storyInstagram .socialCopy header h2,.storyInstagram .socialCopy header p{white-space:normal}
  .instagramGrid{width:100%;margin-top:20px}
  .storyInstagram .socialButton{align-self:auto;margin-top:18px}
