@@ -7,7 +7,7 @@ import styles from './editor-blocks.module.css';
 
 const v=(o:Record<string,unknown>,key:string)=>String(o[key]??'');
 const stored=(value:unknown)=>Array.isArray(value)?value:[];
-const defaultSalesWhatsappMessage='Olá! Quero fazer um pedido na {loja}.\n\n👤 Cliente: {cliente}\n📦 Tipo: {tipo}\n{endereco}\n💳 Pagamento: {pagamento}\n\nITENS DO PEDIDO\n{itens}\n\n💰 TOTAL: {total}\n{observacao}';
+const defaultSalesWhatsappMessage='Olá! Quero fazer um pedido na {loja}.\n\nITENS DO PEDIDO\n{itens}\n\n💰 TOTAL: {total}';
 
 function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){
  return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>;
@@ -35,7 +35,7 @@ export default function SalesContentEditor({slug,projectId,canManageMedia,data}:
   </Block>
   <Block id="sales-block-3" number="03" title="WhatsApp" summary="Número e mensagem enviada com o pedido">
    <label className="field"><span>WhatsApp com DDI</span><input name="whatsapp" inputMode="tel" defaultValue={v(data.contact,'whatsapp')} placeholder="5516999999999"/><small>Use somente números, incluindo o código do país e o DDD.</small></label>
-   <label className="field"><span>Mensagem de envio do pedido</span><textarea name="sales_whatsapp_message" rows={9} maxLength={2000} defaultValue={v(data.content,'sales_whatsapp_message')||defaultSalesWhatsappMessage}/><small>Você pode usar: <b>{'{loja}'}</b>, <b>{'{cliente}'}</b>, <b>{'{tipo}'}</b>, <b>{'{endereco}'}</b>, <b>{'{pagamento}'}</b>, <b>{'{itens}'}</b>, <b>{'{total}'}</b> e <b>{'{observacao}'}</b>.</small></label>
+   <label className="field"><span>Mensagem de envio do pedido</span><textarea name="sales_whatsapp_message" rows={9} maxLength={2000} defaultValue={v(data.content,'sales_whatsapp_message')||defaultSalesWhatsappMessage}/><small>Você pode usar: <b>{'{loja}'}</b>, <b>{'{itens}'}</b> e <b>{'{total}'}</b>. O resumo do carrinho será preenchido automaticamente.</small></label>
   </Block>
  </ContentWorkspace>;
 }
