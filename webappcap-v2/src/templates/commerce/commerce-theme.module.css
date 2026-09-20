@@ -53,8 +53,6 @@
   .palette[data-motion-ready="true"] [data-reveal="left"]{transform:translate3d(calc(-1 * var(--commerce-motion-distance)),20px,0)}
   .palette[data-motion-ready="true"] [data-reveal="right"]{transform:translate3d(var(--commerce-motion-distance),20px,0)}
   .palette[data-motion-ready="true"] [data-reveal][data-visible="true"]{transform:translate3d(0,0,0)}
-  .palette :global(#cardapio){background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 9%,#fff),color-mix(in srgb,var(--accent) 3%,#fff))}
-  .palette :global(#carrinho){background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 22%,#fff),color-mix(in srgb,var(--accent) 11%,#fff))}
 }
 
 @media(prefers-reduced-motion:reduce){
