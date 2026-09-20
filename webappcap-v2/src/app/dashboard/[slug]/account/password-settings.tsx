@@ -9,7 +9,7 @@ export default function PasswordSettings(){
   const form=new FormData(event.currentTarget),password=String(form.get('password')||''),confirm=String(form.get('confirm')||'');
   if(password.length<8){setError('Use pelo menos 8 caracteres.');setBusy(false);return}
   if(password!==confirm){setError('As senhas não coincidem.');setBusy(false);return}
-  const sb=createSupabaseBrowserClient(),result=await sb.auth.updateUser({password});
+  const sb=createSupabaseBrowserClient(),result=await sb.auth.updateUser({password,data:{must_change_password:false}});
   if(result.error){setError(result.error.message);setBusy(false);return}
   event.currentTarget.reset();setMessage('Senha alterada com sucesso.');setBusy(false);
  }
