@@ -106,12 +106,12 @@
 
 /* Desktop catalog composition */
 @media(min-width:851px){
- .catalogRail{display:grid;width:calc(100% + 8vw);margin-left:-4vw;grid-template-columns:repeat(2,42px);grid-template-rows:auto 42px;justify-content:center;gap:12px 10px;overflow:visible}
- .catalogGrid{grid-column:1/-1;grid-row:1;width:100%;gap:20px;padding:0 76px 18px;scroll-padding-left:76px;align-items:flex-start}
+ .catalogRail{display:grid;width:calc(100% + 8vw);margin-left:-4vw;grid-template-columns:minmax(0,1fr) 42px 42px minmax(0,1fr);grid-template-rows:auto 42px;column-gap:10px;row-gap:12px;overflow:visible}
+ .catalogGrid{grid-column:1/-1;grid-row:1;width:100%;min-width:0;gap:20px;padding:0 76px 18px;scroll-padding-left:76px;align-items:flex-start}
  .catalogGrid .productCard{flex:0 0 clamp(238px,15.6vw,276px);min-width:238px;max-width:276px}
  .catalogArrow{position:static;z-index:5;width:42px;height:42px;margin:0;font-size:18px;transform:none}
- .catalogArrow:first-child{grid-column:1;grid-row:2}
- .catalogArrow:last-child{grid-column:2;grid-row:2}
+ .catalogArrow:first-child{grid-column:2;grid-row:2}
+ .catalogArrow:last-child{grid-column:3;grid-row:2}
  .catalogArrow:hover{transform:translateY(-3px) scale(1.04)}
 }
 
