@@ -9,6 +9,7 @@ import {sectionsForSegment} from '@/core/content-schema';
 
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
 const provided=(form:FormData,key:string)=>form.has(key);
+const cleanProduct=(value:unknown)=>{const item=value&&typeof value==='object'?value as Record<string,unknown>:{};return Object.fromEntries(['image','title','price','description','image_position','image_fit'].filter(key=>key in item).map(key=>[key,String(item[key]??'')]))};
 
 export async function saveSalesContentAction(formData:FormData){
  const slug=text(formData,'slug'),access=await resolveProjectAccess(slug);
@@ -25,7 +26,7 @@ export async function saveSalesContentAction(formData:FormData){
  const menu=sectionsForSegment('food-business').find(def=>def.key==='menu_items');
  if(menu&&provided(formData,'section:menu_items')){
   const raw=text(formData,'section:menu_items');
-  try{const parsed=JSON.parse(raw);content.menu_items=Array.isArray(parsed)?parsed.slice(0,menu.max||80).filter(item=>item&&typeof item==='object'):[]}catch{content.menu_items=[]}
+  try{const parsed=JSON.parse(raw);content.menu_items=Array.isArray(parsed)?parsed.slice(0,menu.max||80).filter(item=>item&&typeof item==='object').map(cleanProduct):[]}catch{content.menu_items=[]}
  }
  await saveV2Section(access.project.id,'content',content);
 
