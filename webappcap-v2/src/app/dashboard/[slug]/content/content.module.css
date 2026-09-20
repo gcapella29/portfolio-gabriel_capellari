@@ -21,12 +21,19 @@
 
 @media(max-width:920px){.sectionNav{gap:6px;padding:7px}.navHead{display:grid;flex-basis:92px;grid-template-columns:1fr;padding-right:7px}.navHead span,.navHead>i{display:none}.navHead strong{font-size:9px}.sectionNav nav{padding:0}.sectionNav a small{display:none}}
 @media(max-width:620px){
- .sectionNav{margin-inline:-4px;border-radius:11px}.navHead{display:none}.sectionNav nav{width:100%;gap:2px}.sectionNav a{padding:9px 10px;font-size:10px}
- .form :global(.form-grid),.sectionBody :global(.form-grid){grid-template-columns:minmax(0,1fr)!important}
+ .sectionNav{margin-inline:-2px;margin-bottom:10px;padding:6px;border-radius:11px}.navHead{display:none}.sectionNav nav{width:100%;gap:3px;scrollbar-width:none}.sectionNav nav::-webkit-scrollbar{display:none}.sectionNav a{min-height:36px;padding:9px 11px;border-radius:8px;font-size:10px}
+ .form{gap:9px}.form :global(.form-grid),.sectionBody :global(.form-grid){grid-template-columns:minmax(0,1fr)!important}
+ .form :global(.field input),.form :global(.field textarea),.form :global(.field select){min-height:44px;padding:.82rem .9rem;border-radius:11px;font-size:16px}
+ .form :global(.field textarea){min-height:96px}
+ .form :global(.field>span){font-size:9px}.form :global(.field small){font-size:10px;line-height:1.45}
  .form :global(.upload-grid){grid-template-columns:minmax(0,1fr)!important}
- .form :global(.upload-card img){max-height:180px;object-fit:cover}
+ .form :global(.upload-card){padding:12px;border-radius:14px}
+ .form :global(.upload-card img){max-height:190px;object-fit:cover}
  .disclosure,.form :global(.repeatable-section){border-radius:12px}
- .disclosure>summary,.form :global(.repeatable-section>summary){grid-template-columns:30px minmax(0,1fr) auto;gap:8px;padding:10px}
+ .disclosure>summary,.form :global(.repeatable-section>summary){grid-template-columns:30px minmax(0,1fr) auto;gap:8px;min-height:56px;padding:10px}
  .disclosure>summary:before,.form :global(.repeatable-section>summary:before){width:28px;height:28px}
- .sectionBody,.form :global(.repeatable-body){padding:3px 10px 10px}
+ .sectionBody,.form :global(.repeatable-body){padding:4px 10px 11px}
+ .saveBar{bottom:6px;grid-template-columns:1fr 1fr;gap:6px;margin-inline:-2px;padding:8px;border-radius:12px}
+ .saveBar>div{padding:1px 4px;font-size:9px}
+ .saveBar :global(.action){min-height:42px;padding:.65rem .7rem;font-size:10px}
 }
