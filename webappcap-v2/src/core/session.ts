@@ -38,10 +38,7 @@ export async function entryDestination(userId: string) {
 
   const owned = list.filter(p => p.owner_id === userId);
   if (owned.length) return '/owner/projects';
-  if (list.length === 1) {
-    const access = await projectForUser(list[0].slug, userId);
-    if (!access) return '/unauthorized';
-    return destinationForUser(access.project, access.role as ProjectRole);
-  }
-  return '/projects';
+  const access = await projectForUser(list[0].slug, userId);
+  if (!access) return '/unauthorized';
+  return destinationForUser(access.project, access.role as ProjectRole);
 }

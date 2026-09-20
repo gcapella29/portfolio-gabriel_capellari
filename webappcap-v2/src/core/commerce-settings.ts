@@ -4,9 +4,10 @@ export type CommerceSettings = {
 };
 
 const clean=(value:unknown)=>String(value??'').trim();
+const catalogName=(value:string)=>['cardápio','opções'].includes(value.toLocaleLowerCase('pt-BR'))?'Catálogo':value;
 
 export function commerceSettings(content:Record<string,unknown>):CommerceSettings{
-  const catalogLabel=clean(content.catalog_label)||clean(content.menu_title)||clean(content.nav_menu)||'Cardápio';
+  const catalogLabel=catalogName(clean(content.catalog_label)||clean(content.nav_menu)||'Catálogo');
   return {catalogLabel,catalogLabelLower:catalogLabel.toLocaleLowerCase('pt-BR')};
 }
 

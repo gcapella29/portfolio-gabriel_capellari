@@ -9,7 +9,7 @@ import styles from './dashboard.module.css';
 export default async function DashboardPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{published?:string;publishError?:string}>}){
  const {slug}=await params,{published,publishError}=await searchParams,{project,role}=await resolveProjectAccess(slug);
  if(project.onboardingStep!=='completed'&&role!=='owner')redirect(`/setup/${encodeURIComponent(project.slug)}/${project.onboardingStep}`);
- if(project.segment==='food-business')redirect(`/dashboard/${encodeURIComponent(project.slug)}/editor`);
+ if(project.segment==='food-business'&&can(role,'editContent'))redirect(`/dashboard/${encodeURIComponent(project.slug)}/editor`);
  const sb=await createSupabaseServerClient(),leadAccess=can(role,'viewLeads');
  const [state,pub,newResult]=await Promise.all([readProjectState(project.id),publicationStatus(project.id),leadAccess?sb.from('site_leads').select('id',{count:'exact',head:true}).eq('project_id',project.id).eq('status','new'):Promise.resolve({count:0,error:null})]);
  if(newResult.error)throw newResult.error;

@@ -1,0 +1,17 @@
+'use client';
+import {useState} from 'react';
+import {createSupabaseBrowserClient} from '@/lib/supabase/browser';
+
+export default function PasswordSettings(){
+ const [message,setMessage]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false);
+ async function submit(event:React.FormEvent<HTMLFormElement>){
+  event.preventDefault();setMessage('');setError('');setBusy(true);
+  const form=new FormData(event.currentTarget),password=String(form.get('password')||''),confirm=String(form.get('confirm')||'');
+  if(password.length<8){setError('Use pelo menos 8 caracteres.');setBusy(false);return}
+  if(password!==confirm){setError('As senhas não coincidem.');setBusy(false);return}
+  const sb=createSupabaseBrowserClient(),result=await sb.auth.updateUser({password,data:{must_change_password:false}});
+  if(result.error){setError(result.error.message);setBusy(false);return}
+  event.currentTarget.reset();setMessage('Senha alterada com sucesso.');setBusy(false);
+ }
+ return <form className="form-stack" onSubmit={submit}><label className="field"><span>Nova senha</span><input name="password" type="password" minLength={8} autoComplete="new-password" required/></label><label className="field"><span>Confirmar nova senha</span><input name="confirm" type="password" minLength={8} autoComplete="new-password" required/></label>{error?<div className="form-error">{error}</div>:null}{message?<div className="notice success">{message}</div>:null}<button className="action primary" disabled={busy}>{busy?'Alterando…':'Alterar senha'}</button></form>;
+}

@@ -2,20 +2,23 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {commerceSettings,replaceCommerceCatalogTerm} from './commerce-settings.ts';
 
-test('commerce keeps cardápio as the generic default',()=>{
+test('commerce uses Catálogo as the generic default',()=>{
  const settings=commerceSettings({});
- assert.equal(settings.catalogLabel,'Cardápio');
- assert.equal(replaceCommerceCatalogTerm('Ver no cardápio →',settings),'Ver no cardápio →');
-});
-
-test('commerce reuses terminology already stored by a project',()=>{
- const settings=commerceSettings({menu_title:'Catálogo'});
  assert.equal(settings.catalogLabel,'Catálogo');
  assert.equal(replaceCommerceCatalogTerm('Ver no cardápio →',settings),'Ver no catálogo →');
- assert.equal(replaceCommerceCatalogTerm('CARDÁPIO',settings),'Catálogo');
 });
 
-test('catalog terminology can be configured without project slug rules',()=>{
+test('commerce does not turn an arbitrary section heading into navigation',()=>{
+ const settings=commerceSettings({menu_title:'Peça do seu jeito'});
+ assert.equal(settings.catalogLabel,'Catálogo');
+});
+
+test('legacy Cardápio and Opções normalize to Catálogo',()=>{
+ assert.equal(commerceSettings({catalog_label:'Cardápio'}).catalogLabel,'Catálogo');
+ assert.equal(commerceSettings({nav_menu:'Opções'}).catalogLabel,'Catálogo');
+});
+
+test('catalog terminology can still be explicitly configured',()=>{
  const settings=commerceSettings({catalog_label:'Produtos'});
  assert.equal(settings.catalogLabel,'Produtos');
  assert.equal(replaceCommerceCatalogTerm('CARDÁPIO',settings),'Produtos');
