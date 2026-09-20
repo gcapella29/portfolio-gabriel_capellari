@@ -21,7 +21,7 @@ export async function saveSalesContentAction(formData:FormData){
  await saveV2Section(access.project.id,'identity',identity);
 
  const content={...current.content};
- for(const key of ['catalog_label','menu_title','menu_intro'] as const)if(provided(formData,key))content[key]=text(formData,key);
+ for(const key of ['catalog_label','menu_title','menu_intro','sales_whatsapp_message'] as const)if(provided(formData,key))content[key]=text(formData,key).slice(0,key==='sales_whatsapp_message'?2000:10000);
  const menu=sectionsForSegment('food-business').find(def=>def.key==='menu_items');
  if(menu&&provided(formData,'section:menu_items')){
   const raw=text(formData,'section:menu_items');
