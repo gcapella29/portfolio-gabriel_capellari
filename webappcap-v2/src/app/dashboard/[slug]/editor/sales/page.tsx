@@ -10,6 +10,7 @@ import blocks from '../editor-blocks.module.css';
 export default async function SalesEditorPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{template?:string;savedContent?:string}>}){
  const {slug}=await params,query=await searchParams,{project,role}=await resolveProjectAccess(slug);
  if(project.segment!=='food-business')redirect(`/dashboard/${encodeURIComponent(project.slug)}/content`);
+ if(!can(role,'editContent'))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const data=await readV2Content(project.id),selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),active=selected==='commerce-sales-1',canSwitch=can(role,'editAppearance');
  return <div className={styles.page}>
   {query.template?<div className={styles.success}>Venda rápida selecionada no rascunho.</div>:null}
