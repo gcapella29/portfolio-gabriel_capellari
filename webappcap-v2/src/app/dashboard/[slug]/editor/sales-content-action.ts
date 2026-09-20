@@ -16,13 +16,8 @@ export async function saveSalesContentAction(formData:FormData){
  if(access.project.segment!=='food-business')throw new Error('Este editor é exclusivo de Comércio.');
  if(!can(access.role,'editContent'))throw new Error('Sem permissão para editar conteúdo.');
  const current=await readV2Content(access.project.id);
- const identity={...current.identity};
- if(provided(formData,'name'))identity.name=text(formData,'name')||access.project.name;
- if(provided(formData,'tagline'))identity.tagline=text(formData,'tagline');
- await saveV2Section(access.project.id,'identity',identity);
-
  const content={...current.content};
- for(const key of ['catalog_label','menu_title','menu_intro','sales_whatsapp_message'] as const)if(provided(formData,key))content[key]=text(formData,key).slice(0,key==='sales_whatsapp_message'?2000:10000);
+ for(const key of ['sales_tagline','sales_menu_title','sales_menu_intro','sales_whatsapp_message'] as const)if(provided(formData,key))content[key]=text(formData,key).slice(0,key==='sales_whatsapp_message'?2000:10000);
  const menu=sectionsForSegment('food-business').find(def=>def.key==='menu_items');
  if(menu&&provided(formData,'section:menu_items')){
   const raw=text(formData,'section:menu_items');
