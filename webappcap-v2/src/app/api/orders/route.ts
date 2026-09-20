@@ -9,8 +9,10 @@ const cleanItems=(value:unknown):Item[]=>Array.isArray(value)?value.slice(0,80).
  return{name:String(item.name||'Produto').trim().slice(0,160)||'Produto',quantity,unitPrice,total};
 }):[];
 const fallbackMessage=(templateKey:string,items:Item[],total:number)=>{
- const compact={v:1,t:templateKey,i:items.map(item=>[item.name,item.quantity,item.unitPrice,item.total]),x:total};
- return `WEBAPPCAP_ORDER_V1|${JSON.stringify(compact)}`.slice(0,1000);
+ const compactItems=items.map(item=>[item.name.slice(0,80),item.quantity,item.unitPrice,item.total]);
+ let encoded='';
+ do{encoded=JSON.stringify({v:1,t:templateKey,i:compactItems,x:total});if(encoded.length<=975)break;compactItems.pop()}while(compactItems.length>1);
+ return `WEBAPPCAP_ORDER_V1|${encoded}`;
 };
 
 export async function POST(request:Request){
