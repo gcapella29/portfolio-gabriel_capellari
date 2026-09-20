@@ -9,6 +9,7 @@ import {resolveProjectAccess} from '@/core/session';
 type DirectImage={path:string;url:string};
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
 const provided=(form:FormData,key:string)=>form.has(key);
+const checked=(form:FormData,key:string)=>form.getAll(key).some(value=>String(value)==='true');
 const directImage=(form:FormData,key:string,projectId:string):DirectImage|null=>{const raw=text(form,key);if(!raw||raw==='null')return null;try{const value=JSON.parse(raw) as Partial<DirectImage>,path=String(value.path||''),url=String(value.url||'');return path.startsWith(`${projectId}/`)&&url===publicMediaUrl(path)?{path,url}:null}catch{return null}};
 const mediaUrl=(value:unknown)=>value&&typeof value==='object'&&'url' in value?String((value as {url?:unknown}).url||''):typeof value==='string'?value:'';
 
@@ -24,6 +25,7 @@ export async function saveCompleteContentAction(formData:FormData){
 
  const content={...current.content};
  for(const key of ['hero_kicker','menu_intro','order_intro','social_intro','about_main','creator_name','creator_bio','creator_instagram','creator_instagram_label'] as const)if(provided(formData,key))content[key]=text(formData,key);
+ for(const [field,key] of [['visibility:catalog','show_catalog'],['visibility:cart','show_cart'],['visibility:instagram','show_instagram'],['visibility:about','show_about']] as const)if(provided(formData,field))content[key]=checked(formData,field);
  if(provided(formData,'section:menu_items')){try{const parsed=JSON.parse(text(formData,'section:menu_items'));content.menu_items=Array.isArray(parsed)?parsed.slice(0,80).filter(item=>item&&typeof item==='object'):[]}catch{content.menu_items=[]}}
  await saveV2Section(access.project.id,'content',content);
 
