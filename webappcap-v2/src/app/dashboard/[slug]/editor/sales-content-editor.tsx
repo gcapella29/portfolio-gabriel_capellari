@@ -25,12 +25,12 @@ export default function SalesContentEditor({slug,projectId,canManageMedia,data}:
  const nav:ContentNavItem[]=[{id:'sales-block-1',label:'Bloco 1 · Cabeçalho'},{id:'sales-block-2',label:'Bloco 2 · Catálogo'},{id:'sales-block-3',label:'Bloco 3 · WhatsApp'}];
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={false} portfolio={false} nav={nav} action={saveSalesContentAction} embedded>
   <Block id="sales-block-1" number="01" title="Cabeçalho" summary="Frase exibida junto ao nome da loja" open>
-   <label className="field"><span>Frase principal</span><input name="tagline" defaultValue={v(data.identity,'tagline')} placeholder="Escolha, personalize e peça pelo WhatsApp."/></label>
+   <label className="field"><span>Frase principal</span><input name="sales_tagline" defaultValue={v(data.content,'sales_tagline')||v(data.identity,'tagline')} placeholder="Escolha e peça pelo WhatsApp."/></label>
    <p className={styles.fixedNote}>O nome da loja é compartilhado com o projeto e não precisa ser repetido neste editor.</p>
   </Block>
   <Block id="sales-block-2" number="02" title={settings.catalogLabel} summary="Título, texto de apoio e produtos">
-   <label className="field"><span>Título principal</span><input name="menu_title" defaultValue={v(data.content,'menu_title')||'Peça do seu jeito'}/></label>
-   <label className="field"><span>Texto de apoio</span><textarea name="menu_intro" rows={3} defaultValue={v(data.content,'menu_intro')||'Escolha seus produtos, personalize e envie o pedido direto pelo WhatsApp.'}/></label>
+   <label className="field"><span>Título principal</span><input name="sales_menu_title" defaultValue={v(data.content,'sales_menu_title')||v(data.content,'menu_title')||'Peça do seu jeito'}/></label>
+   <label className="field"><span>Texto de apoio</span><textarea name="sales_menu_intro" rows={3} defaultValue={v(data.content,'sales_menu_intro')||v(data.content,'menu_intro')||'Escolha seus produtos e envie o pedido direto pelo WhatsApp.'}/></label>
    <RepeatableSections definitions={[productDefinition()]} initial={initial} embedded projectId={canManageMedia?projectId:undefined} variant="product-cards"/>
   </Block>
   <Block id="sales-block-3" number="03" title="WhatsApp" summary="Número e mensagem enviada com o pedido">
