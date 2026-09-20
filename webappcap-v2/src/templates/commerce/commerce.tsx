@@ -45,7 +45,7 @@ function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
  const showCatalog=sectionVisible(data.content,'show_catalog'),showCart=sectionVisible(data.content,'show_cart'),showInstagram=sectionVisible(data.content,'show_instagram'),showAbout=sectionVisible(data.content,'show_about');
  const copy=(key:string,fallback:string)=>replaceCommerceCatalogTerm(editableText(data.content,key,fallback),commerce);
  const legacyCopy=(key:string,fallback:string,legacy:string[])=>{const value=copy(key,fallback);return legacy.some(item=>item.toLocaleLowerCase('pt-BR')===value.toLocaleLowerCase('pt-BR'))?fallback:value};
- const heroKicker=copy('hero_kicker','')||'Produtinhos para quem vive a rotina vet!',gallery=Array.isArray(data.media.gallery)?data.media.gallery.map(item=>cleanImageUrl(typeof item==='object'&&item&&'url' in item?String((item as {url?:unknown}).url||''):typeof item==='string'?item:'')).filter(Boolean).slice(-6):[];
+ const heroKicker=copy('hero_kicker',''),gallery=Array.isArray(data.media.gallery)?data.media.gallery.map(item=>cleanImageUrl(typeof item==='object'&&item&&'url' in item?String((item as {url?:unknown}).url||''):typeof item==='string'?item:'')).filter(Boolean).slice(-6):[];
  const [cart,setCart]=useState<Cart>({}),[zoomImage,setZoomImage]=useState<{src:string;alt:string}|null>(null);
  const total=useMemo(()=>menu.reduce((sum,item,index)=>sum+money(text(item,'price'))*(cart[index]||0),0),[menu,cart]);
  const chosen=menu.map((item,index)=>({...item,index,quantity:cart[index]||0})).filter(item=>item.quantity>0),count=chosen.reduce((sum,item)=>sum+item.quantity,0);
