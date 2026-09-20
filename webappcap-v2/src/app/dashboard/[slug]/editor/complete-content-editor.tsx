@@ -14,14 +14,12 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
  const nav:ContentNavItem[]=[{id:'block-1',label:'Bloco 1 · Início'},{id:'block-2',label:'Bloco 2 · Catálogo'},{id:'block-3',label:'Bloco 3 · Carrinho'},{id:'block-4',label:'Bloco 4 · Instagram e Sobre'}];
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={false} portfolio={false} nav={nav} action={saveCompleteContentAction}>
   <Block id="block-1" number="01" title="Início" summary="Imagem principal e textos do hero" open>
-   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:hero" slot="hero" label="Imagem principal" current={mediaValue(data.media.hero,'url')} currentPosition={mediaValue(data.media.hero,'position','center')} currentFit={mediaValue(data.media.hero,'fit','cover')} help="Troque a imagem e escolha como ela será enquadrada no bloco."/>:null}
-   <div className="form-grid"><label className="field"><span>Texto de categorias</span><input name="description" defaultValue={v(data.identity,'description')}/></label><label className="field"><span>Frase de destaque</span><input name="tagline" defaultValue={v(data.identity,'tagline')}/></label></div>
-   <label className="field"><span>Texto opcional acima do nome</span><input name="hero_kicker" defaultValue={v(data.content,'hero_kicker')}/></label>
-   <p className={styles.fixedNote}>A barra superior e seus textos permanecem padronizados e não são alterados neste editor.</p>
+   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:hero" slot="hero" label="Imagem principal" current={mediaValue(data.media.hero,'url')} currentPosition={mediaValue(data.media.hero,'position','center')} currentFit={mediaValue(data.media.hero,'fit','cover')} help="Arraste a imagem na prévia para escolher exatamente o que aparece no bloco."/>:null}
+   <div className={styles.heroCopyFields}><label className="field"><span>Primeira linha abaixo do nome</span><input name="tagline" defaultValue={v(data.identity,'tagline')}/></label><label className="field"><span>Segunda linha abaixo do nome</span><input name="hero_kicker" defaultValue={v(data.content,'hero_kicker')}/></label></div>
   </Block>
   <Block id="block-2" number="02" title="Catálogo" summary="Subtítulo e cadastro dos produtos">
    <label className="field"><span>Subtítulo do catálogo</span><textarea name="menu_intro" rows={2} defaultValue={v(data.content,'menu_intro')}/></label>
-   <RepeatableSections definitions={[productDefinition()]} initial={{menu_items:Array.isArray(data.content.menu_items)?data.content.menu_items:[]}} embedded projectId={canManageMedia?projectId:undefined}/>
+   <RepeatableSections definitions={[productDefinition()]} initial={{menu_items:Array.isArray(data.content.menu_items)?data.content.menu_items:[]}} embedded projectId={canManageMedia?projectId:undefined} variant="product-cards"/>
   </Block>
   <Block id="block-3" number="03" title="Carrinho" summary="Subtítulo e WhatsApp para pedidos">
    <label className="field"><span>Subtítulo do carrinho</span><textarea name="order_intro" rows={3} defaultValue={v(data.content,'order_intro')}/></label>

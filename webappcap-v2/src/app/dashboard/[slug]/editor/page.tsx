@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import {redirect} from 'next/navigation';
 import {can} from '@/core/permissions';
 import {resolveProjectAccess} from '@/core/session';
@@ -13,7 +12,6 @@ export default async function TemplateEditorPage({params,searchParams}:{params:P
  if(project.segment!=='food-business')redirect(`/dashboard/${encodeURIComponent(project.slug)}/content`);
  const data=await readV2Content(project.id),selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),active=selected==='commerce-main-1';
  return <div className={styles.page}>
-  <header className={styles.intro}><div><span>EDITAR SITE</span><h1>Site completo</h1><p>Escolha um dos quatro blocos e altere somente o conteúdo que aparece nele.</p></div><div className={styles.headerActions}><Link href={`/preview/${encodeURIComponent(project.slug)}`} target="_blank">Abrir Preview ↗</Link></div></header>
   {query.template?<div className={styles.success}>Versão completa selecionada no rascunho.</div>:null}
   {query.savedContent?<div className={styles.success}>Alterações salvas no rascunho. Confira no Preview.</div>:null}
   <section className={blocks.versionBar}><div><span>VERSÃO DO SITE</span><strong>{active?'Site completo ativo no Preview':'Venda rápida ativa no Preview'}</strong><p>A troca preserva todo o conteúdo das duas versões.</p></div><form action={saveEditorTemplateAction}><input type="hidden" name="slug" value={project.slug}/><input type="hidden" name="templateKey" value="commerce-main-1"/><button disabled={active}>{active?'Esta versão já está selecionada':'Alterar para esta versão e salvar'}</button></form></section>

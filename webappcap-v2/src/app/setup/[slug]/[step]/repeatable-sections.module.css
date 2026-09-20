@@ -1,0 +1,6 @@
+.productList{display:grid;gap:12px}
+.productCard{overflow:hidden;border:1px solid #e3e8f0;border-radius:18px;background:#fff;box-shadow:0 7px 22px rgba(17,24,39,.045)}
+.productToolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border-bottom:1px solid #eef1f5}.productToolbar>strong{font-size:13px}.productActions{display:flex;gap:6px}.productActions button{min-width:34px!important;min-height:34px!important;padding:0 10px!important;font-size:12px!important}
+.productEditor{display:grid;grid-template-columns:minmax(240px,.8fr) minmax(320px,1.2fr);gap:18px;padding:14px}.productImage{display:grid;align-content:start;gap:10px}.productImage>strong{font-size:12px;color:#536078}.productImage>span{font-size:11px;color:#737e90}.productImage input[type=file]{max-width:100%;font-size:12px}.productImage>button{width:100%}
+.productFields{display:grid;align-content:start;grid-template-columns:1fr minmax(150px,.48fr);gap:12px}.productFields label:last-child{grid-column:1/-1}.productFields textarea{min-height:112px}
+@media(max-width:780px){.productEditor{grid-template-columns:1fr}.productFields{grid-template-columns:1fr}.productFields label:last-child{grid-column:auto}}

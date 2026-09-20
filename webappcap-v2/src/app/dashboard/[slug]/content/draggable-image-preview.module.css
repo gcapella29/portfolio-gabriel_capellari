@@ -1,0 +1,7 @@
+.frame{position:relative;overflow:hidden;width:100%;min-height:210px;border-radius:16px;background:#eef2f7;cursor:grab;touch-action:none;user-select:none;outline:none}
+.frame:active{cursor:grabbing}.frame:focus-visible{box-shadow:0 0 0 3px rgba(49,94,231,.24)}
+.frame img{display:block;width:100%;height:100%;min-height:210px;max-height:280px;pointer-events:none}
+.frame small{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);padding:7px 11px;border:1px solid rgba(255,255,255,.36);border-radius:999px;background:rgba(10,15,25,.68);color:#fff;font-size:11px;font-weight:750;line-height:1.2;backdrop-filter:blur(8px)}
+.focus{position:absolute;width:24px;height:24px;transform:translate(-50%,-50%);border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px rgba(15,23,42,.5),0 3px 12px rgba(15,23,42,.35);pointer-events:none}
+.focus:after{content:'';position:absolute;inset:6px;border-radius:50%;background:#fff}
+@media(max-width:640px){.frame,.frame img{min-height:180px}.frame small{font-size:10px}}
