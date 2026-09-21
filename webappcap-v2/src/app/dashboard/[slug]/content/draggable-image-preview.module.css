@@ -5,3 +5,5 @@
 .focus{position:absolute;width:24px;height:24px;transform:translate(-50%,-50%);border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px rgba(15,23,42,.5),0 3px 12px rgba(15,23,42,.35);pointer-events:none}
 .focus:after{content:'';position:absolute;inset:6px;border-radius:50%;background:#fff}
 @media(max-width:640px){.frame,.frame img{min-height:180px}.frame small{font-size:10px}}
+
+.zoomControls{position:absolute;left:12px;right:12px;top:12px;z-index:3;display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid rgba(255,255,255,.34);border-radius:12px;background:rgba(10,15,25,.7);color:#fff;backdrop-filter:blur(10px);touch-action:auto}.zoomControls button{width:30px;height:30px;flex:0 0 auto;border:1px solid rgba(255,255,255,.28);border-radius:9px;background:rgba(255,255,255,.12);color:#fff;font:800 18px/1 Arial;cursor:pointer}.zoomControls label{min-width:0;display:grid;grid-template-columns:auto minmax(70px,1fr) auto;align-items:center;gap:7px;flex:1;font-size:10px;font-weight:800}.zoomControls input{width:100%;accent-color:#fff}.zoomControls b{min-width:34px;text-align:right;font-size:10px}
