@@ -10,6 +10,7 @@ const v=(o:Record<string,unknown>,key:string)=>String(o[key]??'');
 const stored=(value:unknown)=>Array.isArray(value)?value:[];
 const mediaValue=(value:unknown,key:'url'|'position'|'fit',fallback='')=>value&&typeof value==='object'?String((value as Record<string,unknown>)[key]??fallback):key==='url'&&typeof value==='string'?value:fallback;
 const defaultSalesWhatsappMessage='Olá! Quero fazer um pedido na {loja}.\n\nITENS DO PEDIDO\n{itens}\n\n💰 TOTAL: {total}';
+const defaultDirectWhatsappMessage='Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.';
 
 function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){
  return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>;
@@ -39,6 +40,7 @@ export default function SalesContentEditor({slug,projectId,canManageMedia,data}:
   <Block id="sales-block-3" number="03" title="WhatsApp" summary="Número e mensagem enviada com o pedido">
    <label className="field"><span>WhatsApp com DDI</span><input name="whatsapp" inputMode="tel" defaultValue={v(data.contact,'whatsapp')} placeholder="5516999999999"/><small>Use somente números, incluindo o código do país e o DDD.</small></label>
    <label className="field"><span>Mensagem de envio do pedido</span><textarea name="sales_whatsapp_message" rows={9} maxLength={2000} defaultValue={v(data.content,'sales_whatsapp_message')||defaultSalesWhatsappMessage}/><small>Você pode usar: <b>{'{loja}'}</b>, <b>{'{itens}'}</b> e <b>{'{total}'}</b>. O resumo do carrinho será preenchido automaticamente.</small></label>
+   <label className="field"><span>Mensagem do botão “Não encontrou o que queria?”</span><textarea name="sales_whatsapp_direct_message" rows={4} maxLength={1000} defaultValue={v(data.content,'sales_whatsapp_direct_message')||defaultDirectWhatsappMessage}/><small>Esta mensagem será aberta no WhatsApp pelo botão ao final do site. Você pode usar <b>{'{loja}'}</b>.</small></label>
   </Block>
  </ContentWorkspace>;
 }
