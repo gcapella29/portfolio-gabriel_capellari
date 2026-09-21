@@ -4,12 +4,15 @@ import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
 import {resolveProjectAccess} from '@/core/session';
 import {can} from '@/core/permissions';
-import {readV2Content,saveV2Section} from '@/core/onboarding-data';
+import {publicMediaUrl,readV2Content,saveV2Section} from '@/core/onboarding-data';
 import {sectionsForSegment} from '@/core/content-schema';
 
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
 const provided=(form:FormData,key:string)=>form.has(key);
+type DirectImage={path:string;url:string};
 const cleanProduct=(value:unknown)=>{const item=value&&typeof value==='object'?value as Record<string,unknown>:{};return Object.fromEntries(['image','title','price','description','image_position','image_fit'].filter(key=>key in item).map(key=>[key,String(item[key]??'')]))};
+const directImage=(form:FormData,key:string,projectId:string):DirectImage|null=>{const raw=text(form,key);if(!raw||raw==='null')return null;try{const value=JSON.parse(raw) as Partial<DirectImage>,path=String(value.path||''),url=String(value.url||'');return path.startsWith(`${projectId}/`)&&url===publicMediaUrl(path)?{path,url}:null}catch{return null}};
+const mediaUrl=(value:unknown)=>value&&typeof value==='object'&&'url' in value?String((value as {url?:unknown}).url||''):typeof value==='string'?value:'';
 
 export async function saveSalesContentAction(formData:FormData){
  const slug=text(formData,'slug'),access=await resolveProjectAccess(slug);
@@ -28,6 +31,17 @@ export async function saveSalesContentAction(formData:FormData){
  const contact={...current.contact};
  if(provided(formData,'whatsapp'))contact.whatsapp=text(formData,'whatsapp');
  await saveV2Section(access.project.id,'contact',contact);
+
+ if(can(access.role,'manageMedia')){
+  const media={...current.media},slot='sales_hero';let changed=false;
+  if(text(formData,`removeMedia:${slot}`)==='yes'){delete media[slot];changed=true}else{
+   const rawPosition=text(formData,`mediaPosition:${slot}`),position=/^(?:100(?:\\.0)?|\\d{1,2}(?:\\.\\d+)?)%\\s+(?:100(?:\\.0)?|\\d{1,2}(?:\\.\\d+)?)%$/.test(rawPosition)||['top','center','bottom','left','right'].includes(rawPosition)?rawPosition:'center';
+   const fit=['cover','contain','fill'].includes(text(formData,`mediaFit:${slot}`))?text(formData,`mediaFit:${slot}`):'cover';
+   const uploaded=directImage(formData,`uploadedMedia:${slot}`,access.project.id),existing=mediaUrl(media[slot]);
+   if(uploaded){media[slot]={...uploaded,position,fit};changed=true}else if(existing&&provided(formData,`mediaPosition:${slot}`)){media[slot]={...(typeof media[slot]==='object'&&media[slot]?media[slot] as Record<string,unknown>:{url:existing}),position,fit};changed=true}
+  }
+  if(changed)await saveV2Section(access.project.id,'media',media);
+ }
  revalidatePath(`/dashboard/${encodeURIComponent(slug)}/editor`);
  revalidatePath(`/dashboard/${encodeURIComponent(slug)}/editor/sales`);
  revalidatePath(`/dashboard/${encodeURIComponent(slug)}/content`);
