@@ -2,6 +2,9 @@ import { resolveProjectAccess } from '@/core/session';
 import { readV2Content } from '@/core/onboarding-data';
 import { renderTemplate } from '@/templates/registry';
 
+export const dynamic='force-dynamic';
+export const revalidate=0;
+
 export default async function PreviewPage({params}:{params:Promise<{slug:string}>}){
   const {slug}=await params;
   const {project}=await resolveProjectAccess(slug);
