@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { classifyHost, isPublicAssetPath } from '@/core/host-routing';
 
 const protectedPrefixes = ['/owner', '/projects', '/dashboard', '/setup'];
-const tenantPlatformPrefixes = ['/login', '/entry', '/dashboard', '/setup', '/projects', '/auth', '/invite'];
+const tenantPlatformPrefixes = ['/login', '/entry', '/dashboard', '/setup', '/projects', '/preview', '/auth', '/invite'];
 
 type MiddlewareCookieOptions = Parameters<NextResponse['cookies']['set']>[2];
 type MiddlewareCookieToSet = {
