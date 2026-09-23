@@ -10,7 +10,7 @@ type DirectImage={path:string;url:string};
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
 const provided=(form:FormData,key:string)=>form.has(key);
 const checked=(form:FormData,key:string)=>form.getAll(key).some(value=>String(value)==='true');
-const cleanProduct=(value:unknown)=>{const item=value&&typeof value==='object'?value as Record<string,unknown>:{};return Object.fromEntries(['image','title','price','description','image_position','image_fit','image_zoom'].filter(key=>key in item).map(key=>[key,String(item[key]??'')]))};
+const cleanProduct=(value:unknown)=>{const item=value&&typeof value==='object'?value as Record<string,unknown>:{};return Object.fromEntries(['image','title','category','price','promo_quantity','promo_total','description','image_position','image_fit','image_zoom'].filter(key=>key in item).map(key=>[key,String(item[key]??'')]))};
 const directImage=(form:FormData,key:string,projectId:string):DirectImage|null=>{const raw=text(form,key);if(!raw||raw==='null')return null;try{const value=JSON.parse(raw) as Partial<DirectImage>,path=String(value.path||''),url=String(value.url||'');return path.startsWith(`${projectId}/`)&&url===publicMediaUrl(path)?{path,url}:null}catch{return null}};
 const mediaUrl=(value:unknown)=>value&&typeof value==='object'&&'url' in value?String((value as {url?:unknown}).url||''):typeof value==='string'?value:'';
 
