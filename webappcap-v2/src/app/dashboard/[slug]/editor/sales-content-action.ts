@@ -11,6 +11,7 @@ const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
 const provided=(form:FormData,key:string)=>form.has(key);
 type DirectImage={path:string;url:string};
 const cleanProduct=(value:unknown)=>{const item=value&&typeof value==='object'?value as Record<string,unknown>:{};return Object.fromEntries(['image','title','category','price','promo_quantity','promo_total','description','image_position','image_fit','image_zoom'].filter(key=>key in item).map(key=>[key,String(item[key]??'')]))};
+const overlayNamedProductFields=(form:FormData,items:Record<string,unknown>[])=>items.map((item,index)=>{const next={...item};for(const key of ['title','category','price','promo_quantity','promo_total','description']){const field=`menu_items:${index}:${key}`;if(form.has(field))next[key]=String(form.get(field)??'')}return next});
 const directImage=(form:FormData,key:string,projectId:string):DirectImage|null=>{const raw=text(form,key);if(!raw||raw==='null')return null;try{const value=JSON.parse(raw) as Partial<DirectImage>,path=String(value.path||''),url=String(value.url||'');return path.startsWith(`${projectId}/`)&&url===publicMediaUrl(path)?{path,url}:null}catch{return null}};
 const mediaUrl=(value:unknown)=>value&&typeof value==='object'&&'url' in value?String((value as {url?:unknown}).url||''):typeof value==='string'?value:'';
 
@@ -24,7 +25,7 @@ export async function saveSalesContentAction(formData:FormData){
  const menu=sectionsForSegment('food-business').find(def=>def.key==='menu_items');
  if(menu&&provided(formData,'section:menu_items')){
   const raw=text(formData,'section:menu_items');
-  try{const parsed=JSON.parse(raw);content.menu_items=Array.isArray(parsed)?parsed.slice(0,menu.max||80).filter(item=>item&&typeof item==='object').map(cleanProduct):[]}catch{content.menu_items=[]}
+  try{const parsed=JSON.parse(raw);content.menu_items=Array.isArray(parsed)?overlayNamedProductFields(formData,parsed.slice(0,menu.max||80).filter(item=>item&&typeof item==='object') as Record<string,unknown>[]).map(cleanProduct):[]}catch{content.menu_items=[]}
  }
  await saveV2Section(access.project.id,'content',content);
 
