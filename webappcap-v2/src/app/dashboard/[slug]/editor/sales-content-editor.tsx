@@ -18,9 +18,9 @@ function Block({id,number,title,summary,children,open=false}:{id:string;number:s
 
 function productDefinition():RepeatableSection{
  const source=sectionsForSegment('food-business').find(def=>def.key==='menu_items')!;
- const order=['image','title','price','description'];
- const labels:Record<string,string>={title:'Nome',price:'Preço',description:'Descrição'};
- return {...source,label:'Produtos',description:'Cadastre foto, nome, preço e uma descrição opcional.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))};
+ const order=['image','title','category','price','promo_quantity','promo_total','description'];
+ const labels:Record<string,string>={title:'Nome',category:'Categoria',price:'Preço unitário',promo_quantity:'Quantidade da promoção',promo_total:'Preço promocional do combo',description:'Descrição'};
+ return {...source,label:'Produtos',description:'Cadastre foto, nome, categoria, preço e, se quiser, uma promoção por quantidade.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))};
 }
 
 export default function SalesContentEditor({slug,projectId,canManageMedia,data}:{slug:string;projectId:string;canManageMedia:boolean;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
