@@ -23,7 +23,7 @@ export default async function DashboardLayout({children,params}:{children:React.
   <main className={styles.main}>
    <header className={styles.topbar}><div className={styles.topIdentity}><strong>{project.name}</strong><small>{project.isPublished?siteUrl.replace(/^https?:\/\//,''):'Rascunho'}</small></div><div className={styles.topActions}>
     {can(role,'viewLeads')?<Link className={styles.analyticsButton} href={`${base}/analytics`}>Analytics ↗</Link>:null}
-    <Link className={styles.buttonGhost} href={`/preview/${encodeURIComponent(project.slug)}`} target="_blank">Preview ↗</Link>
+    <Link className={styles.buttonGhost} href={`/preview/${encodeURIComponent(project.slug)}?draft=${Date.now()}`} target="_blank">Preview ↗</Link>
     {project.isPublished?<a className={styles.buttonGhost} href={siteUrl} target="_blank" rel="noopener noreferrer">Ver site ↗</a>:null}
     {can(role,'publish')?<form action={publishDashboardAction}><input type="hidden" name="slug" value={project.slug}/><button className={styles.publish}>Publicar</button></form>:null}
    </div></header>
