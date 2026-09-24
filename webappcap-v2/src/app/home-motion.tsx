@@ -42,6 +42,7 @@ export function HomeMotion(){
     let phase=0;
 
     function paintPhase(){
+      if(!root)return;
       root.dataset.motionPhase=String(phase);
       phaseItems.forEach((item,index)=>{item.dataset.motionActive=String(index===phase)});
       processItems.forEach((item,index)=>{item.dataset.motionActive=String(index===phase)});
