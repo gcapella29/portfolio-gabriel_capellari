@@ -115,21 +115,16 @@
 .field input:focus{border-color:#8da5ff;box-shadow:0 0 0 4px rgba(49,94,231,.10);transform:translateY(-1px);background:#fff}
 .error{padding:11px 12px;border:1px solid #fecaca;border-radius:11px;background:#fff1f1;color:#9f1d16;font-size:11px;font-weight:700}
 .submit{
-  position:relative;overflow:hidden;
   min-height:49px;border:0;border-radius:13px;
   background:linear-gradient(135deg,#17223d,#263e72);
   color:white;font:inherit;font-size:12px;font-weight:900;cursor:pointer;
-  box-shadow:0 12px 28px rgba(23,34,61,.18);
-  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+  box-shadow:0 8px 20px rgba(20,32,57,.15);
+  transform:translateZ(0);
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
 }
-.submit::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.18) 48%,transparent 72%);
-  transform:translateX(-120%);transition:transform .55s ease;
-}
-.submit:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(23,34,61,.24)}
-.submit:hover::after{transform:translateX(120%)}
-.submit:disabled{opacity:.62;cursor:wait;transform:none}
+.submit:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(20,32,57,.1)}
+.submit:active{transform:translateY(0);box-shadow:0 5px 14px rgba(20,32,57,.12)}
+.submit:disabled{opacity:.62;cursor:wait;transform:none;box-shadow:none}
 .helper{margin-top:16px;color:#8a94a6;font-size:10px;line-height:1.55}
 @keyframes shellEnter{from{opacity:0;transform:translateY(20px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes contentEnter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
