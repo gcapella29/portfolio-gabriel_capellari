@@ -754,3 +754,91 @@
     transform:none!important;
   }
 }
+
+
+/* Explicit motion opt-in for this review branch. */
+/*
+  Some systems/browsers can report prefers-reduced-motion without the user
+  realizing it. This branch exists specifically to review a motion-heavy
+  redesign, so HomeMotion sets data-motion-force="true" and the signature
+  animations below are intentionally restored for that review.
+*/
+@media(prefers-reduced-motion:reduce){
+  .site[data-motion-force="true"] .heroGlow{
+    animation:homeGlowPulse 7.5s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .eyebrow i{
+    animation:homeSignalPulse 2.4s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .hero h1 em:after{
+    animation:homeHeadlineDraw 5.8s cubic-bezier(.22,1,.36,1) infinite!important;
+  }
+  .site[data-motion-force="true"] .orbit{
+    animation:spin 24s linear infinite,homeOrbitBreath 6.4s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .orbit span{
+    animation:spinReverse 24s linear infinite!important;
+  }
+  .site[data-motion-force="true"] .orbit:after{
+    animation:homeOrbitBeacon 2.6s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .cardOne{
+    animation:homeFloatOne 6.2s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .cardTwo{
+    animation:homeFloatTwo 7s -1.8s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .cardThree{
+    animation:homeFloatThree 6.6s -3.1s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .processGrid:before{
+    animation:homeProcessTravel 7.2s cubic-bezier(.4,0,.2,1) infinite!important;
+  }
+  .site[data-motion-force="true"] .processGrid article>i{
+    animation:homeProcessDot 7.2s ease-in-out infinite!important;
+    animation-delay:var(--process-delay,0s)!important;
+  }
+  .site[data-motion-force="true"] .projectPreview>img{
+    animation:homePreviewPan 12s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .projectPreview:before{
+    animation:homePreviewScan 7.8s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .live i{
+    animation:homeLivePulse 2.2s ease-out infinite!important;
+  }
+  .site[data-motion-force="true"] .serviceGrid article:after{
+    animation:homeServiceSignal 11s linear infinite!important;
+    animation-delay:var(--service-delay,0s)!important;
+  }
+  .site[data-motion-force="true"] .contact:before{
+    animation:homeContactRings 8s ease-in-out infinite!important;
+  }
+  .site[data-motion-force="true"] .contactKicker:before{
+    animation:homeContactBeacon 2.4s ease-out infinite!important;
+  }
+  .site[data-motion-force="true"] .contact h2 em{
+    animation:homeContactWord 6.5s ease-in-out infinite!important;
+  }
+
+  .site[data-motion-force="true"] .motionStory>div,
+  .site[data-motion-force="true"] .processGrid article,
+  .site[data-motion-force="true"] .dashboardDemo [data-motion-demo]{
+    transition:
+      background .5s cubic-bezier(.22,1,.36,1),
+      transform .5s cubic-bezier(.22,1,.36,1),
+      color .35s,
+      box-shadow .45s,
+      border-color .35s!important;
+  }
+
+  .site[data-motion-force="true"] .motionStory>div[data-motion-active="true"]{
+    transform:translateY(-4px)!important;
+  }
+  .site[data-motion-force="true"] .processGrid article[data-motion-active="true"]{
+    transform:translateY(-8px)!important;
+  }
+  .site[data-motion-force="true"] .dashboardDemo [data-motion-demo][data-motion-active="true"]{
+    transform:translateY(-4px)!important;
+  }
+}
