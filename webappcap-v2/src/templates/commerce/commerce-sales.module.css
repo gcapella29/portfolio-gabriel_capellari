@@ -173,3 +173,104 @@
     transform:none!important;
   }
 }
+
+
+/* VET-SE MOBILE POLISH — quick-sale panel hierarchy. */
+@media(max-width:560px){
+  /*
+    Keep the quick-sale model fast, but organize it like a compact control panel:
+    hero, category shortcuts, product rows and one clear final CTA.
+  */
+  .site main{width:min(100% - 16px,1120px)}
+  .intro{
+    margin-top:10px;
+    border-radius:20px;
+  }
+  .introWithCover{
+    min-height:330px;
+    padding:30px 18px 26px;
+  }
+  .intro h1{
+    font-size:clamp(36px,11vw,48px);
+  }
+  .intro p{
+    max-width:36ch;
+    font-size:13px;
+  }
+  .intro label{margin-top:20px}
+  .intro input{
+    min-height:48px;
+    box-shadow:0 7px 20px rgba(0,0,0,.08);
+  }
+
+  .categoryShelf{
+    gap:8px;
+    padding:12px 0 8px;
+  }
+  .categoryShelf button{
+    min-height:74px;
+    padding:12px;
+    border-radius:14px;
+  }
+  .categoryShelf span{font-size:14px}
+  .categoryShelf small{font-size:9px}
+
+  .catalog{
+    gap:9px;
+    padding-top:10px;
+  }
+  .card{
+    grid-template-columns:112px minmax(0,1fr);
+    min-height:142px;
+    overflow:hidden;
+    border-radius:16px;
+    box-shadow:0 8px 22px rgba(21,35,27,.06);
+  }
+  .photo{min-height:142px}
+  .cardBody{
+    align-content:start;
+    padding:12px;
+  }
+  .cardBody h2{
+    margin-top:7px;
+    font-size:15px;
+  }
+  .cardBody p{
+    display:-webkit-box;
+    overflow:hidden;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+    font-size:11px;
+    line-height:1.45;
+  }
+  .cardBody footer{
+    align-self:end;
+    margin-top:auto;
+    padding-top:10px;
+  }
+
+  .directCta{
+    gap:16px;
+    margin:14px 0 90px;
+    padding:22px 18px;
+    border-radius:20px;
+  }
+  .directCta>div strong{font-size:22px}
+  .directCta>div span{font-size:12.5px}
+  .directCta>a,.directCtaDisabled{
+    min-height:50px;
+    font-size:12px;
+  }
+
+  .floatingCart{
+    right:8px;
+    bottom:8px;
+    left:8px;
+    width:auto;
+    min-width:0;
+    padding:13px 14px;
+    border-radius:16px;
+  }
+  .floatingCart span{font-size:11px}
+  .floatingCart strong{font-size:12px}
+}
