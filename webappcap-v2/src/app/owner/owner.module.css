@@ -73,3 +73,32 @@
 @media(prefers-reduced-motion:reduce){
  .cardPrimary:active,.cardAction:active,.cardDanger:active,.button:active,.buttonGhost:active{transform:none!important}
 }
+
+
+/* Project cards stay completely static; only their action buttons animate. */
+.projectCard{
+  transform:none!important;
+  transition:none!important;
+}
+.projectCard:hover{
+  transform:none!important;
+  border-color:var(--line)!important;
+  box-shadow:0 6px 22px rgba(17,24,39,.035)!important;
+}
+.projectCard:hover .cardPrimary,
+.projectCard:hover .cardAction,
+.projectCard:hover .cardDanger{
+  transform:none;
+}
+.projectCard .cardPrimary:hover,
+.projectCard .cardAction:hover,
+.projectCard .cardDanger:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 10px 22px rgba(20,32,57,.1)!important;
+}
+.projectCard .cardPrimary:active,
+.projectCard .cardAction:active,
+.projectCard .cardDanger:active{
+  transform:translateY(0)!important;
+  box-shadow:none!important;
+}
