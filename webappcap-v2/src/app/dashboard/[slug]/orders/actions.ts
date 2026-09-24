@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { resolveProjectAccess } from '@/core/session';
 import { can } from '@/core/permissions';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 const text=(formData:FormData,key:string)=>String(formData.get(key)||'').trim();
 
@@ -18,7 +18,7 @@ export async function deleteOrderAction(formData:FormData){
   }
   if(!orderId)throw new Error('Pedido inválido.');
 
-  const sb=await createSupabaseServerClient();
+  const sb=createSupabaseAdminClient();
 
   if(orderId.startsWith('legacy-')){
     const legacyId=Number(orderId.slice('legacy-'.length));
@@ -29,14 +29,14 @@ export async function deleteOrderAction(formData:FormData){
       .eq('id',legacyId)
       .eq('project_id',access.project.id)
       .like('message','WEBAPPCAP_ORDER_V1|%');
-    if(result.error)throw result.error;
+    if(result.error)redirect(`/dashboard/${encodeURIComponent(slug)}/orders?error=delete`);
   }else{
     const result=await sb
       .from('commerce_orders')
       .delete()
       .eq('id',orderId)
       .eq('project_id',access.project.id);
-    if(result.error)throw result.error;
+    if(result.error)redirect(`/dashboard/${encodeURIComponent(slug)}/orders?error=delete`);
   }
 
   const path=`/dashboard/${encodeURIComponent(slug)}/orders`;
