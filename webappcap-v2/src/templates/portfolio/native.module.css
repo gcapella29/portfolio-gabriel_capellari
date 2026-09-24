@@ -471,3 +471,132 @@
     transition:transform .5s var(--ui-ease),background .45s ease,color .35s ease,box-shadow .45s ease,border-color .35s ease!important;
   }
 }
+
+
+/* Alternating editorial section backgrounds: beige / green. */
+/*
+  After the hero/ticker/metrics strip, the main editorial sections alternate:
+  beige -> green -> beige -> green...
+  Content colors are adjusted per section so the original cards and motion
+  remain readable without changing the page structure.
+*/
+.about{
+  background:var(--paper);
+  color:var(--ink);
+}
+
+.featured{
+  background:var(--felt);
+  color:var(--cream);
+}
+.featured .eyebrow{color:var(--gold)}
+.featuredCopy p{color:rgba(243,238,226,.80)}
+.featured .yearList span{
+  border-color:rgba(243,238,226,.28);
+  background:rgba(255,255,255,.035);
+  color:var(--cream);
+}
+
+.coverage{
+  background:var(--paper);
+  color:var(--ink);
+}
+.coverage .eyebrow{color:var(--gold-base)}
+.coverage .board{
+  border-color:rgba(23,19,16,.12);
+  box-shadow:0 18px 55px rgba(8,39,32,.08);
+}
+.coverage .board>div{
+  border-bottom-color:rgba(23,19,16,.11);
+  background:linear-gradient(90deg,rgba(8,39,32,.018),transparent);
+}
+.coverage .board>div:hover{
+  background:rgba(201,162,39,.07);
+}
+.coverage .board span{color:var(--brick)}
+.coverage .board>div[data-editorial-active="true"]{
+  background:linear-gradient(90deg,rgba(201,162,39,.13),rgba(201,162,39,.035),transparent);
+  box-shadow:inset 3px 0 0 var(--gold-base);
+}
+.coverage .board>div[data-editorial-active="true"] strong{
+  color:var(--felt);
+}
+
+.portfolio{
+  background:var(--felt);
+  color:var(--cream);
+}
+.portfolio .eyebrow{color:var(--gold)}
+.portfolio .profile,
+.portfolio .pressCards>a{
+  color:var(--ink);
+}
+.portfolio .pressCards>a{
+  background:rgba(250,247,240,.96);
+  border-color:rgba(243,238,226,.24);
+}
+.portfolio .pressCards>a[data-editorial-active="true"]{
+  border-color:rgba(227,187,61,.68);
+  box-shadow:0 20px 42px rgba(0,0,0,.18);
+}
+
+.experience{
+  background:var(--paper);
+  color:var(--ink);
+}
+.experience .eyebrow{color:var(--gold-base)}
+.experience .timeline{
+  border-top-color:rgba(23,19,16,.12);
+}
+.experience .timeline article{
+  border-bottom-color:rgba(23,19,16,.11);
+}
+.experience .timeline article>strong{
+  color:#665f55;
+}
+.experience .timeline p{
+  color:#3a342c;
+}
+.experience .timeline time{
+  color:var(--brick);
+}
+.experience .timeline article:hover{
+  background:rgba(201,162,39,.06);
+}
+.experience .timeline article[data-editorial-active="true"]{
+  background:linear-gradient(90deg,rgba(201,162,39,.11),transparent 68%);
+}
+.experience .timeline article[data-editorial-active="true"] h3{
+  color:var(--felt);
+}
+
+.education{
+  background:var(--felt);
+  color:var(--cream);
+}
+.education .eyebrow{color:var(--gold)}
+.educationGrid article span{
+  color:rgba(243,238,226,.68);
+}
+.educationGrid article:hover{
+  background:linear-gradient(90deg,rgba(227,187,61,.07),transparent);
+}
+.education .stackTitle{
+  color:rgba(243,238,226,.64)!important;
+}
+.education .skillStack span{
+  color:var(--ink);
+}
+.education .skillStack span:hover{
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+
+.instagram{
+  background:var(--paper);
+  color:var(--ink);
+}
+
+.contact{
+  background:var(--felt);
+  color:var(--cream);
+}
