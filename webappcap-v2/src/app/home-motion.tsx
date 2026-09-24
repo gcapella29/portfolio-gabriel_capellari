@@ -11,10 +11,12 @@ export function HomeMotion(){
     const revealItems=Array.from(root.querySelectorAll<HTMLElement>('[data-reveal]'));
     root.dataset.motionReady='true';
 
+    // This experimental branch was explicitly requested as a motion-heavy
+    // experience. Even if the browser reports reduced motion, we keep the
+    // coordinated storytelling running and expose the state on the root so
+    // CSS can opt the signature animations back in.
     if(reducedMotion){
-      revealItems.forEach(item=>{item.dataset.visible='true'});
-      root.style.setProperty('--home-scroll-progress','1');
-      return;
+      root.dataset.motionForce='true';
     }
 
     revealItems.forEach(item=>{
