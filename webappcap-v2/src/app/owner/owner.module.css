@@ -6,7 +6,7 @@
 
 .operationGrid{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:18px;align-items:start}.section{min-width:0}.sectionHead,.panelHead,.sidePanelHead{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}.sectionHead{min-height:32px;margin-bottom:10px}.sectionHead h2,.panelHead h2,.sidePanelHead h2{margin:0;letter-spacing:-.025em}.sectionHead h2{font-size:18px}.inlineAction{color:#344054;font-size:11px;font-weight:800;text-decoration:none}.inlineAction:hover{color:var(--blue)}
 
-.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.searchBox{height:42px;min-width:240px;flex:1;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:#fff}.searchBox span{color:#98a2b3;font-size:20px}.searchBox input{width:100%;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:12px}.searchBox input::placeholder{color:#98a2b3}.filters{display:flex;gap:6px}.filter,.filterActive{min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#667085;font:inherit;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer;transition:.18s ease}.filter:hover{border-color:#bdc5d0;color:var(--ink)}.filterActive{border-color:var(--navy);background:var(--navy);color:#fff}.grid{display:grid;gap:10px}.projectCard{overflow:hidden;border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:0 6px 22px rgba(17,24,39,.035);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.projectCard:hover{transform:translateY(-2px);border-color:#cbd2dc;box-shadow:0 13px 30px rgba(17,24,39,.07)}.cardTop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 0}.status{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.dot,.dotDraft{width:7px;height:7px;border-radius:50%;background:#25c878;box-shadow:0 0 0 4px rgba(37,200,120,.11)}.dotDraft{background:#f3ab25;box-shadow:0 0 0 4px rgba(243,171,37,.12)}.cardBadges{display:flex;gap:6px}.leadBadge,.attentionBadge{padding:5px 7px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}.leadBadge{border:1px solid #c4b5fd;background:#f5f3ff;color:#6941c6}.attentionBadge{border:1px solid #fed7aa;background:#fff7ed;color:#b45309}.projectCardBody{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:13px 16px 0}.projectCardBody h3{margin:0 0 4px;font-size:18px;letter-spacing:-.03em}.slug{color:#667085;font-size:11px}.projectMeta{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}.projectMeta span{padding:5px 7px;border:1px solid #e8ebf0;border-radius:999px;background:#f7f8fa;color:#687386;font-size:9px;font-weight:700}.projectNumbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:14px 16px 0;border:1px solid #e9ecf1;border-radius:11px;background:#f8f9fb;overflow:hidden}.projectNumbers div{padding:9px 11px;border-right:1px solid #e9ecf1}.projectNumbers div:last-child{border:0}.projectNumbers strong,.projectNumbers span{display:block}.projectNumbers strong{font-size:12px}.projectNumbers span{margin-top:2px;color:#929baa;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}.cardActions{display:flex;align-items:center;gap:6px;padding:11px 16px 14px}.cardPrimary,.cardAction,.cardDanger{min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:0 10px;border-radius:9px;font:inherit;font-size:10px;font-weight:800;text-decoration:none;cursor:pointer;transition:transform .18s ease,background .18s ease}.cardPrimary{gap:8px;background:var(--navy);color:#fff}.cardAction{border:1px solid #e6e9ee;background:#f7f8fa;color:#475467}.cardDanger{margin-left:auto;border:1px solid #fecaca;background:#fff8f8;color:#b42318}.cardPrimary:hover,.cardAction:hover,.cardDanger:hover{transform:translateY(-2px)}.cardAction:hover{background:#eef1f5}.cardDanger:hover{background:#feecec}.empty{padding:28px;border:1px dashed #cad1dc;border-radius:16px;background:rgba(255,255,255,.65);text-align:center;color:#7d8797;font-size:12px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.searchBox{height:42px;min-width:240px;flex:1;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:#fff}.searchBox span{color:#98a2b3;font-size:20px}.searchBox input{width:100%;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-size:12px}.searchBox input::placeholder{color:#98a2b3}.filters{display:flex;gap:6px}.filter,.filterActive{min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#667085;font:inherit;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer;transition:.18s ease}.filter:hover{border-color:#bdc5d0;color:var(--ink)}.filterActive{border-color:var(--navy);background:var(--navy);color:#fff}.grid{display:grid;gap:10px}.projectCard{overflow:hidden;border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:0 6px 22px rgba(17,24,39,.035);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.projectCard:hover{transform:none;border-color:#cbd2dc;box-shadow:0 13px 30px rgba(17,24,39,.07)}.cardTop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 0}.status{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.dot,.dotDraft{width:7px;height:7px;border-radius:50%;background:#25c878;box-shadow:0 0 0 4px rgba(37,200,120,.11)}.dotDraft{background:#f3ab25;box-shadow:0 0 0 4px rgba(243,171,37,.12)}.cardBadges{display:flex;gap:6px}.leadBadge,.attentionBadge{padding:5px 7px;border-radius:999px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}.leadBadge{border:1px solid #c4b5fd;background:#f5f3ff;color:#6941c6}.attentionBadge{border:1px solid #fed7aa;background:#fff7ed;color:#b45309}.projectCardBody{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:13px 16px 0}.projectCardBody h3{margin:0 0 4px;font-size:18px;letter-spacing:-.03em}.slug{color:#667085;font-size:11px}.projectMeta{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap}.projectMeta span{padding:5px 7px;border:1px solid #e8ebf0;border-radius:999px;background:#f7f8fa;color:#687386;font-size:9px;font-weight:700}.projectNumbers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:14px 16px 0;border:1px solid #e9ecf1;border-radius:11px;background:#f8f9fb;overflow:hidden}.projectNumbers div{padding:9px 11px;border-right:1px solid #e9ecf1}.projectNumbers div:last-child{border:0}.projectNumbers strong,.projectNumbers span{display:block}.projectNumbers strong{font-size:12px}.projectNumbers span{margin-top:2px;color:#929baa;font-size:8px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}.cardActions{display:flex;align-items:center;gap:6px;padding:11px 16px 14px}.cardPrimary,.cardAction,.cardDanger{min-height:34px;display:inline-flex;align-items:center;justify-content:center;padding:0 10px;border-radius:9px;font:inherit;font-size:10px;font-weight:800;text-decoration:none;cursor:pointer;transition:transform .18s ease,background .18s ease}.cardPrimary{gap:8px;background:var(--navy);color:#fff}.cardAction{border:1px solid #e6e9ee;background:#f7f8fa;color:#475467}.cardDanger{margin-left:auto;border:1px solid #fecaca;background:#fff8f8;color:#b42318}.cardPrimary:hover,.cardAction:hover,.cardDanger:hover{transform:translateY(-2px)}.cardAction:hover{background:#eef1f5}.cardDanger:hover{background:#feecec}.empty{padding:28px;border:1px dashed #cad1dc;border-radius:16px;background:rgba(255,255,255,.65);text-align:center;color:#7d8797;font-size:12px}
 
 .ownerAside{position:sticky;top:18px;display:grid;gap:12px}.sidePanel,.panel{border:1px solid var(--line);border-radius:17px;background:#fff;box-shadow:0 6px 22px rgba(17,24,39,.035)}.sidePanel{padding:15px}.sidePanelHead{display:block;margin-bottom:9px}.sidePanelHead h2{margin-top:3px;font-size:15px}.priorityList,.activityList{display:grid}.priorityItem,.priorityClear{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:center;padding:10px 1px;border-top:1px solid #eef1f4;color:inherit;text-decoration:none}.priorityList>:first-child{border-top:0}.priorityItem>span,.priorityClear>span{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;font-size:12px;font-weight:900}.priorityWarn{background:#fff1df;color:#b45309}.priorityLead{background:#f0ecff;color:#6941c6}.priorityClear>span{background:#e8faef;color:#16834f}.priorityItem strong,.priorityItem small,.priorityClear strong{display:block}.priorityItem strong,.priorityClear strong{font-size:11px}.priorityItem small{margin-top:2px;color:#8a94a3;font-size:9px}.activityItem{display:grid;grid-template-columns:7px minmax(0,1fr) auto;gap:9px;align-items:start;padding:10px 1px;border-top:1px solid #eef1f4;color:inherit;text-decoration:none}.activityItem:first-child{border-top:0}.activityItem i{width:6px;height:6px;margin-top:5px;border-radius:50%}.activityLead{background:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.08)}.activityProject{background:#0ea5e9;box-shadow:0 0 0 3px rgba(14,165,233,.08)}.activityItem strong,.activityItem span,.activityItem small{display:block}.activityItem strong{font-size:10px}.activityItem span{margin-top:2px;color:#667085;font-size:9px;line-height:1.35}.activityItem small{margin-top:3px;color:#98a2b3;font-size:8px}.activityItem b{color:#a3aab5}.sideEmpty{padding:10px 0;color:#98a2b3;font-size:10px}
 
@@ -36,8 +36,8 @@
 .stat{transition:background .2s ease}
 .stat:hover{background:rgba(248,250,252,.86)}
 .projectCard{will-change:transform;transition:transform .24s cubic-bezier(.2,.7,.2,1),box-shadow .24s ease,border-color .24s ease}
-.projectCard:hover{transform:translateY(-4px);border-color:#d4dae5;box-shadow:0 18px 44px rgba(17,24,39,.09)}
-.projectCard:hover .cardPrimary{transform:translateY(-1px)}
+.projectCard:hover{transform:none;border-color:#d4dae5;box-shadow:0 18px 44px rgba(17,24,39,.09)}
+
 .cardPrimary,.cardAction,.sidePanel,.searchBox,.filter,.filterActive{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
 .cardPrimary:hover,.cardAction:hover{transform:translateY(-2px)}
 .sidePanel{box-shadow:0 8px 26px rgba(17,24,39,.035)}
@@ -56,21 +56,49 @@
 /* Button press refinement */
 .cardPrimary,.cardAction,.cardDanger,.button,.buttonGhost{
   transform:translateZ(0);
-  transition:background .16s ease,border-color .16s ease,box-shadow .16s ease,transform .12s cubic-bezier(.2,.7,.2,1)
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease
 }
-.cardPrimary:hover,.cardAction:hover,.cardDanger:hover{
-  transform:translateY(-1px);
+.cardPrimary:hover,.cardAction:hover,.cardDanger:hover,.button:hover,.buttonGhost:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 22px rgba(20,32,57,.1)
 }
 .cardPrimary:active,.cardAction:active,.cardDanger:active,.button:active,.buttonGhost:active{
-  transform:translateY(0) scale(.975);
-  box-shadow:none;
-  transition-duration:.06s
+  transform:translateY(0);
+  box-shadow:none
 }
-.projectCard:hover .cardPrimary:active{transform:translateY(0) scale(.975)}
 .cardPrimary:focus-visible,.cardAction:focus-visible,.cardDanger:focus-visible{
   outline:3px solid rgba(49,94,231,.16);
   outline-offset:2px
 }
 @media(prefers-reduced-motion:reduce){
  .cardPrimary:active,.cardAction:active,.cardDanger:active,.button:active,.buttonGhost:active{transform:none!important}
+}
+
+
+/* Project cards stay completely static; only their action buttons animate. */
+.projectCard{
+  transform:none!important;
+  transition:none!important;
+}
+.projectCard:hover{
+  transform:none!important;
+  border-color:var(--line)!important;
+  box-shadow:0 6px 22px rgba(17,24,39,.035)!important;
+}
+.projectCard:hover .cardPrimary,
+.projectCard:hover .cardAction,
+.projectCard:hover .cardDanger{
+  transform:none;
+}
+.projectCard .cardPrimary:hover,
+.projectCard .cardAction:hover,
+.projectCard .cardDanger:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 10px 22px rgba(20,32,57,.1)!important;
+}
+.projectCard .cardPrimary:active,
+.projectCard .cardAction:active,
+.projectCard .cardDanger:active{
+  transform:translateY(0)!important;
+  box-shadow:none!important;
 }
