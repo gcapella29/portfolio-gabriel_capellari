@@ -52,6 +52,7 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
   const portfolioUrl=value('portfolio_url',DEFAULT_PORTFOLIO_URL);
   const lines=(raw:string)=>raw.split(/\r?\n/).map(item=>item.trim()).filter(Boolean);
   const marqueeItems=lines(value('marquee_items',defaultMarqueeItems.map(item=>item.replace(/ ◆$/,'')).slice(0,8).join('\n'))).map(item=>`${item} ◆`);
+  const marqueeSequence=Array.from({length:Math.ceil(8/marqueeItems.length)},()=>marqueeItems).flat();
   const steps=lines(value('process_steps',defaultSteps.map(item=>`${item.title} | ${item.text}`).join('\n'))).map((item,index)=>{const [title,...text]=item.split('|');return{number:String(index+1).padStart(2,'0'),title:title.trim(),text:text.join('|').trim()}}).filter(item=>item.title&&item.text);
   const assurances=lines(value('assurances',defaultAssurances.join('\n')));
   const services=lines(value('services',defaultServices.map(item=>`${item.title} | ${item.text} | ${item.items.join('; ')}`).join('\n'))).map((item,index)=>{const [title,text='',rawItems='']=item.split('|');return{number:String(index+1).padStart(2,'0'),title:title.trim(),text:text.trim(),items:rawItems.split(';').map(part=>part.trim()).filter(Boolean)}}).filter(item=>item.title);
@@ -84,7 +85,7 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
 
     <div className={styles.marquee} aria-hidden="true">
       <div className={styles.marqueeTrack}>
-        {[0,1].map(group=><div className={styles.marqueeGroup} key={group}>{marqueeItems.map((item,index)=><span key={`${index}-${item}`}>{item}</span>)}</div>)}
+        {[0,1].map(group=><div className={styles.marqueeGroup} key={group}>{marqueeSequence.map((item,index)=><span key={index}>{item}</span>)}</div>)}
       </div>
     </div>
 
