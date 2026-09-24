@@ -81,20 +81,6 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
         <div className={`${styles.floatCard} ${styles.cardTwo}`}><small>CONTROLE</small><strong>Edite e publique</strong><i/></div>
         <div className={`${styles.floatCard} ${styles.cardThree}`}><small>EXPERIÊNCIA</small><strong>Rápido em qualquer tela</strong><i/></div>
       </div>
-
-      <div className={styles.motionStory} aria-label="Fluxo visual do projeto">
-        {[
-          ['01','IDEIA','entender'],
-          ['02','DESIGN','construir'],
-          ['03','PREVIEW','revisar'],
-          ['04','NO AR','publicar']
-        ].map((item,index)=><div key={item[0]} data-motion-phase-item={index}>
-          <span>{item[0]}</span>
-          <strong>{item[1]}</strong>
-          <small>{item[2]}</small>
-          <i aria-hidden="true"/>
-        </div>)}
-      </div>
     </section>
 
     <div className={styles.marquee} aria-hidden="true">

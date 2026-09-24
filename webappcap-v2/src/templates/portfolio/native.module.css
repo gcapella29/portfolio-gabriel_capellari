@@ -172,3 +172,431 @@
 }
 /* The identity ticker remains continuous, matching the approved platform marquee. */
 @media(prefers-reduced-motion:reduce){.tickerTrack{animation:tickerContinuous 38s linear infinite!important;animation-play-state:running!important}}
+
+
+/* Editorial Live Desk motion system. */
+/*
+  The portfolio's motion language is newsroom/editorial, not generic.
+  One shared beat connects research, live coverage, editing and publishing.
+*/
+.site{
+  --editorial-fast:180ms;
+  --editorial-normal:520ms;
+  --editorial-slow:900ms;
+}
+
+/* User can pause the portfolio without changing content or navigation. */
+.site[data-motion-paused="true"] *,
+.site[data-motion-paused="true"] *::before,
+.site[data-motion-paused="true"] *::after{
+  animation-play-state:paused!important;
+}
+
+.motionToggle{
+  position:fixed;
+  z-index:9999;
+  left:max(12px,env(safe-area-inset-left));
+  top:58px;
+  min-width:70px;
+  height:30px;
+  padding:0 .65rem;
+  border:1px solid rgba(243,238,226,.42);
+  border-radius:999px;
+  background:rgba(8,39,32,.68);
+  color:var(--cream);
+  box-shadow:0 10px 28px rgba(0,0,0,.16);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  cursor:pointer;
+  font:600 .56rem/1 var(--portfolio-mono),'IBM Plex Mono',monospace;
+  letter-spacing:.08em;
+}
+.motionToggle::before{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  margin-right:.45rem;
+  border-radius:50%;
+  content:"";
+  background:#f04c42;
+  box-shadow:0 0 0 0 rgba(240,76,66,.35);
+  animation:editorialLivePulse 2s ease-out infinite;
+}
+
+/* Hero behaves like a live editorial desk. */
+.hero::before{
+  position:absolute;
+  z-index:2;
+  left:0;
+  right:0;
+  top:-2px;
+  height:2px;
+  content:"";
+  opacity:.7;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  transform:translateX(-100%);
+  animation:editorialSignalSweep 7.5s ease-in-out infinite;
+  pointer-events:none;
+}
+.heroBackground{
+  animation:editorialHeroBreath 9s ease-in-out infinite;
+}
+.heroCopy h1 em{
+  position:relative;
+  display:inline-block;
+}
+.heroCopy h1 em::after{
+  position:absolute;
+  right:0;
+  bottom:-.04em;
+  left:0;
+  height:.08em;
+  border-radius:999px;
+  content:"";
+  transform:scaleX(.08);
+  transform-origin:left;
+  background:var(--gold);
+  opacity:.72;
+  animation:editorialHeadline 6.5s cubic-bezier(.22,1,.36,1) infinite;
+}
+.heroTop>span{
+  animation:editorialLocationSignal 5.4s ease-in-out infinite;
+}
+
+/* The four-step newsroom strip was removed after visual review.
+   The shared editorial beat still drives the sections below. */
+
+/* Stats work like headline figures being called out on a live desk. */
+.stats article[data-editorial-active="true"]{
+  transform:translateY(-7px);
+  border-color:rgba(227,187,61,.42);
+  box-shadow:0 20px 44px rgba(0,0,0,.16);
+}
+.stats article[data-editorial-active="true"] strong{
+  animation:editorialNumberCallout .58s var(--ui-ease);
+}
+
+/* WSOP gallery becomes a live camera feed. */
+.recBadge{
+  position:absolute;
+  z-index:7;
+  top:1rem;
+  right:1rem;
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  padding:.4rem .58rem;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:999px;
+  background:rgba(5,11,9,.58);
+  color:#fff;
+  backdrop-filter:blur(8px);
+  font:700 .54rem/1 var(--portfolio-mono),'IBM Plex Mono',monospace;
+  letter-spacing:.08em;
+}
+.recBadge i{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#ff4b43;
+  box-shadow:0 0 0 0 rgba(255,75,67,.45);
+  animation:editorialRec 1.6s ease-out infinite;
+}
+.cameraSweep{
+  position:absolute;
+  z-index:5;
+  top:0;
+  bottom:0;
+  left:-24%;
+  width:18%;
+  pointer-events:none;
+  transform:skewX(-12deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+  animation:editorialCameraSweep 9.5s ease-in-out infinite;
+}
+.carousel::after{
+  content:"";
+  position:absolute;
+  z-index:6;
+  inset:0;
+  pointer-events:none;
+  border:1px solid rgba(227,187,61,.12);
+  box-shadow:inset 0 0 0 0 rgba(255,255,255,0);
+  animation:editorialShutter 10s ease-out infinite;
+}
+
+/* Coverage board: one event is "on the wire" at a time. */
+.board>div[data-editorial-active="true"]{
+  padding-left:1.55rem;
+  background:linear-gradient(90deg,rgba(227,187,61,.10),rgba(227,187,61,.025),transparent);
+  box-shadow:inset 3px 0 0 var(--gold);
+}
+.board>div[data-editorial-active="true"] strong{
+  color:var(--gold);
+}
+.board>div[data-editorial-active="true"]::after{
+  content:"LIVE";
+  margin-left:auto;
+  color:var(--brick);
+  font:700 .53rem/1 var(--portfolio-mono),'IBM Plex Mono',monospace;
+  letter-spacing:.1em;
+  animation:editorialLiveWord 1.8s ease-in-out infinite;
+}
+
+/* Published outlets behave like stories moving through a news wire. */
+.pressCards>a[data-editorial-active="true"]{
+  transform:translateY(-6px);
+  border-color:rgba(201,162,39,.48);
+  box-shadow:0 18px 36px rgba(23,19,16,.10);
+}
+.pressCards>a[data-editorial-active="true"]::before{
+  transform:translateX(120%);
+  transition-duration:1.25s;
+}
+.pressCards>a[data-editorial-active="true"] b{
+  color:var(--gold-base);
+  transform:translateX(5px);
+}
+
+/* Career timeline gets an editorial playhead. */
+.timeline article[data-editorial-active="true"]{
+  padding-left:1.8rem;
+  background:linear-gradient(90deg,rgba(227,187,61,.065),transparent 68%);
+}
+.timeline article[data-editorial-active="true"]::before{
+  transform:scale(1.55);
+  background:var(--gold);
+  box-shadow:0 0 0 8px rgba(227,187,61,.08),0 0 24px rgba(227,187,61,.22);
+}
+.timeline article[data-editorial-active="true"] h3{
+  color:var(--gold);
+}
+
+/* Contact closes the story like a live sign-off. */
+.contact::before{
+  animation:editorialSpadeBreath 8s ease-in-out infinite;
+}
+.contactLinks a::after,
+.contactLinks button::after{
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:-1px;
+  width:20%;
+  height:1px;
+  opacity:0;
+  background:linear-gradient(90deg,transparent,var(--gold));
+  animation:editorialContactScan 7s ease-in-out infinite;
+}
+
+/* Signature keyframes. */
+@keyframes editorialLivePulse{
+  0%{box-shadow:0 0 0 0 rgba(240,76,66,.38)}
+  70%{box-shadow:0 0 0 8px rgba(240,76,66,0)}
+  100%{box-shadow:0 0 0 0 rgba(240,76,66,0)}
+}
+@keyframes editorialSignalSweep{
+  0%,55%{transform:translateX(-100%);opacity:0}
+  62%{opacity:.8}
+  82%{transform:translateX(100%);opacity:.65}
+  100%{transform:translateX(100%);opacity:0}
+}
+@keyframes editorialHeroBreath{
+  0%,100%{filter:saturate(1) brightness(1)}
+  50%{filter:saturate(1.06) brightness(1.025)}
+}
+@keyframes editorialHeadline{
+  0%,10%{transform:scaleX(.08);opacity:.25}
+  26%,76%{transform:scaleX(1);opacity:.8}
+  92%,100%{transform:scaleX(.08);opacity:.25}
+}
+@keyframes editorialLocationSignal{
+  0%,78%,100%{box-shadow:0 0 0 0 rgba(227,187,61,0)}
+  88%{box-shadow:0 0 0 6px rgba(227,187,61,.08)}
+}
+@keyframes editorialNumberCallout{
+  0%{transform:translateY(5px);opacity:.4}
+  100%{transform:translateY(0);opacity:1}
+}
+@keyframes editorialRec{
+  0%{box-shadow:0 0 0 0 rgba(255,75,67,.45)}
+  75%{box-shadow:0 0 0 8px rgba(255,75,67,0)}
+  100%{box-shadow:0 0 0 0 rgba(255,75,67,0)}
+}
+@keyframes editorialCameraSweep{
+  0%,58%{left:-24%;opacity:0}
+  64%{opacity:1}
+  82%{left:112%;opacity:.65}
+  100%{left:112%;opacity:0}
+}
+@keyframes editorialShutter{
+  0%,89%,100%{box-shadow:inset 0 0 0 0 rgba(255,255,255,0)}
+  92%{box-shadow:inset 0 0 110px 20px rgba(255,255,255,.08)}
+}
+@keyframes editorialLiveWord{
+  50%{opacity:.42}
+}
+@keyframes editorialSpadeBreath{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.04);opacity:.72}
+}
+@keyframes editorialContactScan{
+  0%,62%{opacity:0;transform:translateX(-180%)}
+  70%{opacity:1}
+  86%{opacity:.6;transform:translateX(0)}
+  100%{opacity:0}
+}
+
+@media(max-width:819px){
+  .motionToggle{top:56px}
+  .board>div[data-editorial-active="true"]{padding-left:.9rem}
+  .timeline article[data-editorial-active="true"]{padding-left:1.3rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  /*
+    The user explicitly asked for the motion-led portfolio experience.
+    Keep the signature storytelling active, while the LIVE button provides
+    an immediate manual pause.
+  */
+  .motionToggle::before{animation:editorialLivePulse 2s ease-out infinite!important}
+  .hero::before{animation:editorialSignalSweep 7.5s ease-in-out infinite!important}
+  .heroBackground{animation:editorialHeroBreath 9s ease-in-out infinite!important}
+  .heroCopy h1 em::after{animation:editorialHeadline 6.5s cubic-bezier(.22,1,.36,1) infinite!important}
+  .recBadge i{animation:editorialRec 1.6s ease-out infinite!important}
+  .cameraSweep{animation:editorialCameraSweep 9.5s ease-in-out infinite!important}
+  .carousel::after{animation:editorialShutter 10s ease-out infinite!important}
+  .contact::before{animation:editorialSpadeBreath 8s ease-in-out infinite!important}
+  .stats article,.board>div,.pressCards>a,.timeline article{
+    transition:transform .5s var(--ui-ease),background .45s ease,color .35s ease,box-shadow .45s ease,border-color .35s ease!important;
+  }
+}
+
+
+/* Alternating editorial section backgrounds: beige / green. */
+/*
+  After the hero/ticker/metrics strip, the main editorial sections alternate:
+  beige -> green -> beige -> green...
+  Content colors are adjusted per section so the original cards and motion
+  remain readable without changing the page structure.
+*/
+.about{
+  background:var(--paper);
+  color:var(--ink);
+}
+
+.featured{
+  background:var(--felt);
+  color:var(--cream);
+}
+.featured .eyebrow{color:var(--gold)}
+.featuredCopy p{color:rgba(243,238,226,.80)}
+.featured .yearList span{
+  border-color:rgba(243,238,226,.28);
+  background:rgba(255,255,255,.035);
+  color:var(--cream);
+}
+
+.coverage{
+  background:var(--paper);
+  color:var(--ink);
+}
+.coverage .eyebrow{color:var(--gold-base)}
+.coverage .board{
+  border-color:rgba(23,19,16,.12);
+  box-shadow:0 18px 55px rgba(8,39,32,.08);
+}
+.coverage .board>div{
+  border-bottom-color:rgba(23,19,16,.11);
+  background:linear-gradient(90deg,rgba(8,39,32,.018),transparent);
+}
+.coverage .board>div:hover{
+  background:rgba(201,162,39,.07);
+}
+.coverage .board span{color:var(--brick)}
+.coverage .board>div[data-editorial-active="true"]{
+  background:linear-gradient(90deg,rgba(201,162,39,.13),rgba(201,162,39,.035),transparent);
+  box-shadow:inset 3px 0 0 var(--gold-base);
+}
+.coverage .board>div[data-editorial-active="true"] strong{
+  color:var(--felt);
+}
+
+.portfolio{
+  background:var(--felt);
+  color:var(--cream);
+}
+.portfolio .eyebrow{color:var(--gold)}
+.portfolio .profile,
+.portfolio .pressCards>a{
+  color:var(--ink);
+}
+.portfolio .pressCards>a{
+  background:rgba(250,247,240,.96);
+  border-color:rgba(243,238,226,.24);
+}
+.portfolio .pressCards>a[data-editorial-active="true"]{
+  border-color:rgba(227,187,61,.68);
+  box-shadow:0 20px 42px rgba(0,0,0,.18);
+}
+
+.experience{
+  background:var(--paper);
+  color:var(--ink);
+}
+.experience .eyebrow{color:var(--gold-base)}
+.experience .timeline{
+  border-top-color:rgba(23,19,16,.12);
+}
+.experience .timeline article{
+  border-bottom-color:rgba(23,19,16,.11);
+}
+.experience .timeline article>strong{
+  color:#665f55;
+}
+.experience .timeline p{
+  color:#3a342c;
+}
+.experience .timeline time{
+  color:var(--brick);
+}
+.experience .timeline article:hover{
+  background:rgba(201,162,39,.06);
+}
+.experience .timeline article[data-editorial-active="true"]{
+  background:linear-gradient(90deg,rgba(201,162,39,.11),transparent 68%);
+}
+.experience .timeline article[data-editorial-active="true"] h3{
+  color:var(--felt);
+}
+
+.education{
+  background:var(--felt);
+  color:var(--cream);
+}
+.education .eyebrow{color:var(--gold)}
+.educationGrid article span{
+  color:rgba(243,238,226,.68);
+}
+.educationGrid article:hover{
+  background:linear-gradient(90deg,rgba(227,187,61,.07),transparent);
+}
+.education .stackTitle{
+  color:rgba(243,238,226,.64)!important;
+}
+.education .skillStack span{
+  color:var(--ink);
+}
+.education .skillStack span:hover{
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+
+.instagram{
+  background:var(--paper);
+  color:var(--ink);
+}
+
+.contact{
+  background:var(--felt);
+  color:var(--cream);
+}
