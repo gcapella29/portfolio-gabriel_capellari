@@ -20,3 +20,34 @@
 @media(max-width:720px){.page{padding:16px}.topbar,.detailTopbar{align-items:flex-start}.topActions{justify-content:flex-end}.ownerHeading{align-items:center}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid #edf0f4}.toolbar{margin-top:4px}.filters{overflow-x:auto;padding-bottom:2px}.projectCardBody{align-items:flex-start;flex-direction:column}.projectMeta{justify-content:flex-start}.cardActions{align-items:stretch}.cardPrimary,.cardAction,.cardDanger{flex:1 1 105px;margin-left:0}.ownerAside{grid-template-columns:1fr}.detailHeader{align-items:flex-start;flex-direction:column}.managementGrid{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.formCard{padding:20px}.deleteActions{align-items:stretch;flex-direction:column-reverse}.deleteActions button{width:100%}}
 @media(max-width:430px){.page{padding:12px}.brandText{display:none}.topActions{gap:5px}.topActions .button,.topActions .buttonGhost{min-height:36px;padding:0 10px;font-size:10px}.ownerHeading h1{font-size:34px}.stat{padding:13px}.stat strong{font-size:21px}.projectNumbers{grid-template-columns:repeat(3,minmax(0,1fr));margin-inline:12px}.projectNumbers div{padding:8px}.cardTop,.projectCardBody{padding-inline:12px}.cardActions{padding-inline:12px}.detailHeader{padding:18px}.detailActions{width:100%}.detailActions>*{flex:1}.panel{padding:14px}.formCard{padding:17px}.deleteDialog{padding:20px}}
 @media(prefers-reduced-motion:reduce){.button,.buttonGhost,.projectCard,.cardPrimary,.cardAction,.cardDanger,.manageCard{transition:none!important;transform:none!important}}
+
+
+/* Motion system — owner workspace */
+.page{position:relative;overflow-x:hidden;background:
+  radial-gradient(circle at 86% -6%,rgba(49,94,231,.14),transparent 28%),
+  radial-gradient(circle at 0 78%,rgba(99,102,241,.055),transparent 24%),
+  #f4f6f9}
+.page:before{content:"";position:fixed;z-index:0;width:280px;height:280px;right:-120px;top:130px;border-radius:50%;border:1px solid rgba(49,94,231,.08);box-shadow:0 0 0 44px rgba(49,94,231,.025),0 0 0 88px rgba(49,94,231,.018);pointer-events:none;animation:ownerOrb 12s ease-in-out infinite}
+.workspace{position:relative;z-index:1}
+.topbar{animation:ownerReveal .55s ease both}
+.ownerHeading{animation:ownerReveal .55s .05s ease both}
+.stats{animation:ownerReveal .55s .10s ease both}
+.operationGrid{animation:ownerReveal .55s .15s ease both}
+.stat{transition:background .2s ease}
+.stat:hover{background:rgba(248,250,252,.86)}
+.projectCard{will-change:transform;transition:transform .24s cubic-bezier(.2,.7,.2,1),box-shadow .24s ease,border-color .24s ease}
+.projectCard:hover{transform:translateY(-4px);border-color:#d4dae5;box-shadow:0 18px 44px rgba(17,24,39,.09)}
+.projectCard:hover .cardPrimary{transform:translateY(-1px)}
+.cardPrimary,.cardAction,.sidePanel,.searchBox,.filter,.filterActive{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
+.cardPrimary:hover,.cardAction:hover{transform:translateY(-2px)}
+.sidePanel{box-shadow:0 8px 26px rgba(17,24,39,.035)}
+.sidePanel:hover{box-shadow:0 14px 36px rgba(17,24,39,.065)}
+.searchBox:focus-within{border-color:#aab9ef;box-shadow:0 0 0 4px rgba(49,94,231,.08)}
+.filter:hover{transform:translateY(-1px);background:#fff}
+@keyframes ownerReveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes ownerOrb{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-14px,18px,0)}}
+@media(prefers-reduced-motion:reduce){
+ .page:before,.topbar,.ownerHeading,.stats,.operationGrid{animation:none!important}
+ .projectCard,.cardPrimary,.cardAction,.sidePanel,.searchBox,.filter,.filterActive{transition:none!important}
+ .projectCard:hover,.cardPrimary:hover,.cardAction:hover,.filter:hover{transform:none!important}
+}
