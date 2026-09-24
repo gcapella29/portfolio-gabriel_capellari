@@ -109,3 +109,86 @@
 }
 @keyframes commerceHeroDrift{from{opacity:.82;transform:translateY(-42%) scale(1.035);filter:saturate(.92)}to{opacity:1;transform:translateY(-42%) scale(1);filter:saturate(1)}}
 @keyframes commerceHeroCopyIn{from{opacity:0;transform:translate3d(0,18px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+
+
+/* VET-SE MOTION — living storefront. */
+/*
+  Signature motion belongs to the storefront itself:
+  hero breathes, title is periodically underlined, and an active cart
+  gets a soft operational pulse. No extra visual strip is introduced.
+*/
+.site[data-motion-live="true"] .hero::before{
+  content:"";
+  position:absolute;
+  z-index:3;
+  top:0;
+  bottom:0;
+  left:-26%;
+  width:18%;
+  pointer-events:none;
+  transform:skewX(-14deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);
+  animation:commerceHeroSweep 8.6s ease-in-out infinite;
+}
+.site[data-motion-live="true"] .heroMedia{
+  animation:commerceHeroBreath 10s ease-in-out infinite;
+}
+.site[data-motion-live="true"] .heroCopy h1{
+  position:relative;
+  width:max-content;
+  max-width:100%;
+}
+.site[data-motion-live="true"] .heroCopy h1::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-.08em;
+  height:4px;
+  border-radius:999px;
+  background:var(--accent);
+  transform:scaleX(.06);
+  transform-origin:left;
+  opacity:.72;
+  animation:commerceTitleDraw 6.8s cubic-bezier(.22,1,.36,1) infinite;
+}
+.site[data-motion-live="true"] .topbar nav span{
+  animation:commerceCartCount 2.4s ease-in-out infinite;
+}
+.site[data-motion-live="true"] .order[data-cart-active="true"] .cartIcon{
+  animation:commerceCartReady 3.4s ease-in-out infinite;
+}
+
+@keyframes commerceHeroSweep{
+  0%,58%{left:-26%;opacity:0}
+  64%{opacity:1}
+  83%{left:112%;opacity:.65}
+  100%{left:112%;opacity:0}
+}
+@keyframes commerceHeroBreath{
+  0%,100%{filter:saturate(1) brightness(1)}
+  50%{filter:saturate(1.055) brightness(1.03)}
+}
+@keyframes commerceTitleDraw{
+  0%,10%{transform:scaleX(.06);opacity:.2}
+  25%,74%{transform:scaleX(1);opacity:.78}
+  92%,100%{transform:scaleX(.06);opacity:.2}
+}
+@keyframes commerceCartCount{
+  0%,76%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}
+  86%{box-shadow:0 0 0 7px color-mix(in srgb,var(--accent) 14%,transparent)}
+}
+@keyframes commerceCartReady{
+  0%,100%{transform:translateY(-50%) scale(1)}
+  50%{transform:translateY(-50%) scale(1.08);box-shadow:0 8px 26px color-mix(in srgb,var(--accent) 24%,transparent)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .site[data-motion-live="true"] .hero::before,
+  .site[data-motion-live="true"] .heroMedia,
+  .site[data-motion-live="true"] .heroCopy h1::after,
+  .site[data-motion-live="true"] .topbar nav span,
+  .site[data-motion-live="true"] .order[data-cart-active="true"] .cartIcon{
+    animation:none!important;
+  }
+}

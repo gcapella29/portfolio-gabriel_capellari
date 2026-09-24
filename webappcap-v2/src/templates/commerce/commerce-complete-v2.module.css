@@ -224,3 +224,133 @@
  .productCard,.productImage img,.creatorPhoto img,.socialButton,.creatorInstagramButton,.whatsappAfterCart{transition:none}
  .productCard:hover,.productCard:hover .productImage img,.creatorPhoto:hover img,.socialButton:hover,.creatorInstagramButton:hover,.whatsappAfterCart:hover{transform:none}
 }
+
+
+/* VET-SE MOTION — catalog spotlight cycle. */
+/*
+  A shared React beat calls attention to one category/product at a time.
+  The behavior resembles a physical storefront display being refreshed,
+  while preserving all catalog and cart interactions.
+*/
+.categoryShelf button[data-live-active="true"]{
+  transform:translateY(-6px);
+  border-color:color-mix(in srgb,var(--accent) 62%,#dfe4ea);
+  background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--accent) 15%,#fff));
+  box-shadow:0 18px 34px color-mix(in srgb,var(--accent) 16%,rgba(22,28,36,.08));
+}
+.categoryShelf button[data-live-active="true"]::after{
+  content:"";
+  position:absolute;
+  width:7px;
+  height:7px;
+  right:13px;
+  top:13px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 32%,transparent);
+  animation:storefrontDot 1.8s ease-out infinite;
+}
+.categoryShelf button{position:relative}
+
+.catalogRail::after{
+  content:"";
+  position:absolute;
+  z-index:4;
+  top:6px;
+  bottom:18px;
+  left:-22%;
+  width:13%;
+  pointer-events:none;
+  transform:skewX(-16deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.58),transparent);
+  animation:catalogLightPass 9.4s ease-in-out infinite;
+}
+.productCard[data-live-active="true"]{
+  transform:translateY(-9px) scale(1.012);
+  border-color:color-mix(in srgb,var(--accent) 48%,#d6dbe1);
+  box-shadow:0 24px 48px color-mix(in srgb,var(--accent) 15%,rgba(22,28,36,.11));
+}
+.productCard[data-live-active="true"] .productImage img{
+  filter:saturate(1.06) brightness(1.015);
+}
+.productCard[data-live-active="true"] .promoBadge{
+  animation:promoBreath 1.8s ease-in-out infinite;
+}
+.catalogArrow{
+  animation:catalogArrowHint 6.2s ease-in-out infinite;
+}
+.catalogArrow:last-child{animation-delay:-3.1s}
+
+.instagramGrid>div[data-live-active="true"]{
+  transform:translateY(-7px) rotate(.4deg);
+  border-color:color-mix(in srgb,var(--accent) 42%,#dfe4ea);
+  box-shadow:0 18px 34px color-mix(in srgb,var(--accent) 12%,rgba(25,34,46,.08));
+}
+.storyPanel[data-live-active="true"] header h2{
+  text-shadow:0 0 28px color-mix(in srgb,var(--accent) 16%,transparent);
+}
+.storyAbout[data-live-active="true"] .creatorPhoto{
+  transform:translateY(-5px);
+  box-shadow:0 24px 55px color-mix(in srgb,var(--accent) 14%,rgba(29,34,41,.12));
+}
+.creatorPhoto{transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s ease}
+
+.whatsappAfterCart::after{
+  content:"";
+  position:absolute;
+  top:-2px;
+  bottom:-2px;
+  left:-38%;
+  width:28%;
+  transform:skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
+  animation:whatsappSweep 5.8s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes storefrontDot{
+  0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 32%,transparent)}
+  75%{box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 0%,transparent)}
+  100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}
+}
+@keyframes catalogLightPass{
+  0%,62%{left:-22%;opacity:0}
+  68%{opacity:1}
+  84%{left:108%;opacity:.58}
+  100%{left:108%;opacity:0}
+}
+@keyframes promoBreath{
+  50%{transform:scale(1.045);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 8%,transparent)}
+}
+@keyframes catalogArrowHint{
+  0%,82%,100%{transform:translateY(0)}
+  90%{transform:translateY(-4px)}
+}
+@keyframes whatsappSweep{
+  0%,58%{left:-38%;opacity:0}
+  65%{opacity:1}
+  84%{left:118%;opacity:.7}
+  100%{left:118%;opacity:0}
+}
+
+@media(max-width:850px){
+  .productCard[data-live-active="true"]{transform:translateY(-5px) scale(1.006)}
+  .categoryShelf button[data-live-active="true"]{transform:translateY(-4px)}
+  .instagramGrid>div[data-live-active="true"]{transform:translateY(-4px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .categoryShelf button[data-live-active="true"],
+  .productCard[data-live-active="true"],
+  .instagramGrid>div[data-live-active="true"],
+  .storyAbout[data-live-active="true"] .creatorPhoto{
+    transform:none!important;
+  }
+  .categoryShelf button[data-live-active="true"]::after,
+  .catalogRail::after,
+  .productCard[data-live-active="true"] .promoBadge,
+  .catalogArrow,
+  .whatsappAfterCart::after{
+    animation:none!important;
+  }
+}
