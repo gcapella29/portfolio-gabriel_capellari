@@ -104,3 +104,22 @@
  .hero,.summary,.tool,.analyticsPanel,.pageFrame :global(.setup-card),.pageFrame :global(.editor-section),.pageFrame :global(.lead-card-v2),.pageFrame :global(.lead-stats article),.pageFrame :global(.field input),.pageFrame :global(.field textarea),.pageFrame :global(.field select){transition:none!important}
  .hero:hover,.pageFrame :global(.field input:focus),.pageFrame :global(.field textarea:focus),.pageFrame :global(.field select:focus){transform:none!important}
 }
+
+
+/* Button press refinement */
+.button,.buttonGhost,.analyticsButton,.publish,.pageFrame :global(.action){
+  transform:translateZ(0);
+  transition:background .16s ease,border-color .16s ease,box-shadow .16s ease,transform .12s cubic-bezier(.2,.7,.2,1)!important
+}
+.button:hover,.buttonGhost:hover,.analyticsButton:hover,.publish:hover,.pageFrame :global(.action:hover){
+  transform:translateY(-1px)
+}
+.button:active,.buttonGhost:active,.analyticsButton:active,.publish:active,.pageFrame :global(.action:active){
+  transform:translateY(0) scale(.975)!important;
+  box-shadow:none!important;
+  transition-duration:.06s!important
+}
+.buttonGhost:active:after,.analyticsButton:active:after,.publish:active:after{transform:translateX(-125%);transition:none}
+@media(prefers-reduced-motion:reduce){
+ .button:active,.buttonGhost:active,.analyticsButton:active,.publish:active,.pageFrame :global(.action:active){transform:none!important}
+}
