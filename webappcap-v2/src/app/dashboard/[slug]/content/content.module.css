@@ -38,3 +38,25 @@
  .saveBar>div{padding:1px 4px;font-size:9px}
  .saveBar :global(.action){min-height:42px;padding:.65rem .7rem;font-size:10px}
 }
+
+
+/* Shared content editor motion */
+.sectionNav,.languageBar,.disclosure,.form :global(.repeatable-section),.saveBar{
+  transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s ease,border-color .22s ease
+}
+.sectionNav:hover,.languageBar:hover{border-color:#d0d9e8;box-shadow:0 12px 34px rgba(17,24,39,.07)}
+.sectionNav a{transition:background .18s ease,color .18s ease,transform .18s ease}
+.sectionNav a:hover{transform:translateY(-1px)}
+.disclosure:hover,.form :global(.repeatable-section:hover){border-color:#d3dbe7;box-shadow:0 13px 34px rgba(17,24,39,.065)}
+.disclosure>summary,.form :global(.repeatable-section>summary){transition:background .18s ease}
+.disclosure>summary:hover,.form :global(.repeatable-section>summary:hover){background:linear-gradient(90deg,#fff,#f8faff)}
+.disclosure>summary:before,.form :global(.repeatable-section>summary:before){transition:transform .2s ease,box-shadow .2s ease}
+.disclosure>summary:hover:before,.form :global(.repeatable-section>summary:hover:before){transform:scale(1.06);box-shadow:0 6px 15px rgba(49,94,231,.12)}
+.disclosure>summary:after,.form :global(.repeatable-section>summary:after){transition:transform .2s ease,color .2s ease}
+.disclosure[open]>summary:after,.form :global(.repeatable-section[open]>summary:after){transform:rotate(180deg);color:#315ee7}
+.saveBar{box-shadow:0 16px 42px rgba(17,24,39,.12)}
+.saveBar:hover{border-color:#ccd6e4;box-shadow:0 19px 48px rgba(17,24,39,.15)}
+@media(prefers-reduced-motion:reduce){
+ .sectionNav,.languageBar,.disclosure,.form :global(.repeatable-section),.saveBar,.sectionNav a,.disclosure>summary,.form :global(.repeatable-section>summary),.disclosure>summary:before,.form :global(.repeatable-section>summary:before),.disclosure>summary:after,.form :global(.repeatable-section>summary:after){transition:none!important}
+ .sectionNav a:hover,.disclosure>summary:hover:before,.form :global(.repeatable-section>summary:hover:before){transform:none!important}
+}
