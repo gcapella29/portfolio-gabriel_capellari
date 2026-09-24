@@ -127,9 +127,9 @@
 @media(hover:none){.serviceGrid article:hover,.commitmentGrid article:hover{transform:none}.serviceGrid article:hover .serviceTop i{transform:none;background:transparent;color:var(--yellow)}}
 @media(prefers-reduced-motion:reduce){.serviceGrid article,.serviceTop i,.serviceGrid article>a span,.servicesNote a,.commitmentGrid article,.faqList summary i{transition:none!important}.faqList details[open] p{animation:none!important}}
 
-/* Give the longer, editable headings room without squeezing the description. */
+/* Match the introduction's label-above, title-and-description layout on desktop. */
 @media(min-width:1101px){
-  .projectsHeader,.servicesHeader{grid-template-columns:.42fr 1.58fr}
-  .projectsHeader>div:last-child,.servicesHeader>div:last-child{grid-template-columns:1.25fr .75fr}
+  .projectsHeader,.servicesHeader{grid-template-columns:1fr;gap:3rem}
+  .projectsHeader>div:last-child,.servicesHeader>div:last-child{grid-template-columns:1.05fr .8fr;gap:clamp(3rem,10vw,9rem)}
   .projectsHeader h2,.servicesHeader h2{max-width:14ch;font-size:clamp(3rem,4.6vw,4.5rem)}
 }
