@@ -52,6 +52,7 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
   const portfolioUrl=value('portfolio_url',DEFAULT_PORTFOLIO_URL);
   const lines=(raw:string)=>raw.split(/\r?\n/).map(item=>item.trim()).filter(Boolean);
   const marqueeItems=lines(value('marquee_items',defaultMarqueeItems.map(item=>item.replace(/ ◆$/,'')).slice(0,8).join('\n'))).map(item=>`${item} ◆`);
+  const marqueeSequence=Array.from({length:Math.ceil(8/marqueeItems.length)},()=>marqueeItems).flat();
   const steps=lines(value('process_steps',defaultSteps.map(item=>`${item.title} | ${item.text}`).join('\n'))).map((item,index)=>{const [title,...text]=item.split('|');return{number:String(index+1).padStart(2,'0'),title:title.trim(),text:text.join('|').trim()}}).filter(item=>item.title&&item.text);
   const assurances=lines(value('assurances',defaultAssurances.join('\n')));
   const services=lines(value('services',defaultServices.map(item=>`${item.title} | ${item.text} | ${item.items.join('; ')}`).join('\n'))).map((item,index)=>{const [title,text='',rawItems='']=item.split('|');return{number:String(index+1).padStart(2,'0'),title:title.trim(),text:text.trim(),items:rawItems.split(';').map(part=>part.trim()).filter(Boolean)}}).filter(item=>item.title);
@@ -84,7 +85,7 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
 
     <div className={styles.marquee} aria-hidden="true">
       <div className={styles.marqueeTrack}>
-        {[0,1].map(group=><div className={styles.marqueeGroup} key={group}>{marqueeItems.map((item,index)=><span key={`${index}-${item}`}>{item}</span>)}</div>)}
+        {[0,1].map(group=><div className={styles.marqueeGroup} key={group}>{marqueeSequence.map((item,index)=><span key={index}>{item}</span>)}</div>)}
       </div>
     </div>
 
@@ -161,18 +162,18 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
     </section>
 
     <section className={styles.trust}>
-      <div className={styles.trustIntro} data-reveal><span>CONFIANÇA / 001</span><h2>{value('trust_title','Clareza do primeiro contato à publicação.')}</h2><p>{value('trust_description','Um bom site também depende de um bom processo. Estes são os compromissos que orientam cada projeto WebAppCap.')}</p></div>
+      <div className={styles.trustIntro} data-reveal><div className={styles.sectionLabel}><span>05</span> Confiança</div><h2>{value('trust_title','Clareza do primeiro contato à publicação.')}</h2><p>{value('trust_description','Um bom site também depende de um bom processo. Estes são os compromissos que orientam cada projeto WebAppCap.')}</p></div>
       <div className={styles.commitmentGrid}>{commitments.map((item,index)=><article key={item.label} data-reveal data-reveal-delay={String(index*70)}><span>{item.label}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
     </section>
 
     <section className={styles.faq} id="duvidas">
-      <div className={styles.faqHeading} data-reveal><div className={styles.sectionLabel}><span>05</span> Antes de começar</div><h2>Perguntas que ajudam a tirar a ideia do papel.</h2></div>
+      <div className={styles.faqHeading} data-reveal><div className={styles.sectionLabel}><span>06</span> Antes de começar</div><h2>Perguntas que ajudam a tirar a ideia do papel.</h2></div>
       <div className={styles.faqList} data-reveal data-reveal-delay="100">{questions.map((item,index)=><details key={item.question}><summary><span>{String(index+1).padStart(2,'0')}</span>{item.question}<i aria-hidden="true">+</i></summary><p>{item.answer}</p></details>)}</div>
     </section>
 
     <section className={styles.contact} id="contato">
       <div className={styles.contactPitch} data-reveal>
-        <span className={styles.contactKicker}>{value('contact_kicker','06 · TEM UM PROJETO EM MENTE?')}</span>
+        <span className={styles.contactKicker}>07 · {value('contact_kicker','TEM UM PROJETO EM MENTE?').replace(/^\s*0?[67]\s*[·.–-]\s*/,'')}</span>
         <h2>{value('contact_title','Vamos colocar sua ideia')} <em>{value('contact_emphasis','no ar.')}</em></h2>
         <p>{value('contact_description','Conte o que você precisa. Eu organizo o projeto e retorno com os próximos passos para transformar a ideia em um site com identidade.')}</p>
         <div className={styles.contactDirect}>
