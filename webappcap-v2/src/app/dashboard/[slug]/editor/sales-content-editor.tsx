@@ -16,14 +16,14 @@ function Block({id,number,title,summary,children,open=false}:{id:string;number:s
  return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>;
 }
 
-function productDefinition():RepeatableSection{
+function productDefinition(menuLimit:number):RepeatableSection{
  const source=sectionsForSegment('food-business').find(def=>def.key==='menu_items')!;
  const order=['image','title','category','price','promo_quantity','promo_total','description'];
  const labels:Record<string,string>={title:'Nome',category:'Categoria',price:'Preço unitário',promo_quantity:'Quantidade da promoção',promo_total:'Preço promocional do combo',description:'Descrição'};
- return {...source,label:'Produtos',description:'Cadastre foto, nome, categoria, preço e, se quiser, uma promoção por quantidade.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))};
+ return {...source,max:menuLimit,label:'Produtos',description:'Cadastre foto, nome, categoria, preço e, se quiser, uma promoção por quantidade.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))};
 }
 
-export default function SalesContentEditor({slug,projectId,canManageMedia,data}:{slug:string;projectId:string;canManageMedia:boolean;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
+export default function SalesContentEditor({menuLimit,slug,projectId,canManageMedia,data}:{menuLimit:number;slug:string;projectId:string;canManageMedia:boolean;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
  const settings=commerceSettings(data.content),initial={...data.content,menu_items:stored(data.content.menu_items)};
  const nav:ContentNavItem[]=[{id:'sales-block-1',label:'Bloco 1 · Cabeçalho'},{id:'sales-block-2',label:'Bloco 2 · Catálogo'},{id:'sales-block-3',label:'Bloco 3 · WhatsApp'}];
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={false} portfolio={false} nav={nav} action={saveSalesContentAction} embedded>
@@ -35,7 +35,7 @@ export default function SalesContentEditor({slug,projectId,canManageMedia,data}:
   <Block id="sales-block-2" number="02" title={settings.catalogLabel} summary="Título, texto de apoio e produtos">
    <label className="field"><span>Título principal</span><input name="sales_menu_title" defaultValue={v(data.content,'sales_menu_title')||v(data.content,'menu_title')||'Peça do seu jeito'}/></label>
    <label className="field"><span>Texto de apoio</span><textarea name="sales_menu_intro" rows={3} defaultValue={v(data.content,'sales_menu_intro')||v(data.content,'menu_intro')||'Escolha seus produtos e envie o pedido direto pelo WhatsApp.'}/></label>
-   <RepeatableSections definitions={[productDefinition()]} initial={initial} embedded projectId={canManageMedia?projectId:undefined} variant="product-cards"/>
+   <RepeatableSections definitions={[productDefinition(menuLimit)]} initial={initial} embedded projectId={canManageMedia?projectId:undefined} variant="product-cards"/>
   </Block>
   <Block id="sales-block-3" number="03" title="WhatsApp" summary="Número e mensagem enviada com o pedido">
    <label className="field"><span>WhatsApp com DDI</span><input name="whatsapp" inputMode="tel" defaultValue={v(data.contact,'whatsapp')} placeholder="5516999999999"/><small>Use somente números, incluindo o código do país e o DDD.</small></label>

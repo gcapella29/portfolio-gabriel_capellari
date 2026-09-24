@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {commerceCategories,commerceLineTotal,commercePromo,commercePromoLabel} from './commerce-promotions';
+import {commerceCategories,commerceLineTotal,commercePromo,commercePromoLabel} from './commerce-promotions.ts';
 
 test('commerce categories preserve first appearance and ignore blanks',()=>{
  const products=[{category:'Pins para Crocs'},{category:'Adesivos'},{category:'Pins para Crocs'},{category:''}];

@@ -11,13 +11,14 @@ import { validateCustomDomain } from '@/core/domain-validation';
 import { getTemplate } from '@/core/segments';
 import { sectionsForSegment } from '@/core/content-schema';
 import {commerceHeroPatch} from '@/core/commerce-hero-controls';
+import {menuItemLimitForProject,validatedMenuItems} from '@/core/menu-item-limit';
 import { attachCustomDomain,detachCustomDomain,isVercelDomainAutomationConfigured,verifyCustomDomain } from '@/core/vercel-domains';
 
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
 const slugFrom=(form:FormData)=>text(form,'slug');
 const path=(slug:string,area='')=>`/dashboard/${encodeURIComponent(slug)}${area?`/${area}`:''}`;
 const normalizeDomain=(v:string)=>v.toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/\.$/,'');
-const repeatables=(formData:FormData,segment:Parameters<typeof sectionsForSegment>[0])=>Object.fromEntries(sectionsForSegment(segment).map(def=>{const raw=text(formData,`section:${def.key}`);if(!raw)return[def.key,[]];try{const parsed=JSON.parse(raw);return[def.key,Array.isArray(parsed)?parsed.slice(0,def.max||50).filter(x=>x&&typeof x==='object'):[]]}catch{return[def.key,[]]}}));
+const repeatables=(formData:FormData,segment:Parameters<typeof sectionsForSegment>[0],menuLimit:number,existingMenuCount:number)=>Object.fromEntries(sectionsForSegment(segment).map(def=>{const raw=text(formData,`section:${def.key}`);if(!raw)return[def.key,[]];let parsed:unknown;try{parsed=JSON.parse(raw)}catch{throw new Error(`Conteúdo inválido em ${def.label}. Nada foi salvo.`)}return[def.key,def.key==='menu_items'?validatedMenuItems(parsed,menuLimit,existingMenuCount):Array.isArray(parsed)?parsed.slice(0,def.max||50).filter(x=>x&&typeof x==='object'):[]]}));
 const commerceTextKeys=['catalog_label','nav_home','nav_news','nav_highlights','nav_menu','nav_order','hero_kicker','hero_whatsapp','hero_instagram','hero_discover','news_title','news_intro','news_link','highlights_title','highlights_intro','highlights_link','menu_title','menu_intro','menu_selected_label','menu_add','menu_whatsapp_cta','order_title','order_intro','receipt_title','receipt_empty','receipt_total','receipt_send','receipt_choose','receipt_notice','social_title','social_intro','social_follow','about_title','about_main','creator_name','creator_bio','creator_instagram','creator_instagram_label','footer_back'] as const;
 type DirectImage={path:string;url:string};
 const directImage=(form:FormData,key:string,projectId:string):DirectImage|null=>{const raw=text(form,key);if(!raw||raw==='null')return null;try{const value=JSON.parse(raw) as Partial<DirectImage>;const imagePath=String(value.path||''),url=String(value.url||'');if(!imagePath.startsWith(`${projectId}/`)||url!==publicMediaUrl(imagePath))return null;return{path:imagePath,url}}catch{return null}};
@@ -28,7 +29,8 @@ const positioned=(value:unknown,position:string)=>value&&typeof value==='object'
 export async function saveContentAction(formData:FormData){
  const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'editContent'))throw new Error('Sem permissão para editar conteúdo.');
  const current=await readV2Content(access.project.id),portfolio=access.project.segment==='portfolio';
- const structured=repeatables(formData,access.project.segment) as Record<string,Record<string,unknown>[]>;
+ const menuLimit=access.project.segment==='food-business'?await menuItemLimitForProject(access.project.id):0;
+ const structured=repeatables(formData,access.project.segment,menuLimit,Array.isArray(current.content.menu_items)?current.content.menu_items.length:0) as Record<string,Record<string,unknown>[]>;
  const uploadFields=Array.from(formData.entries()).filter(([,value])=>value instanceof File&&value.size) as [string,File][];
  const imageSlots=['hero','logo','creator'] as const;
  const hasDirectImages=['uploadedMedia:hero','uploadedMedia:logo','uploadedMedia:creator','uploadedGallery'].some(key=>{const value=text(formData,key);return value&&value!=='null'&&value!=='[]'}),hasMediaControls=imageSlots.some(slot=>formData.has(`mediaPosition:${slot}`)||formData.has(`removeMedia:${slot}`));

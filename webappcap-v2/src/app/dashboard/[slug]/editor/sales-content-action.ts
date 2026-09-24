@@ -3,6 +3,7 @@
 import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
 import {resolveProjectAccess} from '@/core/session';
+import {menuItemLimitForProject,validatedMenuItems} from '@/core/menu-item-limit';
 import {can} from '@/core/permissions';
 import {publicMediaUrl,readV2Content,saveV2Section} from '@/core/onboarding-data';
 import {sectionsForSegment} from '@/core/content-schema';
@@ -25,7 +26,9 @@ export async function saveSalesContentAction(formData:FormData){
  const menu=sectionsForSegment('food-business').find(def=>def.key==='menu_items');
  if(menu&&provided(formData,'section:menu_items')){
   const raw=text(formData,'section:menu_items');
-  try{const parsed=JSON.parse(raw);content.menu_items=Array.isArray(parsed)?overlayNamedProductFields(formData,parsed.slice(0,menu.max||80).filter(item=>item&&typeof item==='object') as Record<string,unknown>[]).map(cleanProduct):[]}catch{content.menu_items=[]}
+  let parsed:unknown;
+  try{parsed=JSON.parse(raw)}catch{throw new Error('A lista de produtos é inválida. Nada foi salvo.')}
+  content.menu_items=overlayNamedProductFields(formData,validatedMenuItems(parsed,await menuItemLimitForProject(access.project.id),Array.isArray(current.content.menu_items)?current.content.menu_items.length:0)).map(cleanProduct);
  }
  await saveV2Section(access.project.id,'content',content);
 

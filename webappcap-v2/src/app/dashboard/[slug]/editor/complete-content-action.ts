@@ -5,6 +5,7 @@ import {redirect} from 'next/navigation';
 import {can} from '@/core/permissions';
 import {publicMediaUrl,readV2Content,saveV2Section} from '@/core/onboarding-data';
 import {resolveProjectAccess} from '@/core/session';
+import {menuItemLimitForProject,validatedMenuItems} from '@/core/menu-item-limit';
 
 type DirectImage={path:string;url:string};
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
@@ -20,6 +21,12 @@ export async function saveCompleteContentAction(formData:FormData){
  if(access.project.segment!=='food-business')throw new Error('Este editor é exclusivo de Comércio.');
  if(!can(access.role,'editContent'))throw new Error('Sem permissão para editar conteúdo.');
  const current=await readV2Content(access.project.id);
+ let products:Record<string,unknown>[]|undefined;
+ if(provided(formData,'section:menu_items')){
+  let parsed:unknown;
+  try{parsed=JSON.parse(text(formData,'section:menu_items'))}catch{throw new Error('A lista de produtos é inválida. Nada foi salvo.')}
+  products=validatedMenuItems(parsed,await menuItemLimitForProject(access.project.id),Array.isArray(current.content.menu_items)?current.content.menu_items.length:0);
+ }
 
  const identity={...current.identity};
  for(const key of ['tagline'] as const)if(provided(formData,key))identity[key]=text(formData,key);
@@ -28,7 +35,7 @@ export async function saveCompleteContentAction(formData:FormData){
  const content={...current.content};
  for(const key of ['hero_kicker','menu_intro','order_intro','whatsapp_order_message','whatsapp_direct_message','social_intro','about_main','creator_name','creator_bio','creator_instagram','creator_instagram_label'] as const)if(provided(formData,key))content[key]=text(formData,key).slice(0,key==='whatsapp_order_message'?1500:key==='whatsapp_direct_message'?1000:10000);
  for(const [field,key] of [['visibility:catalog','show_catalog'],['visibility:cart','show_cart'],['visibility:instagram','show_instagram'],['visibility:about','show_about']] as const)if(provided(formData,field))content[key]=checked(formData,field);
- if(provided(formData,'section:menu_items')){try{const parsed=JSON.parse(text(formData,'section:menu_items'));content.menu_items=Array.isArray(parsed)?overlayNamedProductFields(formData,parsed.slice(0,80).filter(item=>item&&typeof item==='object') as Record<string,unknown>[]).map(cleanProduct):[]}catch{content.menu_items=[]}}
+ if(products)content.menu_items=overlayNamedProductFields(formData,products).map(cleanProduct);
  await saveV2Section(access.project.id,'content',content);
 
  const contact={...current.contact};
