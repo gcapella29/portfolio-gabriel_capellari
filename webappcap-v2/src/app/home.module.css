@@ -126,3 +126,10 @@
 @media(max-width:760px){.services{padding-top:5rem;padding-bottom:5rem}.servicesHeader{gap:2rem;margin-bottom:3rem}.servicesHeader>div:last-child{gap:1.3rem}.servicesHeader h2{font-size:clamp(3rem,14vw,4.4rem)}.serviceGrid{grid-template-columns:1fr}.serviceGrid article,.serviceGrid article:first-child,.serviceGrid article:last-child{grid-column:auto;min-height:420px;padding:1.7rem 0;border-right:0;border-bottom:1px solid rgba(255,255,255,.17)}.serviceGrid article:last-child{border-top:0;border-bottom:0}.serviceGrid article:hover{transform:none;background:transparent}.serviceGrid h3{margin-top:3.3rem;font-size:2.35rem}.servicesNote{grid-template-columns:1fr;gap:1rem;padding:1.3rem}.servicesNote a{grid-column:auto;width:100%;min-height:46px;text-align:center}.trust,.faq{gap:3rem;padding-top:5rem;padding-bottom:5rem}.trustIntro h2,.faqHeading h2{font-size:clamp(3rem,14vw,4.5rem)}.commitmentGrid{grid-template-columns:1fr}.commitmentGrid article{min-height:220px}.commitmentGrid h3{margin-top:3rem}.faqList summary{grid-template-columns:30px 1fr 32px;gap:.7rem;padding:1.25rem 0;font-size:1rem}.faqList details p{margin-left:38px;margin-right:0}.contact{scroll-margin-top:80px}}
 @media(hover:none){.serviceGrid article:hover,.commitmentGrid article:hover{transform:none}.serviceGrid article:hover .serviceTop i{transform:none;background:transparent;color:var(--yellow)}}
 @media(prefers-reduced-motion:reduce){.serviceGrid article,.serviceTop i,.serviceGrid article>a span,.servicesNote a,.commitmentGrid article,.faqList summary i{transition:none!important}.faqList details[open] p{animation:none!important}}
+
+/* Give the longer, editable headings room without squeezing the description. */
+@media(min-width:1101px){
+  .projectsHeader,.servicesHeader{grid-template-columns:.42fr 1.58fr}
+  .projectsHeader>div:last-child,.servicesHeader>div:last-child{grid-template-columns:1.25fr .75fr}
+  .projectsHeader h2,.servicesHeader h2{max-width:14ch;font-size:clamp(3rem,4.6vw,4.5rem)}
+}
