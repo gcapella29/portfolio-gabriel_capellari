@@ -51,3 +51,26 @@
  .projectCard,.cardPrimary,.cardAction,.sidePanel,.searchBox,.filter,.filterActive{transition:none!important}
  .projectCard:hover,.cardPrimary:hover,.cardAction:hover,.filter:hover{transform:none!important}
 }
+
+
+/* Button press refinement */
+.cardPrimary,.cardAction,.cardDanger,.button,.buttonGhost{
+  transform:translateZ(0);
+  transition:background .16s ease,border-color .16s ease,box-shadow .16s ease,transform .12s cubic-bezier(.2,.7,.2,1)
+}
+.cardPrimary:hover,.cardAction:hover,.cardDanger:hover{
+  transform:translateY(-1px);
+}
+.cardPrimary:active,.cardAction:active,.cardDanger:active,.button:active,.buttonGhost:active{
+  transform:translateY(0) scale(.975);
+  box-shadow:none;
+  transition-duration:.06s
+}
+.projectCard:hover .cardPrimary:active{transform:translateY(0) scale(.975)}
+.cardPrimary:focus-visible,.cardAction:focus-visible,.cardDanger:focus-visible{
+  outline:3px solid rgba(49,94,231,.16);
+  outline-offset:2px
+}
+@media(prefers-reduced-motion:reduce){
+ .cardPrimary:active,.cardAction:active,.cardDanger:active,.button:active,.buttonGhost:active{transform:none!important}
+}
