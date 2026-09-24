@@ -18,3 +18,108 @@
 .pageFrame :global(.editor-page>header h1){max-width:none;font-size:clamp(24px,2.5vw,32px);line-height:1.12}
 .pageFrame :global(.editor-page>header p){max-width:none}
 @media(min-width:621px){.pageFrame :global(.editor-page>header h1),.pageFrame :global(.editor-page>header p){white-space:nowrap}}
+
+
+/* Client workspace motion system */
+.shell{
+  position:relative;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 92% -4%,rgba(49,94,231,.14),transparent 30%),
+    radial-gradient(circle at 45% 105%,rgba(111,87,255,.055),transparent 30%),
+    #f4f6f9
+}
+.sidebar{overflow:hidden}
+.sidebar:after{
+  content:'';
+  position:absolute;
+  width:230px;height:230px;
+  left:-125px;bottom:8%;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:50%;
+  box-shadow:0 0 0 38px rgba(255,255,255,.018),0 0 0 76px rgba(255,255,255,.012);
+  pointer-events:none;
+  animation:clientOrb 13s ease-in-out infinite
+}
+.brand,.nav,.sidebarBottom{position:relative;z-index:1}
+.main{position:relative}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  padding:10px 12px;
+  border:1px solid rgba(225,230,238,.9);
+  border-radius:14px;
+  background:rgba(248,250,252,.82);
+  box-shadow:0 8px 28px rgba(17,24,39,.045);
+  backdrop-filter:blur(18px);
+  animation:clientReveal .5s ease both
+}
+.content{animation:clientReveal .58s .06s ease both}
+.topIdentity strong{transition:color .2s ease}
+.topbar:hover .topIdentity strong{color:#21375f}
+.nav a{position:relative;overflow:hidden}
+.nav a:after{
+  content:'';
+  position:absolute;inset:auto 10px 4px;
+  height:1px;border-radius:99px;
+  background:linear-gradient(90deg,transparent,rgba(142,164,255,.6),transparent);
+  transform:scaleX(0);transition:transform .22s ease
+}
+.nav a:hover:after{transform:scaleX(1)}
+.buttonGhost,.analyticsButton,.publish{position:relative;overflow:hidden}
+.buttonGhost:after,.analyticsButton:after,.publish:after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.25) 48%,transparent 72%);
+  transform:translateX(-125%);
+  transition:transform .55s ease;
+  pointer-events:none
+}
+.buttonGhost:hover:after,.analyticsButton:hover:after,.publish:hover:after{transform:translateX(125%)}
+.hero,.summary,.tool,.analyticsPanel,.pageFrame :global(.setup-card),.pageFrame :global(.editor-section),.pageFrame :global(.lead-card-v2),.pageFrame :global(.lead-stats article){
+  transition:transform .24s cubic-bezier(.2,.7,.2,1),box-shadow .24s ease,border-color .24s ease
+}
+.summary:hover,.analyticsPanel:hover,.pageFrame :global(.setup-card:hover),.pageFrame :global(.editor-section:hover),.pageFrame :global(.lead-card-v2:hover){
+  border-color:#d5dce7!important;
+  box-shadow:0 14px 38px rgba(17,24,39,.07)!important
+}
+.hero:hover{transform:translateY(-2px);box-shadow:0 20px 52px rgba(17,24,39,.15)}
+.pageFrame :global(.field input),.pageFrame :global(.field textarea),.pageFrame :global(.field select){
+  transition:border-color .2s ease,box-shadow .2s ease,background .2s ease,transform .2s ease
+}
+.pageFrame :global(.field input:focus),.pageFrame :global(.field textarea:focus),.pageFrame :global(.field select:focus){
+  transform:translateY(-1px);
+  background:#fff!important;
+  border-color:#9fb0ef!important;
+  box-shadow:0 0 0 4px rgba(49,94,231,.08)!important
+}
+@keyframes clientReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes clientOrb{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(14px,-12px,0)}}
+@media(max-width:860px){
+ .sidebar:after{display:none}
+ .topbar{position:relative;top:auto}
+}
+@media(prefers-reduced-motion:reduce){
+ .sidebar:after,.topbar,.content{animation:none!important}
+ .nav a:after,.buttonGhost:after,.analyticsButton:after,.publish:after{transition:none!important}
+ .hero,.summary,.tool,.analyticsPanel,.pageFrame :global(.setup-card),.pageFrame :global(.editor-section),.pageFrame :global(.lead-card-v2),.pageFrame :global(.lead-stats article),.pageFrame :global(.field input),.pageFrame :global(.field textarea),.pageFrame :global(.field select){transition:none!important}
+ .hero:hover,.pageFrame :global(.field input:focus),.pageFrame :global(.field textarea:focus),.pageFrame :global(.field select:focus){transform:none!important}
+}
+
+
+/* Button press refinement */
+.button,.buttonGhost,.analyticsButton,.publish,.pageFrame :global(.action){
+  transform:translateZ(0);
+  transition:background .16s ease,border-color .16s ease,box-shadow .16s ease,transform .12s cubic-bezier(.2,.7,.2,1)!important
+}
+.button:hover,.buttonGhost:hover,.analyticsButton:hover,.publish:hover,.pageFrame :global(.action:hover){
+  transform:translateY(-1px)
+}
+.button:active,.buttonGhost:active,.analyticsButton:active,.publish:active,.pageFrame :global(.action:active){
+  transform:translateY(0) scale(.975)!important;
+  box-shadow:none!important;
+  transition-duration:.06s!important
+}
+.buttonGhost:active:after,.analyticsButton:active:after,.publish:active:after{transform:translateX(-125%);transition:none}
+@media(prefers-reduced-motion:reduce){
+ .button:active,.buttonGhost:active,.analyticsButton:active,.publish:active,.pageFrame :global(.action:active){transform:none!important}
+}
