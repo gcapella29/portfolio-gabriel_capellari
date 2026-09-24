@@ -18,17 +18,21 @@ export async function resolveProjectAccess(slug: string) {
   return { user, ...access };
 }
 
-export async function requirePlatformOwner() {
-  const user = await requireUser();
+export async function isPlatformOwner(userId: string) {
   const sb = await createSupabaseServerClient();
   const result = await sb
     .from('projects')
     .select('id')
     .eq('slug', 'gabriel-capellari')
-    .eq('owner_id', user.id)
+    .eq('owner_id', userId)
     .is('archived_at', null)
     .maybeSingle();
-  if (result.error || !result.data) redirect('/unauthorized');
+  return !result.error && Boolean(result.data);
+}
+
+export async function requirePlatformOwner() {
+  const user = await requireUser();
+  if (!(await isPlatformOwner(user.id))) redirect('/unauthorized');
   return user;
 }
 
