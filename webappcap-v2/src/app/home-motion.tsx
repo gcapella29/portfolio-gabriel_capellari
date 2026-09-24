@@ -32,6 +32,28 @@ export function HomeMotion(){
 
     revealItems.forEach(item=>observer.observe(item));
 
+    // Shared narrative phase: IDEA -> DESIGN -> PREVIEW -> LIVE.
+    // One small timer drives several sections so the homepage feels
+    // coordinated rather than full of unrelated animations.
+    const phaseItems=Array.from(root.querySelectorAll<HTMLElement>('[data-motion-phase-item]'));
+    const processItems=Array.from(root.querySelectorAll<HTMLElement>('[data-motion-process]'));
+    const demoItems=Array.from(root.querySelectorAll<HTMLElement>('[data-motion-demo]'));
+    const demoPhase=['edit','edit','preview','publish'];
+    let phase=0;
+
+    function paintPhase(){
+      root.dataset.motionPhase=String(phase);
+      phaseItems.forEach((item,index)=>{item.dataset.motionActive=String(index===phase)});
+      processItems.forEach((item,index)=>{item.dataset.motionActive=String(index===phase)});
+      demoItems.forEach(item=>{item.dataset.motionActive=String(item.dataset.motionDemo===demoPhase[phase])});
+    }
+
+    paintPhase();
+    const phaseTimer=window.setInterval(()=>{
+      phase=(phase+1)%4;
+      paintPhase();
+    },2200);
+
     let frame=0;
     function updateProgress(){
       frame=0;
@@ -51,6 +73,7 @@ export function HomeMotion(){
       observer.disconnect();
       window.removeEventListener('scroll',requestProgress);
       window.removeEventListener('resize',requestProgress);
+      window.clearInterval(phaseTimer);
       if(frame)window.cancelAnimationFrame(frame);
     };
   },[]);

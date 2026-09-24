@@ -556,3 +556,201 @@
     translate:0 0!important;
   }
 }
+
+
+/* Fifth design round: visible coordinated motion story. */
+/*
+  This layer makes the upgrade unmistakable.
+  A shared 4-step phase is painted by HomeMotion and reused in the hero,
+  process and panel demonstration.
+*/
+.motionStory{
+  position:absolute;
+  z-index:4;
+  right:max(24px,calc((100vw - 1280px)/2));
+  bottom:34px;
+  left:max(24px,calc((100vw - 1280px)/2));
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:18px;
+  background:rgba(5,30,24,.68);
+  box-shadow:0 18px 50px rgba(2,18,14,.18);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.motionStory>div{
+  position:relative;
+  min-width:0;
+  padding:13px 16px 14px;
+  border-right:1px solid rgba(255,255,255,.12);
+  color:#fff;
+  transition:
+    background .5s cubic-bezier(.22,1,.36,1),
+    transform .5s cubic-bezier(.22,1,.36,1),
+    color .35s;
+}
+.motionStory>div:last-child{border-right:0}
+.motionStory span{
+  display:block;
+  color:rgba(255,255,255,.42);
+  font:600 .52rem/1 var(--home-mono),monospace;
+  letter-spacing:.1em;
+}
+.motionStory strong{
+  display:block;
+  margin-top:.45rem;
+  font:700 .72rem/1 var(--home-mono),monospace;
+  letter-spacing:.08em;
+}
+.motionStory small{
+  display:block;
+  margin-top:.3rem;
+  color:rgba(255,255,255,.5);
+  font:500 .55rem/1 var(--home-mono),monospace;
+}
+.motionStory i{
+  position:absolute;
+  right:14px;
+  bottom:13px;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:rgba(255,255,255,.24);
+  transition:background .35s,box-shadow .35s,scale .35s;
+}
+.motionStory>div[data-motion-active="true"]{
+  z-index:2;
+  background:var(--yellow);
+  color:var(--deep);
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(0,0,0,.18);
+}
+.motionStory>div[data-motion-active="true"] span,
+.motionStory>div[data-motion-active="true"] small{
+  color:rgba(6,30,24,.62);
+}
+.motionStory>div[data-motion-active="true"] i{
+  background:var(--red);
+  box-shadow:0 0 0 7px rgba(165,66,51,.12);
+  scale:1.15;
+}
+
+/* The same phase physically steps through the process cards. */
+.processGrid article[data-motion-active="true"]{
+  z-index:4;
+  padding-right:1.7rem;
+  padding-left:1.7rem;
+  background:rgba(237,195,59,.13);
+  box-shadow:0 20px 45px rgba(8,43,34,.10);
+  transform:translateY(-8px);
+}
+.processGrid article:first-child[data-motion-active="true"]{
+  padding-left:1.7rem;
+}
+.processGrid article[data-motion-active="true"]>i{
+  background:var(--yellow);
+  border-color:var(--red);
+  box-shadow:0 0 0 8px rgba(237,195,59,.14);
+  transform:scale(1.35);
+}
+
+/* Product demo: edit -> preview -> publish is now visibly highlighted. */
+.dashboardDemo [data-motion-demo]{
+  transition:
+    transform .45s cubic-bezier(.22,1,.36,1),
+    box-shadow .45s,
+    border-color .35s,
+    background .35s,
+    color .35s;
+}
+.dashboardDemo [data-motion-demo][data-motion-active="true"]{
+  transform:translateY(-4px);
+  box-shadow:
+    0 0 0 3px rgba(237,195,59,.18),
+    0 12px 28px rgba(8,43,34,.10);
+  border-color:rgba(237,195,59,.78)!important;
+}
+.demoHeader>span[data-motion-active="true"]{
+  padding:.45rem .65rem;
+  border-radius:999px;
+  background:var(--yellow);
+  color:var(--deep);
+}
+.demoActions button[data-motion-active="true"]{
+  background:var(--yellow);
+  color:var(--deep);
+  transform:translateY(-5px) scale(1.025);
+}
+.demoActive[data-motion-active="true"]{
+  color:#fff!important;
+  background:rgba(237,195,59,.12)!important;
+  box-shadow:inset 3px 0 0 var(--yellow)!important;
+}
+
+/* Make the founder project feel alive even without hover. */
+.projectPreview>img{
+  animation:homePreviewPan 12s ease-in-out infinite;
+}
+@keyframes homePreviewPan{
+  0%,100%{transform:scale(1.00);object-position:center 28%}
+  50%{transform:scale(1.055);object-position:center 35%}
+}
+
+/* Stronger sequential trust focus. */
+.commitmentGrid article{
+  transition:background .45s,transform .5s cubic-bezier(.22,1,.36,1),box-shadow .45s;
+}
+.commitmentGrid article:nth-child(1){animation-delay:0s}
+.commitmentGrid article:nth-child(2){animation-delay:3s}
+.commitmentGrid article:nth-child(3){animation-delay:6s}
+.commitmentGrid article:nth-child(4){animation-delay:9s}
+@keyframes homeTrustFocus{
+  0%,22%,100%{background:transparent;box-shadow:none;transform:translateY(0)}
+  8%,14%{
+    background:rgba(255,255,255,.28);
+    box-shadow:0 14px 30px rgba(6,30,24,.08);
+    transform:translateY(-6px);
+  }
+}
+
+/* The final CTA gets a clear, slow breathing focus. */
+.contact h2 em{
+  position:relative;
+  display:inline-block;
+  animation:homeContactWord 6.5s ease-in-out infinite;
+}
+@keyframes homeContactWord{
+  0%,100%{text-shadow:0 0 0 rgba(237,195,59,0);transform:translateY(0)}
+  50%{text-shadow:0 0 32px rgba(237,195,59,.22);transform:translateY(-4px)}
+}
+
+@media(max-width:760px){
+  .motionStory{
+    position:relative;
+    right:auto;
+    bottom:auto;
+    left:auto;
+    grid-template-columns:1fr 1fr;
+    margin:290px 20px 0;
+  }
+  .motionStory>div:nth-child(2){border-right:0}
+  .motionStory>div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.12)}
+  .processGrid article[data-motion-active="true"],
+  .processGrid article:first-child[data-motion-active="true"]{
+    padding-right:.7rem;
+    padding-left:.7rem;
+    transform:translateY(-4px);
+  }
+  .projectPreview>img{animation-duration:16s}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .projectPreview>img,.contact h2 em{animation:none!important}
+  .motionStory>div[data-motion-active="true"],
+  .processGrid article[data-motion-active="true"],
+  .dashboardDemo [data-motion-demo][data-motion-active="true"]{
+    transform:none!important;
+  }
+}

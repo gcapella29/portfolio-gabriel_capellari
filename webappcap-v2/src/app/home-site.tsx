@@ -81,6 +81,20 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
         <div className={`${styles.floatCard} ${styles.cardTwo}`}><small>CONTROLE</small><strong>Edite e publique</strong><i/></div>
         <div className={`${styles.floatCard} ${styles.cardThree}`}><small>EXPERIÊNCIA</small><strong>Rápido em qualquer tela</strong><i/></div>
       </div>
+
+      <div className={styles.motionStory} aria-label="Fluxo visual do projeto">
+        {[
+          ['01','IDEIA','entender'],
+          ['02','DESIGN','construir'],
+          ['03','PREVIEW','revisar'],
+          ['04','NO AR','publicar']
+        ].map((item,index)=><div key={item[0]} data-motion-phase-item={index}>
+          <span>{item[0]}</span>
+          <strong>{item[1]}</strong>
+          <small>{item[2]}</small>
+          <i aria-hidden="true"/>
+        </div>)}
+      </div>
     </section>
 
     <div className={styles.marquee} aria-hidden="true">
@@ -95,7 +109,7 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
         <h2 data-reveal>{value('process_title','Um caminho simples até o seu site.')}</h2>
         <p data-reveal data-reveal-delay="100">{value('process_description','Você não precisa entender de código, hospedagem ou configuração. A WebAppCap organiza o processo e deixa as decisões importantes nas suas mãos.')}</p>
       </div>
-      <div className={styles.processGrid}>{steps.map((item,index)=><article key={item.number} data-reveal data-reveal-delay={String(index*80)}><span>{item.number}</span><i aria-hidden="true"/><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
+      <div className={styles.processGrid}>{steps.map((item,index)=><article key={item.number} data-motion-process={index} data-reveal data-reveal-delay={String(index*80)}><span>{item.number}</span><i aria-hidden="true"/><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
       <div className={styles.assuranceStrip}>{assurances.map((item,index)=><span key={item} data-reveal data-reveal-delay={String(index*65)}><i aria-hidden="true">✓</i>{item}</span>)}</div>
     </section>
 
@@ -113,12 +127,12 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
       <div className={styles.dashboardDemo} aria-label="Demonstração visual do painel WebAppCap" data-reveal data-reveal-delay="120">
         <div className={styles.demoTop}><span><i/><i/><i/></span><small>painel.webappcap.com.br</small><b>ONLINE</b></div>
         <div className={styles.demoBody}>
-          <aside><strong><i>W</i> WebAppCap</strong><span className={styles.demoActive}>▣ Conteúdo</span><span>▧ Aparência</span><span>◫ Mídia</span><span>◇ Domínio</span><span>◎ Leads</span></aside>
+          <aside><strong><i>W</i> WebAppCap</strong><span className={styles.demoActive} data-motion-demo="edit">▣ Conteúdo</span><span>▧ Aparência</span><span>◫ Mídia</span><span>◇ Domínio</span><span>◎ Leads</span></aside>
           <div className={styles.demoContent}>
-            <div className={styles.demoHeader}><div><small>CONTEÚDO</small><h3>Seu site, do seu jeito.</h3></div><span>Preview ↗</span></div>
-            <div className={styles.demoNotice}><i/>Alterações salvas no rascunho. Confira no preview antes de publicar.</div>
-            <div className={styles.demoFields}><label><span>Título principal</span><b>Seu trabalho merece um site à altura.</b></label><label><span>Texto de apresentação</span><b>Uma presença digital feita para crescer com você.</b></label></div>
-            <div className={styles.demoActions}><span>Rascunho atualizado</span><button type="button" tabIndex={-1}>Publicar alterações</button></div>
+            <div className={styles.demoHeader}><div><small>CONTEÚDO</small><h3>Seu site, do seu jeito.</h3></div><span data-motion-demo="preview">Preview ↗</span></div>
+            <div className={styles.demoNotice} data-motion-demo="edit"><i/>Alterações salvas no rascunho. Confira no preview antes de publicar.</div>
+            <div className={styles.demoFields}><label data-motion-demo="edit"><span>Título principal</span><b>Seu trabalho merece um site à altura.</b></label><label data-motion-demo="preview"><span>Texto de apresentação</span><b>Uma presença digital feita para crescer com você.</b></label></div>
+            <div className={styles.demoActions}><span>Rascunho atualizado</span><button data-motion-demo="publish" type="button" tabIndex={-1}>Publicar alterações</button></div>
           </div>
         </div>
       </div>
