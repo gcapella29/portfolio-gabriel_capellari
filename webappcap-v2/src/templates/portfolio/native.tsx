@@ -120,20 +120,6 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
       <div className={styles.heroContent}>
         <div className={styles.heroTop}><span>{location}</span></div>
         <div className={styles.heroCopy}><h1>{firstName}<br/><em>{surname}&quot;</em></h1><p>{localized(role,language)}</p><div className={styles.chips}>{languages.map(item=><span key={item.pt}><i className={styles.chipFlag} data-country={item.country} aria-hidden="true"/>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
-
-        <div className={styles.liveDesk} aria-label={language==='pt'?'Fluxo editorial':'Editorial workflow'}>
-          {[
-            [language==='pt'?'APURAÇÃO':'RESEARCH',language==='pt'?'buscar o fato':'find the fact'],
-            [language==='pt'?'COBERTURA':'COVERAGE',language==='pt'?'estar no evento':'be on site'],
-            [language==='pt'?'EDIÇÃO':'EDITING',language==='pt'?'dar forma':'shape the story'],
-            [language==='pt'?'PUBLICAÇÃO':'PUBLISHING',language==='pt'?'colocar no ar':'go live']
-          ].map((item,index)=><div key={item[0]} data-editorial-active={editorialBeat%4===index}>
-            <span>{String(index+1).padStart(2,'0')}</span>
-            <strong>{item[0]}</strong>
-            <small>{item[1]}</small>
-            <i aria-hidden="true"/>
-          </div>)}
-        </div>
       </div>
     </header>
     <div className={styles.tickerWrap} aria-hidden="true">

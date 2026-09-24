@@ -263,78 +263,8 @@
   animation:editorialLocationSignal 5.4s ease-in-out infinite;
 }
 
-/* Four-step newsroom strip. */
-.liveDesk{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  width:min(100%,980px);
-  margin-top:1.55rem;
-  overflow:hidden;
-  border:1px solid rgba(243,238,226,.20);
-  border-radius:14px;
-  background:rgba(8,39,32,.48);
-  box-shadow:0 18px 42px rgba(0,0,0,.14);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-}
-.liveDesk>div{
-  position:relative;
-  min-width:0;
-  padding:.72rem .8rem .78rem;
-  border-right:1px solid rgba(243,238,226,.13);
-  transition:
-    transform .5s var(--ui-ease),
-    background .45s ease,
-    color .35s ease,
-    box-shadow .45s ease;
-}
-.liveDesk>div:last-child{border-right:0}
-.liveDesk span{
-  display:block;
-  color:rgba(243,238,226,.42);
-  font:500 .5rem/1 var(--portfolio-mono),'IBM Plex Mono',monospace;
-  letter-spacing:.08em;
-}
-.liveDesk strong{
-  display:block;
-  margin-top:.35rem;
-  color:var(--cream);
-  font:700 .62rem/1 var(--portfolio-mono),'IBM Plex Mono',monospace;
-  letter-spacing:.08em;
-}
-.liveDesk small{
-  display:block;
-  margin-top:.28rem;
-  color:rgba(243,238,226,.50);
-  font:500 .52rem/1.2 var(--portfolio-mono),'IBM Plex Mono',monospace;
-}
-.liveDesk i{
-  position:absolute;
-  right:.75rem;
-  bottom:.75rem;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:rgba(243,238,226,.22);
-  transition:background .35s,box-shadow .35s,scale .35s;
-}
-.liveDesk>div[data-editorial-active="true"]{
-  z-index:2;
-  color:var(--dark);
-  background:var(--gold);
-  transform:translateY(-4px);
-  box-shadow:0 14px 28px rgba(0,0,0,.16);
-}
-.liveDesk>div[data-editorial-active="true"] span,
-.liveDesk>div[data-editorial-active="true"] strong,
-.liveDesk>div[data-editorial-active="true"] small{
-  color:var(--dark);
-}
-.liveDesk>div[data-editorial-active="true"] i{
-  background:var(--brick);
-  box-shadow:0 0 0 6px rgba(168,60,46,.14);
-  scale:1.2;
-}
+/* The four-step newsroom strip was removed after visual review.
+   The shared editorial beat still drives the sections below. */
 
 /* Stats work like headline figures being called out on a live desk. */
 .stats article[data-editorial-active="true"]{
@@ -519,13 +449,6 @@
 
 @media(max-width:819px){
   .motionToggle{top:56px}
-  .liveDesk{
-    grid-template-columns:1fr 1fr;
-    margin-top:1.2rem;
-  }
-  .liveDesk>div:nth-child(2){border-right:0}
-  .liveDesk>div:nth-child(-n+2){border-bottom:1px solid rgba(243,238,226,.13)}
-  .liveDesk>div[data-editorial-active="true"]{transform:translateY(-2px)}
   .board>div[data-editorial-active="true"]{padding-left:.9rem}
   .timeline article[data-editorial-active="true"]{padding-left:1.3rem}
 }
@@ -544,7 +467,7 @@
   .cameraSweep{animation:editorialCameraSweep 9.5s ease-in-out infinite!important}
   .carousel::after{animation:editorialShutter 10s ease-out infinite!important}
   .contact::before{animation:editorialSpadeBreath 8s ease-in-out infinite!important}
-  .liveDesk>div,.stats article,.board>div,.pressCards>a,.timeline article{
+  .stats article,.board>div,.pressCards>a,.timeline article{
     transition:transform .5s var(--ui-ease),background .45s ease,color .35s ease,box-shadow .45s ease,border-color .35s ease!important;
   }
 }

@@ -560,82 +560,9 @@
 
 /* Fifth design round: visible coordinated motion story. */
 /*
-  This layer makes the upgrade unmistakable.
-  A shared 4-step phase is painted by HomeMotion and reused in the hero,
-  process and panel demonstration.
+  The visible hero strip was removed after review.
+  The coordinated phase still powers the process and panel demonstration.
 */
-.motionStory{
-  position:absolute;
-  z-index:4;
-  right:max(24px,calc((100vw - 1280px)/2));
-  bottom:34px;
-  left:max(24px,calc((100vw - 1280px)/2));
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.16);
-  border-radius:18px;
-  background:rgba(5,30,24,.68);
-  box-shadow:0 18px 50px rgba(2,18,14,.18);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-}
-.motionStory>div{
-  position:relative;
-  min-width:0;
-  padding:13px 16px 14px;
-  border-right:1px solid rgba(255,255,255,.12);
-  color:#fff;
-  transition:
-    background .5s cubic-bezier(.22,1,.36,1),
-    transform .5s cubic-bezier(.22,1,.36,1),
-    color .35s;
-}
-.motionStory>div:last-child{border-right:0}
-.motionStory span{
-  display:block;
-  color:rgba(255,255,255,.42);
-  font:600 .52rem/1 var(--home-mono),monospace;
-  letter-spacing:.1em;
-}
-.motionStory strong{
-  display:block;
-  margin-top:.45rem;
-  font:700 .72rem/1 var(--home-mono),monospace;
-  letter-spacing:.08em;
-}
-.motionStory small{
-  display:block;
-  margin-top:.3rem;
-  color:rgba(255,255,255,.5);
-  font:500 .55rem/1 var(--home-mono),monospace;
-}
-.motionStory i{
-  position:absolute;
-  right:14px;
-  bottom:13px;
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:rgba(255,255,255,.24);
-  transition:background .35s,box-shadow .35s,scale .35s;
-}
-.motionStory>div[data-motion-active="true"]{
-  z-index:2;
-  background:var(--yellow);
-  color:var(--deep);
-  transform:translateY(-4px);
-  box-shadow:0 12px 32px rgba(0,0,0,.18);
-}
-.motionStory>div[data-motion-active="true"] span,
-.motionStory>div[data-motion-active="true"] small{
-  color:rgba(6,30,24,.62);
-}
-.motionStory>div[data-motion-active="true"] i{
-  background:var(--red);
-  box-shadow:0 0 0 7px rgba(165,66,51,.12);
-  scale:1.15;
-}
 
 /* The same phase physically steps through the process cards. */
 .processGrid article[data-motion-active="true"]{
@@ -748,7 +675,6 @@
 
 @media(prefers-reduced-motion:reduce){
   .projectPreview>img,.contact h2 em{animation:none!important}
-  .motionStory>div[data-motion-active="true"],
   .processGrid article[data-motion-active="true"],
   .dashboardDemo [data-motion-demo][data-motion-active="true"]{
     transform:none!important;
@@ -820,8 +746,6 @@
   .site[data-motion-force="true"] .contact h2 em{
     animation:homeContactWord 6.5s ease-in-out infinite!important;
   }
-
-  .site[data-motion-force="true"] .motionStory>div,
   .site[data-motion-force="true"] .processGrid article,
   .site[data-motion-force="true"] .dashboardDemo [data-motion-demo]{
     transition:
@@ -830,10 +754,6 @@
       color .35s,
       box-shadow .45s,
       border-color .35s!important;
-  }
-
-  .site[data-motion-force="true"] .motionStory>div[data-motion-active="true"]{
-    transform:translateY(-4px)!important;
   }
   .site[data-motion-force="true"] .processGrid article[data-motion-active="true"]{
     transform:translateY(-8px)!important;
