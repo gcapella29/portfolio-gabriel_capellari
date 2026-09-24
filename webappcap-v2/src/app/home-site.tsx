@@ -161,18 +161,18 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
     </section>
 
     <section className={styles.trust}>
-      <div className={styles.trustIntro} data-reveal><span>CONFIANÇA / 001</span><h2>{value('trust_title','Clareza do primeiro contato à publicação.')}</h2><p>{value('trust_description','Um bom site também depende de um bom processo. Estes são os compromissos que orientam cada projeto WebAppCap.')}</p></div>
+      <div className={styles.trustIntro} data-reveal><div className={styles.sectionLabel}><span>05</span> Confiança</div><h2>{value('trust_title','Clareza do primeiro contato à publicação.')}</h2><p>{value('trust_description','Um bom site também depende de um bom processo. Estes são os compromissos que orientam cada projeto WebAppCap.')}</p></div>
       <div className={styles.commitmentGrid}>{commitments.map((item,index)=><article key={item.label} data-reveal data-reveal-delay={String(index*70)}><span>{item.label}</span><h3>{item.title}</h3><p>{item.text}</p></article>)}</div>
     </section>
 
     <section className={styles.faq} id="duvidas">
-      <div className={styles.faqHeading} data-reveal><div className={styles.sectionLabel}><span>05</span> Antes de começar</div><h2>Perguntas que ajudam a tirar a ideia do papel.</h2></div>
+      <div className={styles.faqHeading} data-reveal><div className={styles.sectionLabel}><span>06</span> Antes de começar</div><h2>Perguntas que ajudam a tirar a ideia do papel.</h2></div>
       <div className={styles.faqList} data-reveal data-reveal-delay="100">{questions.map((item,index)=><details key={item.question}><summary><span>{String(index+1).padStart(2,'0')}</span>{item.question}<i aria-hidden="true">+</i></summary><p>{item.answer}</p></details>)}</div>
     </section>
 
     <section className={styles.contact} id="contato">
       <div className={styles.contactPitch} data-reveal>
-        <span className={styles.contactKicker}>{value('contact_kicker','06 · TEM UM PROJETO EM MENTE?')}</span>
+        <span className={styles.contactKicker}>07 · {value('contact_kicker','TEM UM PROJETO EM MENTE?').replace(/^\s*0?[67]\s*[·.–-]\s*/,'')}</span>
         <h2>{value('contact_title','Vamos colocar sua ideia')} <em>{value('contact_emphasis','no ar.')}</em></h2>
         <p>{value('contact_description','Conte o que você precisa. Eu organizo o projeto e retorno com os próximos passos para transformar a ideia em um site com identidade.')}</p>
         <div className={styles.contactDirect}>
