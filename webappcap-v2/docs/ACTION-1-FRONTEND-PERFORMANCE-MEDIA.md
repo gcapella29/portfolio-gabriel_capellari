@@ -59,3 +59,17 @@ Antes do merge:
 7. upload de JPG/PNG/WebP e GIF;
 8. catálogo, categorias, lightbox, carrinho e WhatsApp;
 9. navegação com Reduce Motion ligado e desligado.
+
+
+## Bloco 5 — Site público e disponibilidade
+
+- Adicionado cliente Supabase público sem cookies para leituras cacheáveis.
+- `readPublicSiteByHost` e `readPublicSiteBySlug` agora usam cache curto de 60 segundos.
+- Publicação invalida imediatamente o cache do slug, subdomínio nativo e domínio customizado.
+- Alterações/validação de domínio invalidam tanto o endereço novo quanto os endereços antigos.
+- Erros reais do Supabase não são convertidos em 404 nem armazenados em cache; continuam chegando ao error boundary.
+- A rota pública permanece dinâmica, mas deixa de consultar o Supabase repetidamente quando o snapshot já está quente.
+
+### Objetivo do bloco 5
+
+Reduzir TTFB e dependência direta do banco em cada abertura, sem introduzir atraso perceptível após publicar e sem alterar o fluxo atual de rascunho → preview → publicação.
