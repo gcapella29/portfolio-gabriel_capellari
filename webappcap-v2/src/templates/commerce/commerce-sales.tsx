@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import {Archivo_Black,Inter} from 'next/font/google';
-import {useEffect,useRef,useState,type CSSProperties} from 'react';
+import {useEffect,useMemo,useRef,useState,type CSSProperties} from 'react';
 import type {TemplateRenderProps} from '../types';
 import {commerceSettings,replaceCommerceCatalogTerm} from '@/core/commerce-settings';
 import {commerceCategories,commerceLineTotal,commercePromoLabel} from '@/core/commerce-promotions';
@@ -24,17 +24,19 @@ const salesBodyFont=Inter({subsets:['latin'],weight:['400','600','700','800','90
 const imageZoom=(value:unknown)=>Math.max(50,Math.min(200,Number(value)||100))/100;
 
 export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
- const settings=commerceSettings(data.content),products=rows(data.content.menu_items),categories=commerceCategories(products),name=text(data.identity,'name',project.name||'Loja local'),tagline=text(data.content,'sales_tagline',text(data.identity,'tagline','Escolha e peça pelo WhatsApp.'));
+ const settings=commerceSettings(data.content),name=text(data.identity,'name',project.name||'Loja local'),tagline=text(data.content,'sales_tagline',text(data.identity,'tagline','Escolha e peça pelo WhatsApp.'));
+ const products=useMemo(()=>rows(data.content.menu_items),[data.content.menu_items]);
+ const categories=useMemo(()=>commerceCategories(products),[products]);
  const whatsapp=text(data.contact,'whatsapp','').replace(/\D/g,''),logo=media(data.media,'logo'),salesHero=media(data.media,'sales_hero'),accent=text(data.appearance,'accent','#159447'),vars={'--sales-accent':accent,'--sales-logo-position':mediaPosition(data.media,'logo'),'--sales-hero-position':mediaPosition(data.media,'sales_hero'),'--sales-hero-fit':data.media.sales_hero&&typeof data.media.sales_hero==='object'&&'fit' in data.media.sales_hero?String((data.media.sales_hero as {fit?:unknown}).fit||'cover'):'cover','--sales-hero-zoom':String(imageZoom(data.media.sales_hero&&typeof data.media.sales_hero==='object'?(data.media.sales_hero as {zoom?:unknown}).zoom:100))} as CSSProperties;
  const siteRef=useRef<HTMLDivElement>(null);
  const [query,setQuery]=useState(''),[selected,setSelected]=useState<number|null>(null),[activeCategory,setActiveCategory]=useState<string|null>(null),[zoomedImage,setZoomedImage]=useState<{src:string;alt:string}|null>(null),[cartOpen,setCartOpen]=useState(false),[quantity,setQuantity]=useState(1),[cart,setCart]=useState<CartLine[]>([]),[customerName,setCustomerName]=useState(''),[customerPhone,setCustomerPhone]=useState('');
  const nextId=useRef(1),defaultSalesWhatsappMessage='Olá! Quero fazer um pedido na {loja}.\n\nITENS DO PEDIDO\n{itens}\n\n💰 TOTAL: {total}',defaultDirectWhatsappMessage='Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.',salesWhatsappTemplate=text(data.content,'sales_whatsapp_message',defaultSalesWhatsappMessage),directWhatsappTemplate=text(data.content,'sales_whatsapp_direct_message',defaultDirectWhatsappMessage);
- const filtered=products.filter(item=>{
+ const filtered=useMemo(()=>products.filter(item=>{
   const matchesQuery=`${text(item,'title')} ${text(item,'description')} ${text(item,'category')}`.toLowerCase().includes(query.toLowerCase());
   const matchesCategory=!activeCategory||text(item,'category')===activeCategory;
   return matchesQuery&&matchesCategory;
- }),selectedProduct=selected===null?null:products[selected],unitTotal=selectedProduct?commerceLineTotal(selectedProduct,quantity):0;
- const cartTotal=cart.reduce((sum,line)=>sum+commerceLineTotal(products[line.productIndex]||{},line.quantity),0),cartCount=cart.reduce((sum,line)=>sum+line.quantity,0);
+ }),[products,query,activeCategory]),selectedProduct=selected===null?null:products[selected],unitTotal=selectedProduct?commerceLineTotal(selectedProduct,quantity):0;
+ const cartTotal=useMemo(()=>cart.reduce((sum,line)=>sum+commerceLineTotal(products[line.productIndex]||{},line.quantity),0),[cart,products]),cartCount=useMemo(()=>cart.reduce((sum,line)=>sum+line.quantity,0),[cart]);
 
  useEffect(()=>{const modal=selected!==null||cartOpen||zoomedImage!==null;if(!modal)return;const onKey=(event:KeyboardEvent)=>{if(event.key==='Escape'){setSelected(null);setActiveCategory(null);setCartOpen(false);setZoomedImage(null)}};document.body.style.overflow='hidden';window.addEventListener('keydown',onKey);return()=>{document.body.style.overflow='';window.removeEventListener('keydown',onKey)}},[selected,cartOpen,zoomedImage]);
  useEffect(()=>{
