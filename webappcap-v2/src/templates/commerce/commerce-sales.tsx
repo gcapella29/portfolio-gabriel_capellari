@@ -38,7 +38,7 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
 
  useEffect(()=>{const modal=selected!==null||cartOpen||zoomedImage!==null;if(!modal)return;const onKey=(event:KeyboardEvent)=>{if(event.key==='Escape'){setSelected(null);setActiveCategory(null);setCartOpen(false);setZoomedImage(null)}};document.body.style.overflow='hidden';window.addEventListener('keydown',onKey);return()=>{document.body.style.overflow='';window.removeEventListener('keydown',onKey)}},[selected,cartOpen,zoomedImage]);
  useEffect(()=>{
-  const root=siteRef.current;if(!root||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const root=siteRef.current;if(!root||window.matchMedia('(prefers-reduced-motion: reduce)').matches||window.matchMedia('(max-width: 560px)').matches)return;
   const groups=['product'];
   const indices=new Map<string,number>();
   const paint=(group:string)=>{
@@ -60,7 +60,7 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
   const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{(entry.target as HTMLElement).dataset.mobileActive=entry.isIntersecting?'true':'false'}),{rootMargin:'-34% 0px -34% 0px',threshold:0});
   spotlight.forEach(item=>observer.observe(item));
   let frame=0;
-  const paint=()=>{frame=0;const hero=root.querySelector<HTMLElement>('main section');if(!hero)return;const rect=hero.getBoundingClientRect();const progress=Math.max(-1,Math.min(1,-rect.top/Math.max(rect.height,1)));root.style.setProperty('--sales-mobile-parallax',`${progress*12}px`)};
+  const paint=()=>{frame=0;const hero=root.querySelector<HTMLElement>('main section');if(!hero)return;const rect=hero.getBoundingClientRect();if(rect.bottom<0||rect.top>window.innerHeight)return;const progress=Math.max(-1,Math.min(1,-rect.top/Math.max(rect.height,1)));root.style.setProperty('--sales-mobile-parallax',`${progress*12}px`)};
   const request=()=>{if(!frame)frame=requestAnimationFrame(paint)};
   paint();window.addEventListener('scroll',request,{passive:true});
   return()=>{observer.disconnect();window.removeEventListener('scroll',request);if(frame)cancelAnimationFrame(frame)};
