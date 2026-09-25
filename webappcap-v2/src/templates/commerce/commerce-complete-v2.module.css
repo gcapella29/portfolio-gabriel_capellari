@@ -700,3 +700,39 @@
     margin-top:14px;
   }
 }
+
+
+/* FINAL MOBILE POLISH — checkout breathing room and About inset. */
+@media(max-width:850px){
+  /* Give the identity form and WhatsApp action two clearly separate layers. */
+  .customerFields{
+    margin-bottom:0;
+  }
+  .customerFields + a,
+  .customerFields + .orderBlocked,
+  .customerFields + .whatsappPending{
+    margin-top:24px!important;
+  }
+
+  /* Keep the About heading visually inside the card, not on its border. */
+  .storyAbout>header{
+    padding-left:18px!important;
+    padding-right:10px;
+  }
+  .storyAbout>header>span,
+  .storyAbout>header>h2{
+    margin-left:0!important;
+  }
+}
+
+@media(max-width:420px){
+  .customerFields + a,
+  .customerFields + .orderBlocked,
+  .customerFields + .whatsappPending{
+    margin-top:22px!important;
+  }
+  .storyAbout>header{
+    padding-left:16px!important;
+    padding-right:8px;
+  }
+}

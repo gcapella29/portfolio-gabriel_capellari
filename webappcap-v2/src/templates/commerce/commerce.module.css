@@ -204,3 +204,29 @@
     transform:translate3d(0,calc(-50% + var(--commerce-mobile-copy-shift,0px)),0);
   }
 }
+
+
+/* FINAL MOBILE POLISH — compact topbar. */
+@media(max-width:850px){
+  .topbar{
+    height:40px;
+    min-height:40px;
+    gap:7px;
+    padding:0 8px;
+  }
+  .wordmark{
+    font-size:15px;
+    line-height:1;
+  }
+  .topbar nav{
+    gap:clamp(4px,1.35vw,7px);
+  }
+  .topbar nav a{
+    font-size:clamp(6.5px,1.75vw,7.8px);
+  }
+  .topbar nav span{
+    min-width:12px;
+    height:12px;
+    font-size:6.5px;
+  }
+}
