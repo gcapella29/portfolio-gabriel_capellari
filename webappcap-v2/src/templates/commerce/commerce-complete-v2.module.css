@@ -354,3 +354,207 @@
     animation:none!important;
   }
 }
+
+
+/* VET-SE MOBILE POLISH — dashboard-inspired hierarchy. */
+/*
+  Mobile follows the same hierarchy that works well in the WebAppCap panels:
+  compact section spacing, clear card boundaries, grouped actions and a single
+  reading axis. Desktop is intentionally untouched.
+*/
+@media(max-width:850px){
+  /* Sections read like clear dashboard blocks instead of one long surface. */
+  .categoryShelf{margin-bottom:18px}
+  .categoryShelf button{
+    min-height:82px;
+    padding:14px;
+    border-radius:16px;
+  }
+
+  .catalogGrid{
+    gap:11px;
+    padding-bottom:8px;
+  }
+  .catalogGrid .productCard{
+    flex-basis:min(78vw,282px);
+    border-radius:18px;
+    box-shadow:0 9px 24px rgba(25,34,46,.07);
+  }
+  .productBody{padding:12px 14px 14px}
+  .productBody h3{font-size:15px;line-height:1.12}
+  .productBody>p{font-size:11.5px;line-height:1.48}
+  .productBottom{padding-top:13px}
+
+  /* Cart follows the panel pattern: header, list, summary, primary CTA. */
+  .cartCompact{gap:22px}
+  .cartSidebar,.cartMain{gap:14px}
+  .cartHeading{
+    width:100%;
+    padding:16px;
+    border:1px solid color-mix(in srgb,var(--accent) 18%,#dfe4ea);
+    border-radius:18px;
+    background:rgba(255,255,255,.72);
+    box-shadow:0 8px 24px rgba(25,34,46,.05);
+  }
+  .cartHeading h2{
+    padding-right:42px;
+    font-size:clamp(32px,9vw,42px);
+    white-space:normal;
+  }
+  .cartHeading>p{
+    max-width:none;
+    margin-top:10px;
+    padding-left:11px;
+    font-size:11.5px;
+  }
+  .cartIcon{width:36px;height:36px}
+  .cartItem{
+    min-height:64px;
+    padding:8px 10px;
+    border-radius:18px;
+    background:rgba(255,255,255,.86);
+  }
+  .cartThumb{
+    width:66px;
+    height:50px;
+    border-radius:14px;
+  }
+  .cartSummary{
+    width:100%;
+    padding:18px;
+    border-radius:18px;
+  }
+  .whatsappAfterCart{
+    align-self:stretch;
+    width:100%;
+    min-height:70px;
+  }
+
+  /*
+    Instagram + Sobre become two independent "panel cards".
+    This keeps the reading hierarchy obvious on a small screen.
+  */
+  .storyRow{
+    gap:14px;
+    padding:36px 14px 40px;
+    background:
+      radial-gradient(circle at 12% 10%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 30%),
+      #f7f8fa;
+  }
+  .storyPanel,
+  .storyPanel+.storyPanel{
+    margin:0;
+    padding:20px;
+    border:1px solid color-mix(in srgb,var(--accent) 15%,#e0e5eb);
+    border-radius:20px;
+    background:rgba(255,255,255,.92);
+    box-shadow:0 10px 30px rgba(25,34,46,.055);
+  }
+  .storyPanel header h2{
+    margin-top:7px;
+    font-size:clamp(31px,9vw,40px);
+  }
+  .storyPanel header p{
+    max-width:none;
+    margin-top:10px;
+    padding-left:11px;
+    font-size:11.5px;
+    line-height:1.5;
+  }
+
+  .instagramGrid{
+    margin-top:16px;
+    gap:6px;
+  }
+  .storyInstagram .socialButton{
+    width:100%;
+    justify-content:center;
+    margin-top:16px;
+  }
+
+  /*
+    Sobre + criadora share the same left edge and text rhythm.
+    The creator no longer looks like a detached sub-card.
+  */
+  .storyAbout{
+    display:grid;
+    grid-template-columns:1fr;
+    grid-template-rows:auto auto auto;
+    gap:16px;
+  }
+  .storyAbout>header,
+  .aboutCopy,
+  .creatorCard{
+    grid-column:1;
+    width:100%;
+    max-width:none;
+  }
+  .aboutCopy{
+    margin:0;
+    padding:12px 0 12px 12px;
+    font-size:12px;
+    line-height:1.6;
+  }
+  .aboutCopy p{
+    width:100%;
+    max-width:none;
+    margin:0;
+    text-align:left;
+  }
+  .creatorCard{
+    display:grid;
+    grid-template-columns:96px minmax(0,1fr);
+    grid-template-rows:auto auto auto;
+    column-gap:14px;
+    row-gap:5px;
+    align-items:start;
+    padding-top:4px;
+  }
+  .creatorPhoto{
+    grid-column:1;
+    grid-row:1 / span 3;
+    width:96px;
+    aspect-ratio:1/1;
+    border-radius:16px;
+  }
+  .creatorCard .creatorPhoto+h3{
+    grid-column:2;
+    grid-row:1;
+    align-self:end;
+    width:100%;
+    margin:0;
+    font-size:21px;
+    line-height:1.05;
+    text-align:left;
+  }
+  .creatorCard>p{
+    grid-column:2;
+    grid-row:2;
+    width:100%;
+    max-width:none;
+    margin:2px 0 0;
+    color:#615a56;
+    font-size:11.5px;
+    line-height:1.5;
+    text-align:left;
+  }
+  .creatorInstagramButton{
+    grid-column:2;
+    grid-row:3;
+    justify-self:start;
+    width:auto;
+    margin-top:5px;
+  }
+}
+
+/* Narrow phones: keep the creator stack readable rather than cramped. */
+@media(max-width:420px){
+  .creatorCard{
+    grid-template-columns:78px minmax(0,1fr);
+    column-gap:12px;
+  }
+  .creatorPhoto{width:78px;border-radius:14px}
+  .creatorCard .creatorPhoto+h3{font-size:19px}
+  .creatorCard>p{font-size:11px}
+  .storyPanel,.storyPanel+.storyPanel{padding:17px}
+}
