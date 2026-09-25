@@ -192,3 +192,15 @@
     animation:none!important;
   }
 }
+
+
+/* Mobile Alive v2 — iPhone depth without changing desktop. */
+@media(max-width:850px) and (prefers-reduced-motion:no-preference){
+  .site[data-motion-live="true"] .heroMediaFrame{
+    transform:translate3d(0,var(--commerce-mobile-parallax,0px),0) scale(var(--commerce-hero-media-zoom,1.035));
+    will-change:transform;
+  }
+  .site[data-motion-live="true"] .heroCopy{
+    transform:translate3d(0,calc(-50% + var(--commerce-mobile-parallax,0px) * -.25),0);
+  }
+}
