@@ -25,8 +25,9 @@ async function hydratePublicProject(project:{id:string;slug:string;name:string;s
     sb.from('project_v2_state').select('segment,template_key,lifecycle,native_subdomain,custom_domain,domain_status').eq('project_id',project.id).maybeSingle(),
     sb.from('project_v2_public_content').select('identity,content,media,appearance,contact').eq('project_id',project.id).maybeSingle()
   ]);
-  if(state.error||!state.data||state.data.lifecycle!=='published'||!state.data.template_key)return null;
-  if(content.error||!content.data)return null;
+  if(state.error)throw state.error;
+  if(content.error)throw content.error;
+  if(!state.data||state.data.lifecycle!=='published'||!state.data.template_key||!content.data)return null;
   const data:V2Content={
     identity:content.data.identity||{},
     content:content.data.content||{},
@@ -55,7 +56,8 @@ async function fetchPublicSiteBySlug(slug:string){
     .eq('is_published',true)
     .is('archived_at',null)
     .maybeSingle();
-  if(p.error||!p.data)return null;
+  if(p.error)throw p.error;
+  if(!p.data)return null;
   return hydratePublicProject(p.data);
 }
 
@@ -65,7 +67,8 @@ async function fetchPublicSiteByHost(host:string){
 
   const sb=createSupabasePublicClient();
   const resolved=await sb.rpc('resolve_v2_public_site',{requested_host:route.host});
-  if(resolved.error||!resolved.data||typeof resolved.data!=='object')return null;
+  if(resolved.error)throw resolved.error;
+  if(!resolved.data||typeof resolved.data!=='object')return null;
 
   const row=resolved.data as Record<string,unknown>;
   const id=String(row.id||''),slug=String(row.slug||''),name=String(row.name||'');
