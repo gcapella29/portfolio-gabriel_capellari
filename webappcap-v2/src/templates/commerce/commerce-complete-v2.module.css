@@ -638,3 +638,25 @@
   .storyAbout>header{padding-left:16px!important;padding-right:8px}
   .customerFields + a,.customerFields + .orderBlocked,.customerFields + .whatsappPending{margin-top:22px!important}
 }
+
+
+/* IPHONE FINAL TUNING — no input zoom + creator inset. */
+@media(max-width:850px){
+  .customerFields input{
+    font-size:16px!important;
+    line-height:1.2;
+  }
+
+  /* The creator block now shares the same internal inset as the About heading. */
+  .creatorCard{
+    padding-left:16px!important;
+    padding-right:8px;
+  }
+}
+
+@media(max-width:420px){
+  .creatorCard{
+    padding-left:14px!important;
+    padding-right:6px;
+  }
+}
