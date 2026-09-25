@@ -298,7 +298,7 @@
 }
 
 
-/* VET-SE CATEGORY 3D — quick-sale accent cards. */
+/* VET-SE CATEGORY 3D — clean thematic blue cards. */
 @media(max-width:560px){
   .categoryShelf{
     perspective:900px;
@@ -306,66 +306,56 @@
   }
   .categoryShelf button{
     position:relative;
-    isolation:isolate;
-    overflow:visible;
     min-height:78px;
+    overflow:hidden;
     padding:14px 13px 16px;
-    border-color:color-mix(in srgb,var(--green) 34%,#dfe4e1);
-    background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--green) 8%,#fff));
+    border:1px solid color-mix(in srgb,var(--green) 76%,#70849f);
+    border-radius:14px;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb,var(--green) 86%,#fff) 0%,
+        var(--green) 100%
+      );
+    color:#172230;
     box-shadow:
-      0 5px 0 color-mix(in srgb,var(--green) 58%,#748279),
-      0 12px 24px rgba(21,35,27,.10),
-      inset 0 1px 0 rgba(255,255,255,.95);
+      0 6px 0 color-mix(in srgb,var(--green) 62%,#65778f),
+      0 13px 24px rgba(20,31,43,.14),
+      inset 0 1px 0 rgba(255,255,255,.58);
     transform:translateY(0);
-    transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s ease,border-color .22s ease;
+    transition:transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease,filter .16s ease;
   }
-  .categoryShelf button::before{
-    content:"";
-    position:absolute;
-    z-index:-1;
-    inset:0 0 0 auto;
-    width:45%;
-    border-radius:0 14px 14px 0;
-    clip-path:polygon(34% 0,100% 0,100% 100%,0 100%,20% 58%);
-    background:linear-gradient(135deg,transparent 14%,color-mix(in srgb,var(--green) 18%,transparent) 14% 46%,transparent 46% 60%,color-mix(in srgb,var(--green) 12%,transparent) 60%);
-    pointer-events:none;
-  }
+  .categoryShelf button::before,
   .categoryShelf button::after{
-    content:"";
-    position:absolute;
-    top:11px;
-    right:11px;
-    width:9px;
-    height:9px;
-    border-radius:3px;
-    background:var(--green);
-    transform:rotate(45deg);
-    box-shadow:0 0 0 4px color-mix(in srgb,var(--green) 12%,transparent);
+    content:none!important;
+    display:none!important;
   }
   .categoryShelf span{
     position:relative;
-    z-index:2;
-    max-width:78%;
+    z-index:1;
+    max-width:100%;
+    color:#172230;
     font-size:14px;
+    text-shadow:0 1px 0 rgba(255,255,255,.28);
   }
   .categoryShelf small{
     position:relative;
-    z-index:2;
-    color:color-mix(in srgb,var(--green) 70%,#58625d);
+    z-index:1;
+    color:color-mix(in srgb,#172230 78%,var(--green));
   }
   .categoryShelf button[data-live-active="true"]{
-    transform:translateY(-5px);
-    border-color:color-mix(in srgb,var(--green) 68%,#dfe4e1);
+    transform:translateY(-3px);
+    filter:saturate(1.06) brightness(1.02);
     box-shadow:
-      0 8px 0 color-mix(in srgb,var(--green) 72%,#6d7d72),
-      0 20px 34px color-mix(in srgb,var(--green) 18%,rgba(21,35,27,.12)),
-      inset 0 1px 0 rgba(255,255,255,1);
+      0 8px 0 color-mix(in srgb,var(--green) 64%,#607188),
+      0 17px 28px rgba(20,31,43,.17),
+      inset 0 1px 0 rgba(255,255,255,.65);
   }
   .categoryShelf button:active{
-    transform:translateY(4px) scale(.985)!important;
+    transform:translateY(5px) scale(.985)!important;
     box-shadow:
-      0 1px 0 color-mix(in srgb,var(--green) 58%,#748279),
-      0 6px 12px rgba(21,35,27,.08)!important;
-    transition-duration:.07s!important;
+      0 1px 0 color-mix(in srgb,var(--green) 62%,#65778f),
+      0 5px 10px rgba(20,31,43,.09)!important;
+    transition-duration:.06s!important;
   }
 }
