@@ -87,7 +87,7 @@ function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
   const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{(entry.target as HTMLElement).dataset.mobileActive=entry.isIntersecting?'true':'false'}),{rootMargin:'-34% 0px -34% 0px',threshold:0});
   spotlight.forEach(item=>observer.observe(item));
   let frame=0;
-  const paint=()=>{frame=0;const hero=root.querySelector<HTMLElement>('#inicio');if(!hero)return;const rect=hero.getBoundingClientRect();const progress=Math.max(-1,Math.min(1,-rect.top/Math.max(rect.height,1)));root.style.setProperty('--commerce-mobile-parallax',`${progress*14}px`)};
+  const paint=()=>{frame=0;const hero=root.querySelector<HTMLElement>('#inicio');if(!hero)return;const rect=hero.getBoundingClientRect();const progress=Math.max(-1,Math.min(1,-rect.top/Math.max(rect.height,1)));root.style.setProperty('--commerce-mobile-parallax',`${progress*14}px`);root.style.setProperty('--commerce-mobile-copy-shift',`${progress*-3.5}px`)};
   const request=()=>{if(!frame)frame=requestAnimationFrame(paint)};
   paint();window.addEventListener('scroll',request,{passive:true});
   return()=>{observer.disconnect();window.removeEventListener('scroll',request);if(frame)cancelAnimationFrame(frame)};
