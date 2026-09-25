@@ -274,3 +274,25 @@
   .floatingCart span{font-size:11px}
   .floatingCart strong{font-size:12px}
 }
+
+
+/* Identified checkout gate. */
+.orderBlocked{margin:14px 0 0;padding:13px 14px;border:1px solid #dde2df;border-radius:14px;background:#f0f2f0;color:#6f7873;font-size:11px;font-weight:900;text-align:center}
+
+/* Mobile Alive v2 — iPhone parallax, center spotlight and touch feedback. */
+@media(max-width:560px) and (prefers-reduced-motion:no-preference){
+  .heroCover{
+    transform:translate3d(0,var(--sales-mobile-parallax,0px),0) scale(1.03);
+    will-change:transform;
+  }
+  .card[data-mobile-active="true"]{
+    transform:translateY(-5px) scale(1.008);
+    border-color:color-mix(in srgb,var(--green) 38%,#dfe4e1);
+    box-shadow:0 17px 34px color-mix(in srgb,var(--green) 12%,rgba(21,35,27,.10));
+  }
+  .card[data-mobile-active="true"] .photo img{transform:scale(1.035)}
+  .categoryShelf button:active,.productButton:active,.imageButton:active,.floatingCart:active,.confirm:active,.directCta>a:active{
+    transform:scale(.96)!important;
+    transition-duration:.08s!important;
+  }
+}
