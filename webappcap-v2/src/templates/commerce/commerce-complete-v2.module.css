@@ -27,9 +27,6 @@
 .productControls button{width:31px;height:31px;padding:0;border:0;border-radius:50%;background:#f2f5f8;color:#111820;font-size:16px;font-weight:900;cursor:pointer}
 .productControls b{min-width:20px;text-align:center;font-size:13px}
 
-/* Category detail */
-.categoryOverlay{position:fixed;z-index:990;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(10,12,15,.72);backdrop-filter:blur(10px)}.categoryPanel{position:relative;width:min(920px,calc(100vw - 32px));max-height:min(82vh,760px);overflow:auto;padding:30px;border-radius:26px;background:#fff;box-shadow:0 30px 90px rgba(0,0,0,.28)}.categoryPanel>span{color:var(--accent);font-size:10px;font-weight:900;letter-spacing:.14em}.categoryPanel>h3{margin:6px 54px 20px 0;font-family:var(--commerce-fixed-heading),Arial Black,sans-serif;font-size:clamp(32px,5vw,48px);line-height:.95;letter-spacing:-.04em}.categoryClose{position:absolute;right:18px;top:18px;width:40px;height:40px;border:1px solid #dfe4ea;border-radius:50%;background:#f6f8fa;color:#111820;font-size:24px;cursor:pointer}.categoryProducts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.categoryProducts article{display:grid;grid-template-columns:74px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px;border:1px solid #e0e5eb;border-radius:16px;background:#fff}.categoryProductImage{position:relative;width:74px;aspect-ratio:1/1;overflow:hidden;border-radius:12px;background:#f1f4f7}.categoryProductImage img{object-fit:cover}.categoryProducts article>div:nth-child(2){display:grid;gap:3px;min-width:0}.categoryProducts article strong{font-size:13px;line-height:1.15}.categoryProducts article small{font-size:12px;font-weight:850}.categoryProducts article em{color:var(--accent);font-size:9px;font-style:normal;font-weight:900}.categoryAdd{min-height:38px;padding:0 12px;border:0;border-radius:999px;background:var(--accent);color:#fff;font-size:10px;font-weight:900;cursor:pointer}
-
 /* Product image lightbox */
 .imageLightbox{position:fixed;z-index:1000;inset:0;display:flex;align-items:center;justify-content:center;padding:28px;background:rgba(10,12,15,.82);backdrop-filter:blur(12px);cursor:zoom-out}
 .lightboxImage{position:relative;display:grid;place-items:center;width:min(74vw,74vh,720px);aspect-ratio:1/1;overflow:hidden;border:1px solid rgba(255,255,255,.18);border-radius:24px;background:linear-gradient(145deg,#f7f8fa,#eef1f4);cursor:default;box-shadow:0 30px 90px rgba(0,0,0,.34)}
@@ -489,6 +486,7 @@
     width:100%;
     max-width:none;
   }
+  .storyAbout>header{padding-left:18px;padding-right:10px}
   .aboutCopy{
     margin:0;
     padding:12px 0 12px 12px;
@@ -503,17 +501,18 @@
   }
   .creatorCard{
     display:grid;
-    grid-template-columns:96px minmax(0,1fr);
+    grid-template-columns:110px minmax(0,1fr);
     grid-template-rows:auto auto auto;
-    column-gap:14px;
+    column-gap:0;
     row-gap:5px;
     align-items:start;
-    padding-top:4px;
+    padding:4px 8px 0 0;
   }
   .creatorPhoto{
     grid-column:1;
     grid-row:1 / span 3;
     width:96px;
+    margin-left:12px;
     aspect-ratio:1/1;
     border-radius:16px;
   }
@@ -545,18 +544,23 @@
     width:auto;
     margin-top:5px;
   }
+  .customerFields input{font-size:16px;line-height:1.2}
+  .customerFields + a,.customerFields + .orderBlocked,.customerFields + .whatsappPending{margin-top:24px}
 }
 
 /* Narrow phones: keep the creator stack readable rather than cramped. */
 @media(max-width:420px){
   .creatorCard{
-    grid-template-columns:78px minmax(0,1fr);
-    column-gap:12px;
+    grid-template-columns:90px minmax(0,1fr);
+    column-gap:0;
+    padding-right:6px;
   }
-  .creatorPhoto{width:78px;border-radius:14px}
+  .creatorPhoto{width:78px;margin-left:10px;border-radius:14px}
   .creatorCard .creatorPhoto+h3{font-size:19px}
   .creatorCard>p{font-size:11px}
   .storyPanel,.storyPanel+.storyPanel{padding:17px}
+  .storyAbout>header{padding-left:16px;padding-right:8px}
+  .customerFields + a,.customerFields + .orderBlocked,.customerFields + .whatsappPending{margin-top:22px}
 }
 
 
@@ -627,65 +631,11 @@
     transition-duration:.07s!important
   }
 
-  /* Keep the successful About and checkout spacing fixes. */
-  .storyAbout>header{padding-left:18px!important;padding-right:10px}
-  .customerFields + a,.customerFields + .orderBlocked,.customerFields + .whatsappPending{margin-top:24px!important}
 }
 @media(max-width:420px){
   .categoryShelf{gap:10px}
   .categoryShelf button{min-height:78px;padding:14px 12px 16px}
   .categoryShelf strong{font-size:14px}
-  .storyAbout>header{padding-left:16px!important;padding-right:8px}
-  .customerFields + a,.customerFields + .orderBlocked,.customerFields + .whatsappPending{margin-top:22px!important}
-}
-
-
-/* IPHONE FINAL TUNING — no input zoom + creator inset. */
-@media(max-width:850px){
-  .customerFields input{
-    font-size:16px!important;
-    line-height:1.2;
-  }
-
-  /* The creator block now shares the same internal inset as the About heading. */
-  .creatorCard{
-    padding-left:16px!important;
-    padding-right:8px;
-  }
-}
-
-@media(max-width:420px){
-  .creatorCard{
-    padding-left:14px!important;
-    padding-right:6px;
-  }
-}
-
-
-/* FINAL APPROVED TWEAK — creator photo inset only. */
-@media(max-width:850px){
-  .creatorCard{
-    grid-template-columns:110px minmax(0,1fr)!important;
-    column-gap:0!important;
-    padding-left:0!important;
-    padding-right:8px;
-  }
-  .creatorPhoto{
-    width:96px!important;
-    margin-left:12px!important;
-  }
-}
-@media(max-width:420px){
-  .creatorCard{
-    grid-template-columns:90px minmax(0,1fr)!important;
-    column-gap:0!important;
-    padding-left:0!important;
-    padding-right:6px;
-  }
-  .creatorPhoto{
-    width:78px!important;
-    margin-left:10px!important;
-  }
 }
 
 
