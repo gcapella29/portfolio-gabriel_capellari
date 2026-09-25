@@ -296,3 +296,76 @@
     transition-duration:.08s!important;
   }
 }
+
+
+/* VET-SE CATEGORY 3D — quick-sale accent cards. */
+@media(max-width:560px){
+  .categoryShelf{
+    perspective:900px;
+    gap:10px;
+  }
+  .categoryShelf button{
+    position:relative;
+    isolation:isolate;
+    overflow:visible;
+    min-height:78px;
+    padding:14px 13px 16px;
+    border-color:color-mix(in srgb,var(--green) 34%,#dfe4e1);
+    background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--green) 8%,#fff));
+    box-shadow:
+      0 5px 0 color-mix(in srgb,var(--green) 58%,#748279),
+      0 12px 24px rgba(21,35,27,.10),
+      inset 0 1px 0 rgba(255,255,255,.95);
+    transform:translateY(0);
+    transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s ease,border-color .22s ease;
+  }
+  .categoryShelf button::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    inset:0 0 0 auto;
+    width:45%;
+    border-radius:0 14px 14px 0;
+    clip-path:polygon(34% 0,100% 0,100% 100%,0 100%,20% 58%);
+    background:linear-gradient(135deg,transparent 14%,color-mix(in srgb,var(--green) 18%,transparent) 14% 46%,transparent 46% 60%,color-mix(in srgb,var(--green) 12%,transparent) 60%);
+    pointer-events:none;
+  }
+  .categoryShelf button::after{
+    content:"";
+    position:absolute;
+    top:11px;
+    right:11px;
+    width:9px;
+    height:9px;
+    border-radius:3px;
+    background:var(--green);
+    transform:rotate(45deg);
+    box-shadow:0 0 0 4px color-mix(in srgb,var(--green) 12%,transparent);
+  }
+  .categoryShelf span{
+    position:relative;
+    z-index:2;
+    max-width:78%;
+    font-size:14px;
+  }
+  .categoryShelf small{
+    position:relative;
+    z-index:2;
+    color:color-mix(in srgb,var(--green) 70%,#58625d);
+  }
+  .categoryShelf button[data-live-active="true"]{
+    transform:translateY(-5px);
+    border-color:color-mix(in srgb,var(--green) 68%,#dfe4e1);
+    box-shadow:
+      0 8px 0 color-mix(in srgb,var(--green) 72%,#6d7d72),
+      0 20px 34px color-mix(in srgb,var(--green) 18%,rgba(21,35,27,.12)),
+      inset 0 1px 0 rgba(255,255,255,1);
+  }
+  .categoryShelf button:active{
+    transform:translateY(4px) scale(.985)!important;
+    box-shadow:
+      0 1px 0 color-mix(in srgb,var(--green) 58%,#748279),
+      0 6px 12px rgba(21,35,27,.08)!important;
+    transition-duration:.07s!important;
+  }
+}
