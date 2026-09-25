@@ -12,6 +12,7 @@ import { getTemplate } from '@/core/segments';
 import { sectionsForSegment } from '@/core/content-schema';
 import {commerceHeroPatch} from '@/core/commerce-hero-controls';
 import {menuItemLimitForProject,validatedMenuItems} from '@/core/menu-item-limit';
+import {invalidatePublicSiteCache} from '@/core/public-site';
 import { attachCustomDomain,detachCustomDomain,isVercelDomainAutomationConfigured,verifyCustomDomain } from '@/core/vercel-domains';
 
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
@@ -79,8 +80,8 @@ export async function saveSettingsAction(formData:FormData){
   const sb=await createSupabaseServerClient();
   if(native){const dupe=await sb.from('project_v2_state').select('project_id').eq('native_subdomain',native).neq('project_id',access.project.id).maybeSingle();if(dupe.data)throw new Error('Esse subdomínio já está em uso.')}
   if(custom){const dupe=await sb.from('project_v2_state').select('project_id').eq('custom_domain',custom).neq('project_id',access.project.id).maybeSingle();if(dupe.data)throw new Error('Esse domínio próprio já está vinculado a outro projeto.')}
-  const previous=await sb.from('project_v2_state').select('custom_domain').eq('project_id',access.project.id).maybeSingle();if(previous.error)throw previous.error;
-  const old=previous.data?.custom_domain||'';
+  const previous=await sb.from('project_v2_state').select('native_subdomain,custom_domain').eq('project_id',access.project.id).maybeSingle();if(previous.error)throw previous.error;
+  const old=previous.data?.custom_domain||'',oldNative=previous.data?.native_subdomain||'';
   let domainStatus=custom?'pending':native?'native':'unconfigured'; let vercel='manual';
   if(isVercelDomainAutomationConfigured()){
     try{
@@ -92,6 +93,7 @@ export async function saveSettingsAction(formData:FormData){
   const now=new Date().toISOString();
   const state=await sb.from('project_v2_state').update({native_subdomain:native||null,custom_domain:custom||null,domain_status:domainStatus,updated_at:now}).eq('project_id',access.project.id);if(state.error)throw state.error;
   const legacy=await sb.from('projects').update({subdomain:native||null,custom_domain:custom||null,domain_status:domainStatus==='native'?'active':domainStatus}).eq('id',access.project.id);if(legacy.error)throw legacy.error;
+  invalidatePublicSiteCache({slug,nativeSubdomain:native||slug,customDomain:custom,extraHosts:[old,oldNative]});
   revalidatePath(path(slug,'settings'));redirect(`${path(slug,'settings')}?saved=1&vercel=${vercel}`)
 }
 
@@ -103,7 +105,7 @@ export async function validateDomainAction(formData:FormData){
     try{const verified=await verifyCustomDomain(custom);ok=verified.verified}catch(error){console.error('Vercel domain verify failed',error)}
   }
   if(!ok){const dns=await validateCustomDomain(custom);ok=dns.ok}
-  if(ok){const now=new Date().toISOString();const a=await sb.from('project_v2_state').update({domain_status:'active',updated_at:now}).eq('project_id',access.project.id);if(a.error)throw a.error;const b=await sb.from('projects').update({domain_status:'active'}).eq('id',access.project.id);if(b.error)throw b.error;revalidatePath(path(slug,'settings'));redirect(`${path(slug,'settings')}?domain=active`)}
+  if(ok){const now=new Date().toISOString();const a=await sb.from('project_v2_state').update({domain_status:'active',updated_at:now}).eq('project_id',access.project.id);if(a.error)throw a.error;const b=await sb.from('projects').update({domain_status:'active'}).eq('id',access.project.id);if(b.error)throw b.error;invalidatePublicSiteCache({slug,nativeSubdomain:slug,customDomain:custom});revalidatePath(path(slug,'settings'));redirect(`${path(slug,'settings')}?domain=active`)}
   redirect(`${path(slug,'settings')}?domain=pending`)
 }
 
