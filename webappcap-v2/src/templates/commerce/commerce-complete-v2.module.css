@@ -589,10 +589,11 @@
 }
 
 
-/* VET-SE CATEGORY 3D — mobile accent cards. */
+/* VET-SE CATEGORY 3D — clean thematic blue cards. */
 /*
-  Categories behave like tactile product tabs on phones:
-  raised face, accent-colored lower layer and a small angled accent mask.
+  Mobile categories stay 3D/tactile, but without decorative masks,
+  diamonds or animated ornament. The project accent blue becomes the
+  actual button face.
 */
 @media(max-width:850px){
   .categoryShelf{
@@ -601,91 +602,70 @@
   }
   .categoryShelf button{
     position:relative;
-    isolation:isolate;
     min-height:82px;
-    overflow:visible;
+    overflow:hidden;
     padding:15px 14px 17px;
-    border:1px solid color-mix(in srgb,var(--accent) 34%,#d8dee6);
+    border:1px solid color-mix(in srgb,var(--accent) 76%,#70849f);
     border-radius:17px;
     background:
-      linear-gradient(145deg,rgba(255,255,255,.98),color-mix(in srgb,var(--accent) 8%,#fff));
+      linear-gradient(
+        180deg,
+        color-mix(in srgb,var(--accent) 86%,#fff) 0%,
+        var(--accent) 100%
+      );
+    color:#172230;
     box-shadow:
-      0 5px 0 color-mix(in srgb,var(--accent) 58%,#7d8da3),
-      0 12px 24px rgba(20,31,43,.10),
-      inset 0 1px 0 rgba(255,255,255,.95);
-    transform:translateY(0) rotateX(0deg);
+      0 6px 0 color-mix(in srgb,var(--accent) 62%,#65778f),
+      0 13px 24px rgba(20,31,43,.14),
+      inset 0 1px 0 rgba(255,255,255,.58);
+    transform:translateY(0);
     transform-origin:center bottom;
     transition:
-      transform .22s cubic-bezier(.22,1,.36,1),
-      box-shadow .22s ease,
-      border-color .22s ease,
-      background .22s ease;
+      transform .16s cubic-bezier(.22,1,.36,1),
+      box-shadow .16s ease,
+      filter .16s ease;
   }
-  .categoryShelf button::before{
-    content:"";
-    position:absolute;
-    z-index:-1;
-    top:0;
-    right:0;
-    width:44%;
-    height:100%;
-    border-radius:0 16px 16px 0;
-    background:
-      linear-gradient(135deg,transparent 12%,color-mix(in srgb,var(--accent) 18%,transparent) 12% 44%,transparent 44% 58%,color-mix(in srgb,var(--accent) 12%,transparent) 58%);
-    clip-path:polygon(34% 0,100% 0,100% 100%,0 100%,20% 58%);
-    opacity:.9;
-    pointer-events:none;
-  }
+  .categoryShelf button::before,
   .categoryShelf button::after{
-    content:"";
-    position:absolute;
-    top:12px;
-    right:12px;
-    width:9px;
-    height:9px;
-    border-radius:3px;
-    background:var(--accent);
-    box-shadow:
-      0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent),
-      inset 0 1px 0 rgba(255,255,255,.55);
-    transform:rotate(45deg);
-    pointer-events:none;
+    content:none!important;
+    display:none!important;
   }
   .categoryShelf strong{
     position:relative;
-    z-index:2;
-    max-width:78%;
+    z-index:1;
+    max-width:100%;
     font-size:15px;
     line-height:1.05;
-    color:#111820;
-    text-shadow:0 1px 0 rgba(255,255,255,.9);
+    color:#172230;
+    text-shadow:0 1px 0 rgba(255,255,255,.28);
   }
   .categoryShelf span{
     position:relative;
-    z-index:2;
-    color:color-mix(in srgb,var(--accent) 70%,#3e4650);
+    z-index:1;
+    color:color-mix(in srgb,#172230 78%,var(--accent));
     font-size:9px;
     font-weight:900;
   }
-
   .categoryShelf button[data-live-active="true"]{
-    transform:translateY(-5px) rotateX(2.5deg);
-    border-color:color-mix(in srgb,var(--accent) 68%,#d8dee6);
-    background:
-      linear-gradient(145deg,#fff,color-mix(in srgb,var(--accent) 16%,#fff));
+    transform:translateY(-3px);
+    filter:saturate(1.06) brightness(1.02);
     box-shadow:
-      0 8px 0 color-mix(in srgb,var(--accent) 72%,#71829a),
-      0 20px 34px color-mix(in srgb,var(--accent) 18%,rgba(20,31,43,.12)),
-      inset 0 1px 0 rgba(255,255,255,1);
+      0 8px 0 color-mix(in srgb,var(--accent) 64%,#607188),
+      0 17px 28px rgba(20,31,43,.17),
+      inset 0 1px 0 rgba(255,255,255,.65);
+  }
+  .categoryShelf button:active{
+    transform:translateY(5px) scale(.985)!important;
+    box-shadow:
+      0 1px 0 color-mix(in srgb,var(--accent) 62%,#65778f),
+      0 5px 10px rgba(20,31,43,.09),
+      inset 0 1px 0 rgba(255,255,255,.46)!important;
+    transition-duration:.06s!important;
   }
 
-  .categoryShelf button:active{
-    transform:translateY(4px) scale(.985)!important;
-    box-shadow:
-      0 1px 0 color-mix(in srgb,var(--accent) 58%,#7d8da3),
-      0 6px 12px rgba(20,31,43,.08),
-      inset 0 1px 0 rgba(255,255,255,.9)!important;
-    transition-duration:.07s!important;
+  /* Move the About heading away from the card's left edge. */
+  .storyAbout>header{
+    padding-left:10px;
   }
 }
 
@@ -696,4 +676,27 @@
     padding:14px 12px 16px;
   }
   .categoryShelf strong{font-size:14px}
+  .storyAbout>header{
+    padding-left:9px;
+  }
+}
+
+
+/* Checkout spacing — keep WhatsApp action detached from identity fields. */
+.customerFields + a,
+.customerFields + .orderBlocked,
+.customerFields + .whatsappPending{
+  margin-top:12px;
+}
+
+@media(max-width:850px){
+  .customerFields{
+    gap:10px;
+    margin-top:16px;
+  }
+  .customerFields + a,
+  .customerFields + .orderBlocked,
+  .customerFields + .whatsappPending{
+    margin-top:14px;
+  }
 }
