@@ -660,3 +660,30 @@
     padding-right:6px;
   }
 }
+
+
+/* FINAL APPROVED TWEAK — creator photo inset only. */
+@media(max-width:850px){
+  .creatorCard{
+    grid-template-columns:110px minmax(0,1fr)!important;
+    column-gap:0!important;
+    padding-left:0!important;
+    padding-right:8px;
+  }
+  .creatorPhoto{
+    width:96px!important;
+    margin-left:12px!important;
+  }
+}
+@media(max-width:420px){
+  .creatorCard{
+    grid-template-columns:90px minmax(0,1fr)!important;
+    column-gap:0!important;
+    padding-left:0!important;
+    padding-right:6px;
+  }
+  .creatorPhoto{
+    width:78px!important;
+    margin-left:10px!important;
+  }
+}
