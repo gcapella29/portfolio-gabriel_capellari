@@ -285,3 +285,11 @@
     font-size:5.6px!important;
   }
 }
+
+
+/* FINAL REQUEST — larger mobile section labels, same 30px bar. */
+@media(max-width:850px){
+  .topbar nav a{
+    font-size:clamp(7.2px,1.9vw,8.2px)!important;
+  }
+}
