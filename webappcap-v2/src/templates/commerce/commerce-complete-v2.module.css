@@ -680,3 +680,23 @@
     padding-left:9px;
   }
 }
+
+
+/* Checkout spacing — keep WhatsApp action detached from identity fields. */
+.customerFields + a,
+.customerFields + .orderBlocked,
+.customerFields + .whatsappPending{
+  margin-top:12px;
+}
+
+@media(max-width:850px){
+  .customerFields{
+    gap:10px;
+    margin-top:16px;
+  }
+  .customerFields + a,
+  .customerFields + .orderBlocked,
+  .customerFields + .whatsappPending{
+    margin-top:14px;
+  }
+}
