@@ -317,3 +317,22 @@
     line-height:1;
   }
 }
+
+
+/* SAFARI STABILITY — mobile GPU hardening. */
+/*
+  iOS WebKit is more sensitive to large composited images with continuous
+  filter animations. Keep the sweep/title/cart motion, but stop repainting
+  the full hero bitmap forever and avoid pinning a compositor layer.
+*/
+@media(max-width:850px){
+  .site[data-motion-live="true"] .heroMedia{
+    animation:none!important;
+    filter:none!important;
+  }
+}
+@media(max-width:850px) and (prefers-reduced-motion:no-preference){
+  .site[data-motion-live="true"] .heroMediaFrame{
+    will-change:auto;
+  }
+}
