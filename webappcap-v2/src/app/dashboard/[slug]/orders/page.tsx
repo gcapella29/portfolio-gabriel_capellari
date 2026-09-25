@@ -5,7 +5,7 @@ import {commerceOrdersForProject} from '@/core/commerce-orders';
 import DeleteOrderButton from './delete-order-button';
 
 const money=(value:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
-const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short'}).format(new Date(value));
+const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Sao_Paulo'}).format(new Date(value));
 const template=(value:string)=>value==='commerce-sales-1'?'Venda rápida':'Site completo';
 
 export default async function OrdersPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{deleted?:string;error?:string}>}){
