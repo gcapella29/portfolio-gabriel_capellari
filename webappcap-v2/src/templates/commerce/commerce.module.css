@@ -230,3 +230,58 @@
     font-size:6.5px;
   }
 }
+
+
+/* FINAL MOBILE TOPBAR — visibly shorter. */
+@media(max-width:850px){
+  .topbar{
+    height:34px!important;
+    min-height:34px!important;
+    gap:6px!important;
+    padding:0 7px!important;
+  }
+  .wordmark{
+    font-size:13px!important;
+    line-height:1!important;
+    padding:0!important;
+  }
+  .topbar nav{
+    gap:clamp(3px,1.15vw,6px)!important;
+  }
+  .topbar nav a{
+    font-size:clamp(6px,1.55vw,7px)!important;
+    line-height:1!important;
+  }
+  .topbar nav span{
+    min-width:11px!important;
+    height:11px!important;
+    font-size:6px!important;
+  }
+}
+
+
+/* IPHONE FINAL TUNING — ultra-compact topbar. */
+@media(max-width:850px){
+  .topbar{
+    height:30px!important;
+    min-height:30px!important;
+    gap:5px!important;
+    padding:0 6px!important;
+  }
+  .wordmark{
+    font-size:12px!important;
+    line-height:1!important;
+  }
+  .topbar nav{
+    gap:clamp(2.5px,1vw,5px)!important;
+  }
+  .topbar nav a{
+    font-size:clamp(5.8px,1.45vw,6.6px)!important;
+    line-height:1!important;
+  }
+  .topbar nav span{
+    min-width:10px!important;
+    height:10px!important;
+    font-size:5.6px!important;
+  }
+}

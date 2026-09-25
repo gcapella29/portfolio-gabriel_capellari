@@ -589,150 +589,74 @@
 }
 
 
-/* VET-SE CATEGORY 3D — clean thematic blue cards. */
-/*
-  Mobile categories stay 3D/tactile, but without decorative masks,
-  diamonds or animated ornament. The project accent blue becomes the
-  actual button face.
-*/
+/* VET-SE CATEGORY 3D — restored previous accent-mask effect. */
 @media(max-width:850px){
-  .categoryShelf{
-    perspective:900px;
-    gap:11px;
-  }
+  .categoryShelf{perspective:900px;gap:11px}
   .categoryShelf button{
-    position:relative;
-    min-height:82px;
-    overflow:hidden;
-    padding:15px 14px 17px;
-    border:1px solid color-mix(in srgb,var(--accent) 76%,#70849f);
+    position:relative;isolation:isolate;min-height:82px;overflow:visible;
+    padding:15px 14px 17px;border:1px solid color-mix(in srgb,var(--accent) 34%,#d8dee6);
     border-radius:17px;
-    background:
-      linear-gradient(
-        180deg,
-        color-mix(in srgb,var(--accent) 86%,#fff) 0%,
-        var(--accent) 100%
-      );
-    color:#172230;
-    box-shadow:
-      0 6px 0 color-mix(in srgb,var(--accent) 62%,#65778f),
-      0 13px 24px rgba(20,31,43,.14),
-      inset 0 1px 0 rgba(255,255,255,.58);
-    transform:translateY(0);
-    transform-origin:center bottom;
-    transition:
-      transform .16s cubic-bezier(.22,1,.36,1),
-      box-shadow .16s ease,
-      filter .16s ease;
+    background:linear-gradient(145deg,rgba(255,255,255,.98),color-mix(in srgb,var(--accent) 8%,#fff));
+    box-shadow:0 5px 0 color-mix(in srgb,var(--accent) 58%,#7d8da3),0 12px 24px rgba(20,31,43,.10),inset 0 1px 0 rgba(255,255,255,.95);
+    transform:translateY(0) rotateX(0deg);transform-origin:center bottom;
+    transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s ease,border-color .22s ease,background .22s ease
   }
-  .categoryShelf button::before,
+  .categoryShelf button::before{
+    content:"";position:absolute;z-index:-1;top:0;right:0;width:44%;height:100%;
+    border-radius:0 16px 16px 0;
+    background:linear-gradient(135deg,transparent 12%,color-mix(in srgb,var(--accent) 18%,transparent) 12% 44%,transparent 44% 58%,color-mix(in srgb,var(--accent) 12%,transparent) 58%);
+    clip-path:polygon(34% 0,100% 0,100% 100%,0 100%,20% 58%);opacity:.9;pointer-events:none
+  }
   .categoryShelf button::after{
-    content:none!important;
-    display:none!important;
+    content:"";position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:3px;
+    background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent),inset 0 1px 0 rgba(255,255,255,.55);
+    transform:rotate(45deg);pointer-events:none
   }
-  .categoryShelf strong{
-    position:relative;
-    z-index:1;
-    max-width:100%;
-    font-size:15px;
-    line-height:1.05;
-    color:#172230;
-    text-shadow:0 1px 0 rgba(255,255,255,.28);
-  }
-  .categoryShelf span{
-    position:relative;
-    z-index:1;
-    color:color-mix(in srgb,#172230 78%,var(--accent));
-    font-size:9px;
-    font-weight:900;
-  }
+  .categoryShelf strong{position:relative;z-index:2;max-width:78%;font-size:15px;line-height:1.05;color:#111820;text-shadow:0 1px 0 rgba(255,255,255,.9)}
+  .categoryShelf span{position:relative;z-index:2;color:color-mix(in srgb,var(--accent) 70%,#3e4650);font-size:9px;font-weight:900}
+  .categoryShelf button[aria-pressed="true"],
   .categoryShelf button[data-live-active="true"]{
-    transform:translateY(-3px);
-    filter:saturate(1.06) brightness(1.02);
-    box-shadow:
-      0 8px 0 color-mix(in srgb,var(--accent) 64%,#607188),
-      0 17px 28px rgba(20,31,43,.17),
-      inset 0 1px 0 rgba(255,255,255,.65);
+    transform:translateY(-5px) rotateX(2.5deg);
+    border-color:color-mix(in srgb,var(--accent) 68%,#d8dee6);
+    background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--accent) 16%,#fff));
+    box-shadow:0 8px 0 color-mix(in srgb,var(--accent) 72%,#71829a),0 20px 34px color-mix(in srgb,var(--accent) 18%,rgba(20,31,43,.12)),inset 0 1px 0 rgba(255,255,255,1)
   }
   .categoryShelf button:active{
-    transform:translateY(5px) scale(.985)!important;
-    box-shadow:
-      0 1px 0 color-mix(in srgb,var(--accent) 62%,#65778f),
-      0 5px 10px rgba(20,31,43,.09),
-      inset 0 1px 0 rgba(255,255,255,.46)!important;
-    transition-duration:.06s!important;
+    transform:translateY(4px) scale(.985)!important;
+    box-shadow:0 1px 0 color-mix(in srgb,var(--accent) 58%,#7d8da3),0 6px 12px rgba(20,31,43,.08),inset 0 1px 0 rgba(255,255,255,.9)!important;
+    transition-duration:.07s!important
   }
 
-  /* Move the About heading away from the card's left edge. */
-  .storyAbout>header{
-    padding-left:10px;
-  }
+  /* Keep the successful About and checkout spacing fixes. */
+  .storyAbout>header{padding-left:18px!important;padding-right:10px}
+  .customerFields + a,.customerFields + .orderBlocked,.customerFields + .whatsappPending{margin-top:24px!important}
 }
-
 @media(max-width:420px){
   .categoryShelf{gap:10px}
-  .categoryShelf button{
-    min-height:78px;
-    padding:14px 12px 16px;
-  }
+  .categoryShelf button{min-height:78px;padding:14px 12px 16px}
   .categoryShelf strong{font-size:14px}
-  .storyAbout>header{
-    padding-left:9px;
-  }
+  .storyAbout>header{padding-left:16px!important;padding-right:8px}
+  .customerFields + a,.customerFields + .orderBlocked,.customerFields + .whatsappPending{margin-top:22px!important}
 }
 
 
-/* Checkout spacing — keep WhatsApp action detached from identity fields. */
-.customerFields + a,
-.customerFields + .orderBlocked,
-.customerFields + .whatsappPending{
-  margin-top:12px;
-}
-
+/* IPHONE FINAL TUNING — no input zoom + creator inset. */
 @media(max-width:850px){
-  .customerFields{
-    gap:10px;
-    margin-top:16px;
-  }
-  .customerFields + a,
-  .customerFields + .orderBlocked,
-  .customerFields + .whatsappPending{
-    margin-top:14px;
-  }
-}
-
-
-/* FINAL MOBILE POLISH — checkout breathing room and About inset. */
-@media(max-width:850px){
-  /* Give the identity form and WhatsApp action two clearly separate layers. */
-  .customerFields{
-    margin-bottom:0;
-  }
-  .customerFields + a,
-  .customerFields + .orderBlocked,
-  .customerFields + .whatsappPending{
-    margin-top:24px!important;
+  .customerFields input{
+    font-size:16px!important;
+    line-height:1.2;
   }
 
-  /* Keep the About heading visually inside the card, not on its border. */
-  .storyAbout>header{
-    padding-left:18px!important;
-    padding-right:10px;
-  }
-  .storyAbout>header>span,
-  .storyAbout>header>h2{
-    margin-left:0!important;
+  /* The creator block now shares the same internal inset as the About heading. */
+  .creatorCard{
+    padding-left:16px!important;
+    padding-right:8px;
   }
 }
 
 @media(max-width:420px){
-  .customerFields + a,
-  .customerFields + .orderBlocked,
-  .customerFields + .whatsappPending{
-    margin-top:22px!important;
-  }
-  .storyAbout>header{
-    padding-left:16px!important;
-    padding-right:8px;
+  .creatorCard{
+    padding-left:14px!important;
+    padding-right:6px;
   }
 }
