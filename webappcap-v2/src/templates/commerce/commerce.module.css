@@ -201,6 +201,6 @@
     will-change:transform;
   }
   .site[data-motion-live="true"] .heroCopy{
-    transform:translate3d(0,calc(-50% + var(--commerce-mobile-parallax,0px) * -.25),0);
+    transform:translate3d(0,calc(-50% + var(--commerce-mobile-copy-shift,0px)),0);
   }
 }
