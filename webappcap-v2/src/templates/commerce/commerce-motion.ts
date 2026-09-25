@@ -15,7 +15,7 @@ type MotionConfig={
   copyShiftDistance?:number;
 };
 
-const configFor=(variant:CommerceMotionVariant):MotionConfig=>variant==='complete'?{
+const COMPLETE_CONFIG:MotionConfig={
   desktopMin:851,
   cycleGroups:['product','story','instagram'],
   cycleMs:2300,
@@ -24,7 +24,9 @@ const configFor=(variant:CommerceMotionVariant):MotionConfig=>variant==='complet
   parallaxDistance:14,
   copyShiftVar:'--commerce-mobile-copy-shift',
   copyShiftDistance:-3.5
-}:{
+};
+
+const SALES_CONFIG:MotionConfig={
   desktopMin:561,
   cycleGroups:['product'],
   cycleMs:2100,
@@ -32,6 +34,9 @@ const configFor=(variant:CommerceMotionVariant):MotionConfig=>variant==='complet
   parallaxVar:'--sales-mobile-parallax',
   parallaxDistance:12
 };
+
+const configFor=(variant:CommerceMotionVariant)=>
+  variant==='complete'?COMPLETE_CONFIG:SALES_CONFIG;
 
 export function useCommerceMotion<T extends HTMLElement>(
   rootRef:RefObject<T|null>,
