@@ -331,3 +331,12 @@
     transition-duration:.07s!important
   }
 }
+
+
+/* IPHONE FINAL TUNING — prevent checkout focus zoom. */
+@media(max-width:560px){
+  .checkoutFields input,
+  .intro input{
+    font-size:16px!important;
+  }
+}
