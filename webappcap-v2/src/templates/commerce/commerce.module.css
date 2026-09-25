@@ -293,3 +293,27 @@
     font-size:clamp(7.2px,1.9vw,8.2px)!important;
   }
 }
+
+
+/* FINAL NAV ALIGNMENT — keep every mobile label on the same optical line. */
+@media(max-width:850px){
+  .topbar nav{
+    align-items:center!important;
+  }
+  .topbar nav a{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center;
+    gap:2px;
+    height:18px;
+    line-height:1!important;
+    vertical-align:middle;
+  }
+  .topbar nav span{
+    flex:0 0 auto;
+    align-self:center;
+    margin:0;
+    vertical-align:middle;
+    line-height:1;
+  }
+}
