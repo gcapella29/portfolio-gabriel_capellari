@@ -73,3 +73,96 @@ Antes do merge:
 ### Objetivo do bloco 5
 
 Reduzir TTFB e dependência direta do banco em cada abertura, sem introduzir atraso perceptível após publicar e sem alterar o fluxo atual de rascunho → preview → publicação.
+
+
+## Bloco 6 — Erros e observabilidade
+
+- Adicionado coletor leve de erros do navegador e `unhandledrejection`.
+- Web Vitals com rating `poor` são enviados para o endpoint interno de telemetria.
+- O endpoint registra eventos estruturados nos Runtime Logs da Vercel, sem adicionar SDK externo.
+- Payloads são limitados, sanitizados e protegidos por rate limit básico.
+- Criados error boundaries para aplicação, dashboard e falhas globais.
+- O error boundary do site público agora também registra a ocorrência antes de oferecer recarga.
+- Nenhum conteúdo de projeto, nome, telefone, e-mail ou dados de pedido é enviado na telemetria.
+
+### Como usar os logs
+
+Buscar nos Runtime Logs por:
+
+`[webappcap.telemetry]`
+
+Os eventos possuem `kind`, `name`, `path`, timestamp e, quando aplicável, mensagem/digest ou valor de Web Vital.
+
+## Gate completo antes do merge da branch
+
+### A. Site público Vet-se — iPhone
+1. Abrir o site em nova aba.
+2. Recarregar 5 vezes em sequência.
+3. Rolar do hero até o rodapé e voltar ao topo.
+4. Selecionar e desselecionar categorias.
+5. Buscar produto.
+6. Abrir e fechar imagens ampliadas.
+7. Adicionar/remover itens do carrinho.
+8. Preencher Nome e Telefone e confirmar que não há zoom involuntário.
+9. Abrir o WhatsApp e voltar ao Safari.
+10. Deixar a página aberta por 3–5 minutos e navegar novamente.
+
+Esperado: sem crash do Safari, sem layout diferente do aprovado e sem destaque automático das categorias.
+
+### B. Site público — desktop
+1. Conferir hero, catálogo, carrinho, Instagram e Sobre.
+2. Testar setas do catálogo.
+3. Testar zoom de imagem.
+4. Testar filtros de categoria e busca.
+5. Confirmar animações/reveals.
+6. Testar com Reduce Motion no sistema.
+
+Esperado: nenhum efeito ou layout perdido após a refatoração.
+
+### C. Editor Comércio completo
+1. Alterar um texto simples e salvar.
+2. Alterar posição/zoom do hero.
+3. Trocar foto da criadora.
+4. Adicionar/editar produto.
+5. Criar categoria/promoção.
+6. Abrir Preview.
+
+Esperado: Preview mostra o rascunho imediatamente; site publicado ainda não muda.
+
+### D. Upload de mídia
+1. Enviar JPG normal.
+2. Enviar PNG normal.
+3. Enviar WebP.
+4. Enviar uma foto grande, preferencialmente acima de 3 MB ou 2400 px.
+5. Enviar GIF.
+
+Esperado: arquivos estáticos grandes são otimizados; GIF preserva animação; nenhum upload válido quebra o editor.
+
+### E. Publicação + cache
+1. Fazer uma alteração identificável no editor.
+2. Confirmar no Preview.
+3. Publicar.
+4. Abrir o site real imediatamente em aba privada.
+5. Recarregar o site real.
+
+Esperado: alteração publicada aparece imediatamente após a publicação; acessos seguintes permanecem rápidos.
+
+### F. Venda rápida
+1. Trocar para Venda rápida no editor.
+2. Abrir Preview.
+3. Testar categoria, busca, produto, carrinho e WhatsApp.
+4. Conferir desktop e mobile.
+5. Voltar ao modelo completo ao final se Vet-se deve permanecer nele.
+
+### G. Recuperação de erro
+Não é necessário provocar erro em produção. Confirmar apenas que:
+- páginas normais carregam sem a tela de erro;
+- `/api/telemetry` não interfere em navegação;
+- Runtime Logs podem ser pesquisados por `[webappcap.telemetry]` após um evento real.
+
+### H. Gate automático
+A branch só deve ser mergeada com:
+- `validate` = success;
+- Vercel = success;
+- preview funcional;
+- testes manuais A–F aprovados.
