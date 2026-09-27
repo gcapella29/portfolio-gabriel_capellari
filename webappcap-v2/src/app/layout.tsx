@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './backend-interactions.css';
+import AppObservability from './app-observability';
 
 export const metadata: Metadata = {
   title: 'WebAppCap',
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children}:{children:React.ReactNode}) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>{children}<AppObservability/></body>
     </html>
   );
 }

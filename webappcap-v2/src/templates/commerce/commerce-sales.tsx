@@ -8,6 +8,7 @@ import {commerceSettings,replaceCommerceCatalogTerm} from '@/core/commerce-setti
 import {commerceCategories,commerceLineTotal,commercePromoLabel} from '@/core/commerce-promotions';
 import {trackCommerceOrder} from '@/lib/commerce-order-tracking';
 import styles from './commerce-sales.module.css';
+import {useCommerceMotion} from './commerce-motion';
 import polish from './commerce-sales-polish.module.css';
 
 type Row=Record<string,unknown>;
@@ -39,34 +40,7 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
  const cartTotal=useMemo(()=>cart.reduce((sum,line)=>sum+commerceLineTotal(products[line.productIndex]||{},line.quantity),0),[cart,products]),cartCount=useMemo(()=>cart.reduce((sum,line)=>sum+line.quantity,0),[cart]);
 
  useEffect(()=>{const modal=selected!==null||cartOpen||zoomedImage!==null;if(!modal)return;const onKey=(event:KeyboardEvent)=>{if(event.key==='Escape'){setSelected(null);setActiveCategory(null);setCartOpen(false);setZoomedImage(null)}};document.body.style.overflow='hidden';window.addEventListener('keydown',onKey);return()=>{document.body.style.overflow='';window.removeEventListener('keydown',onKey)}},[selected,cartOpen,zoomedImage]);
- useEffect(()=>{
-  const root=siteRef.current;if(!root||window.matchMedia('(prefers-reduced-motion: reduce)').matches||window.matchMedia('(max-width: 560px)').matches)return;
-  const groups=['product'];
-  const indices=new Map<string,number>();
-  const paint=(group:string)=>{
-    const items=Array.from(root.querySelectorAll<HTMLElement>(`[data-live-cycle="${group}"]`));
-    if(!items.length)return;
-    const previous=indices.get(group)??-1;
-    if(previous>=0&&items[previous])items[previous].dataset.liveActive='false';
-    const next=(previous+1)%items.length;
-    items[next].dataset.liveActive='true';
-    indices.set(group,next);
-  };
-  groups.forEach(paint);
-  const timer=window.setInterval(()=>{if(!document.hidden)groups.forEach(paint)},2100);
-  return()=>window.clearInterval(timer);
- },[]);
- useEffect(()=>{
-  const root=siteRef.current;if(!root||window.matchMedia('(min-width: 561px)').matches||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  const spotlight=Array.from(root.querySelectorAll<HTMLElement>('[data-mobile-spotlight]'));
-  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{(entry.target as HTMLElement).dataset.mobileActive=entry.isIntersecting?'true':'false'}),{rootMargin:'-34% 0px -34% 0px',threshold:0});
-  spotlight.forEach(item=>observer.observe(item));
-  let frame=0;
-  const paint=()=>{frame=0;const hero=root.querySelector<HTMLElement>('main section');if(!hero)return;const rect=hero.getBoundingClientRect();if(rect.bottom<0||rect.top>window.innerHeight)return;const progress=Math.max(-1,Math.min(1,-rect.top/Math.max(rect.height,1)));root.style.setProperty('--sales-mobile-parallax',`${progress*12}px`)};
-  const request=()=>{if(!frame)frame=requestAnimationFrame(paint)};
-  paint();window.addEventListener('scroll',request,{passive:true});
-  return()=>{observer.disconnect();window.removeEventListener('scroll',request);if(frame)cancelAnimationFrame(frame)};
- },[]);
+ useCommerceMotion(siteRef,'sales');
  const openProduct=(index:number)=>{setSelected(index);setQuantity(1)};
  const addToCart=()=>{if(selected===null)return;setCart(current=>{const existing=current.find(line=>line.productIndex===selected);return existing?current.map(line=>line.id===existing.id?{...line,quantity:line.quantity+quantity}:line):[...current,{id:nextId.current++,productIndex:selected,quantity}]});setSelected(null)};
  const customerReady=customerName.trim().length>=2&&customerPhone.replace(/\D/g,'').length>=8;

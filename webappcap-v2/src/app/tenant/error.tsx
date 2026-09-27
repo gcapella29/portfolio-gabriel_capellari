@@ -10,9 +10,19 @@ export default function TenantError({
   reset:()=>void;
 }){
   useEffect(()=>{
-    // Keep the public page usable even if a transient server/client error happens.
-    // The digest is intentionally logged without exposing project data to the UI.
-    console.error('Public tenant render failed',error.digest||error.message);
+    // Keep the public page usable and make the failure visible in deployment logs.
+    const payload=JSON.stringify({
+      kind:'client_error',
+      name:error.name||'TenantError',
+      message:error.message,
+      digest:error.digest,
+      path:`${location.pathname}${location.search}`
+    });
+    try{
+      if(!navigator.sendBeacon('/api/telemetry',new Blob([payload],{type:'application/json'}))){
+        void fetch('/api/telemetry',{method:'POST',headers:{'content-type':'application/json'},body:payload,keepalive:true});
+      }
+    }catch{}
   },[error]);
 
   return (

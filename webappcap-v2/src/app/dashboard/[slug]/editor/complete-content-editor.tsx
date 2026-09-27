@@ -36,7 +36,7 @@ export default function CompleteContentEditor({menuLimit,projectId,slug,data,can
   <Block id="block-4" number="04" title="Instagram" summary="Perfil da loja e publicações">
    <VisibilityToggle name="visibility:instagram" label="Exibir Instagram" description="Se o Sobre ficar ativo sozinho, ele ocupará toda a largura disponível." defaultChecked={visible(data.content,'show_instagram')}/>
    <label className="field"><span>Subtítulo do Instagram</span><textarea name="social_intro" rows={2} defaultValue={v(data.content,'social_intro')}/></label>
-   <label className="field"><span>Instagram da loja — usuário ou URL</span><input name="instagram" defaultValue={v(data.contact,'instagram')} placeholder="@perfil ou https://instagram.com/perfil"/></label>
+   <label className="field"><span>Instagram da loja — usuário ou URL</span><input name="instagram" defaultValue={v(data.contact,'instagram')} placeholder="@perfil ou https://instagram.com/perfil"/><small>Este perfil alimenta o botão de seguir a página da loja no Instagram exibido no site.</small></label>
   </Block>
   <Block id="block-5" number="05" title="Sobre" summary="Apresentação da marca e da criadora">
    <VisibilityToggle name="visibility:about" label="Exibir Sobre" description="Se o Instagram ficar ativo sozinho, ele ocupará toda a largura disponível." defaultChecked={visible(data.content,'show_about')}/>
