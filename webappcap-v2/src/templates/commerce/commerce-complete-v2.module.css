@@ -710,6 +710,15 @@
   font-size:18px;
   cursor:pointer;
 }
+.creatorActions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:9px;
+  margin-top:18px;
+}
+.creatorActions .creatorInstagramButton{margin-top:0}
+
 @media(min-width:851px) and (prefers-reduced-motion:no-preference){
   .productCard[data-live-active="true"]{
     transform:translateY(-12px) scale(1.018);
@@ -814,11 +823,19 @@
     line-height:1.5;
   }
 
-  .creatorCard>.creatorInstagramButton{
+  .creatorActions{
     grid-area:actions;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+    width:100%;
+    margin-top:10px;
+  }
+
+  .creatorActions .creatorInstagramButton{
     width:100%;
     min-height:48px;
-    margin:10px 0 0;
+    margin:0;
     padding:11px 16px;
     justify-self:stretch;
     white-space:normal;
@@ -859,9 +876,13 @@
     line-height:1.48;
   }
 
-  .creatorCard>.creatorInstagramButton{
-    min-height:46px;
+  .creatorActions{
+    gap:8px;
     margin-top:9px;
+  }
+
+  .creatorActions .creatorInstagramButton{
+    min-height:46px;
     padding:10px 14px;
     font-size:12px;
   }
