@@ -710,15 +710,6 @@
   font-size:18px;
   cursor:pointer;
 }
-.creatorActions{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:9px;
-  margin-top:18px;
-}
-.creatorActions .creatorInstagramButton{margin-top:0}
-
 @media(min-width:851px) and (prefers-reduced-motion:no-preference){
   .productCard[data-live-active="true"]{
     transform:translateY(-12px) scale(1.018);
@@ -823,25 +814,6 @@
     line-height:1.5;
   }
 
-  .creatorActions{
-    grid-area:actions;
-    display:grid;
-    grid-template-columns:1fr;
-    gap:9px;
-    width:100%;
-    margin-top:10px;
-  }
-
-  .creatorActions .creatorInstagramButton{
-    width:100%;
-    min-height:48px;
-    margin:0;
-    padding:11px 16px;
-    justify-self:stretch;
-    white-space:normal;
-    font-size:max(12px,var(--commerce-button-size));
-    line-height:1.25;
-  }
 }
 
 @media(max-width:420px){
@@ -876,14 +848,39 @@
     line-height:1.48;
   }
 
-  .creatorActions{
-    gap:8px;
-    margin-top:9px;
-  }
+}
 
-  .creatorActions .creatorInstagramButton{
-    min-height:46px;
-    padding:10px 14px;
-    font-size:12px;
-  }
+/* Shared Instagram CTA — same size, style and interaction for store and creator. */
+.instagramCta{
+  width:min(100%,280px);
+  min-height:52px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px 18px;
+  border:1px solid color-mix(in srgb,var(--accent) 42%,#cfd7e2);
+  border-radius:999px;
+  background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--accent) 7%,#fff));
+  color:#111820;
+  box-shadow:0 8px 22px rgba(25,34,46,.06);
+  font-size:max(12px,var(--commerce-button-size));
+  font-weight:var(--commerce-button-weight);
+  font-style:var(--commerce-button-style);
+  line-height:1.2;
+  text-align:center;
+  text-decoration:none;
+  transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s ease,border-color .22s ease;
+}
+.instagramCta:hover{
+  transform:translateY(-3px);
+  border-color:color-mix(in srgb,var(--accent) 66%,#cfd7e2);
+  box-shadow:0 14px 30px color-mix(in srgb,var(--accent) 14%,rgba(25,34,46,.08));
+}
+.instagramCta:active{transform:translateY(1px) scale(.985)}
+@media(max-width:850px){
+  .instagramCta{width:100%;min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+  .instagramCta{transition:none}
+  .instagramCta:hover,.instagramCta:active{transform:none}
 }
