@@ -746,3 +746,145 @@
   .creatorActions{display:grid;width:100%;gap:8px;margin-top:12px}
   .creatorActions .creatorInstagramButton{width:100%;margin-top:0}
 }
+
+
+/* MOBILE ABOUT REFINEMENT — compact creator card with two clear Instagram actions. */
+@media(max-width:850px){
+  .storyAbout{
+    gap:20px;
+  }
+
+  .storyAbout>header{
+    margin-bottom:2px;
+  }
+
+  .storyAbout>header span{
+    margin-bottom:8px;
+    font-size:10px;
+    letter-spacing:.17em;
+  }
+
+  .storyAbout>header h2{
+    margin:0;
+    font-size:clamp(38px,11vw,50px);
+    line-height:.94;
+    letter-spacing:-.045em;
+  }
+
+  .aboutCopy{
+    margin:0;
+    padding:14px 4px 14px 16px;
+    font-size:14px;
+    line-height:1.62;
+  }
+
+  .aboutCopy p{
+    max-width:none;
+  }
+
+  .creatorCard{
+    display:grid;
+    grid-template-columns:96px minmax(0,1fr);
+    grid-template-areas:
+      "photo name"
+      "photo bio"
+      "actions actions";
+    column-gap:16px;
+    row-gap:7px;
+    align-items:start;
+    width:100%;
+    max-width:none;
+    padding:0 2px;
+  }
+
+  .creatorPhoto{
+    grid-area:photo;
+    width:96px;
+    height:96px;
+    margin:0;
+    aspect-ratio:1/1;
+    border-radius:20px;
+    align-self:start;
+  }
+
+  .creatorCard .creatorPhoto+h3{
+    grid-area:name;
+    align-self:end;
+    margin:2px 0 0;
+    font-size:clamp(23px,6.6vw,30px);
+    line-height:1.02;
+    letter-spacing:-.035em;
+  }
+
+  .creatorCard>p{
+    grid-area:bio;
+    max-width:none;
+    margin:0;
+    color:#615a56;
+    font-size:13px;
+    line-height:1.5;
+  }
+
+  .creatorActions{
+    grid-area:actions;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+    width:100%;
+    margin-top:10px;
+  }
+
+  .creatorActions .creatorInstagramButton{
+    width:100%;
+    min-height:48px;
+    margin:0;
+    padding:11px 16px;
+    white-space:normal;
+    font-size:max(12px,var(--commerce-button-size));
+    line-height:1.25;
+  }
+}
+
+@media(max-width:420px){
+  .storyAbout{
+    gap:18px;
+  }
+
+  .aboutCopy{
+    padding-left:14px;
+    font-size:13px;
+    line-height:1.58;
+  }
+
+  .creatorCard{
+    grid-template-columns:84px minmax(0,1fr);
+    column-gap:13px;
+    row-gap:6px;
+  }
+
+  .creatorPhoto{
+    width:84px;
+    height:84px;
+    border-radius:18px;
+  }
+
+  .creatorCard .creatorPhoto+h3{
+    font-size:22px;
+  }
+
+  .creatorCard>p{
+    font-size:12px;
+    line-height:1.48;
+  }
+
+  .creatorActions{
+    gap:8px;
+    margin-top:9px;
+  }
+
+  .creatorActions .creatorInstagramButton{
+    min-height:46px;
+    padding:10px 14px;
+    font-size:12px;
+  }
+}
