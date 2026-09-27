@@ -850,102 +850,140 @@
 
 }
 
-/* Shared Instagram CTA — same size, style and interaction for store and creator. */
+
+/* ABOUT / INSTAGRAM FINAL — stable alignment and identical CTA behavior. */
+.storyAbout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(220px,280px);
+  gap:clamp(24px,2.4vw,38px);
+  align-items:start;
+}
+.aboutBrand{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.aboutBrand>header{
+  width:100%;
+  margin:0;
+}
+.aboutBrand>header h2{
+  max-width:none;
+  margin:10px 0 12px;
+}
+.aboutBrand .aboutCopy{
+  width:100%;
+  margin-top:4px;
+}
+.creatorCard{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
 .instagramCta{
-  width:min(100%,280px);
-  min-height:52px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding:12px 18px;
-  border:1px solid color-mix(in srgb,var(--accent) 42%,#cfd7e2);
+  width:280px;
+  max-width:100%;
+  min-height:48px;
+  margin-top:22px;
+  padding:0 24px;
+  border:1px solid color-mix(in srgb,var(--accent) 68%,rgba(255,255,255,.9));
   border-radius:999px;
-  background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--accent) 7%,#fff));
-  color:#111820;
-  box-shadow:0 8px 22px rgba(25,34,46,.06);
-  font-size:max(12px,var(--commerce-button-size));
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 18%,rgba(255,255,255,.92)),rgba(255,255,255,.72));
+  backdrop-filter:blur(14px) saturate(150%);
+  color:color-mix(in srgb,var(--accent) 78%,#111820);
+  font-family:var(--commerce-fixed-body),Arial,sans-serif;
+  font-size:var(--commerce-button-size);
   font-weight:var(--commerce-button-weight);
   font-style:var(--commerce-button-style);
   line-height:1.2;
   text-align:center;
   text-decoration:none;
-  transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s ease,border-color .22s ease;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 26px color-mix(in srgb,var(--accent) 18%,transparent);
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease,color .25s ease;
 }
-.instagramCta:hover{
-  transform:translateY(-3px);
-  border-color:color-mix(in srgb,var(--accent) 66%,#cfd7e2);
-  box-shadow:0 14px 30px color-mix(in srgb,var(--accent) 14%,rgba(25,34,46,.08));
+.instagramCta:hover,
+.instagramCta:focus-visible{
+  transform:translateY(-3px) scale(1.015);
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 92%,#fff),color-mix(in srgb,var(--accent) 72%,#111820));
+  color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 16px 34px color-mix(in srgb,var(--accent) 30%,transparent);
 }
 .instagramCta:active{transform:translateY(1px) scale(.985)}
-@media(max-width:850px){
-  .instagramCta{width:100%;min-height:48px}
-}
-@media(prefers-reduced-motion:reduce){
-  .instagramCta{transition:none}
-  .instagramCta:hover,.instagramCta:active{transform:none}
-}
-
-/* FINAL INSTAGRAM CTA PLACEMENT — store left, creator right; same component language. */
-.storyAbout{
-  grid-template-rows:auto auto auto;
-}
-.storeInstagramButton{
-  grid-column:1;
-  grid-row:3;
-  align-self:start;
-  justify-self:start;
-  margin-top:8px;
-}
-.creatorCard{
-  grid-row:1 / span 3;
-}
-.creatorCard>.instagramCta{
-  align-self:flex-start;
-  margin-top:18px;
-}
-.storeInstagramButton.instagramCta,
-.creatorCard>.instagramCta{
-  width:min(100%,280px);
-  min-height:52px;
-  padding:12px 18px;
-}
+.creatorCard>.instagramCta{align-self:flex-start}
 
 @media(max-width:850px){
   .storyAbout{
     grid-template-columns:1fr;
-    grid-template-rows:auto auto auto auto;
+    gap:22px;
   }
-  .storyAbout>header{
-    grid-column:1;
-    grid-row:1;
-  }
-  .aboutCopy{
-    grid-column:1;
-    grid-row:2;
-  }
-  .storeInstagramButton{
-    grid-column:1;
-    grid-row:3;
+  .aboutBrand{
     width:100%;
+    align-items:stretch;
+  }
+  .aboutBrand>header{
+    padding-left:18px;
+    padding-right:10px;
+  }
+  .aboutBrand>header span{
+    display:block;
+    margin-bottom:8px;
+    font-size:10px;
+    letter-spacing:.17em;
+  }
+  .aboutBrand>header h2{
     margin:0;
+    font-size:clamp(38px,11vw,50px);
+    line-height:.94;
+    letter-spacing:-.045em;
   }
-  .creatorCard{
-    grid-column:1;
-    grid-row:4;
-    margin-top:4px;
+  .aboutBrand .aboutCopy{
+    margin:0;
+    padding:14px 4px 14px 16px;
+    font-size:14px;
+    line-height:1.62;
   }
-  .creatorCard>.instagramCta{
-    grid-area:actions;
-    width:100%;
-    min-height:48px;
-    margin-top:10px;
-    justify-self:stretch;
-  }
-  .storeInstagramButton.instagramCta,
-  .creatorCard>.instagramCta{
+  .instagramCta{
     width:100%;
     max-width:none;
     min-height:48px;
+    margin-top:12px;
     padding:11px 16px;
+    font-size:max(12px,var(--commerce-button-size));
   }
+  .creatorCard{
+    width:100%;
+  }
+  .creatorCard>.instagramCta{
+    width:100%;
+    align-self:stretch;
+    margin-top:12px;
+  }
+}
+@media(max-width:420px){
+  .storyAbout{gap:18px}
+  .aboutBrand>header{
+    padding-left:16px;
+    padding-right:8px;
+  }
+  .aboutBrand .aboutCopy{
+    padding-left:14px;
+    font-size:13px;
+    line-height:1.58;
+  }
+  .instagramCta{
+    min-height:46px;
+    padding:10px 14px;
+    font-size:12px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .instagramCta{transition:none}
+  .instagramCta:hover,
+  .instagramCta:focus-visible,
+  .instagramCta:active{transform:none}
 }
