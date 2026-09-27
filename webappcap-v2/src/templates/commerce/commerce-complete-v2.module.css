@@ -884,3 +884,68 @@
   .instagramCta{transition:none}
   .instagramCta:hover,.instagramCta:active{transform:none}
 }
+
+/* FINAL INSTAGRAM CTA PLACEMENT — store left, creator right; same component language. */
+.storyAbout{
+  grid-template-rows:auto auto auto;
+}
+.storeInstagramButton{
+  grid-column:1;
+  grid-row:3;
+  align-self:start;
+  justify-self:start;
+  margin-top:8px;
+}
+.creatorCard{
+  grid-row:1 / span 3;
+}
+.creatorCard>.instagramCta{
+  align-self:flex-start;
+  margin-top:18px;
+}
+.storeInstagramButton.instagramCta,
+.creatorCard>.instagramCta{
+  width:min(100%,280px);
+  min-height:52px;
+  padding:12px 18px;
+}
+
+@media(max-width:850px){
+  .storyAbout{
+    grid-template-columns:1fr;
+    grid-template-rows:auto auto auto auto;
+  }
+  .storyAbout>header{
+    grid-column:1;
+    grid-row:1;
+  }
+  .aboutCopy{
+    grid-column:1;
+    grid-row:2;
+  }
+  .storeInstagramButton{
+    grid-column:1;
+    grid-row:3;
+    width:100%;
+    margin:0;
+  }
+  .creatorCard{
+    grid-column:1;
+    grid-row:4;
+    margin-top:4px;
+  }
+  .creatorCard>.instagramCta{
+    grid-area:actions;
+    width:100%;
+    min-height:48px;
+    margin-top:10px;
+    justify-self:stretch;
+  }
+  .storeInstagramButton.instagramCta,
+  .creatorCard>.instagramCta{
+    width:100%;
+    max-width:none;
+    min-height:48px;
+    padding:11px 16px;
+  }
+}
