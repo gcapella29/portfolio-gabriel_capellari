@@ -95,7 +95,10 @@ export function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
         <div className={complete.creatorPhoto}>{creator?<Image src={creator} alt={copy('creator_name','Criadora da marca')} fill sizes="(max-width: 420px) 78px, (max-width: 850px) 96px, 18vw" style={{objectFit:imageFit(data.media,'creator') as CSSProperties['objectFit'],objectPosition:imagePosition(data.media,'creator'),transform:`scale(${imageZoom(data.media,'creator')})`,transformOrigin:'center'}}/>:<ImagePlaceholder/>}</div>
         <h3>{copy('creator_name','')}</h3>
         <p>{copy('creator_bio','')}</p>
-        {creatorInstagram?<a className={complete.creatorInstagramButton} href={creatorInstagramUrl} target="_blank" rel="noreferrer">{legacyCopy('creator_instagram_label','Seguir a criadora no Instagram ↗',['Siga a criadora no Instagram','Siga a criadora no Instagram ↗','Seguir no Instagram ↗'])}</a>:null}
+        <div className={complete.creatorActions}>
+         {instagram?<a className={complete.creatorInstagramButton} href={instagramUrl} target="_blank" rel="noreferrer">Seguir {name} no Instagram ↗</a>:null}
+         {creatorInstagram?<a className={complete.creatorInstagramButton} href={creatorInstagramUrl} target="_blank" rel="noreferrer">{legacyCopy('creator_instagram_label','Seguir a criadora no Instagram ↗',['Siga a criadora no Instagram','Siga a criadora no Instagram ↗','Seguir no Instagram ↗'])}</a>:null}
+        </div>
        </article>
       </section>
      ):null}
