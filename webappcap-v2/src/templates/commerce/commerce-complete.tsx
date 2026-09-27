@@ -82,7 +82,7 @@ export function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
       <section className={`${complete.storyPanel} ${complete.storyInstagram}`} id="redes-sociais" data-live-cycle="story" data-mobile-spotlight data-reveal="left">
        <div className={complete.socialCopy}>
         <header><span>INSTAGRAM</span><h2>{copy('social_title','Acompanhe de perto')}</h2><p>{copy('social_intro','Novidades, bastidores e criações direto no Instagram.')}</p></header>
-        {instagram?<a className={complete.socialButton} href={instagramUrl} target="_blank" rel="noreferrer">{legacyCopy('social_follow','Seguir no Instagram ↗',['Siga no Instagram','Siga no Instagram ↗'])}</a>:null}
+        {instagram?<a className={`${complete.socialButton} ${complete.instagramCta}`} href={instagramUrl} target="_blank" rel="noreferrer">{legacyCopy('social_follow',`Seguir ${name} no Instagram ↗`,['Siga no Instagram','Siga no Instagram ↗','Seguir no Instagram ↗'])}</a>:null}
        </div>
        <div className={complete.instagramGrid}>{Array.from({length:6},(_,index)=>gallery[index]?<div data-live-cycle="instagram" key={gallery[index]}><Image src={gallery[index]} alt={`Publicação de ${name}`} fill sizes="(max-width: 700px) 30vw, 12vw" style={{objectFit:'cover'}}/></div>:<div key={`empty-${index}`}><ImagePlaceholder/></div>)}</div>
       </section>
@@ -95,10 +95,7 @@ export function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
         <div className={complete.creatorPhoto}>{creator?<Image src={creator} alt={copy('creator_name','Criadora da marca')} fill sizes="(max-width: 420px) 78px, (max-width: 850px) 96px, 18vw" style={{objectFit:imageFit(data.media,'creator') as CSSProperties['objectFit'],objectPosition:imagePosition(data.media,'creator'),transform:`scale(${imageZoom(data.media,'creator')})`,transformOrigin:'center'}}/>:<ImagePlaceholder/>}</div>
         <h3>{copy('creator_name','')}</h3>
         <p>{copy('creator_bio','')}</p>
-        <div className={complete.creatorActions}>
-         {instagram?<a className={complete.creatorInstagramButton} href={instagramUrl} target="_blank" rel="noreferrer">Seguir {name} no Instagram ↗</a>:null}
-         {creatorInstagram?<a className={complete.creatorInstagramButton} href={creatorInstagramUrl} target="_blank" rel="noreferrer">{legacyCopy('creator_instagram_label','Seguir a criadora no Instagram ↗',['Siga a criadora no Instagram','Siga a criadora no Instagram ↗','Seguir no Instagram ↗'])}</a>:null}
-        </div>
+        {creatorInstagram?<a className={`${complete.creatorInstagramButton} ${complete.instagramCta}`} href={creatorInstagramUrl} target="_blank" rel="noreferrer">{legacyCopy('creator_instagram_label','Seguir a criadora no Instagram ↗',['Siga a criadora no Instagram','Siga a criadora no Instagram ↗','Seguir no Instagram ↗'])}</a>:null}
        </article>
       </section>
      ):null}
