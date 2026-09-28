@@ -147,3 +147,67 @@
   .switchProjectButton{width:100%;min-width:0;min-height:42px;padding:0 7px;font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.switchProjectButton{transition:none;transform:none!important}}
+
+
+/* Dashboard motion v2 — modern depth without making the workspace restless. */
+.summary article,.tool,.analyticsPanel,.pageFrame :global(.setup-card),.pageFrame :global(.editor-section),.pageFrame :global(.lead-card-v2),.pageFrame :global(.lead-stats article){
+  transform:translateZ(0);
+}
+.toolIcon{
+  transition:transform .24s cubic-bezier(.22,1,.36,1),background .24s ease,color .24s ease;
+}
+.summary article{
+  transition:transform .22s cubic-bezier(.22,1,.36,1),background .22s ease;
+}
+@media(min-width:861px) and (prefers-reduced-motion:no-preference){
+  .hero{animation:dashboardEnter .52s cubic-bezier(.22,1,.36,1) both}
+  .summary{animation:dashboardEnter .55s .05s cubic-bezier(.22,1,.36,1) both}
+  .sectionHead{animation:dashboardEnter .5s .08s cubic-bezier(.22,1,.36,1) both}
+  .tool{animation:dashboardCardEnter .46s cubic-bezier(.22,1,.36,1) both}
+  .tool:nth-child(1){animation-delay:.10s}
+  .tool:nth-child(2){animation-delay:.14s}
+  .tool:nth-child(3){animation-delay:.18s}
+  .tool:nth-child(4){animation-delay:.22s}
+  .tool:nth-child(5){animation-delay:.26s}
+  .tool:nth-child(6){animation-delay:.30s}
+  .analyticsPanel{animation:dashboardEnter .52s .12s cubic-bezier(.22,1,.36,1) both}
+
+  .summary article:hover{
+    transform:translateY(-4px);
+    background:linear-gradient(180deg,#fff,#f7f9fd);
+  }
+  .tool:hover{
+    transform:translateY(-6px) scale(1.01);
+    border-color:#c7d1df;
+    box-shadow:0 16px 36px rgba(17,24,39,.09);
+  }
+  .tool:hover .toolIcon{
+    transform:translateY(-2px) rotate(-3deg) scale(1.08);
+    background:#e4eaff;
+    color:#2148c5;
+  }
+  .analyticsPanel:hover,
+  .pageFrame :global(.setup-card:hover),
+  .pageFrame :global(.editor-section:hover),
+  .pageFrame :global(.lead-card-v2:hover){
+    transform:translateY(-3px);
+  }
+}
+@keyframes dashboardEnter{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:none}
+}
+@keyframes dashboardCardEnter{
+  from{opacity:0;transform:translateY(14px) scale(.992)}
+  to{opacity:1;transform:none}
+}
+@media(max-width:860px){
+  .tool:active,.summary article:active,.pageFrame :global(.action:active){transform:scale(.985)}
+}
+@media(prefers-reduced-motion:reduce){
+  .summary article,.tool,.analyticsPanel,.toolIcon,.pageFrame :global(.setup-card),.pageFrame :global(.editor-section),.pageFrame :global(.lead-card-v2),.pageFrame :global(.lead-stats article){
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+  }
+}
