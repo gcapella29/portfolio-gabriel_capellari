@@ -75,30 +75,40 @@
 }
 
 
-/* Project cards stay completely static; only their action buttons animate. */
-.projectCard{
-  transform:none!important;
-  transition:none!important;
+
+/* Restored owner panel motion — visible on web, quiet on touch/reduced-motion. */
+@media(min-width:721px) and (prefers-reduced-motion:no-preference){
+  .projectCard{
+    transform:translateZ(0);
+    transition:transform .24s cubic-bezier(.2,.7,.2,1),box-shadow .24s ease,border-color .24s ease;
+    animation:ownerCardIn .48s ease both;
+  }
+  .projectCard:nth-child(2){animation-delay:.05s}
+  .projectCard:nth-child(3){animation-delay:.10s}
+  .projectCard:nth-child(4){animation-delay:.15s}
+  .projectCard:nth-child(5){animation-delay:.20s}
+  .projectCard:nth-child(6){animation-delay:.25s}
+  .projectCard:hover{
+    transform:translateY(-5px) scale(1.006);
+    border-color:#c8d1df;
+    box-shadow:0 18px 42px rgba(17,24,39,.09);
+  }
+  .sidePanel{
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+  }
+  .sidePanel:hover{
+    transform:translateY(-3px);
+    border-color:#d4dbe6;
+    box-shadow:0 15px 38px rgba(17,24,39,.07);
+  }
+  .stat:hover{
+    transform:translateY(-2px);
+  }
 }
-.projectCard:hover{
-  transform:none!important;
-  border-color:var(--line)!important;
-  box-shadow:0 6px 22px rgba(17,24,39,.035)!important;
+@keyframes ownerCardIn{
+  from{opacity:0;transform:translateY(14px) scale(.994)}
+  to{opacity:1;transform:none}
 }
-.projectCard:hover .cardPrimary,
-.projectCard:hover .cardAction,
-.projectCard:hover .cardDanger{
-  transform:none;
-}
-.projectCard .cardPrimary:hover,
-.projectCard .cardAction:hover,
-.projectCard .cardDanger:hover{
-  transform:translateY(-2px)!important;
-  box-shadow:0 10px 22px rgba(20,32,57,.1)!important;
-}
-.projectCard .cardPrimary:active,
-.projectCard .cardAction:active,
-.projectCard .cardDanger:active{
-  transform:translateY(0)!important;
-  box-shadow:none!important;
+@media(prefers-reduced-motion:reduce){
+  .projectCard,.sidePanel,.stat{animation:none!important;transition:none!important;transform:none!important}
 }
