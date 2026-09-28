@@ -223,3 +223,26 @@
     will-change:auto;
   }
 }
+
+
+/* DESKTOP SECTION REVEAL — restore Vet-se page motion.
+   Uses the individual translate property so it can coexist with the
+   product/story transform effects driven by the live-cycle motion system. */
+@media(min-width:851px) and (prefers-reduced-motion:no-preference){
+  .site[data-motion-ready="true"] [data-reveal]{
+    opacity:0;
+    translate:var(--commerce-reveal-x,0) 0;
+    transition:
+      opacity .72s cubic-bezier(.22,1,.36,1),
+      translate .78s cubic-bezier(.22,1,.36,1);
+  }
+  .site[data-motion-ready="true"] [data-reveal="left"]{--commerce-reveal-x:-44px}
+  .site[data-motion-ready="true"] [data-reveal="right"]{--commerce-reveal-x:44px}
+  .site[data-motion-ready="true"] [data-reveal][data-visible="true"]{
+    opacity:1;
+    translate:0 0;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .site [data-reveal]{opacity:1!important;translate:none!important;transition:none!important}
+}
