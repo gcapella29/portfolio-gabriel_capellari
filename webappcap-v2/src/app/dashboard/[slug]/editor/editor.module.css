@@ -33,10 +33,3 @@
  .intro:hover,.templatePicker:hover,.editorSequence:hover,.realEditor:hover,.appearance:hover,.templateCard:hover,.editBlock:hover,.headerActions a:hover,.templateCard button:hover,.saveAppearance button:hover{transform:none!important}
 }
 
-/* Sticky draft rail support — let the single save bar follow long editor lists. */
-.realEditor,
-.embeddedContent,
-.embeddedContent>div,
-.embeddedContent :global(.editor-page){
-  overflow:visible!important;
-}
