@@ -75,30 +75,76 @@
 }
 
 
-/* Project cards stay completely static; only their action buttons animate. */
-.projectCard{
-  transform:none!important;
-  transition:none!important;
+/* Owner workspace v2 — richer desktop motion, calm touch behavior. */
+.projectCard,.sidePanel,.stat,.manageCard,.detailHeader,.panel{
+  transform:translateZ(0);
+  transition:
+    transform .26s cubic-bezier(.22,1,.36,1),
+    box-shadow .26s ease,
+    border-color .26s ease,
+    background .26s ease;
 }
-.projectCard:hover{
-  transform:none!important;
-  border-color:var(--line)!important;
-  box-shadow:0 6px 22px rgba(17,24,39,.035)!important;
+.priorityItem,.activityItem{
+  transition:transform .2s ease,background .2s ease,color .2s ease;
 }
-.projectCard:hover .cardPrimary,
-.projectCard:hover .cardAction,
-.projectCard:hover .cardDanger{
-  transform:none;
+.brandMark{
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease;
 }
-.projectCard .cardPrimary:hover,
-.projectCard .cardAction:hover,
-.projectCard .cardDanger:hover{
-  transform:translateY(-2px)!important;
-  box-shadow:0 10px 22px rgba(20,32,57,.1)!important;
+@media(min-width:721px) and (prefers-reduced-motion:no-preference){
+  .projectCard{animation:ownerCardEnter .52s cubic-bezier(.22,1,.36,1) both}
+  .projectCard:nth-child(2){animation-delay:.05s}
+  .projectCard:nth-child(3){animation-delay:.10s}
+  .projectCard:nth-child(4){animation-delay:.15s}
+  .projectCard:nth-child(5){animation-delay:.20s}
+  .projectCard:nth-child(6){animation-delay:.25s}
+  .sidePanel{animation:ownerPanelEnter .56s .12s cubic-bezier(.22,1,.36,1) both}
+  .detailHeader,.panel{animation:ownerPanelEnter .5s cubic-bezier(.22,1,.36,1) both}
+
+  .projectCard:hover{
+    transform:translateY(-6px) scale(1.006);
+    border-color:#c7d1e0;
+    box-shadow:0 22px 48px rgba(17,24,39,.105);
+  }
+  .projectCard:hover .projectNumbers{
+    background:linear-gradient(180deg,#fbfcff,#f4f7fb);
+  }
+  .sidePanel:hover,.panel:hover{
+    transform:translateY(-4px);
+    border-color:#d2dae6;
+    box-shadow:0 18px 42px rgba(17,24,39,.08);
+  }
+  .stat:hover{
+    transform:translateY(-3px);
+    background:linear-gradient(180deg,#fff,#f8faff);
+  }
+  .manageCard:hover{
+    transform:translateY(-4px);
+    box-shadow:0 12px 28px rgba(17,24,39,.07);
+  }
+  .priorityItem:hover,.activityItem:hover{
+    transform:translateX(4px);
+    background:#fafbfe;
+  }
+  .brand:hover .brandMark{
+    transform:rotate(-4deg) scale(1.06);
+    box-shadow:0 13px 30px rgba(20,32,57,.24);
+  }
 }
-.projectCard .cardPrimary:active,
-.projectCard .cardAction:active,
-.projectCard .cardDanger:active{
-  transform:translateY(0)!important;
-  box-shadow:none!important;
+@keyframes ownerCardEnter{
+  from{opacity:0;transform:translateY(18px) scale(.992)}
+  to{opacity:1;transform:none}
+}
+@keyframes ownerPanelEnter{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:none}
+}
+@media(max-width:720px){
+  .projectCard:active,.manageCard:active,.sidePanel:active{transform:scale(.992)}
+}
+@media(prefers-reduced-motion:reduce){
+  .projectCard,.sidePanel,.stat,.manageCard,.detailHeader,.panel,.priorityItem,.activityItem,.brandMark{
+    animation:none!important;
+    transition:none!important;
+    transform:none!important;
+  }
 }
