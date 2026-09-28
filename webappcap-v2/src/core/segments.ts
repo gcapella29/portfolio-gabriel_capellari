@@ -6,8 +6,8 @@ export const segments:Record<SegmentKey,SegmentDefinition>={
   {key:'portfolio-legacy-1',segment:'portfolio',name:'Compatibilidade do portfólio',description:'Chave histórica preservada.',status:'ready'},
   {key:'portfolio-native-1',segment:'portfolio',name:'Portfólio WebAppCap',description:'Versão nativa e gerenciável do portfólio.',status:'ready'}
  ]},
- 'food-business':{key:'food-business',name:'Comércio',description:'Lojas, cafés, restaurantes e negócios locais com catálogo e pedidos.',templates:[
-  {key:'commerce-main-1',segment:'food-business',name:'Completo',description:'Bistrô editorial: presença completa, catálogo, destaques, conteúdo institucional e pedidos.',status:'ready'},
+ 'food-business':{key:'food-business',name:'Loja Digital',description:'Lojas digitais com catálogo, categorias, promoções, carrinho e pedidos.',templates:[
+  {key:'commerce-main-1',segment:'food-business',name:'Completo',description:'Loja digital completa: catálogo, destaques, conteúdo institucional e pedidos.',status:'ready'},
   {key:'commerce-sales-1',segment:'food-business',name:'Venda rápida',description:'Versão enxuta focada em produto, oferta e conversão pelo WhatsApp.',status:'ready'}
  ]},
  'personal-trainer':{key:'personal-trainer',name:'Personal Trainer',description:'Treinos, agenda, método e resultados. Em breve.',templates:[]},

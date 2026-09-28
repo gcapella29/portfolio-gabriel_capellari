@@ -26,7 +26,7 @@ type CardModel={
 };
 
 const lifecycleLabel=(value:string)=>({published:'Publicado',onboarding:'Onboarding',invited:'Convite enviado','ready-to-publish':'Pronto para publicar',draft:'Rascunho',archived:'Arquivado'}[value]||value);
-const segmentLabel=(value:string)=>({'personal-trainer':'Fitness','food-business':'Comércio',school:'Educação',portfolio:'Portfólio'}[value]||value||'Projeto');
+const segmentLabel=(value:string)=>({'personal-trainer':'Fitness','food-business':'Loja Digital',school:'Educação',portfolio:'Portfólio'}[value]||value||'Projeto');
 const needsAttention=(project:OwnerProjectView)=>project.domainStatus==='error'||(!project.published&&project.onboardingStep==='completed');
 const updatedLabel=(value:string|null)=>value?new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short'}).format(new Date(value)):'sem atualização';
 const plural=(value:number,singular:string,pluralLabel:string)=>`${value} ${value===1?singular:pluralLabel}`;
