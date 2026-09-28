@@ -1,10 +1,9 @@
-export type CommerceOrderItem={name:string;quantity:number;unitPrice:number;total:number};
+export type CommerceOrderItem={productIndex:number;quantity:number};
 
 export function trackCommerceOrder(payload:{
  projectId:string;
  templateKey:'commerce-main-1'|'commerce-sales-1';
  items:CommerceOrderItem[];
- total:number;
  customerName:string;
  customerPhone:string;
 }){

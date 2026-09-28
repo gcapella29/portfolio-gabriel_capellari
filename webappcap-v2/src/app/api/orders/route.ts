@@ -1,40 +1,66 @@
 import {NextResponse} from 'next/server';
 import {createSupabaseServerClient} from '@/lib/supabase/server';
 
-type Item={name:string;quantity:number;unitPrice:number;total:number};
-const finite=(value:unknown)=>Number.isFinite(Number(value))?Number(value):0;
+type ItemRef={productIndex:number;quantity:number};
+
 const cleanText=(value:unknown,max:number)=>String(value||'').trim().replace(/\s+/g,' ').slice(0,max);
 const cleanPhone=(value:unknown)=>String(value||'').replace(/\D/g,'').slice(0,20);
-const cleanItems=(value:unknown):Item[]=>Array.isArray(value)?value.slice(0,80).map(raw=>{
- const item=raw&&typeof raw==='object'?raw as Record<string,unknown>:{};
- const quantity=Math.max(1,Math.min(999,Math.floor(finite(item.quantity)||1))),unitPrice=Math.max(0,finite(item.unitPrice)),total=Math.max(0,finite(item.total));
- return{name:cleanText(item.name||'Produto',160)||'Produto',quantity,unitPrice,total};
-}):[];
-const fallbackMessage=(templateKey:string,items:Item[],total:number)=>{
- const compactItems=items.map(item=>[item.name.slice(0,80),item.quantity,item.unitPrice,item.total]);
- let encoded='';
- do{encoded=JSON.stringify({v:2,t:templateKey,i:compactItems,x:total});if(encoded.length<=975)break;compactItems.pop()}while(compactItems.length>1);
- return `WEBAPPCAP_ORDER_V1|${encoded}`;
+const finiteInteger=(value:unknown)=>Number.isFinite(Number(value))?Math.floor(Number(value)):NaN;
+
+const cleanItems=(value:unknown):ItemRef[]=>{
+ if(!Array.isArray(value))return[];
+ const result:ItemRef[]=[];
+ for(const raw of value.slice(0,80)){
+  if(!raw||typeof raw!=='object')continue;
+  const item=raw as Record<string,unknown>;
+  const productIndex=finiteInteger(item.productIndex);
+  const quantity=finiteInteger(item.quantity);
+  if(!Number.isInteger(productIndex)||productIndex<0||!Number.isInteger(quantity)||quantity<1||quantity>999)continue;
+  result.push({productIndex,quantity});
+ }
+ return result;
 };
+
+function json(body:Record<string,unknown>,status=200){
+ return NextResponse.json(body,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
+}
 
 export async function POST(request:Request){
  try{
   const raw=await request.json() as Record<string,unknown>;
-  const projectId=cleanText(raw.projectId,120),templateKey=cleanText(raw.templateKey,80),items=cleanItems(raw.items),total=Math.max(0,finite(raw.total));
-  const customerName=cleanText(raw.customerName,120),customerPhone=cleanPhone(raw.customerPhone);
-  if(!projectId||!['commerce-main-1','commerce-sales-1'].includes(templateKey)||!items.length||customerName.length<2||customerPhone.length<8){
-   return NextResponse.json({ok:false},{status:400});
+  const projectId=cleanText(raw.projectId,120);
+  const templateKey=cleanText(raw.templateKey,80);
+  const items=cleanItems(raw.items);
+  const customerName=cleanText(raw.customerName,120);
+  const customerPhone=cleanPhone(raw.customerPhone);
+
+  if(
+   !projectId||
+   !['commerce-main-1','commerce-sales-1'].includes(templateKey)||
+   !items.length||
+   customerName.length<2||
+   customerPhone.length<8
+  ){
+   return json({ok:false,error:'invalid_input'},400);
   }
+
   const sb=await createSupabaseServerClient();
-  const saved=await sb.rpc('submit_v2_public_lead',{
+  const saved=await sb.rpc('submit_v2_commerce_order',{
    p_project_id:projectId,
-   p_name:customerName,
-   p_phone:customerPhone,
-   p_message:fallbackMessage(templateKey,items,total)
+   p_template_key:templateKey,
+   p_items:items,
+   p_customer_name:customerName,
+   p_customer_phone:customerPhone
   });
-  if(saved.error)return NextResponse.json({ok:false},{status:202});
-  return NextResponse.json({ok:true,id:saved.data},{status:201});
- }catch{
-  return NextResponse.json({ok:false},{status:202});
+
+  if(saved.error){
+   console.error('submit_v2_commerce_order',saved.error.message);
+   return json({ok:false,error:'submit_failed'},500);
+  }
+
+  return json({ok:true,id:saved.data},201);
+ }catch(error){
+  console.error('orders POST',error);
+  return json({ok:false,error:'invalid_request'},400);
  }
 }
