@@ -20,10 +20,18 @@ function parseFallback(row:{id:number;name:string|null;phone:string|null;message
 
 export async function commerceOrdersForProject(projectId:string,options?:{since?:string;limit?:number}){
  const sb=await createSupabaseServerClient(),limit=Math.max(1,Math.min(options?.limit||500,1000));
- let query=sb.from('commerce_orders').select('id,template_key,items,total,created_at').eq('project_id',projectId).order('created_at',{ascending:false}).limit(limit);
+ let query=sb.from('commerce_orders').select('id,template_key,items,total,customer_name,customer_phone,created_at').eq('project_id',projectId).order('created_at',{ascending:false}).limit(limit);
  if(options?.since)query=query.gte('created_at',options.since);
  const dedicated=await query;
- const rows:CommerceOrder[]=dedicated.error?[]:(dedicated.data||[]).map(row=>({id:String(row.id),templateKey:String(row.template_key),items:cleanItems(row.items),total:Number(row.total)||0,createdAt:String(row.created_at)}));
+ const rows:CommerceOrder[]=dedicated.error?[]:(dedicated.data||[]).map(row=>({
+  id:String(row.id),
+  templateKey:String(row.template_key),
+  items:cleanItems(row.items),
+  total:Number(row.total)||0,
+  createdAt:String(row.created_at),
+  customerName:String(row.customer_name||'').trim()||undefined,
+  customerPhone:String(row.customer_phone||'').trim()||undefined
+ }));
 
  let legacy=sb.from('site_leads').select('id,name,phone,message,created_at').eq('project_id',projectId).like('message','WEBAPPCAP_ORDER_V1|%').order('created_at',{ascending:false}).limit(limit);
  if(options?.since)legacy=legacy.gte('created_at',options.since);
