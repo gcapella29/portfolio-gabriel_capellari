@@ -14,9 +14,41 @@ export default async function TemplateEditorPage({params,searchParams}:{params:P
  if(!can(role,'editContent'))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const menuLimit=await menuItemLimitForProject(project.id),data=await readV2Content(project.id),selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),active=selected==='commerce-main-1',canSwitch=can(role,'editAppearance');
  return <div className={styles.page}>
+  <section className={blocks.editorHero}>
+   <div>
+    <span>EDITOR DO PROJETO</span>
+    <h1>{project.name}</h1>
+    <p>Edite o conteúdo por blocos, confira no Preview e publique quando estiver pronto.</p>
+   </div>
+   <div className={blocks.heroMeta}>
+    <div><small>Modelo</small><strong>{active?'Comércio completo':'Venda rápida'}</strong></div>
+    <div><small>Produtos</small><strong>até {menuLimit}</strong></div>
+    <div><small>Status</small><strong>Rascunho</strong></div>
+   </div>
+  </section>
+
   {query.template?<div className={styles.success}>Versão completa selecionada no rascunho.</div>:null}
   {query.savedContent?<div className={styles.success}>Alterações salvas no rascunho. Confira no Preview.</div>:null}
-  <section className={blocks.versionBar}><div><span>VERSÃO DO SITE</span><strong>{active?'Site completo ativo no Preview':'Venda rápida ativa no Preview'}</strong><p>A troca preserva todo o conteúdo das duas versões.</p></div><form action={saveEditorTemplateAction}><input type="hidden" name="slug" value={project.slug}/><input type="hidden" name="templateKey" value="commerce-main-1"/><button disabled={active||!canSwitch}>{!canSwitch?'Somente owner/admin pode trocar':active?'Esta versão já está selecionada':'Alterar para esta versão e salvar'}</button></form></section>
-  <section className={styles.realEditor} id="blocks"><div className={styles.sequenceHead}><span>CONTEÚDO</span><h2>Blocos do site</h2><p>A barra superior permanece padronizada. Fotos e textos são salvos juntos em cada bloco.</p></div><CompleteContentEditor menuLimit={menuLimit} projectId={project.id} slug={project.slug} canManageMedia={can(role,'manageMedia')} data={{identity:data.identity,content:data.content,contact:data.contact,media:data.media}}/></section>
+
+  <section className={blocks.versionBar}>
+   <div>
+    <span>VERSÃO DO SITE</span>
+    <strong>{active?'Site completo ativo no Preview':'Venda rápida ativa no Preview'}</strong>
+    <p>A troca preserva todo o conteúdo das duas versões.</p>
+   </div>
+   <form action={saveEditorTemplateAction}>
+    <input type="hidden" name="slug" value={project.slug}/>
+    <input type="hidden" name="templateKey" value="commerce-main-1"/>
+    <button disabled={active||!canSwitch}>{!canSwitch?'Somente owner/admin pode trocar':active?'Esta versão já está selecionada':'Alterar para esta versão e salvar'}</button>
+   </form>
+  </section>
+
+  <section className={styles.realEditor} id="blocks">
+   <div className={blocks.editorSectionHead}>
+    <div><span>CONTEÚDO</span><h2>Blocos do site</h2><p>Abra apenas o que precisa editar. O botão de salvar acompanha você durante listas longas.</p></div>
+    <div className={blocks.editorTips}><b>01</b><span>Edite</span><b>02</b><span>Salve</span><b>03</b><span>Confira</span></div>
+   </div>
+   <CompleteContentEditor menuLimit={menuLimit} projectId={project.id} slug={project.slug} canManageMedia={can(role,'manageMedia')} data={{identity:data.identity,content:data.content,contact:data.contact,media:data.media}}/>
+  </section>
  </div>;
 }
