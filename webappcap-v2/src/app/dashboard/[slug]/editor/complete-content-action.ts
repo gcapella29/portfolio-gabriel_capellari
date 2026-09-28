@@ -29,7 +29,7 @@ export async function saveCompleteContentAction(formData:FormData){
  }
 
  const identity={...current.identity};
- for(const key of ['tagline'] as const)if(provided(formData,key))identity[key]=text(formData,key);
+ for(const key of ['tagline','browser_title'] as const)if(provided(formData,key))identity[key]=text(formData,key).slice(0,key==='browser_title'?80:10000);
  await saveV2Section(access.project.id,'identity',identity);
 
  const content={...current.content};

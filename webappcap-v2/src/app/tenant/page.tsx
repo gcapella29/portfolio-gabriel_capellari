@@ -13,11 +13,12 @@ export async function generateMetadata({searchParams}:TenantProps):Promise<Metad
   if(!result)return {title:{absolute:'Projeto não encontrado — WebAppCap'},robots:{index:false,follow:false}};
   const name=String(result.project.name||result.data.identity.name).trim();
   const role=String(result.data.content.hero_text||'Portfólio profissional').split('·')[0].trim();
+  const customTitle=String(result.data.identity.browser_title||'').trim();
   const description=String(result.data.identity.description||role).trim().slice(0,160);
   const canonical=result.state.custom_domain&&result.state.domain_status==='active'
     ?`https://${result.state.custom_domain}`
     :result.state.native_subdomain?`https://${result.state.native_subdomain}.webappcap.com.br`:undefined;
-  const title=`${name} — ${role}`;
+  const title=customTitle||`${name} — ${role}`;
   return {title:{absolute:title},description,alternates:canonical?{canonical}:undefined,openGraph:{title,description,url:canonical,siteName:'WebAppCap',locale:'pt_BR',type:'website'}};
 }
 
