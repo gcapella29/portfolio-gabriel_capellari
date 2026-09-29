@@ -8,7 +8,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 const fields = [
   'hero_eyebrow','hero_title','hero_emphasis','hero_description',
   'marquee_items','process_title','process_description','process_steps','assurances','control_title','control_emphasis','control_description',
-  'projects_title','projects_description','project_name','project_description','portfolio_url',
+  'projects_title','projects_description','projects_cases',
   'services_title','services_description','services','commitments','trust_title','trust_description','faq',
   'contact_kicker','contact_title','contact_emphasis','contact_description','whatsapp','email','footer_tagline',
 ] as const;
