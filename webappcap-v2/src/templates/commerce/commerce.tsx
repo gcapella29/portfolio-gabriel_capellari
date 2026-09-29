@@ -1,6 +1,7 @@
 import type {TemplateRenderProps} from '../types';
 import {CommerceCompleteTemplate} from './commerce-complete';
 import {CommerceSalesTemplate} from './commerce-sales';
+import {BakeryTemplate} from './bakery';
 
 const text=(record:Record<string,unknown>,key:string,fallback='')=>
   String(record[key]??'').trim()||fallback;
@@ -11,7 +12,9 @@ export function CommerceTemplate(props:TemplateRenderProps){
     'preview_template_key',
     props.project.templateKey||'commerce-main-1'
   );
-  return key.includes('sales')
+  return key==='commerce-bakery-1'
+    ? <BakeryTemplate {...props}/>
+    : key.includes('sales')
     ? <CommerceSalesTemplate {...props}/>
     : <CommerceCompleteTemplate {...props}/>;
 }

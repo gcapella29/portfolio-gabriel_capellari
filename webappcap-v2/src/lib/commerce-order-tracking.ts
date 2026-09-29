@@ -2,7 +2,7 @@ export type CommerceOrderItem={productIndex:number;quantity:number};
 
 export function trackCommerceOrder(payload:{
  projectId:string;
- templateKey:'commerce-main-1'|'commerce-sales-1';
+ templateKey:'commerce-main-1'|'commerce-sales-1'|'commerce-bakery-1';
  items:CommerceOrderItem[];
  customerName:string;
  customerPhone:string;
