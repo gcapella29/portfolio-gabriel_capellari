@@ -15,7 +15,7 @@ const sampleHighlights=[
  {tag:'Feito hoje',title:'Doces e tortas',description:'Receitas artesanais para levar ou montar sua mesa de café.',image:'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=1600&q=80'}
 ];
 const productDefinition=(limit:number):RepeatableSection=>{const base=sectionsForSegment('commerce').find(item=>item.key==='menu_items')!;return{...base,max:limit,label:'Produtos',description:'Foto, nome, categoria, preço e descrição.',fields:base.fields.filter(field=>['image','title','category','price','description'].includes(field.key))}};
-function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>}
+function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}><div className={styles.blockSave}><button type="submit" className="action primary">Salvar rascunho</button></div>{children}<div className={styles.blockSave}><button type="submit" className="action primary">Salvar rascunho</button></div></div></details>}
 function Field({name,label,value,rows=0}:{name:string;label:string;value:string;rows?:number}){return <label className="field"><span>{label}</span>{rows?<textarea name={name} rows={rows} defaultValue={value}/>:<input name={name} defaultValue={value}/>}</label>}
 export default function BakeryContentEditor({slug,projectId,menuLimit,canManageMedia,canEditAppearance,data}:{slug:string;projectId:string;menuLimit:number;canManageMedia:boolean;canEditAppearance:boolean;data:{appearance:Record<string,unknown>;identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
  const content=data.content;
@@ -25,7 +25,8 @@ export default function BakeryContentEditor({slug,projectId,menuLimit,canManageM
    <Field name="bakery_eyebrow" label="Frase acima do título" value={v(content,'bakery_eyebrow')||'Desde 1998, com pão quente todos os dias'}/>
    <Field name="bakery_hero_title" label="Título da capa (quebra de linha com Enter)" value={v(content,'bakery_hero_title')||v(data.identity,'name')} rows={2}/>
    <Field name="bakery_hero_subtitle" label="Apresentação" value={v(content,'bakery_hero_subtitle')||'Pães artesanais, salgados, doces e café fresquinho em um ambiente simples, tradicional e acolhedor.'} rows={3}/>
-   {canEditAppearance?<HeroTypographyFields initial={data.appearance} sample={{eyebrow:v(content,'bakery_eyebrow')||'Desde 1998, com pão quente todos os dias',title:v(content,'bakery_hero_title')||v(data.identity,'name'),subtitle:v(content,'bakery_hero_subtitle')||'Pães artesanais, salgados, doces e café fresquinho.'}}/>:null}
+   <Field name="phone" label="Telefone exibido na capa" value={v(data.contact,'phone')}/>
+   {canEditAppearance?<HeroTypographyFields initial={data.appearance} includePhone sample={{eyebrow:v(content,'bakery_eyebrow')||'Desde 1998, com pão quente todos os dias',title:v(content,'bakery_hero_title')||v(data.identity,'name'),subtitle:v(content,'bakery_hero_subtitle')||'Pães artesanais, salgados, doces e café fresquinho.',phone:v(data.contact,'phone')?`Telefone: ${v(data.contact,'phone')}`:'Telefone: (00) 0000-0000'}}/>:null}
    {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:bakery_hero" slot="bakery_hero" label="Foto de fundo da capa" current={media(data.media.bakery_hero,'url')} currentPosition={media(data.media.bakery_hero,'position','center')} currentFit={media(data.media.bakery_hero,'fit','cover')} currentZoom={media(data.media.bakery_hero,'zoom','100')} help="A foto aparece sob o gradiente original do modelo."/>:null}
   </Block>
   <Block id="bakery-2" number="02" title="Destaques" summary="Textos da seção e carrossel com fotos">
@@ -42,7 +43,6 @@ export default function BakeryContentEditor({slug,projectId,menuLimit,canManageM
   <Block id="bakery-4" number="04" title="Pedido e contato" summary="Chamada do pedido e canais da padaria">
    <Field name="bakery_order_title" label="Título do bloco de pedido" value={v(content,'bakery_order_title')||'Pronto para enviar'}/>
    <Field name="whatsapp" label="WhatsApp com DDI e DDD" value={v(data.contact,'whatsapp')}/>
-   <Field name="phone" label="Telefone exibido na capa" value={v(data.contact,'phone')}/>
    <Field name="instagram" label="Perfil ou URL do Instagram" value={v(data.contact,'instagram')}/>
    {canEditAppearance?<Field name="bakery_accent" label="Cor dos botões e detalhes (código hexadecimal)" value={v(data.appearance,'bakery_accent')||'#9c4f2f'}/>:null}
   </Block>

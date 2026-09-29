@@ -68,6 +68,7 @@
 .editorPanelHead small{margin-top:6px;color:#7c8696;font-size:10px;line-height:1.45}
 .editorPanelBody{min-width:0;display:grid;gap:12px}
 .heroCopyFields{padding:0}
+.blockSave{display:flex;justify-content:flex-end}.blockSave :global(.action){min-height:40px}
 
 .block{
   border-color:#dce3ed;
