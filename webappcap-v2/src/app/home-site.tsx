@@ -169,13 +169,14 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
             {index===0?
               <div className={projectStyles.portfolioPreview}>
                 <Image src="/assets/media/hero-gabriel.jpg" alt="" fill sizes="(max-width: 800px) 100vw, 54vw"/>
-                <div className={projectStyles.portfolioName}><span>Gabriel</span><em>Capellari</em></div>
+                <div className={projectStyles.portfolioTop}><span>🇧🇷　🇬🇧</span><span>IBITINGA · SP · BR</span></div>
+                <div className={projectStyles.portfolioName}><span>Gabriel</span><em>Capellari”</em><small>Jornalista de Poker · Professor · Redator</small><b>Ver meu trabalho ↘</b></div>
               </div>
               :
               <div className={projectStyles.storePreview}>
-                <div className={projectStyles.storeTop}><strong>{project.name}</strong><span>LOJA DIGITAL</span></div>
-                <div className={projectStyles.storeHero}><small>CATÁLOGO ONLINE</small><h3>Produtos, promoções e pedidos em um só lugar.</h3><span>Ver produtos ↓</span></div>
-                <div className={projectStyles.storeProducts} aria-hidden="true"><i/><i/><i/></div>
+                <div className={projectStyles.storeTop}><strong>Vet-se</strong><span>Início　 Catálogo　 Carrinho　 Sobre</span><b>Ver produtos</b></div>
+                <div className={projectStyles.storeHero}><Image src="/assets/media/vet-hero.webp" alt="" fill sizes="(max-width: 800px) 100vw, 54vw"/><div><h3>Vet-se</h3><p>Adesivos · Chaveiros · Mimos · Bottons · Ecobags e mais</p><em>Feito com amor especialmente para você!</em></div></div>
+                <div className={projectStyles.storeCatalog}><h4>Catálogo</h4><p>Clique no item para ampliar a imagem.</p><div className={projectStyles.storeCategories}><span>Chaveiro</span><span>Copinhos</span><span>Ecobags</span></div><div className={projectStyles.storeProducts}><Image src="/assets/media/vet-ch-arm.webp" alt="" fill sizes="120px"/><Image src="/assets/media/vet-copo.webp" alt="" fill sizes="120px"/><Image src="/assets/media/vet-ecobag.webp" alt="" fill sizes="120px"/></div></div>
               </div>}
           </a>
           <div className={projectStyles.info}>

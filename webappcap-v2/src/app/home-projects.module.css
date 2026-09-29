@@ -8,27 +8,34 @@
 .browserBar i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.48)}
 .browserBar span{min-width:0;margin-left:5px;overflow:hidden;color:rgba(255,255,255,.68);font:500 10px/1 var(--home-mono),monospace;text-overflow:ellipsis;white-space:nowrap}
 .portfolioPreview{position:absolute;inset:42px 0 0}
-.portfolioPreview:after{position:absolute;inset:0;content:"";background:linear-gradient(180deg,rgba(6,30,24,.08),rgba(6,30,24,.4))}
+.portfolioPreview:after{position:absolute;inset:0;content:"";background:linear-gradient(180deg,rgba(6,30,24,.15),rgba(3,34,26,.25) 38%,rgba(0,39,28,.88))}
 .portfolioPreview>img{object-fit:cover;object-position:center 28%;transition:transform 1.2s cubic-bezier(.22,1,.36,1)}
 .preview:hover .portfolioPreview>img{transform:scale(1.035)}
-.portfolioName{position:absolute;z-index:2;right:34px;bottom:28px;display:grid;text-align:right;color:#fff;text-shadow:0 3px 20px rgba(0,0,0,.35)}
-.portfolioName span{font:700 clamp(34px,5vw,70px)/.88 var(--home-heading),serif}
-.portfolioName em{color:#edc33b;font:500 clamp(26px,3.6vw,52px)/1 var(--home-heading),serif}
-.storePreview{position:absolute;inset:42px 0 0;padding:28px;background:linear-gradient(145deg,#dfeaf3,#c7d9e8 52%,#aabfd2);color:#10283a}
-.storePreview:before{position:absolute;inset:auto -8% -22% 30%;height:62%;content:"";border-radius:50%;background:rgba(255,255,255,.5);filter:blur(12px)}
-.storeTop{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border:1px solid rgba(16,40,58,.13);border-radius:14px;background:rgba(255,255,255,.52);backdrop-filter:blur(10px)}
-.storeTop strong{font:700 20px/1 var(--home-heading),serif}
-.storeTop span{font:700 9px/1 var(--home-mono),monospace;letter-spacing:.08em}
-.storeHero{position:relative;z-index:2;max-width:70%;padding:54px 8px 34px}
-.storeHero small{font:700 10px/1 var(--home-mono),monospace;letter-spacing:.12em}
-.storeHero h3{margin:12px 0 22px;font:700 clamp(28px,4vw,54px)/.98 var(--home-heading),serif;letter-spacing:-.045em}
-.storeHero>span{display:inline-flex;padding:11px 16px;border-radius:999px;background:#10283a;color:#fff;font:700 10px/1 var(--home-mono),monospace}
-.storeProducts{position:absolute;z-index:2;right:24px;bottom:24px;left:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.storeProducts i{display:block;height:118px;border-radius:18px;border:1px solid rgba(16,40,58,.12);background:linear-gradient(155deg,rgba(255,255,255,.9),rgba(255,255,255,.42));box-shadow:0 16px 30px rgba(16,40,58,.09);transition:transform .35s ease}
-.storeProducts i:nth-child(2){transform:translateY(-14px)}
-.preview:hover .storeProducts i:first-child{transform:translateY(-5px) rotate(-1deg)}
-.preview:hover .storeProducts i:nth-child(2){transform:translateY(-20px)}
-.preview:hover .storeProducts i:nth-child(3){transform:translateY(-5px) rotate(1deg)}
+.portfolioTop{position:absolute;z-index:2;top:16px;right:22px;left:22px;display:flex;justify-content:space-between;color:#fff;font:600 9px var(--home-mono),monospace;letter-spacing:.09em}
+.portfolioName{position:absolute;z-index:2;right:24px;bottom:38px;left:30px;display:grid;justify-items:start;color:#fff;text-shadow:0 3px 20px rgba(0,0,0,.35)}
+.portfolioName span{font:700 clamp(42px,5vw,70px)/.95 var(--home-heading),serif}
+.portfolioName em{color:#edc33b;font:italic 600 clamp(38px,4.4vw,62px)/1 var(--home-heading),serif;text-decoration:underline;text-underline-offset:6px}
+.portfolioName small{margin-top:15px;font:500 10px/1.5 var(--home-mono),monospace}
+.portfolioName b{margin-top:22px;padding:12px 17px;border-radius:30px;background:#edc33b;color:#173025;font:700 10px var(--home-mono),monospace;text-shadow:none}
+.storePreview{position:absolute;inset:42px 0 0;overflow:hidden;background:#fff;color:#141414;font-family:Arial,sans-serif}
+.storeTop{display:flex;height:50px;align-items:center;justify-content:space-between;gap:12px;padding:0 22px;background:#191715;color:#fff}
+.storeTop strong{font:900 23px/1 Arial,sans-serif;letter-spacing:-.05em}
+.storeTop span{font:700 9px Arial,sans-serif}
+.storeTop b{padding:9px 12px;border:1px solid #aaa;border-radius:30px;font-size:9px}
+.storeHero{position:relative;height:245px;color:#fff}
+.storeHero>img{object-fit:cover;object-position:center 45%}
+.storeHero:after{position:absolute;inset:0;content:"";background:linear-gradient(90deg,rgba(0,0,0,.35),transparent 75%)}
+.storeHero>div{position:absolute;z-index:1;bottom:28px;left:26px;text-shadow:0 2px 10px #444}
+.storeHero h3{margin:0 0 5px;font:900 39px/1 Arial,sans-serif;letter-spacing:-.06em}
+.storeHero p{margin:0;font:bold 10px/1.5 Arial,sans-serif}
+.storeHero em{display:block;margin-top:8px;font:italic 15px cursive}
+.storeCatalog{padding:25px 25px 0;background:#fff}
+.storeCatalog h4{margin:0 0 5px;font:900 32px/1 Arial,sans-serif;letter-spacing:-.055em}
+.storeCatalog p{margin:0 0 16px;padding-left:8px;border-left:2px solid #a5aec1;color:#555;font:bold 10px/1.5 Arial,sans-serif}
+.storeCategories{display:flex;gap:7px;margin-bottom:12px}
+.storeCategories span{flex:1;padding:10px 8px;border:1px solid #e0e0e6;border-radius:10px;box-shadow:0 4px 10px #0000000c;font:bold 9px Arial,sans-serif}
+.storeProducts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.storeProducts img{width:100%;height:110px;border-radius:9px;object-fit:cover}
 .info{display:flex;flex-direction:column;justify-content:center;gap:28px;padding:54px 48px}
 .caseNumber{font:700 10px/1 var(--home-mono),monospace;letter-spacing:.1em;color:#6f756f}
 .info>div>small{display:block;margin:10px 0 7px;color:#8a6e16;font:700 10px/1 var(--home-mono),monospace;letter-spacing:.08em;text-transform:uppercase}
@@ -54,15 +61,14 @@
  .stack{gap:22px;margin-top:28px}
  .caseCard{min-height:0;border-radius:22px}
  .preview{min-height:390px}
- .storePreview{padding:18px}
- .storeHero{max-width:88%;padding:46px 4px 24px}
- .storeProducts{right:16px;bottom:16px;left:16px;gap:8px}
- .storeProducts i{height:86px;border-radius:13px}
- .portfolioName{right:20px;bottom:20px}
+ .storeTop{padding:0 14px}.storeTop span{display:none}
+ .storeHero{height:205px}.storeHero>div{bottom:20px;left:16px}.storeHero h3{font-size:32px}
+ .storeCatalog{padding:22px 16px 0}.storeProducts img{height:90px}
+ .portfolioName{left:20px;bottom:24px}.portfolioName span{font-size:39px}.portfolioName em{font-size:36px}
  .info{gap:22px;padding:30px 22px}
  .facts{grid-template-columns:1fr}
  .facts span{min-height:auto}
 }
 @media(prefers-reduced-motion:reduce){
- .portfolioPreview>img,.storeProducts i,.visit{transition:none}
+ .portfolioPreview>img,.visit{transition:none}
 }
