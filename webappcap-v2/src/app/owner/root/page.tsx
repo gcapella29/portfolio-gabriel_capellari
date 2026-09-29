@@ -22,6 +22,7 @@ export default async function RootEditorPage({searchParams}:{searchParams:Promis
    <nav className={dashboardStyles.nav} aria-label="Gerenciamento do projeto raiz">
     <Link href="/owner/projects"><i aria-hidden="true">⌂</i><span>Projetos</span></Link>
     <Link href="/owner/root"><i aria-hidden="true">≡</i><span>Conteúdo</span></Link>
+    <Link href="/dashboard/gabriel-capellari/leads"><i aria-hidden="true">◎</i><span>Leads</span></Link>
     <Link href="/owner/root/preview" target="_blank"><i aria-hidden="true">◐</i><span>Preview</span></Link>
     <a href="https://www.webappcap.com.br" target="_blank" rel="noreferrer"><i aria-hidden="true">↗</i><span>Ver site</span></a>
    </nav>
