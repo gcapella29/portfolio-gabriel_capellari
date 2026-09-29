@@ -5,11 +5,39 @@ import { HomeLeadForm } from './home-lead-form';
 import { HomeMotion } from './home-motion';
 import { rootValue, type RootSiteContent } from '@/core/root-site';
 import styles from './home.module.css';
+import projectStyles from './home-projects.module.css';
 
 const headingFont=Fraunces({subsets:['latin'],weight:'variable',axes:['opsz'],variable:'--home-heading',display:'swap'});
 const bodyFont=Inter({subsets:['latin'],weight:['400','500','600','700'],variable:'--home-body',display:'swap'});
 const monoFont=IBM_Plex_Mono({subsets:['latin'],weight:['400','500','600','700'],variable:'--home-mono',display:'swap'});
 const DEFAULT_PORTFOLIO_URL='https://capellari.webappcap.com.br';
+const DEFAULT_VETSE_URL='https://vet-se.webappcap.com.br';
+const defaultProjectCases=[
+  {
+    name:'Gabriel Capellari',
+    url:DEFAULT_PORTFOLIO_URL,
+    category:'Portfólio',
+    description:'Um portfólio editorial que reúne trajetória, coberturas internacionais, trabalhos publicados e contato — com conteúdo gerenciado pelo próprio painel.',
+    facts:[['PT / EN','Experiência bilíngue'],['100%','Responsivo'],['PAINEL','Conteúdo e mídia']],
+    tags:['Portfólio','Jornalismo','Leads integrados']
+  },
+  {
+    name:'Vet-se',
+    url:DEFAULT_VETSE_URL,
+    category:'Loja Digital',
+    description:'Uma loja digital com catálogo, categorias, promoções, carrinho e pedidos integrados ao WhatsApp, gerenciada pelo próprio painel do WebAppCap.',
+    facts:[['CATÁLOGO','Produtos e categorias'],['PEDIDOS','Carrinho + WhatsApp'],['GESTÃO','Promoções e conteúdo pelo painel']],
+    tags:['Loja Digital','Catálogo','WhatsApp','Mobile first']
+  }
+] as const;
+const defaultProjectCasesText=defaultProjectCases.map(project=>[
+  project.name,
+  project.url,
+  project.category,
+  project.description,
+  project.facts.map(([label,text])=>`${label}:${text}`).join(';'),
+  project.tags.join(';')
+].join(' | ')).join('\n');
 
 const defaultSteps=[
   {number:'01',title:'Você conta sua ideia',text:'Entendemos seu trabalho, seu público e o que o site precisa alcançar.'},
@@ -49,8 +77,13 @@ const defaultQuestions=[
 
 export function HomeSite({content={},preview=false}:{content?:RootSiteContent;preview?:boolean}){
   const value=(key:string,fallback:string)=>rootValue(content,key,fallback);
-  const portfolioUrl=value('portfolio_url',DEFAULT_PORTFOLIO_URL);
   const lines=(raw:string)=>raw.split(/\r?\n/).map(item=>item.trim()).filter(Boolean);
+  const projectCases=lines(value('projects_cases',defaultProjectCasesText)).map((line,index)=>{
+    const [name='',url='',category='',description='',factsRaw='',tagsRaw='']=line.split('|').map(part=>part.trim());
+    const facts=factsRaw.split(';').map(item=>item.trim()).filter(Boolean).map(item=>{const [label,...rest]=item.split(':');return{label:label.trim(),text:rest.join(':').trim()}}).filter(item=>item.label&&item.text).slice(0,3);
+    const tags=tagsRaw.split(';').map(item=>item.trim()).filter(Boolean).slice(0,4);
+    return{name,url,category,description,facts,tags,index};
+  }).filter(project=>project.name&&project.url);
   const marqueeItems=lines(value('marquee_items',defaultMarqueeItems.map(item=>item.replace(/ ◆$/,'')).slice(0,8).join('\n'))).map(item=>`${item} ◆`);
   const marqueeSequence=Array.from({length:Math.ceil(8/marqueeItems.length)},()=>marqueeItems).flat();
   const steps=lines(value('process_steps',defaultSteps.map(item=>`${item.title} | ${item.text}`).join('\n'))).map((item,index)=>{const [title,...text]=item.split('|');return{number:String(index+1).padStart(2,'0'),title:title.trim(),text:text.join('|').trim()}}).filter(item=>item.title&&item.text);
@@ -126,23 +159,34 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
 
     <section className={styles.projects} id="projetos">
       <div className={styles.projectsHeader} data-reveal>
-        <div className={styles.sectionLabel}><span>03</span> Projeto fundador</div>
-        <div><h2>{value('projects_title','Primeiro usamos em casa.')}</h2><p>{value('projects_description','O portfólio de Gabriel Capellari nasceu como site independente e se tornou o primeiro projeto completo construído sobre a base do WebAppCap.')}</p></div>
+        <div className={styles.sectionLabel}><span>03</span> Projetos em destaque</div>
+        <div><h2>{value('projects_title','Ideias diferentes. Uma plataforma que se adapta.')}</h2><p>{value('projects_description','Do portfólio editorial à loja digital, o WebAppCap muda de forma sem perder gestão, performance e identidade.')}</p></div>
       </div>
-      <article className={styles.projectCard} data-reveal>
-        <a className={styles.projectPreview} href={portfolioUrl} aria-label="Abrir o portfólio de Gabriel Capellari">
-          <Image src="/assets/media/hero-gabriel.jpg" alt="Portfólio de Gabriel Capellari" fill sizes="(max-width: 800px) 100vw, 58vw"/>
-          <div className={styles.browserBar}><i/><i/><i/><span>capellari.webappcap.com.br</span></div>
-          <div className={styles.previewName}><span>Gabriel</span><em>Capellari</em></div>
-        </a>
-        <div className={styles.projectInfo}>
-          <span className={styles.projectNumber}>ESTUDO DE CASO · 01</span>
-          <div><span className={styles.live}><i/> NO AR</span><h3>{value('project_name','Gabriel Capellari')}</h3><p>{value('project_description','Um portfólio editorial que reúne trajetória, coberturas internacionais, trabalhos publicados e contato — com conteúdo gerenciado pelo próprio painel.')}</p></div>
-          <div className={styles.caseFacts}><span><b>PT / EN</b>Experiência bilíngue</span><span><b>100%</b>Responsivo</span><span><b>PAINEL</b>Conteúdo e mídia</span></div>
-          <div className={styles.tags}><span>Portfólio</span><span>Jornalismo</span><span>Leads integrados</span></div>
-          <a href={portfolioUrl}>Visitar projeto <span>↗</span></a>
-        </div>
-      </article>
+      <div className={projectStyles.stack}>
+        {projectCases.map((project,index)=><article className={projectStyles.caseCard} data-reveal data-case-index={index} key={`${project.name}-${index}`}>
+          <a className={projectStyles.preview} href={project.url} target="_blank" rel="noreferrer" aria-label={`Abrir projeto ${project.name}`}>
+            <div className={projectStyles.browserBar}><i/><i/><i/><span>{project.url.replace(/^https?:\/\//,'').replace(/\/$/,'')}</span></div>
+            {index===0?
+              <div className={projectStyles.portfolioPreview}>
+                <Image src="/assets/media/hero-gabriel.jpg" alt="" fill sizes="(max-width: 800px) 100vw, 54vw"/>
+                <div className={projectStyles.portfolioName}><span>Gabriel</span><em>Capellari</em></div>
+              </div>
+              :
+              <div className={projectStyles.storePreview}>
+                <div className={projectStyles.storeTop}><strong>{project.name}</strong><span>LOJA DIGITAL</span></div>
+                <div className={projectStyles.storeHero}><small>CATÁLOGO ONLINE</small><h3>Produtos, promoções e pedidos em um só lugar.</h3><span>Ver produtos ↓</span></div>
+                <div className={projectStyles.storeProducts} aria-hidden="true"><i/><i/><i/></div>
+              </div>}
+          </a>
+          <div className={projectStyles.info}>
+            <span className={projectStyles.caseNumber}>ESTUDO DE CASO · {String(index+1).padStart(2,'0')}</span>
+            <div><span className={projectStyles.live}><i/> NO AR</span><small>{project.category}</small><h3>{project.name}</h3><p>{project.description}</p></div>
+            {project.facts.length?<div className={projectStyles.facts}>{project.facts.map(fact=><span key={fact.label}><b>{fact.label}</b>{fact.text}</span>)}</div>:null}
+            {project.tags.length?<div className={projectStyles.tags}>{project.tags.map(tag=><span key={tag}>{tag}</span>)}</div>:null}
+            <a className={projectStyles.visit} href={project.url} target="_blank" rel="noreferrer">Visitar projeto <span>↗</span></a>
+          </div>
+        </article>)}
+      </div>
     </section>
 
     <section className={styles.services} id="servicos">
