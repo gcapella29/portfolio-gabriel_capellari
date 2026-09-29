@@ -97,3 +97,33 @@
   .editorPanelHead small{max-width:52ch}
   .blockBody{padding:10px}
 }
+
+
+/* Editor v2 · workspace headers */
+.workspaceHeader{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  padding:18px 20px;
+  border:1px solid #dde3eb;
+  border-radius:16px;
+  background:#fff;
+}
+.workspaceHeader>div:first-child>span{display:block;color:#315ee7;font-size:8px;font-weight:900;letter-spacing:.16em}
+.workspaceHeader h1{margin:5px 0 4px;font-size:clamp(24px,3vw,34px);line-height:1;letter-spacing:-.045em}
+.workspaceHeader p{margin:0;max-width:62ch;color:#6b7585;font-size:11px;line-height:1.5}
+.workspaceFacts{display:flex;align-items:stretch;gap:8px}
+.workspaceFacts>span{min-width:120px;display:grid;gap:3px;padding:10px 12px;border:1px solid #e5e9f0;border-radius:12px;background:#fafbfd}
+.workspaceFacts small{color:#8a94a3;font-size:8px;font-weight:850;text-transform:uppercase;letter-spacing:.08em}
+.workspaceFacts strong{font-size:11px;color:#1b2638}
+.bakeryWorkspaceHeader{border-color:#eadfd6;background:linear-gradient(135deg,#fffaf6,#fff)}
+.bakeryWorkspaceHeader>div:first-child>span{color:#9c4f2f}
+.bakeryWorkspaceHeader .workspaceFacts>span{border-color:#eee1d8;background:#fffaf7}
+.bakeryEditorSurface{border-color:#eadfd6!important;background:#fffdfb!important}
+.bakeryEditorSurface :global(.field input),.bakeryEditorSurface :global(.field textarea),.bakeryEditorSurface :global(.field select){border-color:#eadfd6}
+@media(max-width:760px){
+ .workspaceHeader{align-items:flex-start;flex-direction:column;gap:13px;padding:14px}
+ .workspaceFacts{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .workspaceFacts>span{min-width:0}
+}
