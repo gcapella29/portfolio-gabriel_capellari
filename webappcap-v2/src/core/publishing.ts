@@ -33,7 +33,7 @@ export async function publishV2Project(projectId:string){
   if(template.status!=='ready')throw new Error('O modelo selecionado ainda não está disponível para publicação.');
   if(!String(data.identity.name||'').trim())throw new Error('Informe o nome do projeto antes de publicar.');
 
-  if(state.data.segment==='food-business'){
+  if(state.data.segment==='food-business'||state.data.segment==='commerce'){
     const tagline=selectedTemplate==='commerce-sales-1'?String(data.content.sales_tagline||data.identity.tagline||'').trim():String(data.identity.tagline||'').trim();
     if(!tagline)throw new Error('Informe a frase principal do comércio antes de publicar.');
   }else if(!String(data.content.hero_title||'').trim()){

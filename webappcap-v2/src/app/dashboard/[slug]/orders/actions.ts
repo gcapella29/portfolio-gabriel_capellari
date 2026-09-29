@@ -13,7 +13,7 @@ export async function deleteOrderAction(formData:FormData){
   const orderId=text(formData,'orderId');
   const access=await resolveProjectAccess(slug);
 
-  if(access.project.segment!=='food-business'||!can(access.role,'viewLeads')){
+  if(!['food-business','commerce'].includes(access.project.segment)||!can(access.role,'viewLeads')){
     throw new Error('Sem permissão para excluir pedidos.');
   }
   if(!orderId)throw new Error('Pedido inválido.');

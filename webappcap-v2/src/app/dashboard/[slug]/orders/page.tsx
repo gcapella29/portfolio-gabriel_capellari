@@ -6,11 +6,11 @@ import DeleteOrderButton from './delete-order-button';
 
 const money=(value:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Sao_Paulo'}).format(new Date(value));
-const template=(value:string)=>value==='commerce-sales-1'?'Venda rápida':'Site completo';
+const template=(value:string)=>value==='commerce-sales-1'?'Venda rápida':value==='commerce-bakery-1'?'Padaria':'Site completo';
 
 export default async function OrdersPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{deleted?:string;error?:string}>}){
  const {slug}=await params,query=await searchParams,access=await resolveProjectAccess(slug);
- if(access.project.segment!=='food-business')redirect(`/dashboard/${encodeURIComponent(access.project.slug)}/leads`);
+ if(!['food-business','commerce'].includes(access.project.segment))redirect(`/dashboard/${encodeURIComponent(access.project.slug)}/leads`);
  if(!can(access.role,'viewLeads'))redirect(`/dashboard/${encodeURIComponent(access.project.slug)}`);
  const orders=await commerceOrdersForProject(access.project.id,{limit:500}),now=Date.now(),recent=orders.filter(order=>now-new Date(order.createdAt).getTime()<=30*86400000),value=recent.reduce((sum,order)=>sum+order.total,0);
  return <div className="editor-page">

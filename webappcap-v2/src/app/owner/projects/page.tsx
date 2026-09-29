@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import {logout} from '@/app/login/actions';
-import {projectsForUser} from '@/core/projects';
 import {segments} from '@/core/segments';
 import {requirePlatformOwner} from '@/core/session';
 import {createSupabaseServerClient} from '@/lib/supabase/server';
@@ -13,10 +12,13 @@ const needsAttention=(project:OwnerProjectView)=>project.domainStatus==='error'|
 
 type ActivityItem={key:string;date:string|null;label:string;title:string;projectName:string|null;href:string};
 
-export default async function OwnerProjectsPage({searchParams}:{searchParams:Promise<{deleted?:string}>}){
+export default async function OwnerProjectsPage({searchParams}:{searchParams:Promise<{deleted?:string;permanentlyDeleted?:string}>}){
  const query=await searchParams,user=await requirePlatformOwner();
- const projects=(await projectsForUser(user.id)).filter(project=>project.owner_id===user.id);
- const ids=projects.map(project=>project.id),sb=await createSupabaseServerClient();
+ const sb=await createSupabaseServerClient();
+ const owned=await sb.from('projects').select('id,slug,name,site_type,is_published,owner_id,archived_at').eq('owner_id',user.id);
+ if(owned.error)throw owned.error;
+ const projects=owned.data||[],activeProjects=projects.filter(project=>!project.archived_at);
+ const ids=projects.map(project=>project.id);
  const [stateResult,leadResult]=await Promise.all([
   ids.length?sb.from('project_v2_state').select('project_id,segment,template_key,lifecycle,onboarding_step,native_subdomain,custom_domain,domain_status,updated_at').in('project_id',ids):Promise.resolve({data:[],error:null}),
   ids.length?sb.from('site_leads').select('id,project_id,name,status,message,created_at').in('project_id',ids).order('created_at',{ascending:false}).limit(500):Promise.resolve({data:[],error:null})
@@ -35,7 +37,7 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
   leadsByProject.set(lead.project_id,bucket);
  }
 
- const commerceProjects=projects.filter(project=>(stateByProject.get(project.id)?.segment||project.site_type)==='food-business');
+ const commerceProjects=activeProjects.filter(project=>['food-business','commerce'].includes(String(stateByProject.get(project.id)?.segment||project.site_type)));
  const orderEntries=await Promise.all(commerceProjects.map(async project=>[project.id,await commerceOrdersForProject(project.id,{limit:1000})] as const));
  const ordersByProject=new Map(orderEntries);
 
@@ -43,6 +45,7 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
   const state=stateByProject.get(project.id),projectLeads=leadsByProject.get(project.id)||[];
   return {
    id:project.id,
+   archived:Boolean(project.archived_at),
    slug:project.slug,
    name:project.name,
    siteType:state?.segment||project.site_type||'portfolio',
@@ -60,13 +63,13 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
   };
  });
 
- const published=projectViews.filter(project=>project.published).length+1;
- const configuring=projectViews.filter(project=>!project.published&&project.lifecycle!=='archived').length;
- const newLeads=projectViews.reduce((sum,project)=>sum+project.leadsNew,0);
- const attention=projectViews.filter(needsAttention).length;
- const totalProjects=projectViews.length+1;
+ const published=projectViews.filter(project=>!project.archived&&project.published).length+1;
+ const configuring=projectViews.filter(project=>!project.published&&!project.archived).length;
+ const newLeads=projectViews.filter(project=>!project.archived).reduce((sum,project)=>sum+project.leadsNew,0);
+ const attention=projectViews.filter(project=>!project.archived&&needsAttention(project)).length;
+ const totalProjects=projectViews.filter(project=>!project.archived).length+1;
  const canCreateProjects=Object.values(segments).some(segment=>segment.key!=='portfolio'&&segment.templates.some(template=>template.status==='ready'));
- const leadProject=projectViews.find(project=>project.leadsNew>0);
+ const leadProject=projectViews.find(project=>!project.archived&&project.leadsNew>0);
 
  const orderActivity:ActivityItem[]=[...ordersByProject.entries()].flatMap(([projectId,orders])=>orders.slice(0,4).map(order=>{
   const project=projectById.get(projectId);
@@ -85,7 +88,7 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
    return {key:`lead-${lead.id}`,date:lead.created_at as string|null,label:'Novo lead',title:lead.name||'Contato recebido',projectName:project?.name||null,href:project?`/dashboard/${encodeURIComponent(project.slug)}/leads`:'#'};
   }),
   ...orderActivity,
-  ...projectViews.filter(project=>project.updatedAt).map(project=>({key:`project-${project.id}`,date:project.updatedAt,label:project.published?'Publicado':'Atualizado',title:project.name,projectName:project.name,href:project.siteType==='food-business'?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`}))
+  ...projectViews.filter(project=>!project.archived&&project.updatedAt).map(project=>({key:`project-${project.id}`,date:project.updatedAt,label:project.published?'Publicado':'Atualizado',title:project.name,projectName:project.name,href:project.siteType==='commerce'?`/dashboard/${encodeURIComponent(project.slug)}/editor/bakery`:project.siteType==='food-business'?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`}))
  ].sort((a,b)=>new Date(b.date||0).getTime()-new Date(a.date||0).getTime()).slice(0,5);
 
  return <main className={styles.page}><div className={styles.workspace}>
@@ -99,7 +102,8 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
    <span className={styles.projectCount}>{totalProjects} {totalProjects===1?'projeto':'projetos'}</span>
   </section>
 
-  {query.deleted?<div className={styles.notice} role="status"><strong>Projeto excluído.</strong> {query.deleted} foi removido.</div>:null}
+  {query.deleted?<div className={styles.notice} role="status"><strong>Projeto arquivado.</strong> {query.deleted} aparece no filtro Arquivados.</div>:null}
+  {query.permanentlyDeleted?<div className={styles.notice} role="status"><strong>Projeto excluído permanentemente.</strong> O identificador {query.permanentlyDeleted} está disponível.</div>:null}
 
   <section className={styles.statsBar} aria-label="Resumo da operação">
    <article><strong>{published}</strong><span>publicados</span></article>

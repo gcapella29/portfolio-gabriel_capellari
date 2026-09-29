@@ -55,12 +55,31 @@ const commerceMainDefaults: DefaultsFactory = (name) => ({
   }
 });
 
+const commerceBakeryDefaults: DefaultsFactory = (name) => ({
+  identity: { name, tagline: 'Pão fresco todos os dias.' },
+  content: {
+    bakery_eyebrow: 'Desde 1998, com pão quente todos os dias',
+    bakery_hero_title: name,
+    bakery_hero_subtitle: 'Pães artesanais, salgados, doces e café fresquinho em um ambiente acolhedor.',
+    bakery_highlights_title: 'O que acabou\nde sair do forno',
+    bakery_menu_title: 'Escolha e monte\nseu pedido',
+    menu_items: [
+      { title: 'Pão Francês', category: 'Pães', description: 'Crocante por fora e macio por dentro.', price: 'R$ 1,10', image: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=1600&q=80' },
+      { title: 'Croissant de Manteiga', category: 'Doces', description: 'Folhado artesanal e amanteigado.', price: 'R$ 8,90', image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1600&q=80' }
+    ]
+  },
+  appearance: { preview_template_key: 'commerce-bakery-1', bakery_accent: '#9c4f2f' },
+  contact: { whatsapp: '', phone: '', instagram: '' }
+});
+
 const defaultsByTemplate: Record<string, DefaultsFactory> = {
-  'commerce-main-1': commerceMainDefaults
+  'commerce-main-1': commerceMainDefaults,
+  'commerce-bakery-1': commerceBakeryDefaults
 };
 
 export function initialTemplateForSegment(segment: SegmentKey): string | null {
   if (segment === 'food-business') return 'commerce-main-1';
+  if (segment === 'commerce') return 'commerce-bakery-1';
   return null;
 }
 

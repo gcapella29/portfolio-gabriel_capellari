@@ -40,6 +40,15 @@ const commerceEditors: Record<string, TemplateEditorDefinition> = {
       {key:'contact',label:'Contato',description:'WhatsApp e informações essenciais.'},
       {key:'appearance',label:'Aparência',description:'Cores e identidade visual da página.'}
     ]
+  },
+  'commerce-bakery-1': {
+    templateKey:'commerce-bakery-1',label:'Padaria',mode:'complete',sections:[
+      {key:'identity',label:'Início',description:'Nome, capa, chamada, telefone e botões.'},
+      {key:'highlights',label:'Destaques',description:'Fotos e textos do carrossel.'},
+      {key:'menu',label:'Cardápio',description:'Categorias, produtos, fotos e preços.'},
+      {key:'order',label:'Pedido',description:'Retirada, entrega e envio pelo WhatsApp.'},
+      {key:'contact',label:'Contato',description:'WhatsApp, telefone e Instagram.'}
+    ]
   }
 };
 

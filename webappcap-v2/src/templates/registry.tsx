@@ -1,13 +1,15 @@
 import type { ComponentType } from 'react';
 import { NativeMainParityPortfolioTemplate } from './portfolio/native-main-parity';
 import { CommerceTemplate } from './commerce/commerce';
+import { BakeryTemplate } from './commerce/bakery';
 import type { TemplateRenderProps } from './types';
 
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
   'portfolio-legacy-1': NativeMainParityPortfolioTemplate,
   'portfolio-native-1': NativeMainParityPortfolioTemplate,
   'commerce-main-1': CommerceTemplate,
-  'commerce-sales-1': CommerceTemplate
+  'commerce-sales-1': CommerceTemplate,
+  'commerce-bakery-1': BakeryTemplate
 };
 
 export function renderTemplate(props:TemplateRenderProps){

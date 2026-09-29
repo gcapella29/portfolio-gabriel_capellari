@@ -12,7 +12,8 @@ export default async function DashboardLayout({children,params}:{children:React.
  const [allUserProjects,platformOwner]=await Promise.all([projectsForUser(user.id),isPlatformOwner(user.id)]);
  const ownedProjects=allUserProjects.filter(item=>item.owner_id===user.id&&item.id!==project.id);
  const siteUrl=publicProjectUrl(state,project.slug),commerce=project.segment==='food-business',canSwitchProject=platformOwner||ownedProjects.length>0,switchProjectUrl=platformOwner?'/owner/projects':`/projects?owned=1&from=${encodeURIComponent(project.slug)}`;
- const nav=commerce?
+ const nav=project.segment==='commerce'?
+  [['♨','Editar Comércio',`${base}/editor/bakery`,can(role,'editContent')],['◎','Histórico de pedidos',`${base}/orders`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const:commerce?
   [['✎','Editar site',`${base}/editor`,can(role,'editContent')],['⚡','Editar venda rápida',`${base}/editor/sales`,can(role,'editContent')],['◎','Histórico de pedidos',`${base}/orders`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const:
   [['⌂','Visão geral',base,true],['≡','Conteúdo',`${base}/content`,can(role,'editContent')],['▧','Fotos',`${base}/media`,can(role,'manageMedia')],['◐','Aparência',`${base}/appearance`,can(role,'editAppearance')],['◎','Leads',`${base}/leads`,can(role,'viewLeads')],['↗','Analytics',`${base}/analytics`,can(role,'viewLeads')],['♙','Equipe',`${base}/team`,can(role,'inviteMembers')],['⌁','Domínio',`${base}/settings`,can(role,'manageDomain')]] as const;
  return <div className={styles.shell}>
