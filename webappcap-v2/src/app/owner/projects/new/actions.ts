@@ -22,7 +22,14 @@ export async function createClientProject(formData:FormData){
   if(!name)throw new Error('Informe o nome do projeto.');if(!segmentDefinition||segment==='portfolio'||!segmentDefinition.templates.some(template=>template.status==='ready'))throw new Error('Escolha um segmento disponível para novos clientes.');if(!/^\S+@\S+\.\S+$/.test(adminEmail))throw new Error('Informe um e-mail válido para o administrador.');
   const slug=slugify(String(formData.get('slug')||name));if(!slug)throw new Error('Não foi possível gerar o identificador do projeto.');
   const sb=await createSupabaseServerClient();const exists=await sb.from('projects').select('id').eq('slug',slug).maybeSingle();if(exists.error)throw exists.error;if(exists.data)throw new Error('Esse identificador já está em uso.');
-  const created=await sb.functions.invoke('create-project',{body:{slug,name,site_type:siteType(segment),subdomain:null,snapshot:{},template_key:'v2-pending',template_version:1}});if(created.error)throw created.error;
+  const created=await sb.functions.invoke('create-project',{body:{slug,name,site_type:siteType(segment),subdomain:null,snapshot:{},template_key:'v2-pending',template_version:1}});
+  if(created.error){
+    const response=created.error.context instanceof Response?created.error.context:null;
+    let detail='';
+    if(response){try{const body=await response.clone().json() as Record<string,unknown>;detail=String(body.error||body.message||'').slice(0,300)}catch{/* A função pode retornar texto simples. */}}
+    console.error('create-project failed',{slug,segment,status:response?.status,message:created.error.message,detail});
+    redirect(`/owner/projects/new?error=create&status=${response?.status||0}&detail=${encodeURIComponent(detail)}`);
+  }
   const project=created.data?.project||{id:created.data?.project_id,slug,name};if(!project.id)throw new Error('O projeto foi criado sem identificador.');
   const templateKey=initialTemplateForSegment(segment);
   if(templateKey&&!segmentDefinition.templates.some(template=>template.key===templateKey&&template.status==='ready'))throw new Error('O modelo inicial do segmento não está disponível.');
