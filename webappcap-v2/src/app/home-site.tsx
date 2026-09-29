@@ -176,7 +176,6 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
               <div className={projectStyles.storePreview}>
                 <div className={projectStyles.storeTop}><strong>Vet-se</strong><span>Início　 Catálogo　 Carrinho　 Sobre</span><b>Ver produtos</b></div>
                 <div className={projectStyles.storeHero}><Image src="/assets/media/vet-hero.webp" alt="" fill sizes="(max-width: 800px) 100vw, 54vw"/><div><h3>Vet-se</h3><p>Adesivos · Chaveiros · Mimos · Bottons · Ecobags e mais</p><em>Feito com amor especialmente para você!</em></div></div>
-                <div className={projectStyles.storeCatalog}><h4>Catálogo</h4><p>Clique no item para ampliar a imagem.</p><div className={projectStyles.storeCategories}><span>Chaveiro</span><span>Copinhos</span><span>Ecobags</span></div><div className={projectStyles.storeProducts}><Image src="/assets/media/vet-ch-arm.webp" alt="" fill sizes="120px"/><Image src="/assets/media/vet-copo.webp" alt="" fill sizes="120px"/><Image src="/assets/media/vet-ecobag.webp" alt="" fill sizes="120px"/></div></div>
               </div>}
           </a>
           <div className={projectStyles.info}>
