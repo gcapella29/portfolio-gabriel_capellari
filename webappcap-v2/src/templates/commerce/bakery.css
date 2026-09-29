@@ -120,7 +120,6 @@
 /* FAIXA CONTÍNUA */
 .bakerySite .strip{background:var(--text);color:#fff;overflow:hidden;padding:14px 0;position:relative;z-index:3}
 .bakerySite .track{display:flex;width:max-content;animation:scroll var(--strip-duration,12s) linear infinite}
-.bakerySite .strip:hover .track{animation-play-state:paused}
 .bakerySite .group{display:flex;align-items:center;gap:40px;padding-right:40px}
 .bakerySite .item{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:1.15rem;white-space:nowrap}
 .bakerySite .item img{width:40px;height:40px;border-radius:50%;object-fit:cover}
@@ -196,6 +195,6 @@
 }
 @media (prefers-reduced-motion:reduce){
   .bakerySite{scroll-behavior:auto}
-  .bakerySite .track{animation:none!important}
+  .bakerySite .track{animation:scroll 24s linear infinite!important}
   .bakerySite *,.bakerySite *::before,.bakerySite *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
