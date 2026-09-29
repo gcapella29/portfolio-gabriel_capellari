@@ -89,3 +89,41 @@ export async function deleteOwnerProjectAction(
   revalidatePath(`/owner/projects/${encodeURIComponent(project.slug)}`);
   redirect(`/owner/projects?deleted=${encodeURIComponent(project.name)}`);
 }
+
+export async function permanentlyDeleteArchivedProjectAction(
+  _previousState: DeleteProjectState,
+  formData: FormData
+): Promise<DeleteProjectState> {
+  const slug=text(formData,'slug'),confirmation=text(formData,'confirmation');
+  const password=String(formData.get('password')||'');
+  if(!slug||confirmation!==slug||!password)return{error:'Digite o identificador exato e sua senha para confirmar.'};
+  const {requirePlatformOwner}=await import('@/core/session');
+  const user=await requirePlatformOwner();
+  if(!user.email)return{error:'Conta sem e-mail para confirmar a exclusão.'};
+  const sb=await createSupabaseServerClient();
+  const p=await sb.from('projects').select('id,slug,owner_id,archived_at').eq('slug',slug).maybeSingle();
+  if(p.error||!p.data||p.data.owner_id!==user.id||!p.data.archived_at||slug==='gabriel-capellari')return{error:'Projeto arquivado não encontrado ou sem permissão.'};
+  const archivedProject=p.data;
+  const verified=await sb.auth.signInWithPassword({email:user.email,password});
+  if(verified.error)return{error:'Senha incorreta. O projeto não foi alterado.'};
+  const bucket=sb.storage.from('webappcap-v2-sites');
+  try {
+    // Project uploads use a flat project-id prefix. Remove storage through the API
+    // before deleting the database row so the owner's storage policy still applies.
+    for(let page=0;page<100;page++){
+      const listing=await bucket.list(archivedProject.id,{limit:1000});
+      if(listing.error)throw listing.error;
+      const files=(listing.data||[]).filter(item=>item.id).map(item=>`${archivedProject.id}/${item.name}`);
+      if(!files.length)break;
+      for(let i=0;i<files.length;i+=100){const removed=await bucket.remove(files.slice(i,i+100));if(removed.error)throw removed.error}
+      if(page===99)throw new Error('O projeto possui mais arquivos do que o limite de uma operação.');
+    }
+    const deleted=await sb.rpc('permanently_delete_archived_project',{target_project_id:archivedProject.id});
+    if(deleted.error)throw deleted.error;
+  }catch(error){
+    console.error('[owner:permanent-delete]',{slug,message:error instanceof Error?error.message:String(error)});
+    return{error:'Não foi possível concluir a exclusão. Confira a migração 022 e tente novamente.'};
+  }
+  revalidatePath('/owner/projects');
+  redirect(`/owner/projects?permanentlyDeleted=${encodeURIComponent(slug)}`);
+}

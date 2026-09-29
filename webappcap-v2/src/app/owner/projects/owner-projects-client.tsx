@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import {useMemo,useState} from 'react';
 import DeleteProjectDialog from './delete-project-dialog';
+import PermanentDeleteDialog from './permanent-delete-dialog';
 import styles from './projects.module.css';
 
-export type OwnerProjectView={id:string;slug:string;name:string;siteType:string;published:boolean;lifecycle:string;onboardingStep:string;templateKey:string|null;domainStatus:string;nativeSubdomain:string|null;customDomain:string|null;updatedAt:string|null;leadsTotal:number;leadsNew:number;ordersTotal:number};
-type Filter='all'|'published'|'configuring'|'attention';
+export type OwnerProjectView={id:string;slug:string;name:string;siteType:string;published:boolean;archived:boolean;lifecycle:string;onboardingStep:string;templateKey:string|null;domainStatus:string;nativeSubdomain:string|null;customDomain:string|null;updatedAt:string|null;leadsTotal:number;leadsNew:number;ordersTotal:number};
+type Filter='all'|'published'|'configuring'|'attention'|'archived';
 
 type CardModel={
  key:string;
@@ -15,6 +16,7 @@ type CardModel={
  host:string;
  siteType:string;
  published:boolean;
+ archived:boolean;
  status:string;
  attention:boolean;
  badges:string[];
@@ -32,18 +34,18 @@ const updatedLabel=(value:string|null)=>value?new Intl.DateTimeFormat('pt-BR',{d
 const plural=(value:number,singular:string,pluralLabel:string)=>`${value} ${value===1?singular:pluralLabel}`;
 
 const rootCard:CardModel={
- key:'platform-root',kind:'root',name:'WebAppCap',host:'www.webappcap.com.br',siteType:'platform',published:true,status:'Plataforma',attention:false,
+ key:'platform-root',kind:'root',name:'WebAppCap',host:'www.webappcap.com.br',siteType:'platform',published:true,archived:false,status:'Plataforma',attention:false,
  badges:['Raiz oficial'],facts:['Institucional','Online'],manageHref:'/owner/root',previewHref:'/owner/root/preview',siteHref:'https://www.webappcap.com.br'
 };
 
 function toCard(project:OwnerProjectView):CardModel{
  const host=project.customDomain&&project.domainStatus==='active'?project.customDomain:(project.nativeSubdomain?`${project.nativeSubdomain}.webappcap.com.br`:`${project.slug}.webappcap.com.br`);
  const commerce=project.siteType==='food-business'||project.siteType==='commerce';
- const facts=commerce?
+ const facts=project.archived?['Arquivado',project.slug]:commerce?
   [plural(project.ordersTotal,'pedido','pedidos'),project.siteType==='commerce'?'Padaria':project.templateKey?.includes('sales')?'Venda rápida':'Modelo completo',`Atualizado ${updatedLabel(project.updatedAt)}`]:
   [plural(project.leadsTotal,'lead','leads'),project.leadsNew>0?plural(project.leadsNew,'novo','novos'):`Atualizado ${updatedLabel(project.updatedAt)}`];
  return {
-  key:project.id,kind:'project',name:project.name,host,siteType:project.siteType,published:project.published,status:lifecycleLabel(project.lifecycle),attention:needsAttention(project),
+  key:project.id,kind:'project',name:project.name,host,siteType:project.siteType,published:project.published,archived:project.archived,status:project.archived?'Arquivado':lifecycleLabel(project.lifecycle),attention:!project.archived&&needsAttention(project),
   badges:[segmentLabel(project.siteType)],facts,manageHref:project.siteType==='commerce'?`/dashboard/${encodeURIComponent(project.slug)}/editor/bakery`:commerce?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`,previewHref:`/preview/${encodeURIComponent(project.slug)}`,siteHref:project.published?`https://${host}`:null,project
  };
 }
@@ -56,7 +58,7 @@ export default function OwnerProjectsClient({projects}:{projects:OwnerProjectVie
   return cards.filter(card=>{
    const searchable=`${card.name} ${card.host} ${card.siteType} ${card.badges.join(' ')} ${card.facts.join(' ')}`.toLocaleLowerCase('pt-BR');
    const matchesQuery=!normalized||searchable.includes(normalized);
-   const matchesFilter=filter==='all'||(filter==='published'&&card.published)||(filter==='configuring'&&!card.published)||(filter==='attention'&&card.attention);
+   const matchesFilter=filter==='archived'?card.archived:!card.archived&&(filter==='all'||(filter==='published'&&card.published)||(filter==='configuring'&&!card.published)||(filter==='attention'&&card.attention));
    return matchesQuery&&matchesFilter;
   });
  },[cards,query,filter]);
@@ -64,7 +66,7 @@ export default function OwnerProjectsClient({projects}:{projects:OwnerProjectVie
  return <>
   <div className={styles.toolbar}>
    <label className={styles.searchBox}><span aria-hidden="true">⌕</span><input value={query} onChange={event=>setQuery(event.target.value)} placeholder="Buscar projeto ou domínio" aria-label="Buscar projetos"/></label>
-   <div className={styles.filters} aria-label="Filtros de projetos">{([['all','Todos'],['published','Publicados'],['configuring','Configurando'],['attention','Pendências']] as const).map(([key,label])=><button key={key} type="button" className={filter===key?styles.filterActive:styles.filter} onClick={()=>setFilter(key)}>{label}</button>)}</div>
+   <div className={styles.filters} aria-label="Filtros de projetos">{([['all','Todos'],['published','Publicados'],['configuring','Configurando'],['attention','Pendências'],['archived','Arquivados']] as const).map(([key,label])=><button key={key} type="button" className={filter===key?styles.filterActive:styles.filter} onClick={()=>setFilter(key)}>{label}</button>)}</div>
   </div>
 
   {filtered.length===0?<div className={styles.empty}><strong>Nenhum projeto encontrado.</strong><span>Tente outro termo ou filtro.</span></div>:<div className={styles.grid}>{filtered.map(card=><article className={`${styles.projectCard} ${card.kind==='root'?styles.rootCard:''}`} key={card.key}>
@@ -80,8 +82,8 @@ export default function OwnerProjectsClient({projects}:{projects:OwnerProjectVie
     </div>
    </div>
    <div className={styles.cardFooter}>
-    <div className={styles.cardActions}><Link href={card.manageHref} className={styles.primaryAction}>Gerenciar <span>→</span></Link><Link href={card.previewHref} target="_blank" className={styles.secondaryAction}>Preview</Link>{card.siteHref?<a href={card.siteHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>Site ↗</a>:null}</div>
-    {card.kind==='project'&&card.project&&card.project.siteType!=='portfolio'?<details className={styles.moreMenu}><summary aria-label={`Mais ações para ${card.name}`} title="Mais ações">•••</summary><div className={styles.moreMenuPanel}><DeleteProjectDialog target={{slug:card.project.slug,name:card.project.name}}/></div></details>:null}
+    <div className={styles.cardActions}>{card.archived?<span className={styles.secondaryAction}>Arquivado · {card.project?.slug}</span>:<><Link href={card.manageHref} className={styles.primaryAction}>Gerenciar <span>→</span></Link><Link href={card.previewHref} target="_blank" className={styles.secondaryAction}>Preview</Link>{card.siteHref?<a href={card.siteHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>Site ↗</a>:null}</>}</div>
+    {card.kind==='project'&&card.project&&card.project.siteType!=='portfolio'?card.archived?<PermanentDeleteDialog target={{slug:card.project.slug,name:card.project.name}}/>:<details className={styles.moreMenu}><summary aria-label={`Mais ações para ${card.name}`} title="Mais ações">•••</summary><div className={styles.moreMenuPanel}><DeleteProjectDialog target={{slug:card.project.slug,name:card.project.name}}/></div></details>:null}
    </div>
   </article>)}</div>}
  </>;

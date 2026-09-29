@@ -39,8 +39,8 @@ export default function DeleteProjectDialog({ target }: { target: ProjectTarget 
   }}>
     <section className={styles.deleteDialog} role="dialog" aria-modal="true" aria-labelledby={`delete-${target.slug}`}>
       <span className={styles.dangerEyebrow}>ZONA DE PERIGO</span>
-      <h2 id={`delete-${target.slug}`}>Excluir {target.name}?</h2>
-      <p>O projeto sairá do painel e do ar imediatamente. Seus endereços serão liberados, e esta ação não poderá ser desfeita pela interface.</p>
+      <h2 id={`delete-${target.slug}`}>Arquivar {target.name}?</h2>
+      <p>O projeto sairá do ar e aparecerá em Arquivados. O identificador continuará reservado até a exclusão permanente.</p>
       <form action={action} className={styles.deleteForm}>
         <input type="hidden" name="slug" value={target.slug}/>
         <label className={styles.field}>
@@ -50,14 +50,14 @@ export default function DeleteProjectDialog({ target }: { target: ProjectTarget 
         {state.error&&<div className={styles.deleteError} role="alert">{state.error}</div>}
         <div className={styles.deleteActions}>
           <button type="button" className={styles.buttonGhost} onClick={()=>setOpen(false)} disabled={pending}>Cancelar</button>
-          <button type="submit" className={styles.confirmDelete} disabled={pending}>{pending?'Excluindo…':'Confirmar exclusão'}</button>
+          <button type="submit" className={styles.confirmDelete} disabled={pending}>{pending?'Arquivando…':'Arquivar projeto'}</button>
         </div>
       </form>
     </section>
   </div> : null;
 
   return <>
-    <button type="button" className={styles.cardDanger} onClick={() => setOpen(true)}>Excluir</button>
+    <button type="button" className={styles.cardDanger} onClick={() => setOpen(true)}>Arquivar</button>
     {mounted && dialog ? createPortal(dialog, document.body) : null}
   </>;
 }
