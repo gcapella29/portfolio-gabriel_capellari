@@ -17,11 +17,13 @@ export function HomeLeadForm(){
     const siteType=String(values.get('siteType')||'').trim();
     const email=String(values.get('email')||'').trim();
     const details=String(values.get('details')||'').trim();
+    const consent=values.get('consent')==='on';
     const payload=new FormData();
     payload.set('projectSlug','gabriel-capellari');
     payload.set('name',String(values.get('name')||''));
     payload.set('phone',String(values.get('phone')||''));
     payload.set('website',String(values.get('website')||''));
+    payload.set('consent',consent?'true':'false');
     payload.set('message',`[Contato pela raiz do WebAppCap]\nTipo de site: ${siteType}\nE-mail: ${email||'não informado'}\nProjeto: ${details}`);
     try{
       const response=await fetch('/api/leads',{method:'POST',body:payload});
@@ -46,7 +48,7 @@ export function HomeLeadForm(){
       <h3 id="home-lead-title">Conte um pouco sobre sua ideia.</h3>
       <p>Leva menos de dois minutos. Sem compromisso.</p>
     </div>
-    {state==='error'&&<div className={styles.formAlert} role="alert">Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp.</div>}
+    {state==='error'&&<div className={styles.formAlert} role="alert">Não foi possível enviar agora. Confira os campos e tente novamente ou fale pelo WhatsApp.</div>}
     <input className={styles.honeypot} type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"/>
     <div className={styles.formRow}>
       <label><span>Nome *</span><input name="name" required minLength={2} maxLength={120} autoComplete="name" placeholder="Como podemos chamar você?"/></label>
