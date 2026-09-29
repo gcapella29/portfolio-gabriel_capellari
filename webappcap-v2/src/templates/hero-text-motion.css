@@ -1,0 +1,11 @@
+@media (prefers-reduced-motion:no-preference){
+ [data-hero-motion="rise"]{animation:heroTextRise .75s both!important}
+ [data-hero-motion="slide-left"]{animation:heroTextLeft .8s both!important}
+ [data-hero-motion="slide-right"]{animation:heroTextRight .8s both!important}
+ [data-hero-motion="soft-zoom"]{animation:heroTextZoom .8s both!important}
+}
+[data-hero-motion="none"]{animation:none!important}
+@keyframes heroTextRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes heroTextLeft{from{opacity:0;transform:translateX(-38px)}to{opacity:1;transform:none}}
+@keyframes heroTextRight{from{opacity:0;transform:translateX(38px)}to{opacity:1;transform:none}}
+@keyframes heroTextZoom{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}

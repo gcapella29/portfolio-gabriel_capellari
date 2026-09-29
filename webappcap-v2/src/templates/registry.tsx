@@ -3,6 +3,7 @@ import { NativeMainParityPortfolioTemplate } from './portfolio/native-main-parit
 import { CommerceTemplate } from './commerce/commerce';
 import { BakeryTemplate } from './commerce/bakery';
 import type { TemplateRenderProps } from './types';
+import './hero-text-motion.css';
 
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
   'portfolio-legacy-1': NativeMainParityPortfolioTemplate,
