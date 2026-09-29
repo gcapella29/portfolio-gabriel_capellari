@@ -40,7 +40,7 @@
 .bakerySite .hero-content{position:relative;z-index:2;padding:72px 0 110px;max-width:none;text-align:left}
 .bakerySite .eyebrow{margin:0 0 14px;font-weight:500;opacity:.9}
 .bakerySite h1,.bakerySite h2,.bakerySite h3{font-family:var(--serif);margin:0}
-.bakerySite h1{font-size:clamp(3rem,9vw,6.6rem);line-height:.94;letter-spacing:-.04em;margin-bottom:22px}
+.bakerySite h1{max-width:none;font-size:clamp(3rem,9vw,6.6rem);line-height:.94;letter-spacing:-.04em;margin:0 0 22px}
 .bakerySite .hero-sub{max-width:580px;font-size:clamp(1rem,2vw,1.2rem);margin:0 0 28px;color:rgba(255,255,255,.88)}
 .bakerySite .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
 .bakerySite .phone{display:inline-block;margin-top:18px;font-weight:700;color:rgba(255,255,255,.9);text-decoration:none}

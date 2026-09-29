@@ -61,7 +61,7 @@ export function BakeryTemplate({project,data}:TemplateRenderProps){
   if(customerName.trim().length>=2&&customerPhone.replace(/\D/g,'').length>=8)trackCommerceOrder({projectId:project.id,templateKey:'commerce-bakery-1',customerName:customerName.trim(),customerPhone,items:entries.map(({index,q})=>({productIndex:index,quantity:q}))});
   window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`,'_blank','noopener,noreferrer');
  };
- const strip=[...products,...products];
+ const strip=products;
  const accent=/^#[0-9a-f]{6}$/i.test(val(data.appearance,'bakery_accent'))?val(data.appearance,'bakery_accent'):'#9c4f2f';
  return <div ref={root} className="bakerySite js" style={{'--accent':accent,'--accent-dark':accent} as CSSProperties}>
   <nav className="nav" aria-label="Principal"><div className="container nav-in"><a className="logo" href="#topo">{name}</a><div className="nav-links"><a href="#destaques">Destaques</a><a href="#cardapio">Cardápio</a><a href="#pedido">Pedido</a><a className="cart-chip" href="#pedido">Pedido: {count} · {brl(total)}</a></div></div></nav>
