@@ -1,4 +1,5 @@
 'use client';
+import {heroCopyStyle,heroTextStyle} from '@/core/hero-typography';
 
 import Image from 'next/image';
 import { Fraunces, IBM_Plex_Mono, Inter } from 'next/font/google';
@@ -119,7 +120,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
       <div ref={heroBackgroundRef} className={styles.heroBackground} style={{backgroundImage:`linear-gradient(180deg,rgba(8,39,32,.55),rgba(8,39,32,.88) 62%,#082720),url(${hero})`,backgroundPosition:'center 18%'}}/>
       <div className={styles.heroContent}>
         <div className={styles.heroTop}><span>{location}</span></div>
-        <div className={styles.heroCopy}><h1>{firstName}<br/><em>{surname}&quot;</em></h1><p>{localized(role,language)}</p><div className={styles.chips}>{languages.map(item=><span key={item.pt}><i className={styles.chipFlag} data-country={item.country} aria-hidden="true"/>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
+        <div className={styles.heroCopy} style={heroCopyStyle(data.appearance)}><h1 style={heroTextStyle(data.appearance,'title')}>{firstName}<br/><em>{surname}&quot;</em></h1><p style={heroTextStyle(data.appearance,'subtitle')}>{localized(role,language)}</p><div className={styles.chips}>{languages.map(item=><span key={item.pt}><i className={styles.chipFlag} data-country={item.country} aria-hidden="true"/>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
       </div>
     </header>
     <div className={styles.tickerWrap} aria-hidden="true">
