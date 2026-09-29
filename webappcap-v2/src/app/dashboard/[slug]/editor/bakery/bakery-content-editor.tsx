@@ -2,6 +2,7 @@ import {sectionsForSegment,type RepeatableSection} from '@/core/content-schema';
 import {RepeatableSections} from '@/app/setup/[slug]/[step]/repeatable-sections';
 import ContentWorkspace from '../../content/content-workspace';
 import DirectImageField from '../../content/direct-image-field';
+import HeroTypographyFields from '../../appearance/hero-typography-fields';
 import {saveBakeryContentAction} from './actions';
 import styles from '../editor-blocks.module.css';
 
@@ -24,6 +25,7 @@ export default function BakeryContentEditor({slug,projectId,menuLimit,canManageM
    <Field name="bakery_eyebrow" label="Frase acima do título" value={v(content,'bakery_eyebrow')||'Desde 1998, com pão quente todos os dias'}/>
    <Field name="bakery_hero_title" label="Título da capa (quebra de linha com Enter)" value={v(content,'bakery_hero_title')||v(data.identity,'name')} rows={2}/>
    <Field name="bakery_hero_subtitle" label="Apresentação" value={v(content,'bakery_hero_subtitle')||'Pães artesanais, salgados, doces e café fresquinho em um ambiente simples, tradicional e acolhedor.'} rows={3}/>
+   {canEditAppearance?<HeroTypographyFields initial={data.appearance}/>:null}
    {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:bakery_hero" slot="bakery_hero" label="Foto de fundo da capa" current={media(data.media.bakery_hero,'url')} currentPosition={media(data.media.bakery_hero,'position','center')} currentFit={media(data.media.bakery_hero,'fit','cover')} currentZoom={media(data.media.bakery_hero,'zoom','100')} help="A foto aparece sob o gradiente original do modelo."/>:null}
   </Block>
   <Block id="bakery-2" number="02" title="Destaques" summary="Textos da seção e carrossel com fotos">

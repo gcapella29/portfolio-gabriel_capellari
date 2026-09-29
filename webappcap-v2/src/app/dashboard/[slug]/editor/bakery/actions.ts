@@ -5,6 +5,7 @@ import {resolveProjectAccess} from '@/core/session';
 import {can} from '@/core/permissions';
 import {publicMediaUrl,readV2Content,saveV2Section} from '@/core/onboarding-data';
 import {menuItemLimitForProject,validatedMenuItems} from '@/core/menu-item-limit';
+import {heroTypographyPatch} from '@/core/hero-typography';
 const text=(f:FormData,k:string)=>String(f.get(k)||'').trim();
 export async function saveBakeryContentAction(formData:FormData){
  const slug=text(formData,'slug'),access=await resolveProjectAccess(slug);
@@ -23,6 +24,7 @@ export async function saveBakeryContentAction(formData:FormData){
  const identity={...current.identity};if(formData.has('name'))identity.name=text(formData,'name').slice(0,120);
  const contact={...current.contact};for(const key of ['whatsapp','phone','instagram'])if(formData.has(key))contact[key]=text(formData,key).slice(0,300);
  const appearance={...current.appearance};if(can(access.role,'editAppearance')&&formData.has('bakery_accent')){const accent=text(formData,'bakery_accent');if(!/^#[\da-f]{6}$/i.test(accent))throw new Error('Informe a cor no formato #9c4f2f.');appearance.bakery_accent=accent}
+ if(can(access.role,'editAppearance')&&formData.has('hero_copy_x'))Object.assign(appearance,heroTypographyPatch(formData));
  let media={...current.media};
  if(can(access.role,'manageMedia')){
   const slot='bakery_hero',remove=text(formData,`removeMedia:${slot}`)==='yes';
