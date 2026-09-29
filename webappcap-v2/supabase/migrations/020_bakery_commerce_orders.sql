@@ -1,3 +1,12 @@
+-- Commerce is a separate project category. Existing Loja Digital projects retain food-business.
+alter table public.project_v2_state drop constraint if exists project_v2_state_segment_check;
+alter table public.project_v2_state add constraint project_v2_state_segment_check
+  check (segment in ('portfolio','personal-trainer','food-business','commerce','school'));
+
+alter table public.commerce_orders drop constraint if exists commerce_orders_template_key_check;
+alter table public.commerce_orders add constraint commerce_orders_template_key_check
+  check (template_key in ('commerce-main-1','commerce-sales-1','commerce-bakery-1'));
+
 -- Enable order tracking for the bakery template while preserving the hardened order validation.
 -- Hardens public commerce-order submission.
 -- The browser sends only product references + quantities.
@@ -65,7 +74,8 @@ begin
     and p.is_published=true
     and p.archived_at is null
     and s.lifecycle='published'
-    and s.segment='food-business'
+    and ((s.segment='food-business' and p_template_key in ('commerce-main-1','commerce-sales-1'))
+      or (s.segment='commerce' and p_template_key='commerce-bakery-1'))
     and s.template_key=p_template_key;
 
   if v_catalog is null or jsonb_typeof(v_catalog)<>'array' then

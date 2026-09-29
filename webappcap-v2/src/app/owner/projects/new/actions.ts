@@ -10,7 +10,7 @@ import { initialTemplateForSegment, projectDefaultsForTemplate } from '@/core/te
 import type { SegmentKey } from '@/core/domain';
 
 const slugify=(value:string)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80);
-const siteType=(segment:SegmentKey)=>({'portfolio':'portfolio','personal-trainer':'personal_trainer','food-business':'local_business','school':'language_teacher'}[segment]);
+const siteType=(segment:SegmentKey)=>({'portfolio':'portfolio','personal-trainer':'personal_trainer','food-business':'local_business','commerce':'local_business','school':'language_teacher'}[segment]);
 
 async function requestOrigin(){const h=await headers(),host=h.get('x-forwarded-host')||h.get('host');if(!host)throw new Error('Não foi possível determinar o endereço da aplicação.');const proto=h.get('x-forwarded-proto')||'https';return `${proto}://${host}`}
 
@@ -30,5 +30,5 @@ export async function createClientProject(formData:FormData){
   const defaults=projectDefaultsForTemplate(templateKey,name);
   const content=await sb.from('project_v2_content').upsert({project_id:project.id,...defaults},{onConflict:'project_id'});if(content.error)throw content.error;
   const origin=await requestOrigin();const invite=await sb.functions.invoke('manage-project-member',{body:{project_id:project.id,action:'invite',email:adminEmail,role:'admin',redirect_to:`${origin}/auth/callback?next=${encodeURIComponent(`/invite/${slug}`)}`}});if(invite.error)throw invite.error;
-  redirect(`/dashboard/${encodeURIComponent(slug)}/content`);
+  redirect(`/dashboard/${encodeURIComponent(slug)}/${segment==='commerce'?'editor/bakery':segment==='food-business'?'editor':'content'}`);
 }

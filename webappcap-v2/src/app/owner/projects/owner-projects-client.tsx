@@ -26,7 +26,7 @@ type CardModel={
 };
 
 const lifecycleLabel=(value:string)=>({published:'Publicado',onboarding:'Onboarding',invited:'Convite enviado','ready-to-publish':'Pronto para publicar',draft:'Rascunho',archived:'Arquivado'}[value]||value);
-const segmentLabel=(value:string)=>({'personal-trainer':'Fitness','food-business':'Loja Digital',school:'Educação',portfolio:'Portfólio'}[value]||value||'Projeto');
+const segmentLabel=(value:string)=>({'personal-trainer':'Fitness','food-business':'Loja Digital',commerce:'Comércio',school:'Educação',portfolio:'Portfólio'}[value]||value||'Projeto');
 const needsAttention=(project:OwnerProjectView)=>project.domainStatus==='error'||(!project.published&&project.onboardingStep==='completed');
 const updatedLabel=(value:string|null)=>value?new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short'}).format(new Date(value)):'sem atualização';
 const plural=(value:number,singular:string,pluralLabel:string)=>`${value} ${value===1?singular:pluralLabel}`;
@@ -38,13 +38,13 @@ const rootCard:CardModel={
 
 function toCard(project:OwnerProjectView):CardModel{
  const host=project.customDomain&&project.domainStatus==='active'?project.customDomain:(project.nativeSubdomain?`${project.nativeSubdomain}.webappcap.com.br`:`${project.slug}.webappcap.com.br`);
- const commerce=project.siteType==='food-business';
+ const commerce=project.siteType==='food-business'||project.siteType==='commerce';
  const facts=commerce?
-  [plural(project.ordersTotal,'pedido','pedidos'),project.templateKey?.includes('sales')?'Venda rápida':'Modelo completo',`Atualizado ${updatedLabel(project.updatedAt)}`]:
+  [plural(project.ordersTotal,'pedido','pedidos'),project.siteType==='commerce'?'Padaria':project.templateKey?.includes('sales')?'Venda rápida':'Modelo completo',`Atualizado ${updatedLabel(project.updatedAt)}`]:
   [plural(project.leadsTotal,'lead','leads'),project.leadsNew>0?plural(project.leadsNew,'novo','novos'):`Atualizado ${updatedLabel(project.updatedAt)}`];
  return {
   key:project.id,kind:'project',name:project.name,host,siteType:project.siteType,published:project.published,status:lifecycleLabel(project.lifecycle),attention:needsAttention(project),
-  badges:[segmentLabel(project.siteType)],facts,manageHref:commerce?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`,previewHref:`/preview/${encodeURIComponent(project.slug)}`,siteHref:project.published?`https://${host}`:null,project
+  badges:[segmentLabel(project.siteType)],facts,manageHref:project.siteType==='commerce'?`/dashboard/${encodeURIComponent(project.slug)}/editor/bakery`:commerce?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`,previewHref:`/preview/${encodeURIComponent(project.slug)}`,siteHref:project.published?`https://${host}`:null,project
  };
 }
 

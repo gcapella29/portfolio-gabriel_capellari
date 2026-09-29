@@ -35,7 +35,7 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
   leadsByProject.set(lead.project_id,bucket);
  }
 
- const commerceProjects=projects.filter(project=>(stateByProject.get(project.id)?.segment||project.site_type)==='food-business');
+ const commerceProjects=projects.filter(project=>['food-business','commerce'].includes(String(stateByProject.get(project.id)?.segment||project.site_type)));
  const orderEntries=await Promise.all(commerceProjects.map(async project=>[project.id,await commerceOrdersForProject(project.id,{limit:1000})] as const));
  const ordersByProject=new Map(orderEntries);
 
@@ -85,7 +85,7 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
    return {key:`lead-${lead.id}`,date:lead.created_at as string|null,label:'Novo lead',title:lead.name||'Contato recebido',projectName:project?.name||null,href:project?`/dashboard/${encodeURIComponent(project.slug)}/leads`:'#'};
   }),
   ...orderActivity,
-  ...projectViews.filter(project=>project.updatedAt).map(project=>({key:`project-${project.id}`,date:project.updatedAt,label:project.published?'Publicado':'Atualizado',title:project.name,projectName:project.name,href:project.siteType==='food-business'?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`}))
+  ...projectViews.filter(project=>project.updatedAt).map(project=>({key:`project-${project.id}`,date:project.updatedAt,label:project.published?'Publicado':'Atualizado',title:project.name,projectName:project.name,href:project.siteType==='commerce'?`/dashboard/${encodeURIComponent(project.slug)}/editor/bakery`:project.siteType==='food-business'?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`}))
  ].sort((a,b)=>new Date(b.date||0).getTime()-new Date(a.date||0).getTime()).slice(0,5);
 
  return <main className={styles.page}><div className={styles.workspace}>

@@ -79,6 +79,7 @@ const defaultsByTemplate: Record<string, DefaultsFactory> = {
 
 export function initialTemplateForSegment(segment: SegmentKey): string | null {
   if (segment === 'food-business') return 'commerce-main-1';
+  if (segment === 'commerce') return 'commerce-bakery-1';
   return null;
 }
 

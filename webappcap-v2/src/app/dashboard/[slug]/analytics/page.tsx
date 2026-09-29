@@ -18,7 +18,7 @@ const ranking=(rows:EventRow[],pick:(row:EventRow)=>string,limit=6)=>[...rows.re
 export default async function AnalyticsPage({params}:{params:Promise<{slug:string}>}){
  const {slug}=await params,access=await resolveProjectAccess(slug);
  if(!can(access.role,'viewLeads'))redirect(`/dashboard/${encodeURIComponent(access.project.slug)}`);
- const commerce=access.project.segment==='food-business',sb=await createSupabaseServerClient(),since=new Date();since.setDate(since.getDate()-29);since.setHours(0,0,0,0);
+ const commerce=['food-business','commerce'].includes(access.project.segment),sb=await createSupabaseServerClient(),since=new Date();since.setDate(since.getDate()-29);since.setHours(0,0,0,0);
  const [eventResult,results]=await Promise.all([
   sb.from('site_analytics_events').select('event_type,event_label,path,referrer_host,session_id,occurred_at').eq('project_id',access.project.id).gte('occurred_at',since.toISOString()).order('occurred_at',{ascending:true}).limit(5000),
   commerce?commerceOrdersForProject(access.project.id,{since:since.toISOString(),limit:1000}):sb.from('site_leads').select('id,status,source,created_at').eq('project_id',access.project.id).gte('created_at',since.toISOString()).limit(1000).then(result=>{if(result.error)throw result.error;return result.data||[]})

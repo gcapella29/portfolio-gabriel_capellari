@@ -7,6 +7,7 @@ export type ResolvedProject = { project: ProjectContext; role: ProjectRole };
 const segmentFromValue = (value: unknown): SegmentKey => {
   const v = String(value || '').toLowerCase();
   if (['personal-trainer','personal_trainer','fitness'].includes(v)) return 'personal-trainer';
+  if (['commerce','physical_commerce'].includes(v)) return 'commerce';
   if (['food-business','food_business','local_business','local'].includes(v)) return 'food-business';
   if (['school','educator','language_teacher'].includes(v)) return 'school';
   return 'portfolio';

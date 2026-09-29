@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { editorForTemplate, editorSectionsForTemplate } from './template-editor.ts';
+import {getTemplate,segments} from './segments.ts';
+import {initialTemplateForSegment} from './template-defaults.ts';
 
 test('commerce complete exposes the full editor sequence', () => {
   const editor=editorForTemplate('commerce-main-1');
@@ -18,4 +20,12 @@ test('retired commerce templates do not have editors', () => {
   assert.equal(editorForTemplate('commerce-night-1'),null);
   assert.equal(editorForTemplate('commerce-classic-1'),null);
   assert.deepEqual(editorSectionsForTemplate('commerce-night-1'),[]);
+});
+
+test('Loja Digital and Comércio keep separate template choices', () => {
+  assert.deepEqual(segments['food-business'].templates.map(item=>item.key),['commerce-main-1','commerce-sales-1']);
+  assert.deepEqual(segments.commerce.templates.map(item=>item.key),['commerce-bakery-1']);
+  assert.equal(getTemplate('food-business','commerce-bakery-1'),null);
+  assert.equal(getTemplate('commerce','commerce-main-1'),null);
+  assert.equal(initialTemplateForSegment('commerce'),'commerce-bakery-1');
 });

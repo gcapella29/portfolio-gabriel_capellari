@@ -8,7 +8,7 @@ import {menuItemLimitForProject,validatedMenuItems} from '@/core/menu-item-limit
 const text=(f:FormData,k:string)=>String(f.get(k)||'').trim();
 export async function saveBakeryContentAction(formData:FormData){
  const slug=text(formData,'slug'),access=await resolveProjectAccess(slug);
- if(access.project.segment!=='food-business'||!can(access.role,'editContent'))throw new Error('Sem permissão para editar este projeto.');
+ if(access.project.segment!=='commerce'||!can(access.role,'editContent'))throw new Error('Sem permissão para editar este projeto.');
  const current=await readV2Content(access.project.id),content={...current.content};
  for(const key of ['bakery_eyebrow','bakery_hero_title','bakery_hero_subtitle','bakery_highlights_eyebrow','bakery_highlights_title','bakery_highlights_intro','bakery_menu_title','bakery_menu_intro','bakery_order_title'])if(formData.has(key))content[key]=text(formData,key).slice(0,3000);
  if(formData.has('section:bakery_highlights')){
