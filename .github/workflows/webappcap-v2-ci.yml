@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'webappcap-v2/**'
+      - '.github/workflows/webappcap-v2-ci.yml'
 
 jobs:
   validate:
@@ -28,4 +29,5 @@ jobs:
           cache-dependency-path: webappcap-v2/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm run typecheck
+      - run: npm test
       - run: npm run build
