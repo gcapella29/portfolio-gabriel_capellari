@@ -26,21 +26,30 @@ export async function createClientProject(formData:FormData){
   const segmentDefinition=segments[segment];
   if(!name)throw new Error('Informe o nome do projeto.');if(!segmentDefinition||segment==='portfolio'||!segmentDefinition.templates.some(template=>template.status==='ready'))throw new Error('Escolha um segmento disponível para novos clientes.');if(!/^\S+@\S+\.\S+$/.test(adminEmail))throw new Error('Informe um e-mail válido para o administrador.');
   const slug=slugify(String(formData.get('slug')||name));if(!slug)throw new Error('Não foi possível gerar o identificador do projeto.');
-  const sb=await createSupabaseServerClient();const exists=await sb.from('projects').select('id').eq('slug',slug).maybeSingle();if(exists.error)creationError('lookup',slug,exists.error);if(exists.data)creationError('duplicate',slug,{message:'Esse identificador já está em uso. Confira se o projeto foi criado na tentativa anterior.'});
-  const created=await sb.functions.invoke('create-project',{body:{slug,name,site_type:siteType(segment),subdomain:null,snapshot:{},template_key:'v2-pending',template_version:1}});
-  if(created.error){
-    const response=created.error.context instanceof Response?created.error.context:null;
-    let detail='';
-    if(response){try{const body=await response.clone().json() as Record<string,unknown>;detail=String(body.error||body.message||'').slice(0,300)}catch{/* A função pode retornar texto simples. */}}
-    console.error('create-project failed',{slug,segment,status:response?.status,message:created.error.message,detail});
-    redirect(`/owner/projects/new?error=create&status=${response?.status||0}&detail=${encodeURIComponent(detail)}`);
+  const sb=await createSupabaseServerClient();const exists=await sb.from('projects').select('id,owner_id,site_type,is_published,archived_at').eq('slug',slug).maybeSingle();if(exists.error)creationError('lookup',slug,exists.error);
+  if(exists.data&&(exists.data.owner_id!==user.id||exists.data.is_published||exists.data.archived_at||exists.data.site_type!==siteType(segment)))creationError('duplicate',slug,{message:'Esse identificador pertence a outro projeto ou já está publicado. Escolha outro.'});
+  let projectId=exists.data?.id;
+  if(!projectId){
+    const created=await sb.functions.invoke('create-project',{body:{slug,name,site_type:siteType(segment),subdomain:null,snapshot:{},template_key:'v2-pending',template_version:1}});
+    if(created.error){
+      const response=created.error.context instanceof Response?created.error.context:null;
+      let detail='';
+      if(response){try{const body=await response.clone().json() as Record<string,unknown>;detail=String(body.error||body.message||'').slice(0,300)}catch{/* A função pode retornar texto simples. */}}
+      console.error('create-project failed',{slug,segment,status:response?.status,message:created.error.message,detail});
+      redirect(`/owner/projects/new?error=create&status=${response?.status||0}&detail=${encodeURIComponent(detail)}`);
+    }
+    projectId=created.data?.project?.id||created.data?.project_id;
+    if(!projectId)creationError('response',slug,{message:'A função create-project não retornou o identificador do projeto.'});
   }
-  const project=created.data?.project||{id:created.data?.project_id,slug,name};if(!project.id)creationError('response',slug,{message:'A função create-project não retornou o identificador do projeto.'});
   const templateKey=initialTemplateForSegment(segment);
   if(templateKey&&!segmentDefinition.templates.some(template=>template.key===templateKey&&template.status==='ready'))throw new Error('O modelo inicial do segmento não está disponível.');
-  const state=await sb.from('project_v2_state').upsert({project_id:project.id,segment,template_key:templateKey,lifecycle:'invited',onboarding_step:'account',domain_status:'unconfigured'},{onConflict:'project_id'});if(state.error)creationError('state',slug,state.error);
+  const existingState=await sb.from('project_v2_state').select('segment,lifecycle').eq('project_id',projectId).maybeSingle();if(existingState.error)creationError('state_lookup',slug,existingState.error);
+  if(existingState.data&&existingState.data.segment!==segment)creationError('duplicate',slug,{message:'O projeto existente pertence a outra categoria. Escolha outro identificador.'});
+  if(existingState.data?.lifecycle==='published')creationError('duplicate',slug,{message:'O projeto existente já está publicado.'});
+  if(!existingState.data){const state=await sb.from('project_v2_state').upsert({project_id:projectId,segment,template_key:templateKey,lifecycle:'invited',onboarding_step:'account',domain_status:'unconfigured'},{onConflict:'project_id'});if(state.error)creationError('state',slug,state.error)}
   const defaults=projectDefaultsForTemplate(templateKey,name);
-  const content=await sb.from('project_v2_content').upsert({project_id:project.id,...defaults},{onConflict:'project_id'});if(content.error)creationError('content',slug,content.error);
-  const origin=await requestOrigin();const invite=await sb.functions.invoke('manage-project-member',{body:{project_id:project.id,action:'invite',email:adminEmail,role:'admin',redirect_to:`${origin}/auth/callback?next=${encodeURIComponent(`/invite/${slug}`)}`}});if(invite.error)creationError('invite',slug,invite.error);
+  const existingContent=await sb.from('project_v2_content').select('project_id').eq('project_id',projectId).maybeSingle();if(existingContent.error)creationError('content_lookup',slug,existingContent.error);
+  if(!existingContent.data){const content=await sb.from('project_v2_content').upsert({project_id:projectId,...defaults},{onConflict:'project_id'});if(content.error)creationError('content',slug,content.error)}
+  const origin=await requestOrigin();const invite=await sb.functions.invoke('manage-project-member',{body:{project_id:projectId,action:'invite',email:adminEmail,role:'admin',redirect_to:`${origin}/auth/callback?next=${encodeURIComponent(`/invite/${slug}`)}`}});if(invite.error)creationError('invite',slug,invite.error);
   redirect(`/owner/projects?created=${encodeURIComponent(slug)}`);
 }
