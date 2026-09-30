@@ -120,7 +120,7 @@ export default function CatalogManager({projectId,initialItems,limit}:{projectId
       <label className={styles.full}><span>Adicionais e preços</span><textarea rows={2} value={field(item,'additions')} onChange={event=>update(row.id,'additions',event.target.value)} placeholder="Bacon | 5,00"/></label>
      </div>
 
-     <div className={styles.actions}><button type="button" className="action secondary" onClick={()=>duplicate(row.id)} disabled={rows.length>=limit}>Duplicar</button><button type="button" className={styles.danger} onClick={()=>remove(row.id)}>Remover produto</button></div>
+     <div className={styles.actions}><button type="button" className="action secondary" onClick={()=>duplicate(row.id)} disabled={rows.length>=limit}>Duplicar</button><button type="button" className="action secondary" onClick={()=>update(row.id,'active',active?'false':'true')}>{active?'Desativar produto':'Ativar produto'}</button><button type="button" className={styles.danger} onClick={()=>remove(row.id)}>Remover produto</button></div>
     </div>:null}
    </article>;
   })}</div>:<div className={styles.empty}><strong>Nenhum produto encontrado.</strong><span>Ajuste os filtros ou cadastre um novo produto.</span></div>}
