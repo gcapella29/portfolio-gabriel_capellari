@@ -2,9 +2,10 @@
 
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {usePathname} from 'next/navigation';
-import {createPortal,useFormStatus} from 'react-dom';
+import {useFormStatus} from 'react-dom';
 import styles from './content.module.css';
 import EditorPreviewDialog from '../editor-preview-dialog';
+import EditorDraftDock,{EditorDraftStatus} from '../editor-draft-dock';
 
 export type ContentNavItem={id:string;label:string};
 
@@ -12,7 +13,7 @@ function DraftActions({dirty,saved,onPreview,compact=false,formId}:{dirty:boolea
  const {pending}=useFormStatus();
  const status=pending?'Salvando…':dirty?'Alterações não salvas':saved?'Salvo no rascunho':'Sem alterações pendentes';
  return <>
-  <div className={compact?styles.draftStatus:undefined} aria-live="polite"><i data-dirty={dirty} data-pending={pending}/><span>{status}</span></div>
+  <EditorDraftStatus text={status} dirty={dirty} pending={pending}/>
   <button type="button" className="action secondary" onClick={onPreview}>Preview</button>
   <button type="submit" form={formId} className="action primary" disabled={pending}>{pending?'Salvando…':dirty?'Salvar alterações':'Salvar no rascunho'}</button>
  </>;
@@ -29,14 +30,13 @@ function fieldFilled(field:HTMLInputElement|HTMLTextAreaElement|HTMLSelectElemen
 export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,action,children,embedded=false}:{slug:string;previewUrl:string;saved:boolean;portfolio:boolean;nav:ContentNavItem[];action:(formData:FormData)=>Promise<void>;children:React.ReactNode;embedded?:boolean}){
  const pathname=usePathname(),isEmbedded=embedded||pathname.endsWith('/editor');
  const formId=`editor-form-${slug}`;
- const formRef=useRef<HTMLFormElement>(null),submitting=useRef(false),initialSnapshot=useRef(''),[mounted,setMounted]=useState(false),[dirty,setDirty]=useState(false),[language,setLanguage]=useState<'pt'|'en'>('pt'),[completion,setCompletion]=useState<Record<string,number>>({}),[uploadWarning,setUploadWarning]=useState(''),[previewOpen,setPreviewOpen]=useState(false);
+ const formRef=useRef<HTMLFormElement>(null),submitting=useRef(false),initialSnapshot=useRef('') ,[dirty,setDirty]=useState(false),[language,setLanguage]=useState<'pt'|'en'>('pt'),[completion,setCompletion]=useState<Record<string,number>>({}),[uploadWarning,setUploadWarning]=useState(''),[previewOpen,setPreviewOpen]=useState(false);
  const calculate=useCallback(()=>{
   const next:Record<string,number>={};
   for(const item of nav){const section=document.getElementById(item.id);if(!section)continue;const fields=Array.from(section.querySelectorAll<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>('input,textarea,select')).map(fieldFilled).filter((value):value is boolean=>value!==null);next[item.id]=fields.length?Math.round(fields.filter(Boolean).length/fields.length*100):100}
   setCompletion(next);
  },[nav]);
  const snapshot=useCallback(()=>{const form=formRef.current;if(!form)return'';return Array.from(new FormData(form).entries()).map(([key,value])=>`${key}=${value instanceof File?`${value.name}:${value.size}`:String(value)}`).join('&')},[]);
- useEffect(()=>{setMounted(true)},[]);
  useEffect(()=>{calculate();window.setTimeout(()=>{initialSnapshot.current=snapshot()},0)},[calculate,snapshot]);
  useEffect(()=>{const warn=(event:BeforeUnloadEvent)=>{if(dirty&&!submitting.current)event.preventDefault()};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn)},[dirty]);
  const changed=()=>{window.setTimeout(()=>{setDirty(snapshot()!==initialSnapshot.current);calculate()},0)};
@@ -48,7 +48,7 @@ export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,ac
   <div className={styles.editorColumn}>
    {portfolio?<div className={styles.languageBar}><div><span>IDIOMA DE EDIÇÃO</span><strong>{language==='pt'?'Português':'English'}</strong></div><div role="group" aria-label="Idioma exibido no editor"><button type="button" aria-pressed={language==='pt'} onClick={()=>setLanguage('pt')}>🇧🇷 Português</button><button type="button" aria-pressed={language==='en'} onClick={()=>setLanguage('en')}>🇬🇧 English</button></div></div>:null}
    <form id={formId} ref={formRef} action={action} className={styles.form} onChangeCapture={changed} onInputCapture={changed} onClickCapture={changed} onPointerUpCapture={changed} onSubmitCapture={event=>{if(formRef.current?.querySelector('[data-uploading="true"]')){event.preventDefault();setUploadWarning('Aguarde o envio da imagem terminar antes de salvar.');return}setUploadWarning('');submitting.current=true}}><input type="hidden" name="slug" value={slug}/>{isEmbedded?<input type="hidden" name="returnTo" value="editor"/>:null}{uploadWarning?<div className="form-error" role="alert">{uploadWarning}</div>:null}{children}</form>
-   {mounted?createPortal(<div className={styles.quickSaveDock}><DraftActions dirty={dirty} saved={saved} onPreview={openPreview} compact formId={formId}/></div>,document.body):null}
+   <EditorDraftDock><DraftActions dirty={dirty} saved={saved} onPreview={openPreview} compact formId={formId}/></EditorDraftDock>
   </div>
   <EditorPreviewDialog open={previewOpen} previewUrl={previewUrl} stale={dirty} onClose={()=>setPreviewOpen(false)}/>
  </div>;
