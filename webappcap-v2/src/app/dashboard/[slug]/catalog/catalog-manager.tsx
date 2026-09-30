@@ -70,6 +70,18 @@ export default function CatalogManager({projectId,initialItems,limit}:{projectId
    <div className={styles.toolbarMeta}><span><strong>{filtered.length}</strong> exibidos · {activeCount} ativos · {rows.length-activeCount} inativos · {rows.length}/{limit}</span><button type="button" className="action primary" onClick={add} disabled={rows.length>=limit}>+ Novo produto</button></div>
   </div>
 
+  <div className={styles.selectionBar}>
+   <label data-editor-ui-only="true"><input type="checkbox" checked={allVisibleSelected} onChange={toggleVisible}/><span>{allVisibleSelected?'Desmarcar página':'Selecionar página'}</span></label>
+   <span>{selected.size?`${selected.size} selecionado(s)`:'Nenhum produto selecionado'}</span>
+   {selected.size?<div className={styles.bulkActions}>
+    <button type="button" className="action secondary" onClick={()=>bulkStatus(true)}>Ativar</button>
+    <button type="button" className="action secondary" onClick={()=>bulkStatus(false)}>Desativar</button>
+    <div className={styles.bulkCategory}><input data-editor-ui-only="true" value={bulkCategory} onChange={event=>setBulkCategory(event.target.value)} placeholder="Nova categoria" list="catalog-categories"/><button type="button" className="action secondary" onClick={applyBulkCategory} disabled={!bulkCategory.trim()}>Aplicar categoria</button></div>
+    <button type="button" className={styles.danger} onClick={bulkRemove}>Remover selecionados</button>
+    <button data-editor-ui-only="true" type="button" className="action secondary" onClick={()=>setSelected(new Set())}>Limpar seleção</button>
+   </div>:null}
+  </div>
+
   {uploadError?<div className="form-error" role="alert">{uploadError}</div>:null}
 
   {visible.length?<div className={styles.grid}>{visible.map((row)=>{
