@@ -70,3 +70,17 @@
   margin:0;
  }
 }
+
+
+/* Cleanup · keep root draft dock clear of sidebar actions */
+@media(min-width:861px){
+ .saveBar{
+  left:230px;
+ }
+}
+@media(min-width:701px) and (max-width:860px){
+ .saveBar{
+  left:10px;
+  right:auto;
+ }
+}
