@@ -25,6 +25,14 @@ export async function uploadProjectImage(projectId:string,file:File,slot:string)
   return {path,url:publicMediaUrl(path)};
 }
 
+export async function removeProjectMedia(projectId:string,paths:string[]){
+ const safe=[...new Set(paths.filter(path=>path.startsWith(`${projectId}/`)))];
+ if(!safe.length)return;
+ const sb=await createSupabaseServerClient();
+ const result=await sb.storage.from('webappcap-v2-sites').remove(safe);
+ if(result.error)throw result.error;
+}
+
 const videoTypes:Record<string,string>={'video/mp4':'mp4','video/webm':'webm'};
 function hasVideoSignature(bytes:Buffer,type:string){if(type==='video/webm')return bytes.length>4&&bytes.subarray(0,4).equals(Buffer.from([0x1a,0x45,0xdf,0xa3]));if(type==='video/mp4')return bytes.length>12&&bytes.subarray(4,8).toString('ascii')==='ftyp';return false}
 export async function uploadProjectVideo(projectId:string,file:File,slot:string){
