@@ -145,3 +145,14 @@
  .blockBody :global(.field textarea){min-height:92px}
  .blockBody :global(.upload-card){padding:11px}
 }
+
+
+/* Editor v2 · wide-layout balance */
+@media(min-width:1180px){
+ .workspaceHeader{padding:20px 24px}
+ .workspaceHeader>div:first-child{max-width:760px}
+ .workspaceFacts{margin-left:auto}
+ .versionBar{padding:18px 22px}
+ .editorSectionHead{align-items:center}
+ .editorSectionHead>div:first-child{max-width:760px}
+}
