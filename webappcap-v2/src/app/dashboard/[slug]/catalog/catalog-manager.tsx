@@ -109,6 +109,7 @@ export default function CatalogManager({projectId,initialItems,limit}:{projectId
      </div>
 
      <div className={styles.fields}>
+      <label className={styles.statusField}><span>Status</span><button type="button" className={active?styles.statusOn:styles.statusOff} onClick={()=>update(row.id,'active',active?'false':'true')}>{active?'Ativo no site':'Inativo no site'}</button></label>
       <label><span>Nome</span><input value={field(item,'title')} onChange={event=>update(row.id,'title',event.target.value)}/></label>
       <label><span>Categoria</span><input value={field(item,'category')} onChange={event=>update(row.id,'category',event.target.value)} list="catalog-categories"/></label>
       <label><span>Preço</span><input value={field(item,'price')} onChange={event=>update(row.id,'price',event.target.value)} placeholder="R$ 18,00"/></label>
@@ -126,6 +127,6 @@ export default function CatalogManager({projectId,initialItems,limit}:{projectId
 
   <datalist id="catalog-categories">{categories.map(value=><option key={value} value={value}/>)}</datalist>
 
-  {pages>1?<div className={styles.pagination}><button type="button" className="action secondary" disabled={currentPage===0} onClick={()=>setPage(currentPage-1)}>Anterior</button><span>Página {currentPage+1} de {pages}</span><button type="button" className="action secondary" disabled={currentPage>=pages-1} onClick={()=>setPage(currentPage+1)}>Próxima</button></div>:null}
+  {pages>1?<div className={styles.pagination} data-editor-ui-only="true"><button type="button" className="action secondary" disabled={currentPage===0} onClick={()=>setPage(currentPage-1)}>Anterior</button><span>Página {currentPage+1} de {pages}</span><button type="button" className="action secondary" disabled={currentPage>=pages-1} onClick={()=>setPage(currentPage+1)}>Próxima</button></div>:null}
  </section>;
 }
