@@ -39,10 +39,14 @@ export default function EditorPageControls({
   const submit=()=>setSubmitting(true);
   form.addEventListener('input',changed);
   form.addEventListener('change',changed);
+  form.addEventListener('click',changed);
+  form.addEventListener('pointerup',changed);
   form.addEventListener('submit',submit);
   return()=>{
    form.removeEventListener('input',changed);
    form.removeEventListener('change',changed);
+   form.removeEventListener('click',changed);
+   form.removeEventListener('pointerup',changed);
    form.removeEventListener('submit',submit);
   };
  },[formId,refreshDirty]);
