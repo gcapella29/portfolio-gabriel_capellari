@@ -222,3 +222,28 @@
  vertical-align:middle;
 }
 .previewActions>a{min-width:92px}
+
+
+/* Editor v2 · persistent save dock at the left edge of the workspace */
+@media(min-width:861px){
+ .quickSaveDock{
+   right:auto;
+   left:259px;
+   bottom:22px;
+   grid-template-columns:minmax(120px,auto) auto auto;
+ }
+}
+@media(min-width:761px) and (max-width:860px){
+ .quickSaveDock{
+   right:auto;
+   left:16px;
+   bottom:16px;
+ }
+}
+@media(max-width:760px){
+ .quickSaveDock{
+   right:10px;
+   left:10px;
+   bottom:max(10px,env(safe-area-inset-bottom));
+ }
+}
