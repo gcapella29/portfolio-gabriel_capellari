@@ -20,7 +20,7 @@ function Field({name,label,value,rows=0}:{name:string;label:string;value:string;
 export default function BakeryContentEditor({slug,projectId,menuLimit,canManageMedia,canEditAppearance,saved=false,data}:{slug:string;projectId:string;menuLimit:number;canManageMedia:boolean;canEditAppearance:boolean;saved?:boolean;data:{appearance:Record<string,unknown>;identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
  const content=data.content;
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={saved} portfolio={false} nav={[{id:'bakery-1',label:'Início'},{id:'bakery-2',label:'Destaques'},{id:'bakery-3',label:'Cardápio'},{id:'bakery-4',label:'Pedido e contato'}]} action={saveBakeryContentAction} embedded>
-  <Block id="bakery-1" number="01" title="Início" summary="Nome, capa e texto principal" open>
+  <Block id="bakery-1" number="01" title="Início" summary="Nome, capa e texto principal">
    <Field name="name" label="Nome da padaria" value={v(data.identity,'name')}/>
    <Field name="bakery_eyebrow" label="Frase acima do título" value={v(content,'bakery_eyebrow')||'Desde 1998, com pão quente todos os dias'}/>
    <Field name="bakery_hero_title" label="Título da capa (quebra de linha com Enter)" value={v(content,'bakery_hero_title')||v(data.identity,'name')} rows={2}/>

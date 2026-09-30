@@ -34,7 +34,7 @@
 .bakerySite .btn-ghost{border:1px solid rgba(255,255,255,.5);color:#fff;backdrop-filter:blur(10px)}
 
 /* HERO */
-.bakerySite .hero{min-height:82vh;position:relative;display:flex;align-items:flex-end;color:#fff;
+.bakerySite .hero{min-height:clamp(520px,68vh,720px);position:relative;display:flex;align-items:flex-end;color:#fff;
   background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.72)),url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=2000&q=80') center/cover}
 .bakerySite .hero::after{content:"";position:absolute;inset:auto 0 0;height:140px;background:linear-gradient(transparent,var(--bg))}
 .bakerySite .hero-content{position:relative;z-index:2;width:min(calc(100% - 32px),1340px);padding:72px 0 48px;max-width:none;text-align:left}
@@ -181,7 +181,7 @@
 
 @media (max-width:720px){
   .bakerySite .nav-links a{display:none}
-  .bakerySite .hero{min-height:74vh}
+  .bakerySite .hero{min-height:clamp(500px,68svh,640px)}
   .bakerySite .hero-content{padding-bottom:55px}
   .bakerySite .section-head,.bakerySite .order-top{display:block}
   .bakerySite .section-copy{margin-top:14px}
@@ -197,4 +197,20 @@
   .bakerySite{scroll-behavior:auto}
   .bakerySite .track{animation:scroll 24s linear infinite!important}
   .bakerySite *,.bakerySite *::before,.bakerySite *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+
+
+/* Responsive safety for editor-controlled hero typography */
+.bakerySite .bakeryHeroTitle{font-size:min(var(--hero-title-custom,6.6rem),clamp(3rem,9vw,6.6rem))!important;max-width:100%;overflow-wrap:anywhere}
+@media(max-width:900px){
+ .bakerySite .hero-content{width:min(calc(100% - 36px),1340px);translate:none!important}
+ .bakerySite .bakeryHeroText{translate:none!important}
+ .bakerySite .bakeryHeroTitle{font-size:clamp(2.7rem,9vw,5.2rem)!important;line-height:.96}
+ .bakerySite .bakeryHeroEyebrow{font-size:clamp(.9rem,2.7vw,1.15rem)!important}
+ .bakerySite .bakeryHeroSubtitle{max-width:48rem;font-size:clamp(.95rem,2.4vw,1.1rem)!important}
+ .bakerySite .bakeryHeroPhone{font-size:clamp(.88rem,2vw,1rem)!important}
+}
+@media(max-width:520px){
+ .bakerySite .hero-content{width:calc(100% - 28px)}
+ .bakerySite .bakeryHeroTitle{font-size:clamp(2.35rem,12vw,4rem)!important}
 }

@@ -138,3 +138,298 @@
  .quickSaveDock{grid-template-columns:1fr 1fr}
  .quickSaveDock .draftStatus{grid-column:1/-1;justify-content:center;min-width:0}
 }
+
+
+/* Editor v2 · integrated preview */
+.previewOverlay{position:fixed;inset:0;z-index:140;display:grid;grid-template-columns:minmax(0,1fr) minmax(520px,52vw);pointer-events:none}
+.previewBackdrop{grid-column:1/2;grid-row:1;border:0;background:rgba(10,18,28,.34);backdrop-filter:blur(2px);pointer-events:auto;cursor:pointer}
+.previewPanel{grid-column:2/3;grid-row:1;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:#f4f6f9;border-left:1px solid #dce2ea;box-shadow:-24px 0 60px rgba(17,24,39,.16);pointer-events:auto}
+.previewToolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #dce2ea;background:#fff}
+.previewToolbar>div:first-child{min-width:0}
+.previewToolbar strong,.previewToolbar small{display:block}
+.previewToolbar strong{font-size:12px}
+.previewToolbar small{margin-top:2px;color:#7a8595;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.previewActions{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.previewActions>button,.previewActions>a,.previewDevice button{min-height:34px;padding:0 10px;border:1px solid #d8dee7;border-radius:9px;background:#fff;color:#253044;font:inherit;font-size:9px;font-weight:800;cursor:pointer}
+.previewDevice{display:flex;padding:3px;border-radius:11px;background:#eef2f6}
+.previewDevice button{border:0;background:transparent}
+.previewDevice button[aria-pressed=true]{background:#142039;color:#fff;box-shadow:0 3px 8px rgba(20,32,57,.15)}
+.previewStage{display:grid;place-items:stretch;min-height:0;padding:12px;overflow:auto;background:#e8edf3}
+.previewStage iframe{width:100%;height:100%;min-height:0;border:1px solid #cfd7e2;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(17,24,39,.08)}
+.previewStage[data-mode=mobile]{place-items:start center}
+.previewStage[data-mode=mobile] iframe{width:390px;max-width:100%;height:100%;min-height:720px}
+@media(max-width:980px){.previewOverlay{grid-template-columns:minmax(0,1fr) minmax(460px,60vw)}}
+@media(max-width:760px){
+ .previewOverlay{grid-template-columns:1fr}
+ .previewBackdrop{display:none}
+ .previewPanel{grid-column:1;min-width:0;border-left:0}
+ .previewToolbar{align-items:stretch;flex-direction:column;padding:9px}
+ .previewActions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+ .previewDevice{grid-column:1/-1}
+ .previewDevice button{flex:1}
+ .previewActions>button,.previewActions>a{display:flex;align-items:center;justify-content:center}
+ .previewStage{padding:8px}
+ .previewStage[data-mode=mobile] iframe{width:390px;min-height:680px}
+}
+
+
+/* Integrated preview sizing refinement */
+@media(min-width:1400px){
+ .previewOverlay{grid-template-columns:minmax(280px,35vw) minmax(900px,65vw)}
+}
+@media(min-width:761px) and (max-width:1399px){
+ .previewOverlay{display:grid;place-items:center;padding:18px;background:rgba(10,18,28,.34)}
+ .previewBackdrop{position:absolute;inset:0;display:block;background:transparent;backdrop-filter:blur(2px)}
+ .previewPanel{grid-column:1;grid-row:1;width:min(1180px,calc(100vw - 36px));height:calc(100vh - 36px);border:1px solid #dce2ea;border-radius:18px;overflow:hidden;box-shadow:0 24px 70px rgba(17,24,39,.24)}
+ .previewStage{min-height:0}
+}
+
+
+/* Preview toolbar alignment fix */
+.previewActions>button,.previewActions>a,.previewDevice button{
+ box-sizing:border-box;
+ height:34px;
+ min-height:34px;
+ line-height:1;
+ white-space:nowrap;
+}
+.previewActions>a{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ text-decoration:none;
+}
+.previewDevice{align-items:center}
+
+
+/* Preview toolbar exact control sizing */
+.previewActions>button,.previewActions>a{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ height:36px;
+ min-height:36px;
+ padding:0 13px;
+ border:1px solid #d8dee7;
+ border-radius:10px;
+ background:#fff;
+ color:#253044;
+ font:inherit;
+ font-size:9px;
+ font-weight:800;
+ line-height:1;
+ text-decoration:none;
+ vertical-align:middle;
+}
+.previewActions>a{min-width:92px}
+
+
+/* Editor v2 · persistent save dock at the left edge of the workspace */
+@media(min-width:861px){
+ .quickSaveDock{
+   right:auto;
+   left:259px;
+   bottom:22px;
+   grid-template-columns:minmax(120px,auto) auto auto;
+ }
+}
+@media(min-width:761px) and (max-width:860px){
+ .quickSaveDock{
+   right:auto;
+   left:16px;
+   bottom:16px;
+ }
+}
+@media(max-width:760px){
+ .quickSaveDock{
+   right:10px;
+   left:10px;
+   bottom:max(10px,env(safe-area-inset-bottom));
+ }
+}
+
+
+/* Editor v2 · final draft dock placement */
+@media(min-width:861px){
+ .quickSaveDock{
+   left:10px!important;
+   right:auto!important;
+   bottom:16px!important;
+   width:148px;
+   max-width:148px;
+   grid-template-columns:1fr!important;
+   gap:7px;
+   padding:7px;
+   border-radius:14px;
+ }
+ .quickSaveDock .draftStatus{
+   grid-column:1!important;
+   justify-content:center!important;
+   width:100%;
+   min-width:0!important;
+   padding:5px 6px!important;
+   text-align:center;
+ }
+ .quickSaveDock :global(.action){
+   width:100%;
+   min-width:0!important;
+   min-height:38px;
+   padding:0 9px;
+   font-size:10px;
+ }
+}
+@media(min-width:761px) and (max-width:860px){
+ .quickSaveDock{
+   left:10px!important;
+   right:auto!important;
+   width:148px;
+   max-width:148px;
+   grid-template-columns:1fr!important;
+ }
+ .quickSaveDock .draftStatus{grid-column:1!important;justify-content:center!important;min-width:0!important}
+ .quickSaveDock :global(.action){width:100%;min-width:0!important}
+}
+
+
+/* Editor v2 · generic/portfolio workspace parity */
+.contentPage{
+ width:100%!important;
+ max-width:1440px!important;
+ min-width:0;
+ margin:0 auto!important;
+ padding:0 0 72px!important;
+ display:grid;
+ gap:16px;
+}
+.contentPage :global(.notice){margin:0}
+.contentPage .workspace{margin:0}
+@media(max-width:760px){
+ .contentPage{
+  max-width:100%!important;
+  gap:12px;
+  padding-bottom:96px!important;
+ }
+}
+
+
+/* Generic/portfolio header must never widen the dashboard */
+.contentPage{
+ box-sizing:border-box;
+ width:100%!important;
+ max-width:100%!important;
+ overflow-x:hidden;
+}
+.genericWorkspaceHeader{
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ box-sizing:border-box;
+ flex-wrap:wrap;
+}
+.genericWorkspaceHeader>div:first-child{
+ flex:1 1 560px!important;
+ min-width:0!important;
+ max-width:none!important;
+}
+.genericWorkspaceHeader h1{
+ min-width:0;
+ max-width:100%!important;
+ overflow-wrap:anywhere;
+}
+.genericWorkspaceHeader p{
+ min-width:0;
+ max-width:64ch!important;
+}
+.genericWorkspaceHeader>div:last-child{
+ flex:0 1 auto;
+ min-width:0;
+ margin-left:auto!important;
+}
+@media(min-width:900px) and (max-width:1280px){
+ .genericWorkspaceHeader{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:16px;
+ }
+ .genericWorkspaceHeader>div:first-child{
+  display:block!important;
+ }
+ .genericWorkspaceHeader>div:first-child>span,
+ .genericWorkspaceHeader h1,
+ .genericWorkspaceHeader p{
+  display:block;
+  grid-column:auto!important;
+  grid-row:auto!important;
+ }
+ .genericWorkspaceHeader h1{
+  margin:4px 0!important;
+  white-space:normal!important;
+ }
+ .genericWorkspaceHeader p{
+  margin:0!important;
+ }
+ .genericWorkspaceHeader>div:last-child{
+  margin-left:0!important;
+ }
+}
+@media(max-width:899px){
+ .genericWorkspaceHeader{
+  display:flex!important;
+  align-items:flex-start!important;
+  flex-direction:column!important;
+  gap:12px!important;
+ }
+ .genericWorkspaceHeader>div:first-child{
+  width:100%;
+  flex:0 1 auto!important;
+  display:block!important;
+ }
+ .genericWorkspaceHeader h1{
+  white-space:normal!important;
+ }
+ .genericWorkspaceHeader>div:last-child{
+  width:100%;
+  margin-left:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
+
+
+/* Editor v2 · portfolio/generic navigation must stay inside the workspace */
+.contentPage .workspace,
+.contentPage .editorColumn,
+.contentPage .form,
+.contentPage .sectionNav{
+ box-sizing:border-box;
+ width:100%;
+ max-width:100%;
+ min-width:0;
+}
+.contentPage .sectionNav{
+ align-items:flex-start;
+ overflow:visible;
+}
+.contentPage .sectionNav nav{
+ flex:1 1 auto;
+ max-width:100%;
+ min-width:0;
+ flex-wrap:wrap;
+ overflow:visible;
+}
+.contentPage .sectionNav a{
+ max-width:100%;
+}
+@media(min-width:921px){
+ .contentPage .sectionNav{
+  display:grid;
+  grid-template-columns:145px minmax(0,1fr);
+ }
+}
+@media(max-width:920px){
+ .contentPage .sectionNav nav{
+  flex-wrap:wrap;
+  overflow:visible;
+ }
+}
