@@ -1,0 +1,30 @@
+.editor{display:grid;gap:12px}
+.picker{margin:0}
+.pending{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:11px 13px;border:1px solid #b9d2ff;border-radius:12px;background:#f4f8ff;color:#284b93}
+.pending strong,.pending span{display:block}
+.pending strong{font-size:11px;white-space:nowrap}
+.pending span{font-size:10px;line-height:1.4}
+.current{display:grid;gap:9px}
+.currentHead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.currentHead strong,.currentHead span{display:block}
+.currentHead strong{font-size:11px}
+.currentHead span{margin-top:2px;color:#7a8494;font-size:9px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px}
+.card{display:grid;grid-template-rows:130px auto;overflow:hidden;border:1px solid #e0e5ed;border-radius:13px;background:#fff;transition:opacity .18s ease,border-color .18s ease,transform .18s ease}
+.card:hover{transform:translateY(-1px);border-color:#c8d1de}
+.card[data-removed=true]{opacity:.52;border-style:dashed}
+.card img{width:100%;height:130px;object-fit:cover;background:#eef1f5}
+.card>div{display:grid;gap:4px;padding:9px}
+.card strong{font-size:10px}
+.card small{overflow:hidden;color:#7a8494;font-size:8px;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+.card button{justify-self:start;margin-top:3px;padding:6px 8px;border:1px solid #d7dde6;border-radius:8px;background:#fff;color:#495567;font:inherit;font-size:8px;font-weight:850;cursor:pointer}
+.card[data-removed=true] button{border-color:#b9d2ff;color:#315ee7}
+.newBadge{justify-self:start;margin-top:3px;padding:4px 6px;border-radius:999px;background:#eaf2ff;color:#315ee7;font-size:7px;font-weight:900;letter-spacing:.06em}
+.empty{margin:0;padding:12px;border:1px dashed #d8dee7;border-radius:11px;color:#7a8494;font-size:10px;text-align:center}
+@media(max-width:620px){
+ .pending{align-items:flex-start;flex-direction:column;gap:4px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .card{grid-template-rows:105px auto}
+ .card img{height:105px}
+}
+@media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
