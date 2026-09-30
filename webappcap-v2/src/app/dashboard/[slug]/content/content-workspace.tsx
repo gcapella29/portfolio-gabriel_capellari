@@ -1,6 +1,6 @@
 'use client';
 
-import {useCallback,useEffect,useRef,useState} from 'react';
+import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {usePathname} from 'next/navigation';
 import styles from './content.module.css';
 import EditorPreviewDialog from '../editor-preview-dialog';
@@ -20,14 +20,15 @@ function DraftActions({dirty,saved,saving,onPreview,formId}:{dirty:boolean;saved
 function fieldFilled(field:HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement){
  if(field instanceof HTMLInputElement&&field.type==='hidden'){
   if(!field.name.startsWith('section:'))return null;
-  try{return Array.isArray(JSON.parse(field.value))&&JSON.parse(field.value).length>0}catch{return false}
+  const value=field.value.trim();
+  return value!==''&&value!=='[]';
  }
  return field.value.trim().length>0;
 }
 
 export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,action,children,embedded=false}:{slug:string;previewUrl:string;saved:boolean;portfolio:boolean;nav:ContentNavItem[];action:(formData:FormData)=>Promise<void>;children:React.ReactNode;embedded?:boolean}){
  const pathname=usePathname(),isEmbedded=embedded||pathname.endsWith('/editor');
- const formId=`editor-form-${slug}`;
+ const formId=`editor-form-${slug}`,navIds=useMemo(()=>new Set(nav.map(item=>item.id)),[nav]);
  const formRef=useRef<HTMLFormElement>(null),submitting=useRef(false),completionFrame=useRef<number|null>(null),[dirty,setDirty]=useState(false),[saving,setSaving]=useState(false),[language,setLanguage]=useState<'pt'|'en'>('pt'),[completion,setCompletion]=useState<Record<string,number>>({}),[uploadWarning,setUploadWarning]=useState(''),[previewOpen,setPreviewOpen]=useState(false);
  const completionFor=useCallback((id:string)=>{
   const section=document.getElementById(id);
@@ -43,10 +44,9 @@ export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,ac
  const sectionForTarget=useCallback((target:EventTarget|null)=>{
   if(!(target instanceof Element))return null;
   let current:Element|null=target;
-  const ids=new Set(nav.map(item=>item.id));
-  while(current&&current!==formRef.current){if(current.id&&ids.has(current.id))return current.id;current=current.parentElement}
+  while(current&&current!==formRef.current){if(current.id&&navIds.has(current.id))return current.id;current=current.parentElement}
   return null;
- },[nav]);
+ },[navIds]);
  useEffect(()=>{calculateAll()},[calculateAll]);
  useEffect(()=>{const warn=(event:BeforeUnloadEvent)=>{if(dirty&&!submitting.current)event.preventDefault()};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn)},[dirty]);
  useEffect(()=>()=>{if(completionFrame.current!==null)cancelAnimationFrame(completionFrame.current)},[]);
