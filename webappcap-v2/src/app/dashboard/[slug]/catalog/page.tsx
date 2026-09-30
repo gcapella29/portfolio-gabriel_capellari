@@ -6,6 +6,7 @@ import EditorWorkspaceHeader from '../editor-workspace-header';
 import EditorPageControls from '../editor-page-controls';
 import {saveCatalogAction} from '../actions';
 import CatalogManager from './catalog-manager';
+import pageStyles from './page.module.css';
 
 type RawItem=Record<string,unknown>;
 
@@ -25,7 +26,7 @@ export default async function CatalogPage({
  if(!['food-business','commerce'].includes(project.segment))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const [data,limit]=await Promise.all([readV2Content(project.id),menuItemLimitForProject(project.id)]);
  const items=(Array.isArray(data.content.menu_items)?data.content.menu_items:[]).map(normalizeItem);
- return <div className="editor-page catalog-workspace-page">
+ return <div className={`editor-page catalog-workspace-page ${pageStyles.page}`}>
   <EditorWorkspaceHeader
    eyebrow="CATÁLOGO"
    title={project.name}
