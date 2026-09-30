@@ -23,10 +23,10 @@ function productDefinition(menuLimit:number):RepeatableSection{
  return {...source,max:menuLimit,label:'Produtos',description:'Cadastre foto, nome, categoria, preço e, se quiser, uma promoção por quantidade.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))};
 }
 
-export default function SalesContentEditor({menuLimit,slug,projectId,canManageMedia,data}:{menuLimit:number;slug:string;projectId:string;canManageMedia:boolean;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
+export default function SalesContentEditor({menuLimit,slug,projectId,canManageMedia,saved=false,data}:{menuLimit:number;slug:string;projectId:string;canManageMedia:boolean;saved?:boolean;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
  const settings=commerceSettings(data.content),initial={...data.content,menu_items:stored(data.content.menu_items)};
  const nav:ContentNavItem[]=[{id:'sales-block-1',label:'Bloco 1 · Cabeçalho'},{id:'sales-block-2',label:'Bloco 2 · Catálogo'},{id:'sales-block-3',label:'Bloco 3 · WhatsApp'}];
- return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={false} portfolio={false} nav={nav} action={saveSalesContentAction} embedded>
+ return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={saved} portfolio={false} nav={nav} action={saveSalesContentAction} embedded>
   <Block id="sales-block-1" number="01" title="Cabeçalho" summary="Foto de capa e frase exibida junto ao nome da loja" open>
    {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:sales_hero" slot="sales_hero" label="Foto de capa do hero" current={mediaValue(data.media.sales_hero,'url')} currentPosition={mediaValue(data.media.sales_hero,'position','center')} currentFit={mediaValue(data.media.sales_hero,'fit','cover')} currentZoom={mediaValue(data.media.sales_hero,'zoom','100')} help="Escolha a foto de capa e arraste para ajustar o enquadramento."/>:null}
    <label className="field"><span>Frase principal</span><input name="sales_tagline" defaultValue={v(data.content,'sales_tagline')||v(data.identity,'tagline')} placeholder="Escolha e peça pelo WhatsApp."/></label>
