@@ -44,7 +44,7 @@ export function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
  const phone=editableText(data.contact,'phone',''),whatsapp=editableText(data.contact,'whatsapp','').replace(/\D/g,''),instagram=editableText(data.contact,'instagram',''),instagramUrl=instagram?instagramHref(instagram):'';
  const creatorInstagram=editableText(data.content,'creator_instagram',''),creatorInstagramUrl=creatorInstagram?instagramHref(creatorInstagram):'';
  const scale=text(data.appearance,'scale','normal'),hero=image(data.media,'hero'),creator=image(data.media,'creator'),commerce=commerceSettings(data.content);
- const menu=useMemo(()=>rows(data.content.menu_items),[data.content.menu_items]);
+ const menu=useMemo(()=>rows(data.content.menu_items).filter(item=>text(item,'active','true').toLowerCase()!=='false'),[data.content.menu_items]);
  const categories=useMemo(()=>commerceCategories(menu),[menu]);
  const showCatalog=sectionVisible(data.content,'show_catalog'),showCart=sectionVisible(data.content,'show_cart'),showInstagram=sectionVisible(data.content,'show_instagram'),showAbout=sectionVisible(data.content,'show_about');
  const copy=(key:string,fallback:string)=>replaceCommerceCatalogTerm(editableText(data.content,key,fallback),commerce);
