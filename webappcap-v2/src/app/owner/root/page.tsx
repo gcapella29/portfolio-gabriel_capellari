@@ -5,6 +5,7 @@ import {readRootDraft,rootValue} from '@/core/root-site';
 import {logoutRootAction,publishRootAction,saveRootDraftAction} from './actions';
 import dashboardStyles from '../../dashboard/[slug]/dashboard.module.css';
 import styles from './root-editor.module.css';
+import EditorWorkspaceHeader from '../../dashboard/[slug]/editor-workspace-header';
 
 const field=(draft:Record<string,string>,name:string,label:string,fallback:string,wide=false,area=false)=><label className={`${styles.field} ${wide?styles.wide:''}`}><span>{label}</span>{area?<textarea name={name} rows={3} defaultValue={rootValue(draft,name,fallback)}/>:<input name={name} defaultValue={rootValue(draft,name,fallback)}/>}</label>;
 
@@ -36,7 +37,7 @@ export default async function RootEditorPage({searchParams}:{searchParams:Promis
    </div></header>
    <div className={`${dashboardStyles.content} ${dashboardStyles.pageFrame}`}>
     <div className={styles.editor}>
-     <header className={styles.header}><span>PROJETO RAIZ</span><h1>Edite o site institucional.</h1><p>Atualize os textos por seção, salve o rascunho e revise no Preview antes de publicar.</p></header>
+     <EditorWorkspaceHeader variant="plain" eyebrow="PROJETO RAIZ" title="Edite o site institucional." description="Atualize os textos por seção, salve o rascunho e revise no Preview antes de publicar."/>
      {query.saved?<div className={styles.notice} role="status">Rascunho salvo. Confira no Preview antes de publicar.</div>:null}
      {query.published?<div className={styles.notice} role="status">Raiz publicada com sucesso.</div>:null}
      <nav className={styles.sectionNav} aria-label="Seções do conteúdo">
