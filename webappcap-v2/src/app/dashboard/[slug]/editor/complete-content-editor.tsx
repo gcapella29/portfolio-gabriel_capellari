@@ -18,7 +18,7 @@ function EditorPanel({eyebrow,title,description,children}:{eyebrow:string;title:
 export default function CompleteContentEditor({menuLimit,projectId,slug,data,canManageMedia,saved=false}:{menuLimit:number;projectId:string;slug:string;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>};canManageMedia:boolean;saved?:boolean}){
  const nav:ContentNavItem[]=[{id:'block-1',label:'Bloco 1 · Início'},{id:'block-2',label:'Bloco 2 · Catálogo'},{id:'block-3',label:'Bloco 3 · Carrinho'},{id:'block-4',label:'Bloco 4 · Instagram'},{id:'block-5',label:'Bloco 5 · Sobre'}];
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={saved} portfolio={false} nav={nav} action={saveCompleteContentAction}>
-  <Block id="block-1" number="01" title="Início" summary="Identidade, imagem principal e textos do hero" open>
+  <Block id="block-1" number="01" title="Início" summary="Identidade, imagem principal e textos do hero">
    <EditorPanel eyebrow="IDENTIDADE" title="Como o site aparece" description="Nome exibido na aba do navegador e nos compartilhamentos.">
     <label className="field"><span>Título da aba do navegador</span><input name="browser_title" maxLength={80} defaultValue={v(data.identity,'browser_title')} placeholder="Ex.: Vet-se — Mimos para quem ama a rotina vet"/><small>Se ficar vazio, o sistema gera automaticamente a partir do nome da loja.</small></label>
    </EditorPanel>
