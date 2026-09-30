@@ -7,9 +7,14 @@ import styles from './content.module.css';
 
 export type ContentNavItem={id:string;label:string};
 
-function SaveButton(){
+function DraftActions({dirty,saved,previewUrl,compact=false}:{dirty:boolean;saved:boolean;previewUrl:string;compact?:boolean}){
  const {pending}=useFormStatus();
- return <button className="action primary" disabled={pending}>{pending?'Salvando…':'Salvar no rascunho'}</button>;
+ const status=pending?'Salvando…':dirty?'Alterações não salvas':saved?'Salvo no rascunho':'Sem alterações pendentes';
+ return <>
+  <div className={compact?styles.draftStatus:undefined} aria-live="polite"><i data-dirty={dirty} data-pending={pending}/><span>{status}</span></div>
+  <a className="action secondary" href={previewUrl} target="_blank" rel="noopener noreferrer" onClick={event=>{event.currentTarget.href=previewUrl+'?draft='+Date.now()}}>Preview ↗</a>
+  <button type="submit" className="action primary" disabled={pending}>{pending?'Salvando…':dirty?'Salvar alterações':'Salvar no rascunho'}</button>
+ </>;
 }
 
 function fieldFilled(field:HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement){
@@ -38,7 +43,7 @@ export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,ac
   {!isEmbedded?<aside className={styles.sectionNav}><div className={styles.navHead}><span>PROGRESSO</span><strong>{overall}% preenchido</strong><i><b style={{width:`${overall}%`}}/></i></div><nav aria-label="Seções do conteúdo">{nav.map(item=><a href={`#${item.id}`} key={item.id} onClick={event=>{event.preventDefault();openSection(item.id)}}><i data-complete={completion[item.id]===100}/><span>{item.label}</span><small>{completion[item.id]??0}%</small></a>)}</nav></aside>:null}
   <div className={styles.editorColumn}>
    {portfolio?<div className={styles.languageBar}><div><span>IDIOMA DE EDIÇÃO</span><strong>{language==='pt'?'Português':'English'}</strong></div><div role="group" aria-label="Idioma exibido no editor"><button type="button" aria-pressed={language==='pt'} onClick={()=>setLanguage('pt')}>🇧🇷 Português</button><button type="button" aria-pressed={language==='en'} onClick={()=>setLanguage('en')}>🇬🇧 English</button></div></div>:null}
-   <form ref={formRef} action={action} className={styles.form} onChangeCapture={changed} onInputCapture={changed} onClickCapture={changed} onPointerUpCapture={changed} onSubmitCapture={event=>{if(formRef.current?.querySelector('[data-uploading="true"]')){event.preventDefault();setUploadWarning('Aguarde o envio da imagem terminar antes de salvar.');return}setUploadWarning('');submitting.current=true}}><input type="hidden" name="slug" value={slug}/>{isEmbedded?<input type="hidden" name="returnTo" value="editor"/>:null}{uploadWarning?<div className="form-error" role="alert">{uploadWarning}</div>:null}{isEmbedded?<div className={styles.quickSaveDock}><div><i data-dirty={dirty}/><span>{dirty?'Alterações não salvas':saved?'Rascunho salvo':'Rascunho'}</span></div><a className="action secondary" href={previewUrl} target="_blank" onClick={event=>{event.currentTarget.href=previewUrl+'?draft='+Date.now()}}>Preview ↗</a><SaveButton/></div>:null}{children}{!isEmbedded?<div className={styles.saveBar}><div><i data-dirty={dirty}/><span>{dirty?'Alterações não salvas':saved?'Rascunho salvo':'Nenhuma alteração pendente'}</span></div><a className="action secondary" href={previewUrl} target="_blank" onClick={event=>{event.currentTarget.href=previewUrl+'?draft='+Date.now()}}>Abrir Preview ↗</a><SaveButton/></div>:null}</form>
+   <form ref={formRef} action={action} className={styles.form} onChangeCapture={changed} onInputCapture={changed} onClickCapture={changed} onPointerUpCapture={changed} onSubmitCapture={event=>{if(formRef.current?.querySelector('[data-uploading="true"]')){event.preventDefault();setUploadWarning('Aguarde o envio da imagem terminar antes de salvar.');return}setUploadWarning('');submitting.current=true}}><input type="hidden" name="slug" value={slug}/>{isEmbedded?<input type="hidden" name="returnTo" value="editor"/>:null}{uploadWarning?<div className="form-error" role="alert">{uploadWarning}</div>:null}{isEmbedded?<div className={styles.quickSaveDock}><DraftActions dirty={dirty} saved={saved} previewUrl={previewUrl} compact/></div>:null}{children}{!isEmbedded?<div className={styles.saveBar}><DraftActions dirty={dirty} saved={saved} previewUrl={previewUrl}/></div>:null}</form>
   </div>
  </div>;
 }

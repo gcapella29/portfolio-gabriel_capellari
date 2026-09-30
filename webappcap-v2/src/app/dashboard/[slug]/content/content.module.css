@@ -113,3 +113,28 @@
 @media(prefers-reduced-motion:reduce){
   .quickSaveDock :global(.action){transition:none}
 }
+
+
+/* Editor v2 · unified draft controls */
+.quickSaveDock{
+  grid-template-columns:minmax(120px,auto) auto auto;
+  align-items:center;
+  gap:8px;
+  max-width:min(620px,calc(100vw - 48px));
+}
+.quickSaveDock .draftStatus{
+  grid-column:auto;
+  justify-content:flex-start;
+  min-width:150px;
+  padding:0 8px;
+}
+.quickSaveDock .draftStatus i[data-pending=true],
+.saveBar>div i[data-pending=true]{
+  background:#315ee7;
+  box-shadow:0 0 0 3px rgba(49,94,231,.12);
+}
+.quickSaveDock :global(.action){min-width:138px}
+@media(max-width:760px){
+ .quickSaveDock{grid-template-columns:1fr 1fr}
+ .quickSaveDock .draftStatus{grid-column:1/-1;justify-content:center;min-width:0}
+}
