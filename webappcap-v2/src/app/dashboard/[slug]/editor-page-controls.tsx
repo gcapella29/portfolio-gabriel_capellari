@@ -1,15 +1,8 @@
 'use client';
 
-import {useCallback,useEffect,useRef,useState} from 'react';
+import {useEffect,useState} from 'react';
 import EditorDraftDock,{EditorDraftStatus} from './editor-draft-dock';
 import EditorPreviewDialog from './editor-preview-dialog';
-
-function formSnapshot(form:HTMLFormElement|null){
- if(!form)return'';
- return Array.from(new FormData(form).entries())
-  .map(([key,value])=>`${key}=${value instanceof File?`${value.name}:${value.size}:${value.lastModified}`:String(value)}`)
-  .join('&');
-}
 
 export default function EditorPageControls({
  formId,
@@ -23,19 +16,14 @@ export default function EditorPageControls({
  saveLabel?:string;
 }){
  const [dirty,setDirty]=useState(false),[previewOpen,setPreviewOpen]=useState(false),[submitting,setSubmitting]=useState(false);
- const initial=useRef('');
-
- const refreshDirty=useCallback(()=>{
+useEffect(()=>{
   const form=document.getElementById(formId);
   if(!(form instanceof HTMLFormElement))return;
-  setDirty(formSnapshot(form)!==initial.current);
- },[formId]);
-
- useEffect(()=>{
-  const form=document.getElementById(formId);
-  if(!(form instanceof HTMLFormElement))return;
-  initial.current=formSnapshot(form);
-  const changed=()=>window.setTimeout(refreshDirty,0);
+  const changed=(event:Event)=>{
+   const target=event.target instanceof Element?event.target:null;
+   const mutates=event.type==='input'||event.type==='change'||event.type==='click'&&Boolean(target?.closest('button[type="button"]'))||event.type==='pointerup'&&Boolean(target?.closest('[data-editor-drag="true"]'));
+   if(mutates)setDirty(true);
+  };
   const submit=()=>setSubmitting(true);
   form.addEventListener('input',changed);
   form.addEventListener('change',changed);
@@ -49,7 +37,7 @@ export default function EditorPageControls({
    form.removeEventListener('pointerup',changed);
    form.removeEventListener('submit',submit);
   };
- },[formId,refreshDirty]);
+ },[formId]);
 
  useEffect(()=>{
   const warn=(event:BeforeUnloadEvent)=>{if(dirty&&!submitting)event.preventDefault()};
