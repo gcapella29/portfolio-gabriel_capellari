@@ -36,7 +36,7 @@ export function BakeryTemplate({project,data}:TemplateRenderProps){
  const c=data.content,contact=data.contact;
  const name=val(data.identity,'name',project.name||'Padaria São Bento');
  const hero=image(data.media.bakery_hero)||bakerySample.hero;
- const products=useMemo(()=>Array.isArray(c.menu_items)?rows(c.menu_items):defaultProducts,[c.menu_items]);
+ const products=useMemo(()=>Array.isArray(c.menu_items)?rows(c.menu_items).filter(item=>val(item,'active','true').toLowerCase()!=='false'):defaultProducts,[c.menu_items]);
  const highlights=useMemo(()=>Array.isArray(c.bakery_highlights)?rows(c.bakery_highlights):defaultHighlights,[c.bakery_highlights]);
  const whatsapp=val(contact,'whatsapp').replace(/\D/g,'');
  const phone=val(contact,'phone','(16) 3342-1234'),instagram=val(contact,'instagram','https://instagram.com/');
