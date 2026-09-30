@@ -289,3 +289,24 @@
  .quickSaveDock .draftStatus{grid-column:1!important;justify-content:center!important;min-width:0!important}
  .quickSaveDock :global(.action){width:100%;min-width:0!important}
 }
+
+
+/* Editor v2 · generic/portfolio workspace parity */
+.contentPage{
+ width:100%!important;
+ max-width:1440px!important;
+ min-width:0;
+ margin:0 auto!important;
+ padding:0 0 72px!important;
+ display:grid;
+ gap:16px;
+}
+.contentPage :global(.notice){margin:0}
+.contentPage .workspace{margin:0}
+@media(max-width:760px){
+ .contentPage{
+  max-width:100%!important;
+  gap:12px;
+  padding-bottom:96px!important;
+ }
+}
