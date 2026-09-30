@@ -62,84 +62,6 @@
 }
 
 
-/* Editor draft dock — single floating control that follows long lists. */
-.quickSaveDock{
-  position:fixed;
-  z-index:90;
-  right:24px;
-  bottom:24px;
-  display:grid;
-  grid-template-columns:auto auto;
-  align-items:center;
-  gap:7px;
-  width:auto;
-  max-width:min(520px,calc(100vw - 48px));
-  padding:8px;
-  border:1px solid rgba(203,213,226,.96);
-  border-radius:17px;
-  background:rgba(255,255,255,.96);
-  backdrop-filter:blur(18px) saturate(140%);
-  box-shadow:0 18px 50px rgba(17,24,39,.20);
-}
-.quickSaveDock>div{
-  grid-column:1/-1;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:7px;
-  min-width:0;
-  padding:0 7px 1px;
-  color:#657184;
-  font-size:9px;
-  font-weight:800;
-}
-.quickSaveDock>div i{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:#24b56b}
-.quickSaveDock>div i[data-dirty=true]{background:#efa929;box-shadow:0 0 0 3px rgba(239,169,41,.13)}
-.quickSaveDock>div span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.quickSaveDock :global(.action){min-height:42px;min-width:150px;padding-inline:16px;white-space:nowrap}
-@media(max-width:760px){
-  .quickSaveDock{
-    right:10px;
-    bottom:max(10px,env(safe-area-inset-bottom));
-    left:10px;
-    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-    max-width:none;
-    padding:8px;
-    border-radius:15px;
-  }
-  .quickSaveDock>div{justify-content:center;padding-bottom:2px}
-  .quickSaveDock :global(.action){width:100%;min-width:0;min-height:44px;padding-inline:10px;font-size:11px}
-}
-@media(prefers-reduced-motion:reduce){
-  .quickSaveDock :global(.action){transition:none}
-}
-
-
-/* Editor v2 · unified draft controls */
-.quickSaveDock{
-  grid-template-columns:minmax(120px,auto) auto auto;
-  align-items:center;
-  gap:8px;
-  max-width:min(620px,calc(100vw - 48px));
-}
-.quickSaveDock .draftStatus{
-  grid-column:auto;
-  justify-content:flex-start;
-  min-width:150px;
-  padding:0 8px;
-}
-.quickSaveDock .draftStatus i[data-pending=true],
-.saveBar>div i[data-pending=true]{
-  background:#315ee7;
-  box-shadow:0 0 0 3px rgba(49,94,231,.12);
-}
-.quickSaveDock :global(.action){min-width:138px}
-@media(max-width:760px){
- .quickSaveDock{grid-template-columns:1fr 1fr}
- .quickSaveDock .draftStatus{grid-column:1/-1;justify-content:center;min-width:0}
-}
-
-
 /* Editor v2 · integrated preview */
 .previewOverlay{position:fixed;inset:0;z-index:140;display:grid;grid-template-columns:minmax(0,1fr) minmax(520px,52vw);pointer-events:none}
 .previewBackdrop{grid-column:1/2;grid-row:1;border:0;background:rgba(10,18,28,.34);backdrop-filter:blur(2px);pointer-events:auto;cursor:pointer}
@@ -222,73 +144,6 @@
  vertical-align:middle;
 }
 .previewActions>a{min-width:92px}
-
-
-/* Editor v2 · persistent save dock at the left edge of the workspace */
-@media(min-width:861px){
- .quickSaveDock{
-   right:auto;
-   left:259px;
-   bottom:22px;
-   grid-template-columns:minmax(120px,auto) auto auto;
- }
-}
-@media(min-width:761px) and (max-width:860px){
- .quickSaveDock{
-   right:auto;
-   left:16px;
-   bottom:16px;
- }
-}
-@media(max-width:760px){
- .quickSaveDock{
-   right:10px;
-   left:10px;
-   bottom:max(10px,env(safe-area-inset-bottom));
- }
-}
-
-
-/* Editor v2 · final draft dock placement */
-@media(min-width:861px){
- .quickSaveDock{
-   left:10px!important;
-   right:auto!important;
-   bottom:16px!important;
-   width:148px;
-   max-width:148px;
-   grid-template-columns:1fr!important;
-   gap:7px;
-   padding:7px;
-   border-radius:14px;
- }
- .quickSaveDock .draftStatus{
-   grid-column:1!important;
-   justify-content:center!important;
-   width:100%;
-   min-width:0!important;
-   padding:5px 6px!important;
-   text-align:center;
- }
- .quickSaveDock :global(.action){
-   width:100%;
-   min-width:0!important;
-   min-height:38px;
-   padding:0 9px;
-   font-size:10px;
- }
-}
-@media(min-width:761px) and (max-width:860px){
- .quickSaveDock{
-   left:10px!important;
-   right:auto!important;
-   width:148px;
-   max-width:148px;
-   grid-template-columns:1fr!important;
- }
- .quickSaveDock .draftStatus{grid-column:1!important;justify-content:center!important;min-width:0!important}
- .quickSaveDock :global(.action){width:100%;min-width:0!important}
-}
 
 
 /* Editor v2 · generic/portfolio workspace parity */
@@ -432,4 +287,94 @@
   flex-wrap:wrap;
   overflow:visible;
  }
+}
+
+
+/* Editor v2 · draft dock */
+.quickSaveDock{
+ position:fixed;
+ z-index:90;
+ left:10px;
+ right:auto;
+ bottom:16px;
+ display:grid;
+ grid-template-columns:1fr;
+ align-items:center;
+ gap:7px;
+ width:148px;
+ max-width:148px;
+ padding:7px;
+ border:1px solid rgba(203,213,226,.96);
+ border-radius:14px;
+ background:rgba(255,255,255,.96);
+ backdrop-filter:blur(18px) saturate(140%);
+ box-shadow:0 18px 50px rgba(17,24,39,.20);
+}
+.quickSaveDock .draftStatus{
+ grid-column:1;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:7px;
+ width:100%;
+ min-width:0;
+ padding:5px 6px;
+ color:#657184;
+ font-size:9px;
+ font-weight:800;
+ text-align:center;
+}
+.quickSaveDock .draftStatus i{
+ flex:0 0 auto;
+ width:8px;
+ height:8px;
+ border-radius:50%;
+ background:#24b56b;
+}
+.quickSaveDock .draftStatus i[data-dirty=true]{
+ background:#efa929;
+ box-shadow:0 0 0 3px rgba(239,169,41,.13);
+}
+.quickSaveDock .draftStatus i[data-pending=true]{
+ background:#315ee7;
+ box-shadow:0 0 0 3px rgba(49,94,231,.12);
+}
+.quickSaveDock .draftStatus span{
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+.quickSaveDock :global(.action){
+ width:100%;
+ min-width:0;
+ min-height:38px;
+ padding:0 9px;
+ font-size:10px;
+ white-space:nowrap;
+}
+@media(max-width:760px){
+ .quickSaveDock{
+  left:10px;
+  right:10px;
+  bottom:max(10px,env(safe-area-inset-bottom));
+  width:auto;
+  max-width:none;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:6px;
+  padding:8px;
+  border-radius:15px;
+ }
+ .quickSaveDock .draftStatus{
+  grid-column:1/-1;
+  justify-content:center;
+  padding-bottom:2px;
+ }
+ .quickSaveDock :global(.action){
+  min-height:44px;
+  padding-inline:10px;
+  font-size:11px;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .quickSaveDock :global(.action){transition:none}
 }
