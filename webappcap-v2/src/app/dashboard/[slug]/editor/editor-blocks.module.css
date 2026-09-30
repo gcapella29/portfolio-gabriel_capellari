@@ -156,3 +156,43 @@
  .editorSectionHead{align-items:center}
  .editorSectionHead>div:first-child{max-width:760px}
 }
+
+
+/* Editor v2 · compact horizontal workspace heading */
+@media(min-width:900px){
+ .workspaceHeader{align-items:center;padding:16px 20px}
+ .workspaceHeader>div:first-child{
+   flex:1 1 auto;
+   max-width:none!important;
+   min-width:0;
+   display:grid;
+   grid-template-columns:max-content minmax(260px,1fr);
+   grid-template-rows:auto auto;
+   column-gap:28px;
+   align-items:end;
+ }
+ .workspaceHeader>div:first-child>span{grid-column:1/-1;grid-row:1}
+ .workspaceHeader h1{
+   grid-column:1;
+   grid-row:2;
+   max-width:none!important;
+   margin:4px 0 0!important;
+   white-space:nowrap;
+   font-size:clamp(23px,2.3vw,32px);
+ }
+ .workspaceHeader p{
+   grid-column:2;
+   grid-row:2;
+   align-self:center;
+   max-width:56ch;
+   margin:4px 0 0;
+ }
+ .workspaceFacts{flex:0 0 auto;margin-left:24px}
+}
+@media(min-width:900px) and (max-width:1120px){
+ .workspaceHeader>div:first-child{grid-template-columns:max-content minmax(180px,1fr);column-gap:18px}
+ .workspaceHeader h1{font-size:clamp(21px,2.2vw,28px)}
+ .workspaceHeader p{font-size:10px}
+ .workspaceFacts{margin-left:12px}
+ .workspaceFacts>span{min-width:105px}
+}
