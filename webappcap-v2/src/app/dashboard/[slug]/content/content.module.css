@@ -138,3 +138,36 @@
  .quickSaveDock{grid-template-columns:1fr 1fr}
  .quickSaveDock .draftStatus{grid-column:1/-1;justify-content:center;min-width:0}
 }
+
+
+/* Editor v2 · integrated preview */
+.previewOverlay{position:fixed;inset:0;z-index:140;display:grid;grid-template-columns:minmax(0,1fr) minmax(520px,52vw);pointer-events:none}
+.previewBackdrop{grid-column:1/2;grid-row:1;border:0;background:rgba(10,18,28,.34);backdrop-filter:blur(2px);pointer-events:auto;cursor:pointer}
+.previewPanel{grid-column:2/3;grid-row:1;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:#f4f6f9;border-left:1px solid #dce2ea;box-shadow:-24px 0 60px rgba(17,24,39,.16);pointer-events:auto}
+.previewToolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #dce2ea;background:#fff}
+.previewToolbar>div:first-child{min-width:0}
+.previewToolbar strong,.previewToolbar small{display:block}
+.previewToolbar strong{font-size:12px}
+.previewToolbar small{margin-top:2px;color:#7a8595;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.previewActions{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.previewActions>button,.previewActions>a,.previewDevice button{min-height:34px;padding:0 10px;border:1px solid #d8dee7;border-radius:9px;background:#fff;color:#253044;font:inherit;font-size:9px;font-weight:800;cursor:pointer}
+.previewDevice{display:flex;padding:3px;border-radius:11px;background:#eef2f6}
+.previewDevice button{border:0;background:transparent}
+.previewDevice button[aria-pressed=true]{background:#142039;color:#fff;box-shadow:0 3px 8px rgba(20,32,57,.15)}
+.previewStage{display:grid;place-items:stretch;min-height:0;padding:12px;overflow:auto;background:#e8edf3}
+.previewStage iframe{width:100%;height:100%;min-height:0;border:1px solid #cfd7e2;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(17,24,39,.08)}
+.previewStage[data-mode=mobile]{place-items:start center}
+.previewStage[data-mode=mobile] iframe{width:390px;max-width:100%;height:100%;min-height:720px}
+@media(max-width:980px){.previewOverlay{grid-template-columns:minmax(0,1fr) minmax(460px,60vw)}}
+@media(max-width:760px){
+ .previewOverlay{grid-template-columns:1fr}
+ .previewBackdrop{display:none}
+ .previewPanel{grid-column:1;min-width:0;border-left:0}
+ .previewToolbar{align-items:stretch;flex-direction:column;padding:9px}
+ .previewActions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+ .previewDevice{grid-column:1/-1}
+ .previewDevice button{flex:1}
+ .previewActions>button,.previewActions>a{display:flex;align-items:center;justify-content:center}
+ .previewStage{padding:8px}
+ .previewStage[data-mode=mobile] iframe{width:390px;min-height:680px}
+}
