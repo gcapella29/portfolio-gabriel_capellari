@@ -92,7 +92,7 @@ export async function uploadMediaAction(formData:FormData){
  }
 
  await saveV2Section(access.project.id,'media',media);
- if(removedPaths.length)await removeProjectMedia(access.project.id,removedPaths);
+ if(removedPaths.length){try{await removeProjectMedia(access.project.id,removedPaths)}catch(error){console.error('[uploadMediaAction] Não foi possível limpar arquivos removidos do Storage',{projectId:access.project.id,removedPaths,error})}}
  revalidatePath(path(slug,'media'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);redirect(`${path(slug,'media')}?saved=1`)}
 
 export async function saveSettingsAction(formData:FormData){
