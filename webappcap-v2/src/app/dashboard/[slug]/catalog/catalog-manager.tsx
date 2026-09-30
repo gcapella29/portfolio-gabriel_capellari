@@ -85,14 +85,18 @@ export default function CatalogManager({projectId,initialItems,limit}:{projectId
   {uploadError?<div className="form-error" role="alert">{uploadError}</div>:null}
 
   {visible.length?<div className={styles.grid}>{visible.map((row)=>{
-   const item=row.item,isOpen=openId===row.id,zoom=Math.max(50,Math.min(200,Number(field(item,'image_zoom'))||100));
-   return <article className={styles.card} key={row.id} data-open={isOpen}>
-    <button className={styles.cardSummary} type="button" onClick={()=>setOpenId(isOpen?null:row.id)}>
-     <span className={styles.thumb}>{field(item,'image')?<img src={field(item,'image')} alt="" loading="lazy" decoding="async"/>:<i>Sem foto</i>}</span>
-     <span className={styles.identity}><strong>{field(item,'title').trim()||'Produto sem nome'}</strong><small>{[field(item,'category').trim(),field(item,'price').trim()].filter(Boolean).join(' · ')||'Sem categoria ou preço'}</small></span>
-     {field(item,'promo_total')?<span className={styles.promo}>PROMO</span>:null}
-     <span className={styles.chevron}>{isOpen?'−':'+'}</span>
-    </button>
+   const item=row.item,isOpen=openId===row.id,active=isActive(item),zoom=Math.max(50,Math.min(200,Number(field(item,'image_zoom'))||100));
+   return <article className={styles.card} key={row.id} data-open={isOpen} data-inactive={!active}>
+    <div className={styles.cardHead}>
+     <label className={styles.selector} data-editor-ui-only="true" aria-label={`Selecionar ${field(item,'title')||'produto'}`}><input type="checkbox" checked={selected.has(row.id)} onChange={()=>toggleSelected(row.id)}/></label>
+     <button className={styles.cardSummary} data-editor-ui-only="true" type="button" onClick={()=>setOpenId(isOpen?null:row.id)}>
+      <span className={styles.thumb}>{field(item,'image')?<img src={field(item,'image')} alt="" loading="lazy" decoding="async"/>:<i>Sem foto</i>}</span>
+      <span className={styles.identity}><strong>{field(item,'title').trim()||'Produto sem nome'}</strong><small>{[field(item,'category').trim(),field(item,'price').trim()].filter(Boolean).join(' · ')||'Sem categoria ou preço'}</small></span>
+      <span className={active?styles.activeBadge:styles.inactiveBadge}>{active?'ATIVO':'INATIVO'}</span>
+      {field(item,'promo_total')?<span className={styles.promo}>PROMO</span>:null}
+      <span className={styles.chevron}>{isOpen?'−':'+'}</span>
+     </button>
+    </div>
 
     {isOpen?<div className={styles.editor}>
      <div className={styles.imageColumn}>
