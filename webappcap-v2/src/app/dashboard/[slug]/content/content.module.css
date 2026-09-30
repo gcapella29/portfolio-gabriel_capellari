@@ -105,28 +105,12 @@
 }
 
 
-/* Preview toolbar alignment fix */
-.previewActions>button,.previewActions>a,.previewDevice button{
- box-sizing:border-box;
- height:34px;
- min-height:34px;
- line-height:1;
- white-space:nowrap;
-}
-.previewActions>a{
- display:inline-flex;
- align-items:center;
- justify-content:center;
- text-decoration:none;
-}
-.previewDevice{align-items:center}
-
-
-/* Preview toolbar exact control sizing */
+/* Preview toolbar controls */
 .previewActions>button,.previewActions>a{
  display:inline-flex;
  align-items:center;
  justify-content:center;
+ box-sizing:border-box;
  height:36px;
  min-height:36px;
  padding:0 13px;
@@ -138,11 +122,20 @@
  font-size:9px;
  font-weight:800;
  line-height:1;
+ white-space:nowrap;
  text-decoration:none;
  vertical-align:middle;
+ cursor:pointer;
 }
 .previewActions>a{min-width:92px}
-
+.previewDevice{align-items:center}
+.previewDevice button{
+ box-sizing:border-box;
+ height:34px;
+ min-height:34px;
+ line-height:1;
+ white-space:nowrap;
+}
 
 /* Editor v2 · generic/portfolio workspace parity */
 .contentPage{
