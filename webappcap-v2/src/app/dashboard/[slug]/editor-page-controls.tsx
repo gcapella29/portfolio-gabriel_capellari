@@ -21,6 +21,7 @@ useEffect(()=>{
   if(!(form instanceof HTMLFormElement))return;
   const changed=(event:Event)=>{
    const target=event.target instanceof Element?event.target:null;
+   if(target?.closest('[data-editor-ui-only="true"]'))return;
    const mutates=event.type==='input'||event.type==='change'||event.type==='click'&&Boolean(target?.closest('button[type="button"]'))||event.type==='pointerup'&&Boolean(target?.closest('[data-editor-drag="true"]'));
    if(mutates)setDirty(true);
   };
