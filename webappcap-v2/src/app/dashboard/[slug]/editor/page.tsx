@@ -7,6 +7,7 @@ import CompleteContentEditor from './complete-content-editor';
 import {saveEditorTemplateAction} from './actions';
 import styles from './editor.module.css';
 import blocks from './editor-blocks.module.css';
+import EditorWorkspaceHeader from '../editor-workspace-header';
 
 export default async function TemplateEditorPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{template?:string;savedContent?:string}>}){
  const {slug}=await params,query=await searchParams,{project,role}=await resolveProjectAccess(slug);
@@ -14,10 +15,7 @@ export default async function TemplateEditorPage({params,searchParams}:{params:P
  if(!can(role,'editContent'))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const menuLimit=await menuItemLimitForProject(project.id),data=await readV2Content(project.id),selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),active=selected==='commerce-main-1',canSwitch=can(role,'editAppearance');
  return <div className={styles.page}>
-  <section className={blocks.workspaceHeader}>
-   <div><span>EDITAR SITE</span><h1>{project.name}</h1><p>Altere os blocos do site e acompanhe tudo no rascunho antes de publicar.</p></div>
-   <div className={blocks.workspaceFacts}><span><small>Versão</small><strong>{active?'Site completo':'Venda rápida'}</strong></span><span><small>Catálogo</small><strong>até {menuLimit} produtos</strong></span></div>
-  </section>
+  <EditorWorkspaceHeader eyebrow="EDITAR SITE" title={project.name} description="Altere os blocos do site e acompanhe tudo no rascunho antes de publicar." facts={[{label:'Versão',value:active?'Site completo':'Venda rápida'},{label:'Catálogo',value:`até ${menuLimit} produtos`}]}/>
 
   {query.template?<div className={styles.success}>Versão completa selecionada no rascunho.</div>:null}
   {query.savedContent?<div className={styles.success}>Alterações salvas no rascunho. Confira no Preview.</div>:null}

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { resolveProjectAccess } from '@/core/session';
 import { can } from '@/core/permissions';
-import { publicMediaUrl,readV2Content,saveV2Section,uploadProjectImage,uploadProjectVideo } from '@/core/onboarding-data';
+import { publicMediaUrl,readV2Content,removeProjectMedia,saveV2Section,uploadProjectImage,uploadProjectVideo } from '@/core/onboarding-data';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { publishV2Project } from '@/core/publishing';
 import { validateCustomDomain } from '@/core/domain-validation';
@@ -72,8 +72,28 @@ export async function uploadMediaAction(formData:FormData){
  const imageSlots=[['logo','logo'],['profileImage','profile'],['heroImage','hero'],['aboutImage','about'],['creatorImage','creator'],['contactImage','contact'],['performanceEvidence','performance_evidence'],['performanceService1','performance_service_1'],['performanceService2','performance_service_2'],['performanceService3','performance_service_3'],['performanceService4','performance_service_4'],['performanceTrainer','performance_trainer']] as const;
  for(const [field,slot] of imageSlots){const file=formData.get(field);if(file instanceof File&&file.size)media[slot]=await uploadProjectImage(access.project.id,file,slot)}
  const heroVideo=formData.get('heroVideo');if(heroVideo instanceof File&&heroVideo.size)media.hero_video=await uploadProjectVideo(access.project.id,heroVideo,'hero-video');
- const files=formData.getAll('gallery').filter(v=>v instanceof File&&v.size) as File[];if(files.length){const old=Array.isArray(media.gallery)?media.gallery:[],uploaded=[];for(const [i,file] of files.slice(0,12).entries())uploaded.push(await uploadProjectImage(access.project.id,file,`gallery-${i+1}`));media.gallery=[...old,...uploaded].slice(-12)}
- await saveV2Section(access.project.id,'media',media);revalidatePath(path(slug,'media'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);redirect(`${path(slug,'media')}?saved=1`)}
+
+ const originalGallery=Array.isArray(media.gallery)?media.gallery:[];
+ const removeIndexes=[...new Set(formData.getAll('removeGallery').map(value=>Number(value)).filter(value=>Number.isInteger(value)&&value>=0&&value<originalGallery.length))];
+ const removeSet=new Set(removeIndexes);
+ const removedPaths=removeIndexes.map(index=>{
+  const item=originalGallery[index];
+  return item&&typeof item==='object'&&'path' in item?String((item as {path?:unknown}).path||''):'';
+ }).filter(Boolean);
+ const keptGallery=originalGallery.filter((_,index)=>!removeSet.has(index));
+
+ const files=formData.getAll('gallery').filter(v=>v instanceof File&&v.size) as File[];
+ if(files.length){
+  const uploaded=[];
+  for(const [i,file] of files.slice(0,12).entries())uploaded.push(await uploadProjectImage(access.project.id,file,`gallery-${i+1}`));
+  media.gallery=[...keptGallery,...uploaded.filter(Boolean)].slice(-12);
+ }else if(removeIndexes.length){
+  media.gallery=keptGallery;
+ }
+
+ await saveV2Section(access.project.id,'media',media);
+ if(removedPaths.length){try{await removeProjectMedia(access.project.id,removedPaths)}catch(error){console.error('[uploadMediaAction] Não foi possível limpar arquivos removidos do Storage',{projectId:access.project.id,removedPaths,error})}}
+ revalidatePath(path(slug,'media'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);redirect(`${path(slug,'media')}?saved=1`)}
 
 export async function saveSettingsAction(formData:FormData){
   const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'manageDomain'))throw new Error('Sem permissão para editar o domínio.');
