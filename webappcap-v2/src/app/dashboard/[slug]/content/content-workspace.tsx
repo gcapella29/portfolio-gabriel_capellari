@@ -4,6 +4,7 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {usePathname} from 'next/navigation';
 import {createPortal,useFormStatus} from 'react-dom';
 import styles from './content.module.css';
+import EditorPreviewDialog from '../editor-preview-dialog';
 
 export type ContentNavItem={id:string;label:string};
 
@@ -28,7 +29,7 @@ function fieldFilled(field:HTMLInputElement|HTMLTextAreaElement|HTMLSelectElemen
 export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,action,children,embedded=false}:{slug:string;previewUrl:string;saved:boolean;portfolio:boolean;nav:ContentNavItem[];action:(formData:FormData)=>Promise<void>;children:React.ReactNode;embedded?:boolean}){
  const pathname=usePathname(),isEmbedded=embedded||pathname.endsWith('/editor');
  const formId=`editor-form-${slug}`;
- const formRef=useRef<HTMLFormElement>(null),submitting=useRef(false),initialSnapshot=useRef(''),[mounted,setMounted]=useState(false),[dirty,setDirty]=useState(false),[language,setLanguage]=useState<'pt'|'en'>('pt'),[completion,setCompletion]=useState<Record<string,number>>({}),[uploadWarning,setUploadWarning]=useState(''),[previewOpen,setPreviewOpen]=useState(false),[previewMode,setPreviewMode]=useState<'desktop'|'mobile'>('desktop'),[previewTick,setPreviewTick]=useState(0);
+ const formRef=useRef<HTMLFormElement>(null),submitting=useRef(false),initialSnapshot=useRef(''),[mounted,setMounted]=useState(false),[dirty,setDirty]=useState(false),[language,setLanguage]=useState<'pt'|'en'>('pt'),[completion,setCompletion]=useState<Record<string,number>>({}),[uploadWarning,setUploadWarning]=useState(''),[previewOpen,setPreviewOpen]=useState(false);
  const calculate=useCallback(()=>{
   const next:Record<string,number>={};
   for(const item of nav){const section=document.getElementById(item.id);if(!section)continue;const fields=Array.from(section.querySelectorAll<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>('input,textarea,select')).map(fieldFilled).filter((value):value is boolean=>value!==null);next[item.id]=fields.length?Math.round(fields.filter(Boolean).length/fields.length*100):100}
@@ -38,11 +39,10 @@ export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,ac
  useEffect(()=>{setMounted(true)},[]);
  useEffect(()=>{calculate();window.setTimeout(()=>{initialSnapshot.current=snapshot()},0)},[calculate,snapshot]);
  useEffect(()=>{const warn=(event:BeforeUnloadEvent)=>{if(dirty&&!submitting.current)event.preventDefault()};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn)},[dirty]);
- useEffect(()=>{if(!previewOpen)return;const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setPreviewOpen(false)};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape)},[previewOpen]);
  const changed=()=>{window.setTimeout(()=>{setDirty(snapshot()!==initialSnapshot.current);calculate()},0)};
  const openSection=(id:string)=>{const section=document.getElementById(id);if(section instanceof HTMLDetailsElement)section.open=true;window.setTimeout(()=>section?.scrollIntoView({behavior:'smooth',block:'start'}),0)};
- const openPreview=()=>{setPreviewTick(Date.now());setPreviewOpen(true)};
- const values=Object.values(completion),overall=values.length?Math.round(values.reduce((sum,value)=>sum+value,0)/values.length):0,previewSrc=`${previewUrl}?draft=${previewTick||Date.now()}`;
+ const openPreview=()=>setPreviewOpen(true);
+ const values=Object.values(completion),overall=values.length?Math.round(values.reduce((sum,value)=>sum+value,0)/values.length):0;
  return <div className={styles.workspace} data-language={language} data-embedded={isEmbedded?'true':'false'}>
   {!isEmbedded?<aside className={styles.sectionNav}><div className={styles.navHead}><span>PROGRESSO</span><strong>{overall}% preenchido</strong><i><b style={{width:`${overall}%`}}/></i></div><nav aria-label="Seções do conteúdo">{nav.map(item=><a href={`#${item.id}`} key={item.id} onClick={event=>{event.preventDefault();openSection(item.id)}}><i data-complete={completion[item.id]===100}/><span>{item.label}</span><small>{completion[item.id]??0}%</small></a>)}</nav></aside>:null}
   <div className={styles.editorColumn}>
@@ -50,20 +50,6 @@ export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,ac
    <form id={formId} ref={formRef} action={action} className={styles.form} onChangeCapture={changed} onInputCapture={changed} onClickCapture={changed} onPointerUpCapture={changed} onSubmitCapture={event=>{if(formRef.current?.querySelector('[data-uploading="true"]')){event.preventDefault();setUploadWarning('Aguarde o envio da imagem terminar antes de salvar.');return}setUploadWarning('');submitting.current=true}}><input type="hidden" name="slug" value={slug}/>{isEmbedded?<input type="hidden" name="returnTo" value="editor"/>:null}{uploadWarning?<div className="form-error" role="alert">{uploadWarning}</div>:null}{children}</form>
    {mounted?createPortal(<div className={styles.quickSaveDock}><DraftActions dirty={dirty} saved={saved} onPreview={openPreview} compact formId={formId}/></div>,document.body):null}
   </div>
-  {previewOpen?<div className={styles.previewOverlay} role="dialog" aria-modal="true" aria-label="Preview do rascunho">
-   <button type="button" className={styles.previewBackdrop} aria-label="Fechar preview" onClick={()=>setPreviewOpen(false)}/>
-   <section className={styles.previewPanel}>
-    <header className={styles.previewToolbar}>
-     <div><strong>Preview do rascunho</strong><small>{dirty?'Há alterações não salvas — o preview mostra o último rascunho salvo.':'Visualizando o rascunho salvo.'}</small></div>
-     <div className={styles.previewActions}>
-      <div className={styles.previewDevice} role="group" aria-label="Largura do preview"><button type="button" aria-pressed={previewMode==='desktop'} onClick={()=>setPreviewMode('desktop')}>Desktop</button><button type="button" aria-pressed={previewMode==='mobile'} onClick={()=>setPreviewMode('mobile')}>Mobile</button></div>
-      <button type="button" onClick={()=>setPreviewTick(Date.now())}>Atualizar</button>
-      <a href={previewSrc} target="_blank" rel="noopener noreferrer">Nova guia ↗</a>
-      <button type="button" onClick={()=>setPreviewOpen(false)}>Fechar</button>
-     </div>
-    </header>
-    <div className={styles.previewStage} data-mode={previewMode}><iframe key={previewTick} src={previewSrc} title={`Preview de ${slug}`}/></div>
-   </section>
-  </div>:null}
+  <EditorPreviewDialog open={previewOpen} previewUrl={previewUrl} stale={dirty} onClose={()=>setPreviewOpen(false)}/>
  </div>;
 }
