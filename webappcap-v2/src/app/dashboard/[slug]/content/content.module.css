@@ -310,3 +310,88 @@
   padding-bottom:96px!important;
  }
 }
+
+
+/* Generic/portfolio header must never widen the dashboard */
+.contentPage{
+ box-sizing:border-box;
+ width:100%!important;
+ max-width:100%!important;
+ overflow-x:hidden;
+}
+.genericWorkspaceHeader{
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ box-sizing:border-box;
+ flex-wrap:wrap;
+}
+.genericWorkspaceHeader>div:first-child{
+ flex:1 1 560px!important;
+ min-width:0!important;
+ max-width:none!important;
+}
+.genericWorkspaceHeader h1{
+ min-width:0;
+ max-width:100%!important;
+ overflow-wrap:anywhere;
+}
+.genericWorkspaceHeader p{
+ min-width:0;
+ max-width:64ch!important;
+}
+.genericWorkspaceHeader>div:last-child{
+ flex:0 1 auto;
+ min-width:0;
+ margin-left:auto!important;
+}
+@media(min-width:900px) and (max-width:1280px){
+ .genericWorkspaceHeader{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:16px;
+ }
+ .genericWorkspaceHeader>div:first-child{
+  display:block!important;
+ }
+ .genericWorkspaceHeader>div:first-child>span,
+ .genericWorkspaceHeader h1,
+ .genericWorkspaceHeader p{
+  display:block;
+  grid-column:auto!important;
+  grid-row:auto!important;
+ }
+ .genericWorkspaceHeader h1{
+  margin:4px 0!important;
+  white-space:normal!important;
+ }
+ .genericWorkspaceHeader p{
+  margin:0!important;
+ }
+ .genericWorkspaceHeader>div:last-child{
+  margin-left:0!important;
+ }
+}
+@media(max-width:899px){
+ .genericWorkspaceHeader{
+  display:flex!important;
+  align-items:flex-start!important;
+  flex-direction:column!important;
+  gap:12px!important;
+ }
+ .genericWorkspaceHeader>div:first-child{
+  width:100%;
+  flex:0 1 auto!important;
+  display:block!important;
+ }
+ .genericWorkspaceHeader h1{
+  white-space:normal!important;
+ }
+ .genericWorkspaceHeader>div:last-child{
+  width:100%;
+  margin-left:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+ }
+}
