@@ -25,7 +25,7 @@ export default async function CatalogPage({
  if(!['food-business','commerce'].includes(project.segment))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const [data,limit]=await Promise.all([readV2Content(project.id),menuItemLimitForProject(project.id)]);
  const items=(Array.isArray(data.content.menu_items)?data.content.menu_items:[]).map(normalizeItem);
- return <div className="editor-page">
+ return <div className="editor-page catalog-workspace-page">
   <EditorWorkspaceHeader
    eyebrow="CATÁLOGO"
    title={project.name}
