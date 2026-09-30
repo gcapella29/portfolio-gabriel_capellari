@@ -7,41 +7,51 @@ import styles from './catalog.module.css';
 
 type Product=Record<string,string>;
 type CatalogRow={id:string;item:Product};
+type StatusFilter='all'|'active'|'inactive';
 const pageSize=18;
 const makeId=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():`item-${Date.now()}-${Math.random()}`;
 
 function emptyProduct():Product{
- return {title:'',category:'',description:'',price:'',promo_quantity:'',promo_total:'',removals:'',additions:'',image:'',image_fit:'cover',image_position:'center',image_zoom:'100'};
+ return {title:'',category:'',description:'',price:'',promo_quantity:'',promo_total:'',removals:'',additions:'',image:'',image_fit:'cover',image_position:'center',image_zoom:'100',active:'true'};
 }
 
 function field(item:Product,key:string){return item[key]||''}
+function isActive(item:Product){return field(item,'active').trim().toLowerCase()!=='false'}
 
 export default function CatalogManager({projectId,initialItems,limit}:{projectId:string;initialItems:Product[];limit:number}){
  const [rows,setRows]=useState<CatalogRow[]>(()=>initialItems.map((item,index)=>({id:`saved-${index}`,item})));
- const [query,setQuery]=useState(''),[category,setCategory]=useState(''),[page,setPage]=useState(0),[openId,setOpenId]=useState<string|null>(null),[uploading,setUploading]=useState<string|null>(null),[uploadError,setUploadError]=useState('');
+ const [query,setQuery]=useState(''),[category,setCategory]=useState(''),[status,setStatus]=useState<StatusFilter>('all'),[page,setPage]=useState(0),[openId,setOpenId]=useState<string|null>(null),[uploading,setUploading]=useState<string|null>(null),[uploadError,setUploadError]=useState(''),[selected,setSelected]=useState<Set<string>>(()=>new Set()),[bulkCategory,setBulkCategory]=useState('');
  const deferredQuery=useDeferredValue(query.trim().toLowerCase());
  const categories=useMemo(()=>Array.from(new Set(rows.map(row=>field(row.item,'category').trim()).filter(Boolean))).sort(),[rows]);
+ const activeCount=useMemo(()=>rows.filter(row=>isActive(row.item)).length,[rows]);
  const filtered=useMemo(()=>rows.filter(({item})=>{
   const categoryMatch=!category||field(item,'category')===category;
+  const statusMatch=status==='all'||(status==='active'?isActive(item):!isActive(item));
   const haystack=`${field(item,'title')} ${field(item,'description')} ${field(item,'category')}`.toLowerCase();
-  return categoryMatch&&(!deferredQuery||haystack.includes(deferredQuery));
- }),[rows,category,deferredQuery]);
+  return categoryMatch&&statusMatch&&(!deferredQuery||haystack.includes(deferredQuery));
+ }),[rows,category,status,deferredQuery]);
  const pages=Math.max(1,Math.ceil(filtered.length/pageSize)),currentPage=Math.min(page,pages-1),visible=filtered.slice(currentPage*pageSize,(currentPage+1)*pageSize);
+ const visibleIds=visible.map(row=>row.id),allVisibleSelected=visibleIds.length>0&&visibleIds.every(id=>selected.has(id));
 
  const update=(id:string,key:string,value:string)=>setRows(current=>current.map(row=>row.id===id?{...row,item:{...row.item,[key]:value}}:row));
  const add=()=>{
   if(rows.length>=limit)return;
   const row={id:makeId(),item:emptyProduct()};
-  setRows(current=>[row,...current]);setQuery('');setCategory('');setPage(0);setOpenId(row.id);
+  setRows(current=>[row,...current]);setQuery('');setCategory('');setStatus('all');setPage(0);setOpenId(row.id);
  };
  const duplicate=(id:string)=>{
   if(rows.length>=limit)return;
-  setRows(current=>{const index=current.findIndex(row=>row.id===id);if(index<0)return current;const source=current[index],copy={id:makeId(),item:{...source.item,title:`${field(source.item,'title')} — cópia`}};const next=[...current];next.splice(index+1,0,copy);setOpenId(copy.id);return next});
+  setRows(current=>{const index=current.findIndex(row=>row.id===id);if(index<0)return current;const source=current[index],copy={id:makeId(),item:{...source.item,title:`${field(source.item,'title')} — cópia`,active:'true'}};const next=[...current];next.splice(index+1,0,copy);setOpenId(copy.id);return next});
  };
  const remove=(id:string)=>{
   if(!window.confirm('Remover este produto do catálogo? A exclusão será confirmada quando você salvar o rascunho.'))return;
-  setRows(current=>current.filter(row=>row.id!==id));if(openId===id)setOpenId(null);
+  setRows(current=>current.filter(row=>row.id!==id));setSelected(current=>{const next=new Set(current);next.delete(id);return next});if(openId===id)setOpenId(null);
  };
+ const toggleSelected=(id:string)=>setSelected(current=>{const next=new Set(current);next.has(id)?next.delete(id):next.add(id);return next});
+ const toggleVisible=()=>setSelected(current=>{const next=new Set(current);if(allVisibleSelected)visibleIds.forEach(id=>next.delete(id));else visibleIds.forEach(id=>next.add(id));return next});
+ const bulkStatus=(active:boolean)=>setRows(current=>current.map(row=>selected.has(row.id)?{...row,item:{...row.item,active:active?'true':'false'}}:row));
+ const applyBulkCategory=()=>{const value=bulkCategory.trim();if(!value)return;setRows(current=>current.map(row=>selected.has(row.id)?{...row,item:{...row.item,category:value}}:row));setBulkCategory('')};
+ const bulkRemove=()=>{if(!selected.size||!window.confirm(`Remover ${selected.size} produto(s) selecionado(s)? A exclusão será confirmada quando você salvar o rascunho.`))return;setRows(current=>current.filter(row=>!selected.has(row.id)));if(openId&&selected.has(openId))setOpenId(null);setSelected(new Set())};
  const upload=async(id:string,file:File)=>{
   setUploading(id);setUploadError('');
   try{const image=await uploadProjectImageDirect(projectId,file,`catalog-${id}`);update(id,'image',image.url)}
