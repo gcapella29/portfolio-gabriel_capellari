@@ -35,10 +35,10 @@ export default async function TemplateEditorPage({params,searchParams}:{params:P
 
   <section className={styles.realEditor} id="blocks">
    <div className={blocks.editorSectionHead}>
-    <div><span>CONTEÚDO</span><h2>Blocos do site</h2><p>Abra apenas o que precisa editar. O botão de salvar acompanha você durante listas longas.</p></div>
+    <div><span>CONTEÚDO</span><h2>Blocos do site</h2><p>Abra apenas o que precisa editar. Produtos são gerenciados na área Catálogo.</p></div>
     <div className={blocks.editorTips}><b>01</b><span>Edite</span><b>02</b><span>Salve</span><b>03</b><span>Confira</span></div>
    </div>
-   <CompleteContentEditor menuLimit={menuLimit} projectId={project.id} slug={project.slug} canManageMedia={can(role,'manageMedia')} saved={Boolean(query.savedContent)} data={{identity:data.identity,content:data.content,contact:data.contact,media:data.media}}/>
+   <CompleteContentEditor projectId={project.id} slug={project.slug} canManageMedia={can(role,'manageMedia')} saved={Boolean(query.savedContent)} data={{identity:data.identity,content:data.content,contact:data.contact,media:data.media}}/>
   </section>
  </div>;
 }
