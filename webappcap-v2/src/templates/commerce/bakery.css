@@ -198,3 +198,19 @@
   .bakerySite .track{animation:scroll 24s linear infinite!important}
   .bakerySite *,.bakerySite *::before,.bakerySite *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
+
+
+/* Responsive safety for editor-controlled hero typography */
+.bakerySite .bakeryHeroTitle{font-size:min(var(--hero-title-custom,6.6rem),clamp(3rem,9vw,6.6rem))!important;max-width:100%;overflow-wrap:anywhere}
+@media(max-width:900px){
+ .bakerySite .hero-content{width:min(calc(100% - 36px),1340px);translate:none!important}
+ .bakerySite .bakeryHeroText{translate:none!important}
+ .bakerySite .bakeryHeroTitle{font-size:clamp(2.7rem,9vw,5.2rem)!important;line-height:.96}
+ .bakerySite .bakeryHeroEyebrow{font-size:clamp(.9rem,2.7vw,1.15rem)!important}
+ .bakerySite .bakeryHeroSubtitle{max-width:48rem;font-size:clamp(.95rem,2.4vw,1.1rem)!important}
+ .bakerySite .bakeryHeroPhone{font-size:clamp(.88rem,2vw,1rem)!important}
+}
+@media(max-width:520px){
+ .bakerySite .hero-content{width:calc(100% - 28px)}
+ .bakerySite .bakeryHeroTitle{font-size:clamp(2.35rem,12vw,4rem)!important}
+}
