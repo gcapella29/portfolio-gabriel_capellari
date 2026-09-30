@@ -48,3 +48,11 @@
  .realEditor{padding:14px}
  .sequenceHead{display:block}
 }
+
+
+/* Editor v2 · final space efficiency */
+@media(min-width:900px){
+ .page{gap:16px}
+ .realEditor{padding:20px 22px}
+ .sequenceHead{margin-bottom:2px}
+}
