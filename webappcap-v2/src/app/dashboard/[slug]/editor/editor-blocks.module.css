@@ -127,3 +127,21 @@
  .workspaceFacts{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
  .workspaceFacts>span{min-width:0}
 }
+
+/* Editor v2 · compact field rhythm */
+.blockBody :global(.field){gap:5px}
+.blockBody :global(.field>span){font-size:9px;letter-spacing:.07em}
+.blockBody :global(.field input),.blockBody :global(.field textarea),.blockBody :global(.field select){padding:.72rem .82rem;border-radius:10px;background:#fff}
+.blockBody :global(.field textarea){min-height:88px}
+.blockBody :global(.field small){font-size:10px;line-height:1.4}
+.blockBody :global(.form-grid){gap:10px}
+.blockBody :global(.upload-card){padding:13px;border-radius:14px;background:#fff}
+.blockBody :global(.upload-card>strong){font-size:12px}
+.blockBody :global(.upload-card>span){font-size:10px}
+.editorPanel{gap:14px}
+.editorPanelBody :global(.field textarea){min-height:82px}
+@media(max-width:760px){
+ .blockBody :global(.field input),.blockBody :global(.field textarea),.blockBody :global(.field select){padding:.78rem .82rem}
+ .blockBody :global(.field textarea){min-height:92px}
+ .blockBody :global(.upload-card){padding:11px}
+}
