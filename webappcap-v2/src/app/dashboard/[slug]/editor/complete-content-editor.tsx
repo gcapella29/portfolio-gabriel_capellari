@@ -1,5 +1,3 @@
-import {sectionsForSegment,type RepeatableSection} from '@/core/content-schema';
-import {RepeatableSections} from '@/app/setup/[slug]/[step]/repeatable-sections';
 import ContentWorkspace,{type ContentNavItem} from '../content/content-workspace';
 import DirectImageField from '../content/direct-image-field';
 import {saveCompleteContentAction} from './complete-content-action';
@@ -10,12 +8,11 @@ const mediaValue=(value:unknown,key:'url'|'position'|'fit'|'zoom',fallback='')=>
 const visible=(o:Record<string,unknown>,key:string)=>!(key in o&&String(o[key]).trim().toLowerCase()==='false');
 const defaultWhatsappOrderMessage='Olá! Quero fazer este pedido:\n\n{itens}\n\nTotal: {total}';
 const defaultWhatsappDirectMessage='Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.';
-const productDefinition=(menuLimit:number):RepeatableSection=>{const source=sectionsForSegment('food-business').find(item=>item.key==='menu_items')!,order=['image','title','category','price','promo_quantity','promo_total','description'],labels:Record<string,string>={title:'Nome',category:'Categoria',price:'Preço unitário',promo_quantity:'Quantidade da promoção',promo_total:'Preço promocional do combo',description:'Descrição'};return{...source,max:menuLimit,label:'Produtos',description:'Cadastre foto, nome, categoria, preço e, se quiser, uma promoção por quantidade.',fields:order.map(key=>source.fields.find(field=>field.key===key)).filter((field):field is NonNullable<typeof field>=>Boolean(field)).map(field=>({...field,label:labels[field.key]||field.label}))}};
 function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>}
 function VisibilityToggle({name,label,description,defaultChecked}:{name:string;label:string;description:string;defaultChecked:boolean}){return <label className={styles.visibilityToggle}><input type="hidden" name={name} value="false"/><span><strong>{label}</strong><small>{description}</small></span><span className={styles.visibilitySwitch}><input type="checkbox" name={name} value="true" defaultChecked={defaultChecked}/><i aria-hidden="true"/></span></label>}
 function EditorPanel({eyebrow,title,description,children}:{eyebrow:string;title:string;description:string;children:React.ReactNode}){return <section className={styles.editorPanel}><div className={styles.editorPanelHead}><span>{eyebrow}</span><strong>{title}</strong><small>{description}</small></div><div className={styles.editorPanelBody}>{children}</div></section>}
 
-export default function CompleteContentEditor({menuLimit,projectId,slug,data,canManageMedia,saved=false}:{menuLimit:number;projectId:string;slug:string;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>};canManageMedia:boolean;saved?:boolean}){
+export default function CompleteContentEditor({projectId,slug,data,canManageMedia,saved=false}:{projectId:string;slug:string;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>};canManageMedia:boolean;saved?:boolean}){
  const nav:ContentNavItem[]=[{id:'block-1',label:'Bloco 1 · Início'},{id:'block-2',label:'Bloco 2 · Catálogo'},{id:'block-3',label:'Bloco 3 · Carrinho'},{id:'block-4',label:'Bloco 4 · Instagram'},{id:'block-5',label:'Bloco 5 · Sobre'}];
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={saved} portfolio={false} nav={nav} action={saveCompleteContentAction}>
   <Block id="block-1" number="01" title="Início" summary="Identidade, imagem principal e textos do hero">
@@ -27,10 +24,10 @@ export default function CompleteContentEditor({menuLimit,projectId,slug,data,can
     <div className={styles.heroCopyFields}><label className="field"><span>Primeira linha abaixo do nome</span><input name="tagline" defaultValue={v(data.identity,'tagline')}/></label><label className="field"><span>Segunda linha abaixo do nome</span><input name="hero_kicker" defaultValue={v(data.content,'hero_kicker')}/></label></div>
    </EditorPanel>
   </Block>
-  <Block id="block-2" number="02" title="Catálogo" summary="Subtítulo e cadastro dos produtos">
+  <Block id="block-2" number="02" title="Catálogo" summary="Visibilidade e texto do bloco">
    <VisibilityToggle name="visibility:catalog" label="Exibir Catálogo" description="Desative para remover este bloco do site e da navegação." defaultChecked={visible(data.content,'show_catalog')}/>
    <label className="field"><span>Subtítulo do catálogo</span><textarea name="menu_intro" rows={2} defaultValue={v(data.content,'menu_intro')}/></label>
-   <RepeatableSections definitions={[productDefinition(menuLimit)]} initial={{menu_items:Array.isArray(data.content.menu_items)?data.content.menu_items:[]}} embedded projectId={canManageMedia?projectId:undefined} variant="product-cards"/>
+   <a className="action secondary" href={`/dashboard/${encodeURIComponent(slug)}/catalog`}>Gerenciar produtos no Catálogo →</a>
   </Block>
   <Block id="block-3" number="03" title="Carrinho" summary="Subtítulo e WhatsApp para pedidos">
    <VisibilityToggle name="visibility:cart" label="Exibir Carrinho" description="Desative para remover o carrinho do site e da navegação." defaultChecked={visible(data.content,'show_cart')}/>
