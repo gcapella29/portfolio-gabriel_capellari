@@ -63,10 +63,11 @@ export default function CatalogManager({projectId,initialItems,limit}:{projectId
   <input type="hidden" name="catalog" value={JSON.stringify(rows.map(row=>row.item))}/>
   <div className={styles.toolbar}>
    <div className={styles.searches}>
-    <label><span>Buscar</span><input type="search" value={query} onChange={event=>{setQuery(event.target.value);setPage(0)}} placeholder="Nome, descrição ou categoria"/></label>
-    <label><span>Categoria</span><select value={category} onChange={event=>{setCategory(event.target.value);setPage(0)}}><option value="">Todas</option>{categories.map(value=><option key={value} value={value}>{value}</option>)}</select></label>
+    <label><span>Buscar</span><input data-editor-ui-only="true" type="search" value={query} onChange={event=>{setQuery(event.target.value);setPage(0)}} placeholder="Nome, descrição ou categoria"/></label>
+    <label><span>Categoria</span><select data-editor-ui-only="true" value={category} onChange={event=>{setCategory(event.target.value);setPage(0)}}><option value="">Todas</option>{categories.map(value=><option key={value} value={value}>{value}</option>)}</select></label>
+    <label><span>Status</span><select data-editor-ui-only="true" value={status} onChange={event=>{setStatus(event.target.value as StatusFilter);setPage(0)}}><option value="all">Todos</option><option value="active">Ativos</option><option value="inactive">Inativos</option></select></label>
    </div>
-   <div className={styles.toolbarMeta}><span><strong>{filtered.length}</strong> exibidos · {rows.length}/{limit}</span><button type="button" className="action primary" onClick={add} disabled={rows.length>=limit}>+ Novo produto</button></div>
+   <div className={styles.toolbarMeta}><span><strong>{filtered.length}</strong> exibidos · {activeCount} ativos · {rows.length-activeCount} inativos · {rows.length}/{limit}</span><button type="button" className="action primary" onClick={add} disabled={rows.length>=limit}>+ Novo produto</button></div>
   </div>
 
   {uploadError?<div className="form-error" role="alert">{uploadError}</div>:null}
