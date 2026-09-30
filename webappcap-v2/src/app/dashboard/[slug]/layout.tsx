@@ -21,6 +21,7 @@ export default async function DashboardLayout({children,params}:{children:React.
    <Link href={base} className={styles.brand}><span className={styles.brandMark}>W</span><span className={styles.brandText}><strong>WebAppCap</strong><small>Área do cliente</small></span></Link>
    <div className={styles.projectMini}><span>PROJETO ATUAL</span><strong>{project.name}</strong><small>{project.isPublished?'Publicado':'Ainda não publicado'}</small></div>
    <nav className={styles.nav} aria-label="Gerenciamento do projeto">{nav.filter(([, , ,show])=>show).map(([icon,label,href])=><Link key={label} href={href}><i aria-hidden="true">{icon}</i><span>{label}</span></Link>)}</nav>
+   <div id="editor-draft-sidebar-slot" className={styles.draftSlot} aria-live="polite"/>
    <div className={styles.sidebarBottom}><Link href={`${base}/account`}>⚙ Configurações</Link>{canSwitchProject?<Link href={switchProjectUrl}>← Trocar projeto</Link>:null}<form action={logoutDashboardAction}><button type="submit" className={styles.logout}>Sair</button></form></div>
   </aside>
   <main className={styles.main}>
