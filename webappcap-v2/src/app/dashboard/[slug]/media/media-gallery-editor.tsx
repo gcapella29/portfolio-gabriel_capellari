@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect,useMemo,useState} from 'react';
+import {useEffect,useState} from 'react';
 import styles from './media-gallery-editor.module.css';
 
 export type GalleryItem={url:string;path?:string};
@@ -14,9 +14,16 @@ export default function MediaGalleryEditor({
 }){
  const [removed,setRemoved]=useState<number[]>([]);
  const [files,setFiles]=useState<File[]>([]);
- const previews=useMemo(()=>files.map(file=>({file,url:URL.createObjectURL(file)})),[files]);
+ const [previews,setPreviews]=useState<Array<{file:File;url:string}>>([]);
 
  useEffect(()=>()=>{previews.forEach(item=>URL.revokeObjectURL(item.url))},[previews]);
+
+ const selectFiles=(selected:File[])=>{
+  previews.forEach(item=>URL.revokeObjectURL(item.url));
+  const next=selected.slice(0,12);
+  setFiles(next);
+  setPreviews(next.map(file=>({file,url:URL.createObjectURL(file)})));
+ };
 
  const toggle=(index:number)=>setRemoved(current=>current.includes(index)?current.filter(item=>item!==index):[...current,index]);
  const activeCount=initial.length-removed.length;
@@ -33,7 +40,7 @@ export default function MediaGalleryEditor({
     type="file"
     accept="image/jpeg,image/png,image/webp,image/gif"
     multiple
-    onChange={event=>setFiles(Array.from(event.target.files||[]).slice(0,12))}
+    onChange={event=>selectFiles(Array.from(event.target.files||[]))}
    />
   </label>
 
