@@ -15,7 +15,7 @@ export default function EditorPageControls({
  saved?:boolean;
  saveLabel?:string;
 }){
- const [dirty,setDirty]=useState(false),[previewOpen,setPreviewOpen]=useState(false),[submitting,setSubmitting]=useState(false);
+ const [dirty,setDirty]=useState(false),[previewOpen,setPreviewOpen]=useState(false),[submitting,setSubmitting]=useState(false),[uploadBlocked,setUploadBlocked]=useState(false);
 useEffect(()=>{
   const form=document.getElementById(formId);
   if(!(form instanceof HTMLFormElement))return;
@@ -24,7 +24,10 @@ useEffect(()=>{
    const mutates=event.type==='input'||event.type==='change'||event.type==='click'&&Boolean(target?.closest('button[type="button"]'))||event.type==='pointerup'&&Boolean(target?.closest('[data-editor-drag="true"]'));
    if(mutates)setDirty(true);
   };
-  const submit=()=>setSubmitting(true);
+  const submit=(event:SubmitEvent)=>{
+   if(form.querySelector('[data-uploading="true"]')){event.preventDefault();setUploadBlocked(true);return}
+   setUploadBlocked(false);setSubmitting(true);
+  };
   form.addEventListener('input',changed);
   form.addEventListener('change',changed);
   form.addEventListener('click',changed);
@@ -45,7 +48,7 @@ useEffect(()=>{
   return()=>window.removeEventListener('beforeunload',warn);
  },[dirty,submitting]);
 
- const status=submitting?'Salvando…':dirty?'Alterações não salvas':saved?'Salvo no rascunho':'Sem alterações pendentes';
+ const status=uploadBlocked?'Aguarde o envio da imagem':submitting?'Salvando…':dirty?'Alterações não salvas':saved?'Salvo no rascunho':'Sem alterações pendentes';
 
  return <>
   <EditorDraftDock>
