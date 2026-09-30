@@ -49,7 +49,11 @@ export default function ContentWorkspace({slug,previewUrl,saved,portfolio,nav,ac
  },[nav]);
  useEffect(()=>{calculateAll()},[calculateAll]);
  useEffect(()=>{const warn=(event:BeforeUnloadEvent)=>{if(dirty&&!submitting.current)event.preventDefault()};window.addEventListener('beforeunload',warn);return()=>window.removeEventListener('beforeunload',warn)},[dirty]);
+ useEffect(()=>()=>{if(completionFrame.current!==null)cancelAnimationFrame(completionFrame.current)},[]);
  const changed=(event:React.SyntheticEvent)=>{
+  const target=event.target instanceof Element?event.target:null;
+  const mutates=event.type==='input'||event.type==='change'||event.type==='click'&&Boolean(target?.closest('button[type="button"]'))||event.type==='pointerup'&&Boolean(target?.closest('[data-editor-drag="true"]'));
+  if(!mutates)return;
   if(!dirty)setDirty(true);
   const id=sectionForTarget(event.target);
   if(!id)return;
