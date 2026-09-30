@@ -223,17 +223,3 @@
 .hero:hover,.summary:hover,.analyticsPanel:hover,.pageFrame :global(.setup-card:hover),.pageFrame :global(.editor-section:hover),.pageFrame :global(.lead-card-v2:hover){transform:none!important}
 .pageFrame :global(.editor-section),.pageFrame :global(.setup-card){box-shadow:none!important}
 @media(max-width:620px){.projectMini{display:none}.topActions{grid-template-columns:repeat(2,minmax(0,1fr))}.projectStatus span{display:none}}
-
-
-/* Catalog Manager uses the full dashboard workspace instead of the shared 1320px reading width. */
-.content:has(:global(.catalog-workspace-page)){
-  width:100%;
-  max-width:none;
-  margin-inline:0;
-}
-@media(min-width:861px){
-  .main:has(:global(.catalog-workspace-page)){
-    padding-left:22px;
-    padding-right:22px;
-  }
-}
