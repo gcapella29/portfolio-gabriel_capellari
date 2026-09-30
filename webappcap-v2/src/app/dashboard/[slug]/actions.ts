@@ -65,6 +65,20 @@ export async function saveContentAction(formData:FormData){
  revalidatePath(path(slug,'content'));revalidatePath(path(slug,'media'));revalidatePath(path(slug,'editor'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);
  redirect(embedded?`${path(slug,'editor')}?savedContent=1#content`:`${path(slug,'content')}?saved=1`)
 }
+export async function saveCatalogAction(formData:FormData){
+ const slug=slugFrom(formData),access=await resolveProjectAccess(slug);
+ if(!can(access.role,'editContent'))throw new Error('Sem permissão para editar o catálogo.');
+ if(!['food-business','commerce'].includes(access.project.segment))throw new Error('Este projeto não possui catálogo.');
+ const current=await readV2Content(access.project.id),raw=text(formData,'catalog');
+ let parsed:unknown;
+ try{parsed=JSON.parse(raw||'[]')}catch{throw new Error('O catálogo contém dados inválidos. Nada foi salvo.')}
+ const limit=await menuItemLimitForProject(access.project.id),existingCount=Array.isArray(current.content.menu_items)?current.content.menu_items.length:0;
+ const menuItems=validatedMenuItems(parsed,limit,existingCount);
+ await saveV2Section(access.project.id,'content',{...current.content,menu_items:menuItems});
+ revalidatePath(path(slug,'catalog'));revalidatePath(path(slug,'editor'));revalidatePath(path(slug,'content'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);
+ redirect(`${path(slug,'catalog')}?saved=1`);
+}
+
 export async function saveAppearanceAction(formData:FormData){const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'editAppearance'))throw new Error('Sem permissão para editar aparência.');const current=await readV2Content(access.project.id),selected=String(current.appearance.preview_template_key||access.project.templateKey||''),completeCommerce=access.project.segment==='food-business'&&!selected.includes('sales')&&!selected.includes('bakery');await saveV2Section(access.project.id,'appearance',{...current.appearance,accent:text(formData,'accent')||'#d9ff43',scale:text(formData,'scale')||'normal',alignment:text(formData,'alignment')||'left',density:text(formData,'density')||'normal',support_size:text(formData,'support_size')||'14',support_bold:formData.has('support_bold')?'true':'false',support_italic:formData.has('support_italic')?'true':'false',button_size:text(formData,'button_size')||'12',button_bold:formData.has('button_bold')?'true':'false',button_italic:formData.has('button_italic')?'true':'false',...heroTypographyPatch(formData),...(completeCommerce?commerceHeroPatch(formData):{})});revalidatePath(path(slug,'appearance'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);redirect(`${path(slug,'appearance')}?saved=1`)}
 export async function saveTemplateAction(formData:FormData){const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'editAppearance'))throw new Error('Sem permissão para trocar o modelo.');const templateKey=text(formData,'templateKey'),template=getTemplate(access.project.segment,templateKey);if(!template)throw new Error('Esse modelo não é compatível com o projeto.');if(template.status!=='ready')throw new Error('Esse modelo ainda não está disponível.');const current=await readV2Content(access.project.id);await saveV2Section(access.project.id,'appearance',{...current.appearance,preview_template_key:templateKey});revalidatePath(path(slug,'appearance'));revalidatePath(`/preview/${encodeURIComponent(slug)}`);revalidatePath(path(slug));redirect(`${path(slug,'appearance')}?template=${encodeURIComponent(templateKey)}`)}
 export async function uploadMediaAction(formData:FormData){
