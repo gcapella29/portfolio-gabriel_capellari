@@ -27,7 +27,7 @@ const imageZoom=(value:unknown)=>Math.max(50,Math.min(200,Number(value)||100))/1
 
 export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
  const settings=commerceSettings(data.content),name=text(data.identity,'name',project.name||'Loja local'),tagline=text(data.content,'sales_tagline',text(data.identity,'tagline','Escolha e peça pelo WhatsApp.'));
- const products=useMemo(()=>rows(data.content.menu_items),[data.content.menu_items]);
+ const products=useMemo(()=>rows(data.content.menu_items).filter(item=>text(item,'active','true').toLowerCase()!=='false'),[data.content.menu_items]);
  const categories=useMemo(()=>commerceCategories(products),[products]);
  const whatsapp=text(data.contact,'whatsapp','').replace(/\D/g,''),logo=media(data.media,'logo'),salesHero=media(data.media,'sales_hero'),accent=text(data.appearance,'accent','#159447'),vars={'--sales-accent':accent,'--sales-logo-position':mediaPosition(data.media,'logo'),'--sales-hero-position':mediaPosition(data.media,'sales_hero'),'--sales-hero-fit':data.media.sales_hero&&typeof data.media.sales_hero==='object'&&'fit' in data.media.sales_hero?String((data.media.sales_hero as {fit?:unknown}).fit||'cover'):'cover','--sales-hero-zoom':String(imageZoom(data.media.sales_hero&&typeof data.media.sales_hero==='object'?(data.media.sales_hero as {zoom?:unknown}).zoom:100))} as CSSProperties;
  const siteRef=useRef<HTMLDivElement>(null);
