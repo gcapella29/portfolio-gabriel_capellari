@@ -41,7 +41,9 @@
 
 
 /* Shared content editor motion */
-.sectionNav,.languageBar,.disclosure,.form :global(.repeatable-section),
+.sectionNav,.languageBar,.disclosure,.form :global(.repeatable-section){
+ transition:transform .22s cubic-bezier(.2,.7,.2,1),box-shadow .22s ease,border-color .22s ease
+}
 .sectionNav:hover,.languageBar:hover{border-color:#d0d9e8;box-shadow:0 12px 34px rgba(17,24,39,.07)}
 .sectionNav a{transition:background .18s ease,color .18s ease,transform .18s ease}
 .sectionNav a:hover{transform:translateY(-1px)}
@@ -60,33 +62,25 @@
 }
 
 
-/* Editor v2 · generic/portfolio workspace parity */
+/* Editor v2 · generic/portfolio workspace */
 .contentPage{
+ box-sizing:border-box;
+ display:grid;
  width:100%!important;
- max-width:1440px!important;
+ max-width:100%!important;
  min-width:0;
+ gap:16px;
  margin:0 auto!important;
  padding:0 0 72px!important;
- display:grid;
- gap:16px;
+ overflow-x:hidden;
 }
 .contentPage :global(.notice){margin:0}
 .contentPage .workspace{margin:0}
 @media(max-width:760px){
  .contentPage{
-  max-width:100%!important;
   gap:12px;
   padding-bottom:96px!important;
  }
-}
-
-
-/* Generic/portfolio header must never widen the dashboard */
-.contentPage{
- box-sizing:border-box;
- width:100%!important;
- max-width:100%!important;
- overflow-x:hidden;
 }
 .genericWorkspaceHeader{
  width:100%;
