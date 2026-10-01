@@ -72,3 +72,9 @@ Sem merge e sem implementação do Personal Trainer.
 - Categorias mobile deixam de encolher/quebrar texto e passam a botões compactos com nome e quantidade em duas linhas. CTAs do hero têm alinhamento e espaçamento próprios para mobile.
 - Nunito foi mantida. Sugestões de fontes/efeitos adicionais aguardam escolha visual.
 - Typecheck, 33 testes e build aprovados novamente; CSS validado pelo parser PostCSS. Validação visual em browser real continua dependendo do teste local do usuário.
+
+### Refinamento visual autorizado
+
+Após aprovação explícita, o Modern passou a usar Manrope nos títulos e DM Sans no corpo, com pesos mais leves em textos e controles. A composição e a paleta foram preservadas. Sombras e contornos ficaram mais discretos; entradas, hover e pulsações têm deslocamentos menores. Em dispositivos de toque não há deslocamento de hover persistente. A preferência por movimento reduzido continua respeitada.
+
+Os destaques móveis receberam indicadores clicáveis com área de toque de 44px, rótulos acessíveis e estado ativo sincronizado com a rolagem. O ResizeObserver é desconectado ao desmontar. A checagem de DOM cobriu navegação dos indicadores e atualização de estado, além dos fluxos de carrinho e Shadow DOM já descritos. Typecheck, 33 testes e build passaram. A aparência final, o carregamento das fontes externas e a rolagem por toque devem ser conferidos em navegador real, em desktop e mobile.

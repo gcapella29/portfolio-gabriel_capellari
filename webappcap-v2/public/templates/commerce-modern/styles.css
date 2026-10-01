@@ -297,9 +297,9 @@ footer{padding:28px 0 50px}
 
 /* Final interaction polish */
 .cart-total-mini{opacity:.8;font-weight:800}
-@keyframes cartPulse{50%{transform:scale(1.07);box-shadow:0 8px 22px rgba(63,118,151,.28)}}
+
 .cart-pill.cart-pulse{animation:cartPulse .34s ease}
-@keyframes plusPop{45%{transform:scale(1.2)}}
+
 .plus.pop{animation:plusPop .28s ease}
 
 .hero-grid{--hero-x:0px;--hero-y:0px}
@@ -632,4 +632,65 @@ footer{padding:28px 0 50px}
     white-space:nowrap;
   }
   .chip small{font-size:.72rem;font-weight:700;white-space:nowrap}
+}
+
+/* Approved typography and motion refinement; original composition stays intact. */
+.commerce-modern-document h1,.commerce-modern-document h2,.commerce-modern-document h3,.logo{
+  font-family:var(--heading,"Manrope",system-ui,sans-serif);
+  font-weight:800;
+}
+.hero h1{letter-spacing:-.045em}
+.logo{font-weight:800}
+.nav-links,.btn,.cart-pill,.chip,.kicker,.signature,.highlight-copy small{font-weight:700}
+.price,.totalrow{font-weight:800}
+.commerce-modern-document .card h3{font-weight:700}
+.card p,.section-desc{line-height:1.6}
+.card,.about-copy,.about-photo{border-color:rgba(49,95,122,.09)}
+.catalog-position{box-shadow:none;border-color:rgba(49,95,122,.07)}
+.chip[aria-pressed="true"]{box-shadow:0 4px 12px rgba(63,118,151,.10)}
+.highlight,.highlight-copy,.highlight img,.card,.chip,.btn{
+  transition-timing-function:cubic-bezier(.22,.61,.36,1);
+}
+.highlight{transition-duration:.3s}
+.highlight img{transition-duration:.5s}
+.highlight:hover,.highlight:nth-child(2):hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.highlight:hover img{transform:scale(1.025)}
+.highlight:hover .highlight-copy{transform:translateY(-2px)}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.chip:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(38,81,108,.08)}
+.btn:hover{transform:translateY(-1px)}
+@keyframes modernRise{from{opacity:0;transform:translateY(12px)}}
+@keyframes modernHighlightIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes cartPulse{50%{transform:scale(1.035);box-shadow:0 4px 14px rgba(63,118,151,.16)}}
+@keyframes plusPop{45%{transform:scale(1.1)}}
+.hero-copy>*{animation-name:modernRise;animation-duration:.65s}
+.highlights.in .highlight{
+  animation-name:modernHighlightIn;
+  animation-duration:.6s;
+  animation-fill-mode:backwards;
+  animation-delay:calc(var(--highlight-index,0) * 80ms);
+}
+@media(prefers-reduced-motion:no-preference){
+  .js [data-reveal]{transform:translateY(14px);transition:opacity .55s ease,transform .55s cubic-bezier(.22,.61,.36,1)}
+  .js [data-reveal].in{transform:none}
+}
+.highlight-pagination{display:none}
+@media(max-width:700px){
+  .highlight-pagination{display:flex;justify-content:center;gap:0;margin:2px 0 0}
+  .highlight-pagination button{
+    width:44px;height:44px;display:grid;place-items:center;
+    border:0;padding:0;background:transparent;cursor:pointer;border-radius:50%;
+  }
+  .highlight-pagination span{
+    width:7px;height:7px;border-radius:999px;background:#b4cbd9;
+    transition:width .25s ease,background .25s ease;
+  }
+  .highlight-pagination button[aria-pressed="true"] span{width:22px;background:var(--blue)}
+}
+@media(hover:none){
+  .highlight:hover,.highlight:nth-child(2):hover,.highlight:hover .highlight-copy,.card:hover,.chip:hover,.btn:hover{transform:none}
+  .highlight:hover img{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .highlight:hover,.highlight:nth-child(2):hover,.highlight:hover img,.highlight:hover .highlight-copy,.card:hover,.chip:hover,.btn:hover{transform:none}
 }

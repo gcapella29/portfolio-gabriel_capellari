@@ -47,22 +47,23 @@ function useReveal(root:React.RefObject<HTMLDivElement|null>,mount:HTMLDivElemen
 
 export function CommerceModernTemplate({project,data,preview=false}:TemplateRenderProps){
  const host=useRef<HTMLDivElement>(null),root=useRef<HTMLDivElement>(null);
- const catalogRef=useRef<HTMLDivElement>(null),cartButtonRef=useRef<HTMLButtonElement>(null);
+ const highlightsRef=useRef<HTMLDivElement>(null),catalogRef=useRef<HTMLDivElement>(null),cartButtonRef=useRef<HTMLButtonElement>(null);
  const [mount,setMount]=useState<HTMLDivElement|null>(null),[assetsReady,setAssetsReady]=useState(false);
  const [catalogRange,setCatalogRange]=useState({start:1,end:8});
  const [cartPulse,setCartPulse]=useState(false);
+ const [highlightIndex,setHighlightIndex]=useState(0);
  useEffect(()=>{
   const el=host.current;if(!el)return;
   const shadow=el.shadowRoot||el.attachShadow({mode:'open'});
   // Font-face declarations must be registered in the document, while template selectors remain isolated.
   let font=document.querySelector<HTMLLinkElement>('link[data-commerce-modern-font]');
-  if(!font){font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400..1000&display=swap';font.dataset.commerceModernFont='';document.head.appendChild(font)}
+  if(!font){font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..800&family=Manrope:wght@400..800&display=swap';font.dataset.commerceModernFont='';document.head.appendChild(font)}
   font.dataset.users=String(Number(font.dataset.users||0)+1);
   const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/templates/commerce-modern/styles.css';
   let cancelled=false,pending=2;
   const done=()=>{pending-=1;if(!cancelled&&pending<=0)setAssetsReady(true)};
   for(const link of [font,sheet]){link.addEventListener('load',done,{once:true});link.addEventListener('error',done,{once:true});}
-  const bridge=document.createElement('style');bridge.textContent='.commerce-modern-document{--bg:#eef8ff;--ink:#171717;--blue:#4f89ad;--blue-2:#3f7697;--deep:#315f7a;--sky:#bfe4f7;--muted:#5f6b73;--line:#dbe8f0;--shadow:0 18px 48px rgba(38,81,108,.14);--max:1180px;--font:"Nunito",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;display:block;min-height:100vh;margin:0;font-family:var(--font);font-size:16px;font-weight:400;font-style:normal;text-align:left;letter-spacing:normal;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}';
+  const bridge=document.createElement('style');bridge.textContent='.commerce-modern-document{--bg:#eef8ff;--ink:#171717;--blue:#4f89ad;--blue-2:#3f7697;--deep:#315f7a;--sky:#bfe4f7;--muted:#5f6b73;--line:#dbe8f0;--shadow:0 12px 32px rgba(38,81,108,.10);--max:1180px;--heading:"Manrope",system-ui,sans-serif;--font:"DM Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;display:block;min-height:100vh;margin:0;font-family:var(--font);font-size:16px;font-weight:400;font-style:normal;text-align:left;letter-spacing:normal;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}';
   const target=document.createElement('div');target.setAttribute('data-commerce-modern-mount','');
   shadow.append(sheet,bridge,target);setMount(target);
   const timeout=window.setTimeout(()=>{if(!cancelled)setAssetsReady(true)},1200);
@@ -173,6 +174,25 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
   {product:botton,cls:'highlight',tag:'Mimos',title:botton?.category||botton?.name||'Produtos',text:botton?commercePromoLabel(botton.raw,brl)||`${brl(botton.price)} a unidade`:''}
  ];
 
+ const updateHighlightIndex=useCallback(()=>{
+  const el=highlightsRef.current,first=el?.firstElementChild as HTMLElement|null;
+  if(!el||!first)return;
+  const gap=Number.parseFloat(getComputedStyle(el).columnGap)||0;
+  const width=first.offsetWidth+gap;
+  const index=width>0&&el.scrollWidth>el.clientWidth?Math.min(2,Math.max(0,Math.round(el.scrollLeft/width))):0;
+  setHighlightIndex(current=>current===index?current:index);
+ },[]);
+ useEffect(()=>{
+  const el=highlightsRef.current;if(!mount||!el)return;
+  const observer=new ResizeObserver(updateHighlightIndex);observer.observe(el);
+  return()=>observer.disconnect();
+ },[mount,updateHighlightIndex]);
+ const showHighlight=(index:number)=>{
+  const el=highlightsRef.current,target=el?.children[index] as HTMLElement|undefined;
+  if(!el||!target)return;
+  el.scrollTo({left:target.getBoundingClientRect().left-el.getBoundingClientRect().left+el.scrollLeft,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+ };
+
  const navigateSection=useCallback((event:React.MouseEvent<HTMLAnchorElement>)=>{
   const id=event.currentTarget.hash.slice(1);
   const section=root.current?.querySelector<HTMLElement>(`[id="${id}"]`);
@@ -202,7 +222,8 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
   <main>
    <section id="destaques"><div className="container">
     <div className="section-top" data-reveal><div><div className="kicker">Destaques da {brand}</div><h2>{str(data.content,'modern_highlights_title')||<>Os queridinhos<br/>por aqui.</>}</h2></div><p className="section-desc">{str(data.content,'modern_highlights_intro','Uma seleção especial para deixar sua rotina vet mais divertida, colorida e cheia de personalidade.')}</p></div>
-    <div className="highlights" data-reveal tabIndex={0} role="group" aria-label="Produtos em destaque. Em telas pequenas, role horizontalmente para ver mais.">{highlights.map((h,i)=>{const src=h.product?.image||'';return <article className={h.cls} key={i} style={{'--highlight-index':i} as React.CSSProperties}>{src?<img src={src} alt={h.title} loading="eager" decoding="async" onLoad={markImageLoaded} onError={markImageLoaded} tabIndex={0} role="button" onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.currentTarget.click()}}} onClick={()=>setZoom({src,alt:h.title})}/>:null}<div className="highlight-copy"><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></div></article>})}</div>
+    <div ref={highlightsRef} className="highlights" onScroll={updateHighlightIndex} data-reveal tabIndex={0} role="group" aria-label="Produtos em destaque. Em telas pequenas, role horizontalmente para ver mais.">{highlights.map((h,i)=>{const src=h.product?.image||'';return <article className={h.cls} key={i} style={{'--highlight-index':i} as React.CSSProperties}>{src?<img src={src} alt={h.title} loading="eager" decoding="async" onLoad={markImageLoaded} onError={markImageLoaded} tabIndex={0} role="button" onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.currentTarget.click()}}} onClick={()=>setZoom({src,alt:h.title})}/>:null}<div className="highlight-copy"><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></div></article>})}</div>
+    <div className="highlight-pagination" role="group" aria-label="Navegar pelos destaques">{highlights.map((highlight,index)=><button key={index} type="button" onClick={()=>showHighlight(index)} aria-label={`Ver destaque ${index+1}: ${highlight.title}`} aria-pressed={highlightIndex===index}><span aria-hidden="true"/></button>)}</div>
    </div></section>
 
    {showCatalog?<section id="catalogo"><div className="container">
