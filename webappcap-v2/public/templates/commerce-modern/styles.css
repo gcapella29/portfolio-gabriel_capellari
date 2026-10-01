@@ -368,3 +368,135 @@ footer{padding:28px 0 50px}
   .highlight:hover,.highlight:hover img,.highlight:hover .highlight-copy{transform:none}
   .cart-pill.cart-pulse,.plus.pop{animation:none}
 }
+
+
+/* Final visual polish */
+#destaques,#catalogo,#sobre{scroll-margin-top:92px}
+
+/* Hide native horizontal scrollbar while preserving mouse/touch/keyboard scrolling */
+.products.products-all{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  padding-bottom:0;
+}
+.products.products-all::-webkit-scrollbar{display:none}
+
+/* Carousel arrows and counter */
+.catalog-arrow{
+  opacity:.72;
+  transition:opacity .2s ease,transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.catalog-arrow:hover,.catalog-arrow:focus-visible{opacity:1}
+.catalog-prev{left:8px}
+.catalog-next{right:8px}
+.catalog-position{
+  width:max-content;
+  margin:12px auto 0;
+  padding:5px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(49,95,122,.08);
+  box-shadow:0 6px 18px rgba(38,81,108,.06);
+}
+
+/* Keep card content aligned regardless of description length */
+.card{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+.card-body{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+.card-body p{
+  min-height:3.9em;
+}
+.price-line{
+  margin-top:auto;
+}
+
+/* Category microinteractions */
+.chip{
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
+  will-change:transform;
+}
+.chip:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(38,81,108,.10);
+}
+.chip:active{transform:translateY(0) scale(.98)}
+.chip[aria-pressed="true"]{
+  box-shadow:0 8px 18px rgba(63,118,151,.15);
+}
+
+/* Restore lively staggered highlights */
+.highlights.in .highlight{
+  animation:highlightIn .72s cubic-bezier(.22,.61,.36,1) both;
+  animation-delay:calc(var(--highlight-index,0) * 110ms);
+}
+.highlights.in .highlight:nth-child(1){--enter-x:-28px}
+.highlights.in .highlight:nth-child(2){--enter-x:0px}
+.highlights.in .highlight:nth-child(3){--enter-x:28px}
+@keyframes highlightIn{
+  from{opacity:0;transform:translate3d(var(--enter-x,0),24px,0) scale(.985)}
+  to{opacity:1;transform:none}
+}
+.highlight{
+  transform-origin:center;
+}
+.highlight:hover{
+  transform:translateY(-8px) scale(1.01) rotate(.15deg);
+}
+.highlight:nth-child(2):hover{transform:translateY(-8px) scale(1.01) rotate(-.15deg)}
+
+/* Lightbox close returns to the same clean visual language as the cart */
+#lightbox{
+  overflow:visible;
+}
+.lb-close{
+  top:14px;
+  right:14px;
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.94);
+  color:#23475d;
+  box-shadow:0 8px 20px rgba(15,25,32,.22);
+  z-index:3;
+}
+.lb-close>span{
+  font-size:19px;
+  transform:translateY(-1px);
+}
+
+/* Keep close buttons optically identical */
+.close{
+  width:40px;
+  height:40px;
+}
+
+/* Better long-page nav interaction */
+.nav{
+  box-shadow:0 1px 0 rgba(49,95,122,.04);
+}
+
+/* Slight nav/category motion consistency */
+.nav-links a,.logo span,.cart-pill{
+  transition:transform .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.nav-links a:hover{transform:translateY(-1px)}
+.logo:hover span{transform:rotate(-2deg) translateY(-1px)}
+.cart-pill:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(63,118,151,.18)}
+
+@media(max-width:700px){
+  #destaques,#catalogo,#sobre{scroll-margin-top:78px}
+  .card-body p{min-height:3.3em}
+}
+@media(prefers-reduced-motion:reduce){
+  .highlights.in .highlight{animation:none}
+  .chip,.nav-links a,.logo span,.cart-pill{transition:none}
+  .chip:hover,.nav-links a:hover,.logo:hover span,.cart-pill:hover{transform:none}
+}
