@@ -11,6 +11,7 @@ import EditorWorkspaceHeader from '../../editor-workspace-header';
 
 export default async function SalesEditorPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{template?:string;savedContent?:string}>}){
  const {slug}=await params,query=await searchParams,{project,role}=await resolveProjectAccess(slug);
+ if(project.slug==='vet-se')redirect(`/dashboard/${encodeURIComponent(project.slug)}/editor`);
  if(project.segment!=='food-business')redirect(`/dashboard/${encodeURIComponent(project.slug)}/content`);
  if(!can(role,'editContent'))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const menuLimit=await menuItemLimitForProject(project.id),data=await readV2Content(project.id),selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),active=selected==='commerce-sales-1',canSwitch=can(role,'editAppearance');
