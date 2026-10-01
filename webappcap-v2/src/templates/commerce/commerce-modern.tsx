@@ -54,11 +54,15 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   return{id:productIndex+1,productIndex,name:str(raw,'title',`Produto ${productIndex+1}`),category:str(raw,'category'),price:commerceBasePrice(raw),promo:promo?`${promo.quantity} por ${brl(promo.total)}`:'',description:str(raw,'description'),image:str(raw,'image'),raw};
  }).filter(product=>str(product.raw,'active','true').toLowerCase()!=='false'),[data.content.menu_items]);
 
- const byId=(id:string|number)=>products.find(p=>p.id===Number(id));
- const categories=useMemo(()=>['Todos',...ORDER.filter(c=>products.some(p=>p.category===c)),...Array.from(new Set(products.map(p=>p.category))).filter(c=>c&&!ORDER.includes(c))],[products]);
- const pins=products.find(p=>norm(p.name).includes('pins para crocs'))||products.find(p=>p.category==='Pins para Crocs');
- const ecobag=products.find(p=>norm(p.name).includes('ecobag patinhas'))||products.find(p=>p.category==='Ecobags');
- const botton=products.find(p=>norm(p.name).includes('patinha lgbt'))||products.find(p=>p.category==='Bottons');
+ const productById=useMemo(()=>new Map(products.map(product=>[product.id,product])),[products]);
+ const byId=(id:string|number)=>productById.get(Number(id));
+ const categoryCounts=useMemo(()=>products.reduce<Record<string,number>>((acc,product)=>{if(product.category)acc[product.category]=(acc[product.category]||0)+1;return acc},{}),[products]);
+ const categories=useMemo(()=>['Todos',...ORDER.filter(c=>categoryCounts[c]),...Object.keys(categoryCounts).filter(c=>!ORDER.includes(c))],[categoryCounts]);
+ const [pins,ecobag,botton]=useMemo(()=>[
+  products.find(p=>norm(p.name).includes('pins para crocs'))||products.find(p=>p.category==='Pins para Crocs'),
+  products.find(p=>norm(p.name).includes('ecobag patinhas'))||products.find(p=>p.category==='Ecobags'),
+  products.find(p=>norm(p.name).includes('patinha lgbt'))||products.find(p=>p.category==='Bottons')
+ ],[products]);
 
  const [cart,setCart]=useState<Record<string,number>>({});
  const [open,setOpen]=useState(false),[zoom,setZoom]=useState<{src:string;alt:string}|null>(null),[toast,setToast]=useState('');
@@ -67,20 +71,21 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
 
  useReveal(root);
 
- useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}') as Record<string,number>;Object.keys(saved).forEach(id=>{if(!byId(id))delete saved[id]});setCart(saved)}catch{/* noop */}},[storageKey,products.length]);
+ useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}') as Record<string,number>;Object.keys(saved).forEach(id=>{if(!productById.has(Number(id)))delete saved[id]});setCart(saved)}catch{/* noop */}},[storageKey,productById]);
  useEffect(()=>{try{localStorage.setItem(storageKey,JSON.stringify(cart))}catch{/* noop */}},[cart,storageKey]);
  useEffect(()=>{document.body.classList.toggle('lock',open&&matchMedia('(max-width:700px)').matches);return()=>document.body.classList.remove('lock')},[open]);
  useEffect(()=>{const onKey=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false)};document.addEventListener('keydown',onKey);return()=>document.removeEventListener('keydown',onKey)},[]);
+ useEffect(()=>()=>{if(toastTimer.current)clearTimeout(toastTimer.current)},[]);
 
  const flash=(msg:string)=>{setToast(msg);if(toastTimer.current)clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(''),2200)};
  const add=(id:number)=>{setCart(c=>({...c,[id]:(c[id]||0)+1}));const product=byId(id);if(product)flash(`${product.name} adicionado ao carrinho`)};
  const step=(id:string,d:number)=>setCart(c=>{const n={...c},q=(n[id]||0)+d;if(q<1)delete n[id];else n[id]=q;return n});
  const remove=(id:string)=>setCart(c=>{const n={...c};delete n[id];return n});
- const entries=Object.entries(cart).filter(([id])=>byId(id));
- const count=entries.reduce((sum,[,q])=>sum+q,0);
- const total=entries.reduce((sum,[id,q])=>{const p=byId(id);return p?sum+commerceLineTotal(p.raw,q):sum},0);
+ const entries=useMemo(()=>Object.entries(cart).filter(([id])=>productById.has(Number(id))),[cart,productById]);
+ const count=useMemo(()=>entries.reduce((sum,[,qty])=>sum+qty,0),[entries]);
+ const total=useMemo(()=>entries.reduce((sum,[id,qty])=>{const product=productById.get(Number(id));return product?sum+commerceLineTotal(product.raw,qty):sum},0),[entries,productById]);
  const q=norm(query.trim());
- const list=products.filter(p=>(category==='Todos'||p.category===category)&&(!q||norm(`${p.name} ${p.category} ${p.description}`).includes(q)));
+ const list=useMemo(()=>products.filter(product=>(category==='Todos'||product.category===category)&&(!q||norm(`${product.name} ${product.category} ${product.description}`).includes(q))),[products,category,q]);
  const wa=(msg='')=>whatsapp?`https://wa.me/${whatsapp}${msg?`?text=${encodeURIComponent(msg)}`:''}`:'#';
  const send=()=>{if(!entries.length||!whatsapp)return;const lines=entries.map(([id,qty])=>{const p=byId(id)!;return `• ${qty}x ${p.name} — ${brl(commerceLineTotal(p.raw,qty))}`});const msg=`Olá! Gostaria de fazer este pedido na ${brand}:\n\n${lines.join('\n')}\n\nTotal estimado: ${brl(total)}\n\nPode me confirmar a disponibilidade?`;window.open(wa(msg),'_blank','noopener')};
 
@@ -104,12 +109,10 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   <header className="hero" id="topo"><div className="container hero-grid">
    <div className="hero-art"><img src={heroImage} alt={`Capa da ${brand}`} onClick={()=>setZoom({src:heroImage,alt:`Capa da ${brand}`})}/></div>
    <div className="hero-copy">
-    <div className="tag">🐾 {str(data.content,'hero_kicker','Produtinhos para quem vive a rotina vet')}</div>
     <h1>{str(data.content,'modern_hero_title')?<>{str(data.content,'modern_hero_title')}</>:<>{brand} do seu <span className="mark">jeitinho.</span></>}</h1>
     <p>{str(data.content,'modern_hero_text','Adesivos, chaveiros, mimos, bottons, ecobags e mais para deixar seus materiais e acessórios ainda mais a sua cara.')}</p>
     <div className="hero-actions"><a href="#catalogo" className="btn btn-main">Ver produtos ↓</a>{whatsapp?<a href={wa()} {...ext} className="btn btn-soft">Falar no WhatsApp</a>:null}{instagramUrl?<a href={instagramUrl} {...ext} className="btn btn-main">Seguir a loja ↗</a>:null}</div>
    </div>
-   <aside className="hero-card"><h3>{str(data.content,'modern_card_title','Escolha seus favoritos e peça pelo WhatsApp.')}</h3><p>{str(data.content,'modern_card_text','Simples e direto, sem cadastro.')}</p><ul><li>Adesivos, bottons, ecobags e mais</li><li>Promoções em itens selecionados</li><li>Atendimento direto e prático</li></ul></aside>
   </div></header>
 
   <main>
@@ -120,7 +123,7 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
 
    <section id="catalogo"><div className="container">
     <div className="section-top" data-reveal><div><div className="kicker">Catálogo</div><h2>Escolha seus<br/>favoritos.</h2></div><p className="section-desc">Busque pelo nome ou navegue pelas categorias para encontrar o produtinho perfeito.</p></div>
-    <div className="chips" data-reveal role="group" aria-label="Filtrar por categoria">{categories.map(c=>{const n=c==='Todos'?products.length:products.filter(p=>p.category===c).length;return <button key={c} className="chip" aria-pressed={c===category} onClick={()=>setCategory(c)}>{c} <small>{n} {n===1?'item':'itens'}</small></button>})}</div>
+    <div className="chips" data-reveal role="group" aria-label="Filtrar por categoria">{categories.map(c=>{const n=c==='Todos'?products.length:(categoryCounts[c]||0);return <button key={c} className="chip" aria-pressed={c===category} onClick={()=>setCategory(c)}>{c} <small>{n} {n===1?'item':'itens'}</small></button>})}</div>
     <div className="shop-tools" data-reveal><input className="search" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar por nome, descrição ou categoria" aria-label="Buscar produtos"/><div className="counter" aria-live="polite">{list.length} produto{list.length!==1?'s':''}</div></div>
     <div className="products" data-reveal>{list.length?list.map(p=><article className="card" key={p.id}><div className="card-img">{p.promo?<div className="promo">{p.promo}</div>:null}{p.image?<img src={p.image} alt={p.name} loading="lazy" decoding="async" width="400" height="400" onClick={()=>setZoom({src:p.image,alt:p.name})}/>:null}</div><div className="card-body"><div className="meta">{p.category}</div><h3>{p.name}</h3><p>{p.description}</p><div className="price-line"><div className="price">{brl(p.price)}</div><button className="plus" onClick={()=>add(p.id)} aria-label={`Adicionar ${p.name} ao carrinho`}>+</button></div></div></article>):<div className="empty">Nada encontrado para essa busca. Tente outra palavra ou fale com a gente pelo WhatsApp.</div>}</div>
     <div className="notfound" data-reveal><div><h3>Não encontrou o que queria?</h3><p>Entre em contato pelo WhatsApp e a {brand} te ajuda a encontrar o produto ideal.</p></div>{whatsapp?<a className="btn btn-main" href={wa()} {...ext}>Falar no WhatsApp ↗</a>:null}</div>
