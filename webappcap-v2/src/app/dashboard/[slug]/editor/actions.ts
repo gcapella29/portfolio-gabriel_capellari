@@ -18,8 +18,8 @@ export async function saveEditorTemplateAction(formData:FormData){
  if(!template||template.status!=='ready')throw new Error('Esse modelo não está disponível para este projeto.');
  const current=await readV2Content(access.project.id);
  await saveV2Section(access.project.id,'appearance',{...current.appearance,preview_template_key:templateKey});
- const destination=text(formData,'returnTo')==='sales'?`${editorPath(slug)}/sales`:text(formData,'returnTo')==='bakery'?`${editorPath(slug)}/bakery`:editorPath(slug);
- revalidatePath(editorPath(slug));revalidatePath(`${editorPath(slug)}/sales`);revalidatePath(`${editorPath(slug)}/bakery`);revalidatePath(`/preview/${encodeURIComponent(slug)}`);
+ const destination=text(formData,'returnTo')==='models'?`/dashboard/${encodeURIComponent(slug)}/models`:text(formData,'returnTo')==='sales'?`${editorPath(slug)}/sales`:text(formData,'returnTo')==='bakery'?`${editorPath(slug)}/bakery`:editorPath(slug);
+ revalidatePath(editorPath(slug));revalidatePath(`/dashboard/${encodeURIComponent(slug)}/models`);revalidatePath(`${editorPath(slug)}/sales`);revalidatePath(`${editorPath(slug)}/bakery`);revalidatePath(`/preview/${encodeURIComponent(slug)}`);
  redirect(`${destination}?template=${encodeURIComponent(templateKey)}`);
 }
 

@@ -3,7 +3,10 @@ type ProductLike=Record<string,unknown>;
 const money=(value:unknown)=>{
  const raw=String(value??'').trim();
  if(!raw)return 0;
- return Number.parseFloat(raw.replace(/[^0-9,.-]/g,'').replace(/\.(?=.*\.)/g,'').replace(',','.'))||0;
+ const cleaned=raw.replace(/[^0-9,.-]/g,'');
+ const normalized=cleaned.includes(',')?cleaned.replaceAll('.','').replace(',','.'):cleaned;
+ const amount=Number(normalized);
+ return Number.isFinite(amount)?amount:0;
 };
 
 export function commerceCategories(products:ProductLike[]){
@@ -20,7 +23,8 @@ export function commerceBasePrice(product:ProductLike){
 }
 
 export function commercePromo(product:ProductLike){
- const quantity=Math.max(0,Math.floor(Number(product.promo_quantity)||0));
+ const rawQuantity=String(product.promo_quantity??'');
+ const quantity=/^\d+$/.test(rawQuantity)&&Number(rawQuantity)<=2147483647?Number(rawQuantity):0;
  const total=Math.max(0,money(product.promo_total));
  return quantity>=2&&total>0?{quantity,total}:null;
 }

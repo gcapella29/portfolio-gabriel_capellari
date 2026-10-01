@@ -7,7 +7,8 @@ export const segments:Record<SegmentKey,SegmentDefinition>={
   {key:'portfolio-native-1',segment:'portfolio',name:'Portfólio WebAppCap',description:'Versão nativa e gerenciável do portfólio.',status:'ready'}
  ]},
  'food-business':{key:'food-business',name:'Loja Digital',description:'Lojas digitais com catálogo, categorias, promoções, carrinho e pedidos.',templates:[
-  {key:'commerce-main-1',segment:'food-business',name:'Completo',description:'Loja digital completa: catálogo, destaques, conteúdo institucional e pedidos.',status:'ready'},
+  {key:'commerce-main-1',segment:'food-business',name:'Clássico',description:'Loja digital completa: catálogo, destaques, conteúdo institucional e pedidos.',status:'ready'},
+  {key:'commerce-modern-1',segment:'food-business',name:'Modern',description:'Visual leve e contemporâneo, com hero imersivo, destaques, busca, categorias e carrinho.',status:'ready'},
   {key:'commerce-sales-1',segment:'food-business',name:'Venda rápida',description:'Versão enxuta focada em produto, oferta e conversão pelo WhatsApp.',status:'ready'}
  ]},
  commerce:{key:'commerce',name:'Comércio',description:'Sites para negócios locais com apresentação, destaques, cardápio e pedidos pelo WhatsApp.',templates:[

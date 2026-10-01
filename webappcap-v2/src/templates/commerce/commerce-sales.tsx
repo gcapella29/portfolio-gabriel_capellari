@@ -7,6 +7,7 @@ import {useEffect,useMemo,useRef,useState,type CSSProperties} from 'react';
 import type {TemplateRenderProps} from '../types';
 import {commerceSettings,replaceCommerceCatalogTerm} from '@/core/commerce-settings';
 import {commerceCategories,commerceLineTotal,commercePromoLabel} from '@/core/commerce-promotions';
+import {activeCommerceProducts} from '@/core/commerce-catalog';
 import {trackCommerceOrder} from '@/lib/commerce-order-tracking';
 import styles from './commerce-sales.module.css';
 import {useCommerceMotion} from './commerce-motion';
@@ -25,9 +26,9 @@ const salesHeadingFont=Archivo_Black({subsets:['latin'],weight:'400',variable:'-
 const salesBodyFont=Inter({subsets:['latin'],weight:['400','600','700','800','900'],variable:'--sales-body-font',display:'swap'});
 const imageZoom=(value:unknown)=>Math.max(50,Math.min(200,Number(value)||100))/100;
 
-export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
+export function CommerceSalesTemplate({project,data,preview=false}:TemplateRenderProps){
  const settings=commerceSettings(data.content),name=text(data.identity,'name',project.name||'Loja local'),tagline=text(data.content,'sales_tagline',text(data.identity,'tagline','Escolha e peça pelo WhatsApp.'));
- const products=useMemo(()=>rows(data.content.menu_items).filter(item=>text(item,'active','true').toLowerCase()!=='false'),[data.content.menu_items]);
+ const products=useMemo<(Row&{productIndex:number})[]>(()=>activeCommerceProducts(data.content.menu_items).map(({raw,productIndex})=>({...raw,productIndex})),[data.content.menu_items]);
  const categories=useMemo(()=>commerceCategories(products),[products]);
  const whatsapp=text(data.contact,'whatsapp','').replace(/\D/g,''),logo=media(data.media,'logo'),salesHero=media(data.media,'sales_hero'),accent=text(data.appearance,'accent','#159447'),vars={'--sales-accent':accent,'--sales-logo-position':mediaPosition(data.media,'logo'),'--sales-hero-position':mediaPosition(data.media,'sales_hero'),'--sales-hero-fit':data.media.sales_hero&&typeof data.media.sales_hero==='object'&&'fit' in data.media.sales_hero?String((data.media.sales_hero as {fit?:unknown}).fit||'cover'):'cover','--sales-hero-zoom':String(imageZoom(data.media.sales_hero&&typeof data.media.sales_hero==='object'?(data.media.sales_hero as {zoom?:unknown}).zoom:100))} as CSSProperties;
  const siteRef=useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export function CommerceSalesTemplate({project,data}:TemplateRenderProps){
  const customerReady=customerName.trim().length>=2&&customerPhone.replace(/\D/g,'').length>=8;
  const message=()=>{const itemLines=cart.map(line=>{const product=products[line.productIndex]||{},total=commerceLineTotal(product,line.quantity);return `${line.quantity}x ${text(product,'title')} — ${brl(total)}`}).join('\n');const rendered=salesWhatsappTemplate.replaceAll('{loja}',name).replaceAll('{itens}',itemLines).replaceAll('{total}',brl(cartTotal)).replace(/\n{3,}/g,'\n\n').trim();return encodeURIComponent(`Nome: ${customerName.trim()}\nTelefone: ${customerPhone.trim()}\n\n${rendered}`)};
  const directMessage=()=>encodeURIComponent(directWhatsappTemplate.replaceAll('{loja}',name).trim());
- const recordOrder=()=>trackCommerceOrder({projectId:project.id,templateKey:'commerce-sales-1',customerName:customerName.trim(),customerPhone:customerPhone.trim(),items:cart.map(line=>({productIndex:line.productIndex,quantity:line.quantity}))});
+ const recordOrder=()=>!preview&&trackCommerceOrder({projectId:project.id,templateKey:'commerce-sales-1',customerName:customerName.trim(),customerPhone:customerPhone.trim(),items:cart.map(line=>({productIndex:products[line.productIndex].productIndex,quantity:line.quantity}))});
 
  return <div ref={siteRef} className={`${styles.site} ${polish.polish} ${salesHeadingFont.variable} ${salesBodyFont.variable}`} data-project={project.slug} data-motion-live="true" style={vars}>
   <header className={styles.header}><div className={styles.brand}><div>{logo?<Image src={logo} alt={`Logo de ${name}`} fill sizes="64px"/>:<span aria-hidden="true" style={{display:'grid',height:'100%',placeItems:'center',color:accent,fontWeight:900}}>{name.slice(0,1).toUpperCase()}</span>}</div><span><strong>{name}</strong><small>{tagline}</small></span></div></header>

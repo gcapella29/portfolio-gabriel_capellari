@@ -7,6 +7,7 @@ import {useEffect,useMemo,useRef,useState,type CSSProperties} from 'react';
 import {commerceSettings,replaceCommerceCatalogTerm} from '@/core/commerce-settings';
 import {commerceCategories,commerceLineTotal,commercePromoLabel} from '@/core/commerce-promotions';
 import {commerceHeroControls} from '@/core/commerce-hero-controls';
+import {activeCommerceProducts} from '@/core/commerce-catalog';
 import {trackCommerceOrder} from '@/lib/commerce-order-tracking';
 import type {TemplateRenderProps} from '../types';
 import complete from './commerce-complete-v2.module.css';
@@ -31,20 +32,19 @@ const image=(record:Record<string,unknown>,key:string)=>{const value=record[key]
 const imagePosition=(record:Record<string,unknown>,key:string)=>{const value=record[key];return value&&typeof value==='object'&&'position' in value?String((value as {position?:unknown}).position||'center'):'center'};
 const imageFit=(record:Record<string,unknown>,key:string)=>{const value=record[key],fit=value&&typeof value==='object'&&'fit' in value?String((value as {fit?:unknown}).fit||'cover'):'cover';return ['cover','contain','fill'].includes(fit)?fit:'cover'};
 const imageZoom=(record:Record<string,unknown>,key:string)=>{const value=record[key],raw=value&&typeof value==='object'&&'zoom' in value?(value as {zoom?:unknown}).zoom:100;return Math.max(50,Math.min(200,Number(raw)||100))/100};
-const money=(value:string)=>Number.parseFloat(value.replace(/[^0-9,.-]/g,'').replace(/\.(?=.*\.)/g,'').replace(',','.'))||0;
 const currency=(value:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
 const instagramHref=(value:string)=>value.startsWith('http')?value:`https://instagram.com/${value.replace(/^@/,'')}`;
 
 function ImagePlaceholder({className=''}:{className?:string}){return <div className={`${styles.imagePlaceholder} ${className}`} role="img" aria-label="Inserir imagem"><span aria-hidden="true">＋</span><strong>Inserir imagem</strong></div>}
 
 
-export function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
+export function CommerceCompleteTemplate({project,data,preview=false}:TemplateRenderProps){
  const siteRef=useRef<HTMLDivElement>(null),catalogRef=useRef<HTMLDivElement>(null);
  const name=text(data.identity,'name',project.name||'Seu comércio'),tagline=editableText(data.identity,'tagline',''),location=editableText(data.identity,'location','');
  const phone=editableText(data.contact,'phone',''),whatsapp=editableText(data.contact,'whatsapp','').replace(/\D/g,''),instagram=editableText(data.contact,'instagram',''),instagramUrl=instagram?instagramHref(instagram):'';
  const creatorInstagram=editableText(data.content,'creator_instagram',''),creatorInstagramUrl=creatorInstagram?instagramHref(creatorInstagram):'';
  const scale=text(data.appearance,'scale','normal'),hero=image(data.media,'hero'),creator=image(data.media,'creator'),commerce=commerceSettings(data.content);
- const menu=useMemo(()=>rows(data.content.menu_items).filter(item=>text(item,'active','true').toLowerCase()!=='false'),[data.content.menu_items]);
+ const menu=useMemo(()=>activeCommerceProducts(data.content.menu_items).map(({raw,productIndex})=>({...raw,productIndex})),[data.content.menu_items]);
  const categories=useMemo(()=>commerceCategories(menu),[menu]);
  const showCatalog=sectionVisible(data.content,'show_catalog'),showCart=sectionVisible(data.content,'show_cart'),showInstagram=sectionVisible(data.content,'show_instagram'),showAbout=sectionVisible(data.content,'show_about');
  const copy=(key:string,fallback:string)=>replaceCommerceCatalogTerm(editableText(data.content,key,fallback),commerce);
@@ -64,7 +64,7 @@ export function CommerceCompleteTemplate({project,data}:TemplateRenderProps){
  const customerReady=customerName.trim().length>=2&&customerPhone.replace(/\D/g,'').length>=8;
  const identifiedOrderMessage=`Nome: ${customerName.trim()}\nTelefone: ${customerPhone.trim()}\n\n${orderMessage}`;
  const message=encodeURIComponent(identifiedOrderMessage);
- const recordOrder=()=>trackCommerceOrder({projectId:project.id,templateKey:'commerce-main-1',customerName:customerName.trim(),customerPhone:customerPhone.trim(),items:chosen.map(item=>({productIndex:item.index,quantity:item.quantity}))});
+ const recordOrder=()=>!preview&&trackCommerceOrder({projectId:project.id,templateKey:'commerce-main-1',customerName:customerName.trim(),customerPhone:customerPhone.trim(),items:chosen.map(item=>({productIndex:item.productIndex,quantity:item.quantity}))});
  const defaultDirectMessage='Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.',directTemplate=editableText(data.content,'whatsapp_direct_message',defaultDirectMessage)||defaultDirectMessage,directMessage=encodeURIComponent(directTemplate.replaceAll('{loja}',name));
  const heroControls=commerceHeroControls(data.appearance),heroVars=Object.fromEntries(Object.entries(heroControls).map(([key,value])=>{const cssKey=`--${key.replaceAll('_','-')}`;if(key.includes('_bold_'))return[cssKey,value==='true'?'900':'400'];if(key.includes('_italic_'))return[cssKey,value==='true'?'italic':'normal'];if(key.includes('_zoom_'))return[cssKey,String((Number(value)||100)/100)];if(key.includes('_align_'))return[cssKey,value];return[cssKey,`${value}${key.includes('_size_')?'px':'%'}`]})) as Vars;
  const vars:Vars={...heroVars,'--commerce-accent':text(data.appearance,'accent','#96abc8'),'--commerce-hero-position':imagePosition(data.media,'hero'),'--commerce-hero-fit':imageFit(data.media,'hero'),'--commerce-creator-position':imagePosition(data.media,'creator'),'--commerce-hero-media-zoom':String(imageZoom(data.media,'hero')),'--commerce-creator-zoom':String(imageZoom(data.media,'creator')),'--commerce-support-size':`${Math.max(10,Math.min(28,Number(text(data.appearance,'support_size','14'))||14))}px`,'--commerce-support-weight':text(data.appearance,'support_bold','false')==='true'?'800':'400','--commerce-support-style':text(data.appearance,'support_italic','false')==='true'?'italic':'normal','--commerce-button-size':`${Math.max(9,Math.min(22,Number(text(data.appearance,'button_size','12'))||12))}px`,'--commerce-button-weight':text(data.appearance,'button_bold','true')==='true'?'900':'500','--commerce-button-style':text(data.appearance,'button_italic','false')==='true'?'italic':'normal'};
