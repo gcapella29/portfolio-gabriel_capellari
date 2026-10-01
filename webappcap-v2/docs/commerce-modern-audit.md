@@ -63,3 +63,12 @@ A biblioteca continua limitada ao segmento Loja Digital neste estágio. O editor
 10. Publicar após aprovação visual; conferir snapshot e repetir envio no domínio real. Só depois considerar merge.
 
 Sem merge e sem implementação do Personal Trainer.
+
+## Ajustes após a revisão visual local do usuário
+
+- Âncoras passam a tratar o clique diretamente no link por currentTarget, evitando depender da delegação por event.target através da fronteira do Shadow DOM. Teste do componente real confirmou preventDefault e scrollIntoView no catálogo.
+- Até 700px, o hero exibe a imagem inteira em fluxo normal acima do texto, sem corte, parallax ou zoom. O desktop mantém sua composição anterior.
+- Destaques mobile passam a uma faixa horizontal com snap suave e parte do próximo card visível; continuam navegáveis por teclado.
+- Categorias mobile deixam de encolher/quebrar texto e passam a botões compactos com nome e quantidade em duas linhas. CTAs do hero têm alinhamento e espaçamento próprios para mobile.
+- Nunito foi mantida. Sugestões de fontes/efeitos adicionais aguardam escolha visual.
+- Typecheck, 33 testes e build aprovados novamente; CSS validado pelo parser PostCSS. Validação visual em browser real continua dependendo do teste local do usuário.

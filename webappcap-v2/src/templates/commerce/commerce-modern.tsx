@@ -173,12 +173,20 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
   {product:botton,cls:'highlight',tag:'Mimos',title:botton?.category||botton?.name||'Produtos',text:botton?commercePromoLabel(botton.raw,brl)||`${brl(botton.price)} a unidade`:''}
  ];
 
- const content=<div ref={root} onClick={event=>{const link=(event.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');if(!link)return;const target=root.current?.querySelector<HTMLElement>(link.getAttribute('href')!);if(target){event.preventDefault();target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}}} className={'commerce-modern-document js'+(assetsReady?' assets-ready':' assets-loading')}>
+ const navigateSection=useCallback((event:React.MouseEvent<HTMLAnchorElement>)=>{
+  const id=event.currentTarget.hash.slice(1);
+  const section=root.current?.querySelector<HTMLElement>(`[id="${id}"]`);
+  if(!section)return;
+  event.preventDefault();
+  section.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+ },[]);
+
+ const content=<div ref={root} className={'commerce-modern-document js'+(assetsReady?' assets-ready':' assets-loading')}>
   <div className="topbar" aria-hidden="true"><div className="marquee">{Array.from({length:6},(_,i)=><span key={i}>{STRIP}</span>)}</div></div>
 
   <nav className="nav" aria-label="Principal"><div className="container nav-inner">
-   <a href="#topo" className="logo" aria-label={`${brand}, início`}><span>{brand}</span></a>
-   <div className="nav-links"><a href="#destaques">Destaques</a>{showCatalog?<a href="#catalogo">Catálogo</a>:null}{showAbout?<a href="#sobre">Sobre</a>:null}{instagramUrl?<a href={instagramUrl} {...ext}>Instagram ↗</a>:null}</div>
+   <a href="#topo" onClick={navigateSection} className="logo" aria-label={`${brand}, início`}><span>{brand}</span></a>
+   <div className="nav-links"><a href="#destaques" onClick={navigateSection}>Destaques</a>{showCatalog?<a href="#catalogo" onClick={navigateSection}>Catálogo</a>:null}{showAbout?<a href="#sobre" onClick={navigateSection}>Sobre</a>:null}{instagramUrl?<a href={instagramUrl} {...ext}>Instagram ↗</a>:null}</div>
    {showCart?<button ref={cartButtonRef} className={'cart-pill'+(cartPulse?' cart-pulse':'')} onClick={()=>setOpen(!open)} aria-controls="drawer" aria-expanded={open}>Carrinho · {count}<span className="cart-total-mini"> · {brl(total)}</span></button>:null}
   </div></nav>
 
@@ -187,19 +195,19 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
    <div className="hero-copy">
     <h1>{str(data.content,'modern_hero_title')?<>{str(data.content,'modern_hero_title')}</>:<>{brand} do seu <span className="mark">jeitinho.</span></>}</h1>
     <p>{str(data.content,'modern_hero_text','Adesivos, chaveiros, mimos, bottons, ecobags e mais para deixar seus materiais e acessórios ainda mais a sua cara.')}</p>
-    <div className="hero-actions">{showCatalog?<a href="#catalogo" className="btn btn-main">Ver produtos ↓</a>:null}{whatsapp?<a href={wa()} {...ext} className="btn btn-soft">Falar no WhatsApp</a>:null}{instagramUrl?<a href={instagramUrl} {...ext} className="btn btn-main">Seguir a loja ↗</a>:null}</div>
+    <div className="hero-actions">{showCatalog?<a href="#catalogo" onClick={navigateSection} className="btn btn-main">Ver produtos ↓</a>:null}{whatsapp?<a href={wa()} {...ext} className="btn btn-soft">Falar no WhatsApp</a>:null}{instagramUrl?<a href={instagramUrl} {...ext} className="btn btn-main">Seguir a loja ↗</a>:null}</div>
    </div>
   </div></header>
 
   <main>
    <section id="destaques"><div className="container">
     <div className="section-top" data-reveal><div><div className="kicker">Destaques da {brand}</div><h2>{str(data.content,'modern_highlights_title')||<>Os queridinhos<br/>por aqui.</>}</h2></div><p className="section-desc">{str(data.content,'modern_highlights_intro','Uma seleção especial para deixar sua rotina vet mais divertida, colorida e cheia de personalidade.')}</p></div>
-    <div className="highlights" data-reveal>{highlights.map((h,i)=>{const src=h.product?.image||'';return <article className={h.cls} key={i} style={{'--highlight-index':i} as React.CSSProperties}>{src?<img src={src} alt={h.title} loading="eager" decoding="async" onLoad={markImageLoaded} onError={markImageLoaded} tabIndex={0} role="button" onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.currentTarget.click()}}} onClick={()=>setZoom({src,alt:h.title})}/>:null}<div className="highlight-copy"><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></div></article>})}</div>
+    <div className="highlights" data-reveal tabIndex={0} role="group" aria-label="Produtos em destaque. Em telas pequenas, role horizontalmente para ver mais.">{highlights.map((h,i)=>{const src=h.product?.image||'';return <article className={h.cls} key={i} style={{'--highlight-index':i} as React.CSSProperties}>{src?<img src={src} alt={h.title} loading="eager" decoding="async" onLoad={markImageLoaded} onError={markImageLoaded} tabIndex={0} role="button" onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.currentTarget.click()}}} onClick={()=>setZoom({src,alt:h.title})}/>:null}<div className="highlight-copy"><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></div></article>})}</div>
    </div></section>
 
    {showCatalog?<section id="catalogo"><div className="container">
     <div className="section-top" data-reveal><div><div className="kicker">Catálogo</div><h2>Escolha seus<br/>favoritos.</h2></div><p className="section-desc">{str(data.content,'menu_intro','Busque pelo nome ou navegue pelas categorias para encontrar o produtinho perfeito.')}</p></div>
-    <div className="chips" data-reveal role="group" aria-label="Filtrar por categoria">{categories.map(c=>{const n=c===null?products.length:(categoryCounts[c]||0);return <button key={c===null?'all':`category:${c}`} className="chip" aria-pressed={c===category} onClick={()=>setCategory(c)}>{c??'Todos'} <small>{n} {n===1?'item':'itens'}</small></button>})}</div>
+    <div className="chips" data-reveal role="group" aria-label="Filtrar por categoria">{categories.map(c=>{const n=c===null?products.length:(categoryCounts[c]||0);return <button key={c===null?'all':`category:${c}`} className="chip" title={c??'Todos'} aria-pressed={c===category} onClick={()=>setCategory(c)}>{c??'Todos'} <small>{n} {n===1?'item':'itens'}</small></button>})}</div>
     <div className="shop-tools" data-reveal><input className="search" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar por nome, descrição ou categoria" aria-label="Buscar produtos"/><div className="counter" aria-live="polite">{list.length} produto{list.length!==1?'s':''}</div></div>
     <div className={'products-shell'+(category===null?' is-carousel':'')} data-reveal>
      {category===null&&list.length>8?<button className="catalog-arrow catalog-prev" type="button" onClick={()=>scrollCatalog(-1)} aria-label="Ver produtos anteriores">‹</button>:null}
