@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import {templateName} from '@/core/segments';
 import {useMemo,useState} from 'react';
 import DeleteProjectDialog from './delete-project-dialog';
 import PermanentDeleteDialog from './permanent-delete-dialog';
@@ -42,7 +43,7 @@ function toCard(project:OwnerProjectView):CardModel{
  const host=project.customDomain&&project.domainStatus==='active'?project.customDomain:(project.nativeSubdomain?`${project.nativeSubdomain}.webappcap.com.br`:`${project.slug}.webappcap.com.br`);
  const commerce=project.siteType==='food-business'||project.siteType==='commerce';
  const facts=project.archived?['Arquivado',project.slug]:commerce?
-  [plural(project.ordersTotal,'pedido','pedidos'),project.siteType==='commerce'?'Padaria':project.templateKey?.includes('sales')?'Venda rápida':'Modelo completo',`Atualizado ${updatedLabel(project.updatedAt)}`]:
+  [plural(project.ordersTotal,'pedido','pedidos'),templateName(project.templateKey),`Atualizado ${updatedLabel(project.updatedAt)}`]:
   [plural(project.leadsTotal,'lead','leads'),project.leadsNew>0?plural(project.leadsNew,'novo','novos'):`Atualizado ${updatedLabel(project.updatedAt)}`];
  return {
   key:project.id,kind:'project',name:project.name,host,siteType:project.siteType,published:project.published,archived:project.archived,status:project.archived?'Arquivado':lifecycleLabel(project.lifecycle),attention:!project.archived&&needsAttention(project),

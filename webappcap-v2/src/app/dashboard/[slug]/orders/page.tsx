@@ -2,11 +2,12 @@ import {redirect} from 'next/navigation';
 import {resolveProjectAccess} from '@/core/session';
 import {can} from '@/core/permissions';
 import {commerceOrdersForProject} from '@/core/commerce-orders';
+import {templateName} from '@/core/segments';
 import DeleteOrderButton from './delete-order-button';
 
 const money=(value:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(value);
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Sao_Paulo'}).format(new Date(value));
-const template=(value:string)=>value==='commerce-sales-1'?'Venda rápida':value==='commerce-bakery-1'?'Padaria':'Site completo';
+
 
 export default async function OrdersPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{deleted?:string;error?:string}>}){
  const {slug}=await params,query=await searchParams,access=await resolveProjectAccess(slug);
@@ -14,13 +15,13 @@ export default async function OrdersPage({params,searchParams}:{params:Promise<{
  if(!can(access.role,'viewLeads'))redirect(`/dashboard/${encodeURIComponent(access.project.slug)}`);
  const orders=await commerceOrdersForProject(access.project.id,{limit:500}),now=Date.now(),recent=orders.filter(order=>now-new Date(order.createdAt).getTime()<=30*86400000),value=recent.reduce((sum,order)=>sum+order.total,0);
  return <div className="editor-page">
-  <header><span className="eyebrow dark-text">HISTÓRICO DE PEDIDOS</span><h1>Pedidos enviados pelo site.</h1><p>Cada registro é criado quando o cliente toca em “Enviar pedido pelo WhatsApp”, tanto no Site completo quanto na Venda rápida.</p></header>
+  <header><span className="eyebrow dark-text">HISTÓRICO DE PEDIDOS</span><h1>Pedidos enviados pelo site.</h1><p>Cada registro é criado quando o cliente toca em “Enviar pedido pelo WhatsApp”, nos modelos de comércio compatíveis.</p></header>
   {query.deleted?<div className="notice success">Pedido excluído do histórico.</div>:null}
   {query.error==='delete'?<div className="form-error">Não foi possível excluir o pedido. Tente novamente.</div>:null}
   <section className="lead-stats"><article><strong>{orders.length}</strong><span>Total registrado</span></article><article><strong>{recent.length}</strong><span>Últimos 30 dias</span></article><article><strong>{money(value)}</strong><span>Valor nos últimos 30 dias</span></article><article><strong>{orders[0]?date(orders[0].createdAt):'—'}</strong><span>Último pedido</span></article></section>
   <section className="lead-list">{orders.length===0?<div className="empty-state">Nenhum pedido enviado pelo site ainda.</div>:orders.map(order=><article className="lead-card-v2" key={order.id}>
-   <div className="lead-card-head"><div><strong>Pedido #{order.id.replace('legacy-','')}</strong><span>{date(order.createdAt)} · {template(order.templateKey)}</span></div><b>{money(order.total)}</b></div>
-   <div className="lead-info"><div><small>Cliente</small><p><strong>{order.customerName||'Não identificado'}</strong>{order.customerPhone?` · ${order.customerPhone}`:''}</p><small>Dados registrados antes da abertura do WhatsApp.</small></div><div><small>Itens</small>{order.items.map((item,index)=><p key={`${order.id}-${index}`}><strong>{item.quantity}× {item.name}</strong> · {money(item.total)}</p>)}</div><div><small>Origem</small><p>{template(order.templateKey)}</p><small>O pedido foi preparado para envio pelo WhatsApp configurado no projeto.</small></div></div>
+   <div className="lead-card-head"><div><strong>Pedido #{order.id.replace('legacy-','')}</strong><span>{date(order.createdAt)} · {templateName(order.templateKey)}</span></div><b>{money(order.total)}</b></div>
+   <div className="lead-info"><div><small>Cliente</small><p><strong>{order.customerName||'Não identificado'}</strong>{order.customerPhone?` · ${order.customerPhone}`:''}</p><small>Dados registrados antes da abertura do WhatsApp.</small></div><div><small>Itens</small>{order.items.map((item,index)=><p key={`${order.id}-${index}`}><strong>{item.quantity}× {item.name}</strong> · {money(item.total)}</p>)}</div><div><small>Origem</small><p>{templateName(order.templateKey)}</p><small>O pedido foi preparado para envio pelo WhatsApp configurado no projeto.</small></div></div>
    <DeleteOrderButton slug={access.project.slug} orderId={order.id}/>
   </article>)}</section>
  </div>;
