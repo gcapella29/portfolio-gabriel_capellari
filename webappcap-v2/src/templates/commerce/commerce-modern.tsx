@@ -1,112 +1,135 @@
 'use client';
 
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {commerceCategories,commerceLineTotal,commercePromoLabel} from '@/core/commerce-promotions';
+import {commerceBasePrice,commerceLineTotal,commercePromo} from '@/core/commerce-promotions';
 import type {TemplateRenderProps} from '../types';
-import styles from './commerce-modern.module.css';
+import './commerce-modern-source.css';
 
 type Row=Record<string,unknown>;
-type Cart=Record<number,number>;
+type Product={id:number;productIndex:number;name:string;category:string;price:number;promo:string;description:string;image:string;raw:Row};
 
-const rows=(v:unknown)=>Array.isArray(v)?v.filter(x=>x&&typeof x==='object') as Row[]:[];
-const text=(r:Record<string,unknown>,k:string,f='')=>String(r[k]??'').trim()||f;
-const media=(v:unknown)=>v&&typeof v==='object'&&'url'in v?String((v as {url?:unknown}).url||'').trim():typeof v==='string'?v.trim():'';
-const ig=(v:string)=>v.startsWith('http')?v:`https://instagram.com/${v.replace(/^@/,'')}`;
-const brl=(n:number)=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n);
+const rows=(value:unknown)=>Array.isArray(value)?value.filter(item=>item&&typeof item==='object') as Row[]:[];
+const str=(o:Record<string,unknown>,key:string,fallback='')=>String(o[key]??'').trim()||fallback;
+const mediaUrl=(value:unknown)=>value&&typeof value==='object'&&'url' in value?String((value as {url?:unknown}).url||'').trim():typeof value==='string'?value.trim():'';
+const brl=(value:number)=>value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const norm=(value:string)=>String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const ig=(value:string)=>value.startsWith('http')?value:`https://instagram.com/${value.replace(/^@/,'')}`;
+const ORDER=['Chaveiros','Copinhos','Ecobags','Pins para Crocs','Bottons','Adesivos'];
 
-function MarkedTitle({value}:{value:string}){
- const parts=value.trim().split(/\s+/),last=parts.pop()||'';
- return <>{parts.length?parts.join(' ')+' ':''}<span className={styles.mark}>{last}</span></>;
+function useReveal(root:React.RefObject<HTMLDivElement|null>){
+ useEffect(()=>{
+  if(!root.current||!('IntersectionObserver'in window))return;
+  const io=new IntersectionObserver((list,obs)=>list.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');obs.unobserve(en.target)}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  root.current.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+  return()=>io.disconnect();
+ },[root]);
 }
 
 export function CommerceModernTemplate({project,data}:TemplateRenderProps){
  const root=useRef<HTMLDivElement>(null);
- const name=text(data.identity,'name',project.name||'Sua loja');
- const whatsapp=text(data.contact,'whatsapp').replace(/\D/g,'');
- const instagram=text(data.contact,'instagram'),instagramUrl=instagram?ig(instagram):'';
- const hero=media(data.media.hero),creator=media(data.media.creator);
- const all=rows(data.content.menu_items);
- const products=useMemo(()=>all.map((item,index)=>({item,index})).filter(({item})=>text(item,'active','true').toLowerCase()!=='false'),[data.content.menu_items]);
- const categories=useMemo(()=>commerceCategories(products.map(p=>p.item)),[products]);
- const [cat,setCat]=useState('Todos'),[q,setQ]=useState(''),[cart,setCart]=useState<Cart>({}),[drawer,setDrawer]=useState(false),[zoom,setZoom]=useState<{src:string;alt:string}|null>(null);
- const filtered=useMemo(()=>products.filter(({item})=>(cat==='Todos'||text(item,'category')===cat)&&(!q||`${text(item,'title')} ${text(item,'category')} ${text(item,'description')}`.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(q.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()))),[products,cat,q]);
- const chosen=products.map(({item,index})=>({item,index,quantity:cart[index]||0})).filter(x=>x.quantity>0);
- const count=chosen.reduce((s,x)=>s+x.quantity,0),total=chosen.reduce((s,x)=>s+commerceLineTotal(x.item,x.quantity),0);
- const change=(index:number,delta:number)=>setCart(c=>({...c,[index]:Math.max(0,(c[index]||0)+delta)}));
- const featured=rows(data.content.highlights).slice(0,3);
- const highlights=featured.length?featured:products.slice(0,3).map(x=>x.item);
- const marquee=text(data.content,'modern_marquee','PRODUTINHOS PARA QUEM VIVE A ROTINA VET ✦ FEITO COM AMOR ESPECIALMENTE PARA VOCÊ ✦');
- const heroTitle=text(data.content,'modern_hero_title',`${name} do seu jeitinho.`);
- const heroText=text(data.content,'modern_hero_text',text(data.identity,'description','Produtos criativos e cheios de personalidade para deixar sua rotina ainda mais a sua cara.'));
- const heroKicker=text(data.content,'hero_kicker',text(data.identity,'tagline','Produtinhos para quem vive a rotina vet'));
- const directTpl=text(data.content,'whatsapp_direct_message','Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.');
- const direct=whatsapp?`https://wa.me/${whatsapp}?text=${encodeURIComponent(directTpl.replaceAll('{loja}',name))}`:'#';
- const orderLines=chosen.map(x=>`• ${x.quantity}x ${text(x.item,'title')} — ${brl(commerceLineTotal(x.item,x.quantity))}`);
- const orderMessage=`Olá! Gostaria de fazer este pedido na ${name}:\n\n${orderLines.join('\n')}\n\nTotal estimado: ${brl(total)}\n\nPode me confirmar a disponibilidade?`;
- const orderHref=whatsapp?`https://wa.me/${whatsapp}?text=${encodeURIComponent(orderMessage)}`:'#';
+ const brand=str(data.identity,'name',project.name||'Vet-se');
+ const whatsapp=str(data.contact,'whatsapp').replace(/\D/g,'');
+ const instagram=str(data.contact,'instagram'),instagramUrl=instagram?ig(instagram):'';
+ const creatorInstagram=str(data.content,'creator_instagram'),creatorInstagramUrl=creatorInstagram?ig(creatorInstagram):'';
+ const heroImage=mediaUrl(data.media.hero)||'/assets/media/vet-hero.webp';
+ const aboutImage=mediaUrl(data.media.creator);
+ const storageKey=`webappcap-modern-${project.id}`;
 
- useEffect(()=>{
-  const host=root.current;if(!host||typeof IntersectionObserver==='undefined')return;
-  const nodes=host.querySelectorAll('[data-reveal]');
-  const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add(styles.in);io.unobserve(entry.target)}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
-  nodes.forEach(node=>io.observe(node));return()=>io.disconnect();
- },[]);
+ const products=useMemo<Product[]>(()=>rows(data.content.menu_items).map((raw,productIndex)=>{
+  const promo=commercePromo(raw);
+  return{id:productIndex+1,productIndex,name:str(raw,'title',`Produto ${productIndex+1}`),category:str(raw,'category'),price:commerceBasePrice(raw),promo:promo?`${promo.quantity} por ${brl(promo.total)}`:'',description:str(raw,'description'),image:str(raw,'image'),raw};
+ }).filter(product=>str(product.raw,'active','true').toLowerCase()!=='false'),[data.content.menu_items]);
 
- useEffect(()=>{document.body.classList.toggle(styles.bodyLock,drawer&&window.matchMedia('(max-width:700px)').matches);return()=>document.body.classList.remove(styles.bodyLock)},[drawer]);
+ const byId=(id:string|number)=>products.find(p=>p.id===Number(id));
+ const categories=useMemo(()=>['Todos',...ORDER.filter(c=>products.some(p=>p.category===c)),...Array.from(new Set(products.map(p=>p.category))).filter(c=>c&&!ORDER.includes(c))],[products]);
+ const pins=products.find(p=>norm(p.name).includes('pins para crocs'))||products.find(p=>p.category==='Pins para Crocs');
+ const ecobag=products.find(p=>norm(p.name).includes('ecobag patinhas'))||products.find(p=>p.category==='Ecobags');
+ const botton=products.find(p=>norm(p.name).includes('patinha lgbt'))||products.find(p=>p.category==='Bottons');
 
- return <div ref={root} className={styles.site}>
-  <div className={styles.topbar} aria-hidden="true"><div className={styles.marquee}>{Array.from({length:6},(_,i)=><span key={i}>{marquee}</span>)}</div></div>
+ const [cart,setCart]=useState<Record<string,number>>({});
+ const [open,setOpen]=useState(false),[zoom,setZoom]=useState<{src:string;alt:string}|null>(null),[toast,setToast]=useState('');
+ const toastTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+ const [category,setCategory]=useState('Todos'),[query,setQuery]=useState('');
 
-  <nav className={styles.nav} aria-label="Principal">
-   <div className={`${styles.container} ${styles.navInner}`}>
-    <a href="#topo" className={styles.logo} aria-label={`${name}, início`}><span>{name}</span></a>
-    <div className={styles.navLinks}><a href="#destaques">Destaques</a><a href="#catalogo">Catálogo</a><a href="#sobre">Sobre</a>{instagramUrl?<a href={instagramUrl} target="_blank" rel="noreferrer">Instagram ↗</a>:null}</div>
-    <button className={styles.cartPill} type="button" onClick={()=>setDrawer(v=>!v)}>Carrinho · {count}</button>
+ useReveal(root);
+
+ useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}') as Record<string,number>;Object.keys(saved).forEach(id=>{if(!byId(id))delete saved[id]});setCart(saved)}catch{/* noop */}},[storageKey,products.length]);
+ useEffect(()=>{try{localStorage.setItem(storageKey,JSON.stringify(cart))}catch{/* noop */}},[cart,storageKey]);
+ useEffect(()=>{document.body.classList.toggle('lock',open&&matchMedia('(max-width:700px)').matches);return()=>document.body.classList.remove('lock')},[open]);
+ useEffect(()=>{const onKey=(event:KeyboardEvent)=>{if(event.key==='Escape')setOpen(false)};document.addEventListener('keydown',onKey);return()=>document.removeEventListener('keydown',onKey)},[]);
+
+ const flash=(msg:string)=>{setToast(msg);if(toastTimer.current)clearTimeout(toastTimer.current);toastTimer.current=setTimeout(()=>setToast(''),2200)};
+ const add=(id:number)=>{setCart(c=>({...c,[id]:(c[id]||0)+1}));const product=byId(id);if(product)flash(`${product.name} adicionado ao carrinho`)};
+ const step=(id:string,d:number)=>setCart(c=>{const n={...c},q=(n[id]||0)+d;if(q<1)delete n[id];else n[id]=q;return n});
+ const remove=(id:string)=>setCart(c=>{const n={...c};delete n[id];return n});
+ const entries=Object.entries(cart).filter(([id])=>byId(id));
+ const count=entries.reduce((sum,[,q])=>sum+q,0);
+ const total=entries.reduce((sum,[id,q])=>{const p=byId(id);return p?sum+commerceLineTotal(p.raw,q):sum},0);
+ const q=norm(query.trim());
+ const list=products.filter(p=>(category==='Todos'||p.category===category)&&(!q||norm(`${p.name} ${p.category} ${p.description}`).includes(q)));
+ const wa=(msg='')=>whatsapp?`https://wa.me/${whatsapp}${msg?`?text=${encodeURIComponent(msg)}`:''}`:'#';
+ const send=()=>{if(!entries.length||!whatsapp)return;const lines=entries.map(([id,qty])=>{const p=byId(id)!;return `• ${qty}x ${p.name} — ${brl(commerceLineTotal(p.raw,qty))}`});const msg=`Olá! Gostaria de fazer este pedido na ${brand}:\n\n${lines.join('\n')}\n\nTotal estimado: ${brl(total)}\n\nPode me confirmar a disponibilidade?`;window.open(wa(msg),'_blank','noopener')};
+
+ const STRIP=str(data.content,'modern_marquee','PRODUTINHOS PARA QUEM VIVE A ROTINA VET ✦ FEITO COM AMOR ESPECIALMENTE PARA VOCÊ ✦');
+ const ext={target:'_blank' as const,rel:'noopener noreferrer'};
+ const highlights=[
+  {product:pins,cls:'highlight large',tag:'Mais procurados',title:'Pins para Crocs',text:'R$ 5,00 a unidade. Escolha seus modelos favoritos e finalize o pedido pelo WhatsApp.'},
+  {product:ecobag,cls:'highlight',tag:'Promoção',title:'Ecobags',text:'1 por R$ 24,00 · 2 por R$ 40,00'},
+  {product:botton,cls:'highlight',tag:'Mimos',title:'Bottons',text:'1 por R$ 8,00 · 2 por R$ 14,00'}
+ ];
+
+ return <div ref={root} className="commerce-modern-root">
+  <div className="topbar" aria-hidden="true"><div className="marquee">{Array.from({length:6},(_,i)=><span key={i}>{STRIP}</span>)}</div></div>
+
+  <nav className="nav" aria-label="Principal"><div className="container nav-inner">
+   <a href="#topo" className="logo" aria-label={`${brand}, início`}><span>{brand}</span></a>
+   <div className="nav-links"><a href="#destaques">Destaques</a><a href="#catalogo">Catálogo</a><a href="#sobre">Sobre</a>{instagramUrl?<a href={instagramUrl} {...ext}>Instagram ↗</a>:null}</div>
+   <button className="cart-pill" onClick={()=>setOpen(!open)} aria-controls="drawer">Carrinho · {count}</button>
+  </div></nav>
+
+  <header className="hero" id="topo"><div className="container hero-grid">
+   <div className="hero-art"><img src={heroImage} alt={`Capa da ${brand}`} onClick={()=>setZoom({src:heroImage,alt:`Capa da ${brand}`})}/></div>
+   <div className="hero-copy">
+    <div className="tag">🐾 {str(data.content,'hero_kicker','Produtinhos para quem vive a rotina vet')}</div>
+    <h1>{str(data.content,'modern_hero_title')?<>{str(data.content,'modern_hero_title')}</>:<>{brand} do seu <span className="mark">jeitinho.</span></>}</h1>
+    <p>{str(data.content,'modern_hero_text','Adesivos, chaveiros, mimos, bottons, ecobags e mais para deixar seus materiais e acessórios ainda mais a sua cara.')}</p>
+    <div className="hero-actions"><a href="#catalogo" className="btn btn-main">Ver produtos ↓</a>{whatsapp?<a href={wa()} {...ext} className="btn btn-soft">Falar no WhatsApp</a>:null}{instagramUrl?<a href={instagramUrl} {...ext} className="btn btn-main">Seguir a loja ↗</a>:null}</div>
    </div>
-  </nav>
-
-  <header className={styles.hero} id="topo">
-   <div className={`${styles.container} ${styles.heroGrid}`}>
-    <div className={styles.heroArt}>{hero?<img src={hero} alt={`Capa de ${name}`} onClick={()=>setZoom({src:hero,alt:`Capa de ${name}`})}/>:null}</div>
-    <div className={styles.heroCopy}>
-     <div className={styles.tag}>🐾 {heroKicker}</div>
-     <h1><MarkedTitle value={heroTitle}/></h1>
-     <p>{heroText}</p>
-     <div className={styles.heroActions}><a href="#catalogo" className={`${styles.btn} ${styles.btnMain}`}>Ver produtos ↓</a>{whatsapp?<a href={direct} target="_blank" rel="noreferrer" className={`${styles.btn} ${styles.btnSoft}`}>Falar no WhatsApp</a>:null}{instagramUrl?<a href={instagramUrl} target="_blank" rel="noreferrer" className={`${styles.btn} ${styles.btnMain}`}>Seguir a loja ↗</a>:null}</div>
-    </div>
-    <aside className={styles.heroCard}><h3>{text(data.content,'modern_card_title','Escolha seus favoritos e peça pelo WhatsApp.')}</h3><p>{text(data.content,'modern_card_text','Simples e direto, sem cadastro.')}</p><ul><li>Adesivos, bottons, ecobags e mais</li><li>Promoções em itens selecionados</li><li>Atendimento direto e prático</li></ul></aside>
-   </div>
-  </header>
+   <aside className="hero-card"><h3>{str(data.content,'modern_card_title','Escolha seus favoritos e peça pelo WhatsApp.')}</h3><p>{str(data.content,'modern_card_text','Simples e direto, sem cadastro.')}</p><ul><li>Adesivos, bottons, ecobags e mais</li><li>Promoções em itens selecionados</li><li>Atendimento direto e prático</li></ul></aside>
+  </div></header>
 
   <main>
-   <section id="destaques"><div className={styles.container}>
-    <div className={styles.sectionTop} data-reveal><div><div className={styles.kicker}>Destaques da {name}</div><h2>{text(data.content,'modern_highlights_title','Os queridinhos por aqui.')}</h2></div><p className={styles.sectionDesc}>{text(data.content,'modern_highlights_intro','Uma seleção especial para deixar sua rotina mais divertida, colorida e cheia de personalidade.')}</p></div>
-    <div className={styles.highlights} data-reveal>{highlights.map((item,i)=>{const src=media(item.image)||text(item,'image'),title=text(item,'title',`Destaque ${i+1}`);return <article className={`${styles.highlight} ${i===0?styles.large:''}`} key={i}>{src?<img src={src} alt={title} onClick={()=>setZoom({src,alt:title})}/>:null}<div className={styles.highlightCopy}><small>{text(item,'category','Destaque')}</small><h3>{title}</h3><p>{text(item,'description')}</p></div></article>})}</div>
+   <section id="destaques"><div className="container">
+    <div className="section-top" data-reveal><div><div className="kicker">Destaques da {brand}</div><h2>Os queridinhos<br/>por aqui.</h2></div><p className="section-desc">Uma seleção especial para deixar sua rotina vet mais divertida, colorida e cheia de personalidade.</p></div>
+    <div className="highlights" data-reveal>{highlights.map((h,i)=>{const src=h.product?.image||'';return <article className={h.cls} key={h.title}>{src?<img src={src} alt={h.title} loading="lazy" onClick={()=>setZoom({src,alt:h.title})}/>:null}<div className="highlight-copy"><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></div></article>})}</div>
    </div></section>
 
-   <section id="catalogo"><div className={styles.container}>
-    <div className={styles.sectionTop} data-reveal><div><div className={styles.kicker}>Catálogo</div><h2>Escolha seus favoritos.</h2></div><p className={styles.sectionDesc}>{text(data.content,'menu_intro','Busque pelo nome ou navegue pelas categorias para encontrar o produtinho perfeito.')}</p></div>
-    <div className={styles.chips} data-reveal><button className={styles.chip} type="button" aria-pressed={cat==='Todos'} onClick={()=>setCat('Todos')}>Todos <small>{products.length} {products.length===1?'item':'itens'}</small></button>{categories.map(c=>{const n=products.filter(p=>text(p.item,'category')===c).length;return <button className={styles.chip} type="button" key={c} aria-pressed={cat===c} onClick={()=>setCat(c)}>{c} <small>{n} {n===1?'item':'itens'}</small></button>})}</div>
-    <div className={styles.shopTools} data-reveal><input className={styles.search} type="search" value={q} onChange={e=>setQ(e.target.value)} placeholder="Buscar por nome, descrição ou categoria"/><div className={styles.counter}>{filtered.length} produto{filtered.length===1?'':'s'}</div></div>
-    <div className={styles.products} data-reveal>{filtered.length?filtered.map(({item,index})=>{const src=text(item,'image'),title=text(item,'title',`Produto ${index+1}`),promo=commercePromoLabel(item,brl);return <article className={styles.card} key={index}><div className={styles.cardImg}>{promo?<div className={styles.promo}>{promo}</div>:null}{src?<img src={src} alt={title} onClick={()=>setZoom({src,alt:title})}/>:null}</div><div className={styles.cardBody}><div className={styles.meta}>{text(item,'category')}</div><h3>{title}</h3><p>{text(item,'description')}</p><div className={styles.priceLine}><div className={styles.price}>{text(item,'price','R$ 0,00')}</div><button className={styles.plus} type="button" onClick={()=>{change(index,1);setDrawer(true)}} aria-label={`Adicionar ${title} ao carrinho`}>+</button></div></div></article>}):<div className={styles.empty}>Nada encontrado para essa busca. Tente outra palavra ou fale com a gente pelo WhatsApp.</div>}</div>
-    <div className={styles.notfound} data-reveal><div><h3>{text(data.content,'modern_notfound_title','Não encontrou o que queria?')}</h3><p>{text(data.content,'modern_notfound_text',`Entre em contato pelo WhatsApp e a ${name} te ajuda a encontrar o produto ideal.`)}</p></div>{whatsapp?<a className={`${styles.btn} ${styles.btnMain}`} href={direct} target="_blank" rel="noreferrer">Falar no WhatsApp ↗</a>:null}</div>
+   <section id="catalogo"><div className="container">
+    <div className="section-top" data-reveal><div><div className="kicker">Catálogo</div><h2>Escolha seus<br/>favoritos.</h2></div><p className="section-desc">Busque pelo nome ou navegue pelas categorias para encontrar o produtinho perfeito.</p></div>
+    <div className="chips" data-reveal role="group" aria-label="Filtrar por categoria">{categories.map(c=>{const n=c==='Todos'?products.length:products.filter(p=>p.category===c).length;return <button key={c} className="chip" aria-pressed={c===category} onClick={()=>setCategory(c)}>{c} <small>{n} {n===1?'item':'itens'}</small></button>})}</div>
+    <div className="shop-tools" data-reveal><input className="search" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar por nome, descrição ou categoria" aria-label="Buscar produtos"/><div className="counter" aria-live="polite">{list.length} produto{list.length!==1?'s':''}</div></div>
+    <div className="products" data-reveal>{list.length?list.map(p=><article className="card" key={p.id}><div className="card-img">{p.promo?<div className="promo">{p.promo}</div>:null}{p.image?<img src={p.image} alt={p.name} loading="lazy" decoding="async" width="400" height="400" onClick={()=>setZoom({src:p.image,alt:p.name})}/>:null}</div><div className="card-body"><div className="meta">{p.category}</div><h3>{p.name}</h3><p>{p.description}</p><div className="price-line"><div className="price">{brl(p.price)}</div><button className="plus" onClick={()=>add(p.id)} aria-label={`Adicionar ${p.name} ao carrinho`}>+</button></div></div></article>):<div className="empty">Nada encontrado para essa busca. Tente outra palavra ou fale com a gente pelo WhatsApp.</div>}</div>
+    <div className="notfound" data-reveal><div><h3>Não encontrou o que queria?</h3><p>Entre em contato pelo WhatsApp e a {brand} te ajuda a encontrar o produto ideal.</p></div>{whatsapp?<a className="btn btn-main" href={wa()} {...ext}>Falar no WhatsApp ↗</a>:null}</div>
    </div></section>
 
-   <section id="sobre"><div className={`${styles.container} ${styles.aboutGrid}`} data-reveal>
-    <div className={styles.aboutCopy}><div className={styles.kicker}>Sobre a {name}</div><h2>{text(data.content,'about_title','Feito com amor especialmente para você.')}</h2><p>{text(data.content,'about_main',text(data.identity,'description'))}</p>{text(data.content,'creator_bio')?<p>{text(data.content,'creator_bio')}</p>:null}{text(data.content,'creator_name')?<div className={styles.signature}>{text(data.content,'creator_name')} · Criadora da marca</div>:null}<div className={styles.aboutActions}>{instagramUrl?<a className={`${styles.btn} ${styles.btnMain}`} href={instagramUrl} target="_blank" rel="noreferrer">Seguir a loja ↗</a>:null}{text(data.content,'creator_instagram')?<a className={`${styles.btn} ${styles.btnSoft}`} href={ig(text(data.content,'creator_instagram'))} target="_blank" rel="noreferrer">Seguir a criadora ↗</a>:null}</div></div>
-    <div className={styles.aboutPhoto}>{creator?<img src={creator} alt={text(data.content,'creator_name','Criadora da marca')} onClick={()=>setZoom({src:creator,alt:text(data.content,'creator_name','Criadora da marca')})}/>:null}</div>
-   </div></section>
+   <section id="sobre"><div className="container"><div className="about-grid" data-reveal>
+    <div className="about-copy"><div className="kicker">Sobre a {brand}</div><h2>Feito com amor especialmente para você.</h2><p>{str(data.content,'about_main','A Vet-se nasceu do amor pela Medicina Veterinária e pelo desejo de tornar a rotina vet ainda mais especial, com produtos criativos, funcionais e cheios de personalidade.')}</p><p>{str(data.content,'creator_bio','Aqui você encontra itens pensados por e para quem vive o dia a dia entre consultas, plantões, estudos e muito amor pelos animais.')}</p><div className="signature">{str(data.content,'creator_name','Vitória Catalano')} · Criadora da marca</div><div className="about-actions">{instagramUrl?<a className="btn btn-main" href={instagramUrl} {...ext}>Seguir a loja ↗</a>:null}{creatorInstagramUrl?<a className="btn btn-main" href={creatorInstagramUrl} {...ext}>Seguir a criadora ↗</a>:null}</div></div>
+    <div className="about-photo">{aboutImage?<img src={aboutImage} alt={str(data.content,'creator_name','Vitória Catalano')} loading="lazy" onClick={()=>setZoom({src:aboutImage,alt:str(data.content,'creator_name','Vitória Catalano')})}/>:null}</div>
+   </div></div></section>
   </main>
 
-  <footer className={styles.footerWrap}><div className={`${styles.container} ${styles.footer}`}><div><strong>{name}</strong> · Adesivos · Chaveiros · Mimos · Bottons · Ecobags e mais</div><div>Site por <a href="https://webappcap.com.br" target="_blank" rel="noreferrer">WebAppCap</a></div></div></footer>
+  <footer><div className="container footer"><div><strong>{brand}</strong> · Adesivos · Chaveiros · Mimos · Bottons · Ecobags e mais</div><div>Site por <a href="https://webappcap.com.br" target="_blank" rel="noopener">WebAppCap</a></div></div></footer>
 
-  <div className={drawer?`${styles.backdrop} ${styles.show}`:styles.backdrop} onClick={()=>setDrawer(false)}/>
-  <aside className={drawer?`${styles.drawer} ${styles.open}`:styles.drawer} aria-label="Carrinho">
-   <div className={styles.drawerHead}><h3>Seu carrinho</h3><button className={styles.close} type="button" onClick={()=>setDrawer(false)}>×</button></div>
-   <div className={styles.cartItems}>{chosen.length?chosen.map(x=><div className={styles.cartRow} key={x.index}><div><strong>{text(x.item,'title')}</strong><br/><small>{text(x.item,'price')} cada</small><div className={styles.stepper}><button type="button" onClick={()=>change(x.index,-1)}>−</button><span>{x.quantity}</span><button type="button" onClick={()=>change(x.index,1)}>+</button></div></div><strong>{brl(commerceLineTotal(x.item,x.quantity))}</strong><span/><button className={styles.remove} type="button" onClick={()=>setCart(c=>({...c,[x.index]:0}))}>Remover</button></div>):<div className={styles.cartEmpty}>Seu carrinho está vazio. Toque no + de um produto para adicionar.</div>}</div>
-   <div className={styles.drawerFoot}><div className={styles.totalrow}><span>Total estimado</span><span>{brl(total)}</span></div>{chosen.length&&whatsapp?<a className={`${styles.btn} ${styles.wa}`} href={orderHref} target="_blank" rel="noreferrer">Enviar pedido pelo WhatsApp</a>:<button className={`${styles.btn} ${styles.wa}`} disabled>Enviar pedido pelo WhatsApp</button>}</div>
-  </aside>
+  <div className={'backdrop'+(open?' show':'')} onClick={()=>setOpen(false)}/>
+  <aside className={'drawer'+(open?' open':'')} id="drawer" aria-label="Carrinho"><div className="drawer-head"><h3>Seu carrinho</h3><button className="close" onClick={()=>setOpen(false)} aria-label="Fechar carrinho">×</button></div><div className="cart-items" aria-live="polite">{entries.length?entries.map(([id,qty])=>{const p=byId(id)!;return <div className="cart-row" key={id}><div><strong>{p.name}</strong><br/><small>{brl(p.price)} cada</small><div className="stepper"><button onClick={()=>step(id,-1)} aria-label={`Diminuir ${p.name}`}>−</button><span>{qty}</span><button onClick={()=>step(id,1)} aria-label={`Aumentar ${p.name}`}>+</button></div></div><strong>{brl(commerceLineTotal(p.raw,qty))}</strong><span/><button className="remove" onClick={()=>remove(id)} aria-label={`Remover ${p.name}`}>Remover</button></div>}):<div className="cart-empty">Seu carrinho está vazio. Toque no + de um produto para adicionar.</div>}</div><div className="drawer-foot"><div className="totalrow"><span>Total estimado</span><span>{brl(total)}</span></div><button className="btn wa" disabled={!entries.length||!whatsapp} onClick={send}>Enviar pedido pelo WhatsApp</button></div></aside>
 
-  {zoom?<div className={styles.lightbox} role="dialog" aria-modal="true" onClick={()=>setZoom(null)}><div className={styles.lightboxInner} onClick={e=>e.stopPropagation()}><button className={styles.lbClose} type="button" onClick={()=>setZoom(null)}>×</button><img src={zoom.src} alt={zoom.alt}/><p className={styles.lbCap}>{zoom.alt}</p></div></div>:null}
+  <Lightbox zoom={zoom} onClose={()=>setZoom(null)}/>
+  <div className={'toast'+(toast?' show':'')} role="status" aria-live="polite">{toast}</div>
  </div>;
+}
+
+function Lightbox({zoom,onClose}:{zoom:{src:string;alt:string}|null;onClose:()=>void}){
+ const ref=useRef<HTMLDialogElement>(null);
+ useEffect(()=>{const d=ref.current;if(!d)return;if(zoom&&!d.open)d.showModal();if(!zoom&&d.open)d.close()},[zoom]);
+ return <dialog id="lightbox" ref={ref} aria-label="Foto ampliada" onClose={onClose} onClick={event=>{const target=event.target as HTMLElement;if(target===ref.current||target.closest('.lb-close'))ref.current?.close()}}><button className="lb-close" aria-label="Fechar foto">×</button><img id="lbImg" src={zoom?.src} alt={zoom?.alt||''}/><p className="lb-cap">{zoom?.alt||''}</p></dialog>;
 }
