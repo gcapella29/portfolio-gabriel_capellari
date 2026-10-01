@@ -23,8 +23,8 @@ export default async function TemplateEditorPage({params,searchParams}:{params:P
   {!salesRetired?<section className={blocks.versionBar}>
    <div>
     <span>VERSÃO DO SITE</span>
-    <strong>{modern?'Modern ativo no Preview':active?'Clássico ativo no Preview':'Venda rápida ativa no Preview'}</strong>
-    <p>A troca preserva todo o conteúdo das duas versões.</p>
+    <strong>{modern?'Modern no rascunho':active?'Clássico no rascunho':'Venda rápida no rascunho'}</strong>
+    <p>A troca preserva os dados compartilhados entre os modelos.</p>
    </div>
    <form action={saveEditorTemplateAction}>
     <input type="hidden" name="slug" value={project.slug}/>

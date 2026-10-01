@@ -19,7 +19,7 @@ export default async function AppearancePage({params,searchParams}:{params:Promi
   const appearance={accent:color(v(data.appearance,'accent')),scale:v(data.appearance,'scale')||'normal',alignment:v(data.appearance,'alignment')||'left',density:v(data.appearance,'density')||'normal',supportSize:v(data.appearance,'support_size')||'14',supportBold:v(data.appearance,'support_bold')==='true',supportItalic:v(data.appearance,'support_italic')==='true',buttonSize:v(data.appearance,'button_size')||'12',buttonBold:v(data.appearance,'button_bold')!=='false',buttonItalic:v(data.appearance,'button_italic')==='true',hero:completeCommerce?commerceHeroControls(data.appearance):undefined,heroTypography:data.appearance};
   return <div className="editor-page">
     <EditorWorkspaceHeader eyebrow="EDITAR SITE" title={project.name} description="Ajuste modelo, cor, tipografia e proporções; tudo chega primeiro ao rascunho antes da publicação." facts={[{label:'Área',value:'Design'},{label:'Modelo',value:templates.find(item=>item.key===selectedTemplate)?.name||'Selecionado'}]}/>
-    <div className={styles.introActions}><Link className="action" href={`/template-lab/${project.segment}/${encodeURIComponent(project.slug)}`} target="_blank">Comparar modelos ↗</Link></div>
+    <div className={styles.introActions}><Link className="action" href={project.segment==='food-business'?`/dashboard/${encodeURIComponent(project.slug)}/models`:`/template-lab/${project.segment}/${encodeURIComponent(project.slug)}`} target="_blank" rel="noopener noreferrer">Comparar modelos ↗</Link></div>
     {saved&&<div className="notice success"><strong>Rascunho salvo.</strong> A aparência foi atualizada no Preview; o site público ainda não mudou.</div>}
     {template&&<div className="notice success"><strong>Modelo salvo no rascunho.</strong> Confira no Preview e publique quando estiver tudo certo.</div>}
 
@@ -30,8 +30,8 @@ export default async function AppearancePage({params,searchParams}:{params:Promi
           const selected=item.key===selectedTemplate,published=item.key===project.templateKey;
           return <article key={item.key} className={`${styles.templateCard} ${selected?styles.templateCardSelected:''}`}>
             <div className={`${styles.templateVisual} ${item.key.includes('native')?styles.templateVisualNative:''}`} aria-hidden="true"><div><span/><i/></div></div>
-            <div className={styles.templateInfo}><div className={styles.templateTop}><div><strong>{item.name}</strong><p>{item.description}</p></div><span className={`${styles.badge} ${selected?styles.badgeSelected:''}`}>{selected?'NO PREVIEW':'DISPONÍVEL'}</span></div>
-            <div className={styles.templateFooter}>{published&&<span className={styles.published}>✓ Publicado atualmente</span>}<form action={saveTemplateAction}><input type="hidden" name="slug" value={project.slug}/><input type="hidden" name="templateKey" value={item.key}/><button className={selected?'action':'action primary'} disabled={selected}>{selected?'Selecionado':'Usar no Preview'}</button></form></div></div>
+            <div className={styles.templateInfo}><div className={styles.templateTop}><div><strong>{item.name}</strong><p>{item.description}</p></div><span className={`${styles.badge} ${selected?styles.badgeSelected:''}`}>{selected?'NO RASCUNHO':'DISPONÍVEL'}</span></div>
+            <div className={styles.templateFooter}>{published&&<span className={styles.published}>✓ Publicado atualmente</span>}<form action={saveTemplateAction}><input type="hidden" name="slug" value={project.slug}/><input type="hidden" name="templateKey" value={item.key}/><button className={selected?'action':'action primary'} disabled={selected}>{selected?'Selecionado':'Aplicar ao rascunho'}</button></form></div></div>
           </article>
         })}
       </div>

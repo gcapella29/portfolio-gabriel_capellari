@@ -35,3 +35,6 @@
  .stage{padding:8px}
  .stage[data-mode=mobile] iframe{width:390px;min-height:680px}
 }
+
+.actions button:focus-visible,.actions a:focus-visible{outline:3px solid #315ee7;outline-offset:2px}
+@media(min-width:761px) and (max-width:1399px){.toolbar{flex-wrap:wrap}.actions{flex-wrap:wrap}}

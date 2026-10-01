@@ -19,3 +19,5 @@ export const segments:Record<SegmentKey,SegmentDefinition>={
 };
 export function templatesForSegment(segment:SegmentKey){return segments[segment].templates}
 export function getTemplate(segment:SegmentKey,key:string){return templatesForSegment(segment).find(template=>template.key===key)||null}
+
+export function templateName(key:string|null|undefined){return Object.values(segments).flatMap(segment=>segment.templates).find(template=>template.key===key)?.name||'Modelo não identificado'}
