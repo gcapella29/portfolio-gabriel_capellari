@@ -53,6 +53,7 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
 
  useReveal(root);
 
+ useEffect(()=>{document.documentElement.classList.add('js');return()=>document.documentElement.classList.remove('js')},[]);
  useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}') as Record<string,number>;Object.keys(saved).forEach(id=>{if(!byId(id))delete saved[id]});setCart(saved)}catch{/* noop */}},[storageKey,products.length]);
  useEffect(()=>{try{localStorage.setItem(storageKey,JSON.stringify(cart))}catch{/* noop */}},[cart,storageKey]);
  useEffect(()=>{document.body.classList.toggle('lock',open&&matchMedia('(max-width:700px)').matches);return()=>document.body.classList.remove('lock')},[open]);
