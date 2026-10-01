@@ -36,7 +36,7 @@ export async function POST(request:Request){
 
   if(
    !projectId||
-   !['commerce-main-1','commerce-sales-1','commerce-bakery-1'].includes(templateKey)||
+   !['commerce-main-1','commerce-modern-1','commerce-sales-1','commerce-bakery-1'].includes(templateKey)||
    !items.length||
    customerName.length<2||
    customerPhone.length<8
