@@ -1,9 +1,9 @@
 'use client';
 
 import {useEffect,useMemo,useRef,useState} from 'react';
+import {createPortal} from 'react-dom';
 import {commerceBasePrice,commerceLineTotal,commercePromo} from '@/core/commerce-promotions';
 import type {TemplateRenderProps} from '../types';
-import './commerce-modern-source.css';
 
 type Row=Record<string,unknown>;
 type Product={id:number;productIndex:number;name:string;category:string;price:number;promo:string;description:string;image:string;raw:Row};
@@ -26,7 +26,21 @@ function useReveal(root:React.RefObject<HTMLDivElement|null>){
 }
 
 export function CommerceModernTemplate({project,data}:TemplateRenderProps){
- const root=useRef<HTMLDivElement>(null);
+ const host=useRef<HTMLDivElement>(null),root=useRef<HTMLDivElement>(null);
+ const [mount,setMount]=useState<HTMLDivElement|null>(null);
+ useEffect(()=>{
+  const el=host.current;if(!el)return;
+  const shadow=el.shadowRoot||el.attachShadow({mode:'open'});
+  let target=shadow.querySelector('[data-commerce-modern-mount]') as HTMLDivElement|null;
+  if(!target){
+   const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400..1000&display=swap';font.setAttribute('data-modern-asset','font');shadow.appendChild(font);
+   const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/templates/commerce-modern/styles.css';sheet.setAttribute('data-modern-asset','css');shadow.appendChild(sheet);
+   const bridge=document.createElement('style');bridge.textContent='.commerce-modern-document{--bg:#eef8ff;--ink:#171717;--blue:#4f89ad;--blue-2:#3f7697;--deep:#315f7a;--sky:#bfe4f7;--muted:#5f6b73;--line:#dbe8f0;--shadow:0 18px 48px rgba(38,81,108,.14);--max:1180px;--font:"Nunito",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;display:block;min-height:100vh;margin:0;font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}';bridge.setAttribute('data-modern-asset','bridge');shadow.appendChild(bridge);
+   target=document.createElement('div');target.setAttribute('data-commerce-modern-mount','');shadow.appendChild(target);
+  }
+  setMount(target);
+ },[]);
+
  const brand=str(data.identity,'name',project.name||'Vet-se');
  const whatsapp=str(data.contact,'whatsapp').replace(/\D/g,'');
  const instagram=str(data.contact,'instagram'),instagramUrl=instagram?ig(instagram):'';
@@ -53,7 +67,6 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
 
  useReveal(root);
 
- useEffect(()=>{document.documentElement.classList.add('js');return()=>document.documentElement.classList.remove('js')},[]);
  useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}') as Record<string,number>;Object.keys(saved).forEach(id=>{if(!byId(id))delete saved[id]});setCart(saved)}catch{/* noop */}},[storageKey,products.length]);
  useEffect(()=>{try{localStorage.setItem(storageKey,JSON.stringify(cart))}catch{/* noop */}},[cart,storageKey]);
  useEffect(()=>{document.body.classList.toggle('lock',open&&matchMedia('(max-width:700px)').matches);return()=>document.body.classList.remove('lock')},[open]);
@@ -79,7 +92,7 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   {product:botton,cls:'highlight',tag:'Mimos',title:'Bottons',text:'1 por R$ 8,00 · 2 por R$ 14,00'}
  ];
 
- return <div ref={root} className="commerce-modern-root">
+ const content=<div ref={root} className="commerce-modern-document js">
   <div className="topbar" aria-hidden="true"><div className="marquee">{Array.from({length:6},(_,i)=><span key={i}>{STRIP}</span>)}</div></div>
 
   <nav className="nav" aria-label="Principal"><div className="container nav-inner">
@@ -127,6 +140,7 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   <Lightbox zoom={zoom} onClose={()=>setZoom(null)}/>
   <div className={'toast'+(toast?' show':'')} role="status" aria-live="polite">{toast}</div>
  </div>;
+ return <div ref={host}>{mount?createPortal(content,mount):null}</div>;
 }
 
 function Lightbox({zoom,onClose}:{zoom:{src:string;alt:string}|null;onClose:()=>void}){
