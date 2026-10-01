@@ -187,4 +187,3 @@ footer{padding:28px 0 50px}
   .cart-items{max-height:44vh}
 }
 @media (max-width:430px){.products{gap:9px}.card-body{padding:12px}}
-\n/* WebAppCap host compatibility: source CSS above remains literal. */\nhtml.js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,.61,.36,1)}\nhtml.js [data-reveal].in{opacity:1;transform:none}\n
