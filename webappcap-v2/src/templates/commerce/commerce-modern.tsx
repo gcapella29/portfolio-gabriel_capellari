@@ -14,7 +14,6 @@ const mediaUrl=(value:unknown)=>value&&typeof value==='object'&&'url' in value?S
 const brl=(value:number)=>value.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const norm=(value:string)=>String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const ig=(value:string)=>value.startsWith('http')?value:`https://instagram.com/${value.replace(/^@/,'')}`;
-const ORDER=['Chaveiros','Copinhos','Ecobags','Pins para Crocs','Bottons','Adesivos'];
 
 function useReveal(root:React.RefObject<HTMLDivElement|null>){
  useEffect(()=>{
@@ -27,7 +26,7 @@ function useReveal(root:React.RefObject<HTMLDivElement|null>){
 
 export function CommerceModernTemplate({project,data}:TemplateRenderProps){
  const host=useRef<HTMLDivElement>(null),root=useRef<HTMLDivElement>(null);
- const [mount,setMount]=useState<HTMLDivElement|null>(null);
+ const [mount,setMount]=useState<HTMLDivElement|null>(null),[assetsReady,setAssetsReady]=useState(false);
  useEffect(()=>{
   const el=host.current;if(!el)return;
   const shadow=el.shadowRoot||el.attachShadow({mode:'open'});
@@ -35,10 +34,13 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   if(!target){
    const font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=Nunito:wght@400..1000&display=swap';font.setAttribute('data-modern-asset','font');shadow.appendChild(font);
    const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/templates/commerce-modern/styles.css';sheet.setAttribute('data-modern-asset','css');shadow.appendChild(sheet);
+   let pending=2;const done=()=>{pending-=1;if(pending<=0)setAssetsReady(true)};font.addEventListener('load',done,{once:true});font.addEventListener('error',done,{once:true});sheet.addEventListener('load',done,{once:true});sheet.addEventListener('error',done,{once:true});
+   window.setTimeout(()=>setAssetsReady(true),1200);
    const bridge=document.createElement('style');bridge.textContent='.commerce-modern-document{--bg:#eef8ff;--ink:#171717;--blue:#4f89ad;--blue-2:#3f7697;--deep:#315f7a;--sky:#bfe4f7;--muted:#5f6b73;--line:#dbe8f0;--shadow:0 18px 48px rgba(38,81,108,.14);--max:1180px;--font:"Nunito",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;display:block;min-height:100vh;margin:0;font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}';bridge.setAttribute('data-modern-asset','bridge');shadow.appendChild(bridge);
    target=document.createElement('div');target.setAttribute('data-commerce-modern-mount','');shadow.appendChild(target);
   }
   setMount(target);
+  if(shadow.querySelector('link[data-modern-asset="css"]')&&shadow.querySelector('link[data-modern-asset="font"]')&&shadow.querySelector('[data-commerce-modern-mount]')?.childNodes.length)setAssetsReady(true);
  },[]);
 
  const brand=str(data.identity,'name',project.name||'Vet-se');
@@ -57,7 +59,7 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
  const productById=useMemo(()=>new Map(products.map(product=>[product.id,product])),[products]);
  const byId=(id:string|number)=>productById.get(Number(id));
  const categoryCounts=useMemo(()=>products.reduce<Record<string,number>>((acc,product)=>{if(product.category)acc[product.category]=(acc[product.category]||0)+1;return acc},{}),[products]);
- const categories=useMemo(()=>['Todos',...ORDER.filter(c=>categoryCounts[c]),...Object.keys(categoryCounts).filter(c=>!ORDER.includes(c))],[categoryCounts]);
+ const categories=useMemo(()=>['Todos',...Object.keys(categoryCounts).sort((a,b)=>a.localeCompare(b,'pt-BR',{sensitivity:'base'}))],[categoryCounts]);
  const [pins,ecobag,botton]=useMemo(()=>[
   products.find(p=>norm(p.name).includes('pins para crocs'))||products.find(p=>p.category==='Pins para Crocs'),
   products.find(p=>norm(p.name).includes('ecobag patinhas'))||products.find(p=>p.category==='Ecobags'),
@@ -97,7 +99,7 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   {product:botton,cls:'highlight',tag:'Mimos',title:'Bottons',text:'1 por R$ 8,00 · 2 por R$ 14,00'}
  ];
 
- const content=<div ref={root} className="commerce-modern-document js">
+ const content=<div ref={root} className={'commerce-modern-document js'+(assetsReady?' assets-ready':' assets-loading')}>
   <div className="topbar" aria-hidden="true"><div className="marquee">{Array.from({length:6},(_,i)=><span key={i}>{STRIP}</span>)}</div></div>
 
   <nav className="nav" aria-label="Principal"><div className="container nav-inner">
@@ -107,7 +109,7 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   </div></nav>
 
   <header className="hero" id="topo"><div className="container hero-grid">
-   <div className="hero-art"><img src={heroImage} alt={`Capa da ${brand}`} onClick={()=>setZoom({src:heroImage,alt:`Capa da ${brand}`})}/></div>
+   <div className="hero-art"><img src={heroImage} fetchPriority="high" decoding="async" alt={`Capa da ${brand}`} onClick={()=>setZoom({src:heroImage,alt:`Capa da ${brand}`})}/></div>
    <div className="hero-copy">
     <h1>{str(data.content,'modern_hero_title')?<>{str(data.content,'modern_hero_title')}</>:<>{brand} do seu <span className="mark">jeitinho.</span></>}</h1>
     <p>{str(data.content,'modern_hero_text','Adesivos, chaveiros, mimos, bottons, ecobags e mais para deixar seus materiais e acessórios ainda mais a sua cara.')}</p>
@@ -118,20 +120,20 @@ export function CommerceModernTemplate({project,data}:TemplateRenderProps){
   <main>
    <section id="destaques"><div className="container">
     <div className="section-top" data-reveal><div><div className="kicker">Destaques da {brand}</div><h2>Os queridinhos<br/>por aqui.</h2></div><p className="section-desc">Uma seleção especial para deixar sua rotina vet mais divertida, colorida e cheia de personalidade.</p></div>
-    <div className="highlights" data-reveal>{highlights.map((h,i)=>{const src=h.product?.image||'';return <article className={h.cls} key={h.title}>{src?<img src={src} alt={h.title} loading="lazy" onClick={()=>setZoom({src,alt:h.title})}/>:null}<div className="highlight-copy"><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></div></article>})}</div>
+    <div className="highlights" data-reveal>{highlights.map((h,i)=>{const src=h.product?.image||'';return <article className={h.cls} key={h.title} style={{'--highlight-index':i} as React.CSSProperties}>{src?<img src={src} alt={h.title} loading="lazy" decoding="async" onClick={()=>setZoom({src,alt:h.title})}/>:null}<div className="highlight-copy"><small>{h.tag}</small><h3>{h.title}</h3><p>{h.text}</p></div></article>})}</div>
    </div></section>
 
    <section id="catalogo"><div className="container">
     <div className="section-top" data-reveal><div><div className="kicker">Catálogo</div><h2>Escolha seus<br/>favoritos.</h2></div><p className="section-desc">Busque pelo nome ou navegue pelas categorias para encontrar o produtinho perfeito.</p></div>
     <div className="chips" data-reveal role="group" aria-label="Filtrar por categoria">{categories.map(c=>{const n=c==='Todos'?products.length:(categoryCounts[c]||0);return <button key={c} className="chip" aria-pressed={c===category} onClick={()=>setCategory(c)}>{c} <small>{n} {n===1?'item':'itens'}</small></button>})}</div>
     <div className="shop-tools" data-reveal><input className="search" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Buscar por nome, descrição ou categoria" aria-label="Buscar produtos"/><div className="counter" aria-live="polite">{list.length} produto{list.length!==1?'s':''}</div></div>
-    <div className="products" data-reveal>{list.length?list.map(p=><article className="card" key={p.id}><div className="card-img">{p.promo?<div className="promo">{p.promo}</div>:null}{p.image?<img src={p.image} alt={p.name} loading="lazy" decoding="async" width="400" height="400" onClick={()=>setZoom({src:p.image,alt:p.name})}/>:null}</div><div className="card-body"><div className="meta">{p.category}</div><h3>{p.name}</h3><p>{p.description}</p><div className="price-line"><div className="price">{brl(p.price)}</div><button className="plus" onClick={()=>add(p.id)} aria-label={`Adicionar ${p.name} ao carrinho`}>+</button></div></div></article>):<div className="empty">Nada encontrado para essa busca. Tente outra palavra ou fale com a gente pelo WhatsApp.</div>}</div>
+    <div className={'products'+(category==='Todos'?' products-all':'')} data-reveal tabIndex={category==='Todos'?0:undefined} aria-label={category==='Todos'?'Todos os produtos. Role horizontalmente para ver mais.':undefined}>{list.length?list.map(p=><article className="card" key={p.id}><div className="card-img">{p.promo?<div className="promo">{p.promo}</div>:null}{p.image?<img src={p.image} alt={p.name} loading="lazy" decoding="async" width="400" height="400" onClick={()=>setZoom({src:p.image,alt:p.name})}/>:null}</div><div className="card-body"><div className="meta">{p.category}</div><h3>{p.name}</h3><p>{p.description}</p><div className="price-line"><div className="price">{brl(p.price)}</div><button className="plus" onClick={()=>add(p.id)} aria-label={`Adicionar ${p.name} ao carrinho`}>+</button></div></div></article>):<div className="empty">Nada encontrado para essa busca. Tente outra palavra ou fale com a gente pelo WhatsApp.</div>}</div>
     <div className="notfound" data-reveal><div><h3>Não encontrou o que queria?</h3><p>Entre em contato pelo WhatsApp e a {brand} te ajuda a encontrar o produto ideal.</p></div>{whatsapp?<a className="btn btn-main" href={wa()} {...ext}>Falar no WhatsApp ↗</a>:null}</div>
    </div></section>
 
    <section id="sobre"><div className="container"><div className="about-grid" data-reveal>
     <div className="about-copy"><div className="kicker">Sobre a {brand}</div><h2>Feito com amor especialmente para você.</h2><p>{str(data.content,'about_main','A Vet-se nasceu do amor pela Medicina Veterinária e pelo desejo de tornar a rotina vet ainda mais especial, com produtos criativos, funcionais e cheios de personalidade.')}</p><p>{str(data.content,'creator_bio','Aqui você encontra itens pensados por e para quem vive o dia a dia entre consultas, plantões, estudos e muito amor pelos animais.')}</p><div className="signature">{str(data.content,'creator_name','Vitória Catalano')} · Criadora da marca</div><div className="about-actions">{instagramUrl?<a className="btn btn-main" href={instagramUrl} {...ext}>Seguir a loja ↗</a>:null}{creatorInstagramUrl?<a className="btn btn-main" href={creatorInstagramUrl} {...ext}>Seguir a criadora ↗</a>:null}</div></div>
-    <div className="about-photo">{aboutImage?<img src={aboutImage} alt={str(data.content,'creator_name','Vitória Catalano')} loading="lazy" onClick={()=>setZoom({src:aboutImage,alt:str(data.content,'creator_name','Vitória Catalano')})}/>:null}</div>
+    <div className="about-photo">{aboutImage?<img src={aboutImage} alt={str(data.content,'creator_name','Vitória Catalano')} loading="lazy" decoding="async" onClick={()=>setZoom({src:aboutImage,alt:str(data.content,'creator_name','Vitória Catalano')})}/>:null}</div>
    </div></div></section>
   </main>
 

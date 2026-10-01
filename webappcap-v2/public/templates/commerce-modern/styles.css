@@ -179,3 +179,53 @@ footer{padding:28px 0 50px}
   .cart-items{max-height:44vh}
 }
 @media (max-width:430px){.products{gap:9px}.card-body{padding:12px}}
+
+
+/* WebAppCap integration performance */
+.commerce-modern-document.assets-loading{opacity:0}
+.commerce-modern-document.assets-ready{opacity:1;transition:opacity .18s ease}
+.hero-art img,.highlight img,.card-img img,.about-photo img{transform:translateZ(0);backface-visibility:hidden}
+
+/* Todos: 2 faixas, 4 produtos visíveis por faixa, restante na lateral */
+.products.products-all{
+  grid-template-columns:none;
+  grid-template-rows:repeat(2,minmax(0,auto));
+  grid-auto-flow:column;
+  grid-auto-columns:calc((100% - 42px)/4);
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  overscroll-behavior-inline:contain;
+  scrollbar-width:thin;
+  padding-bottom:8px;
+}
+.products.products-all .card{scroll-snap-align:start;min-width:0}
+
+/* Destaques: mais vida sem mudar a composição */
+.highlight{
+  transition:transform .38s cubic-bezier(.22,.61,.36,1),box-shadow .38s ease;
+  animation-delay:calc(var(--highlight-index,0) * 90ms);
+}
+.highlight img{transition:transform .65s cubic-bezier(.22,.61,.36,1),filter .45s ease}
+.highlight::after{transition:background .45s ease}
+.highlight:hover{transform:translateY(-7px) scale(1.008);box-shadow:0 24px 56px rgba(38,81,108,.20)}
+.highlight:hover img{transform:scale(1.045)}
+.highlight:hover::after{background:linear-gradient(180deg,rgba(20,34,44,.02) 32%,rgba(20,34,44,.82))}
+.highlight-copy{transition:transform .38s cubic-bezier(.22,.61,.36,1)}
+.highlight:hover .highlight-copy{transform:translateY(-5px)}
+
+/* Centralização precisa dos botões de fechar */
+.close,.lb-close{
+  display:grid;
+  place-items:center;
+  padding:0;
+  line-height:1;
+  text-align:center;
+}
+
+@media (max-width:980px){
+  .products.products-all{grid-auto-columns:calc((100% - 28px)/3)}
+}
+@media (max-width:700px){
+  .products.products-all{grid-auto-columns:calc((100% - 9px)/2)}
+}
