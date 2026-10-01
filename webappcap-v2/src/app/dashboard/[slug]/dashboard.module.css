@@ -223,3 +223,17 @@
 .hero:hover,.summary:hover,.analyticsPanel:hover,.pageFrame :global(.setup-card:hover),.pageFrame :global(.editor-section:hover),.pageFrame :global(.lead-card-v2:hover){transform:none!important}
 .pageFrame :global(.editor-section),.pageFrame :global(.setup-card){box-shadow:none!important}
 @media(max-width:620px){.projectMini{display:none}.topActions{grid-template-columns:repeat(2,minmax(0,1fr))}.projectStatus span{display:none}}
+
+/* Keep draft actions distinct from account navigation. */
+@media(min-width:861px){
+ .draftSlot{flex-shrink:0;padding-bottom:12px}
+ .sidebarBottom{flex-shrink:0;gap:5px;margin-top:0;padding-top:12px}
+ .sidebarBottom a,.sidebarBottom .logout{
+  display:flex;align-items:center;min-height:34px;margin:0;
+  border:1px solid transparent;border-radius:9px;
+  background:transparent;color:#aebbd0;text-decoration:none!important;
+  font-size:10px;font-weight:650;line-height:1.3;
+ }
+ .sidebarBottom form{margin:0}
+ .sidebarBottom .logout{box-shadow:none}
+}
