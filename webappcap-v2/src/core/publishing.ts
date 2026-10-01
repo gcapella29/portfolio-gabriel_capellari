@@ -35,7 +35,7 @@ export async function publishV2Project(projectId:string){
 
   if(state.data.segment==='food-business'||state.data.segment==='commerce'){
     const tagline=selectedTemplate==='commerce-sales-1'?String(data.content.sales_tagline||data.identity.tagline||'').trim():String(data.identity.tagline||'').trim();
-    if(!tagline)throw new Error('Informe a frase principal do comércio antes de publicar.');
+    if(selectedTemplate!=='commerce-modern-1'&&!tagline)throw new Error('Informe a frase principal do comércio antes de publicar.');
   }else if(!String(data.content.hero_title||'').trim()){
     throw new Error('Informe o título principal do site antes de publicar.');
   }

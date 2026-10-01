@@ -52,6 +52,8 @@ const commerceEditors: Record<string, TemplateEditorDefinition> = {
   }
 };
 
+commerceEditors['commerce-modern-1']={templateKey:'commerce-modern-1',label:'Modern',mode:'complete',sections:commerceEditors['commerce-main-1'].sections.filter(section=>['identity','highlights','menu','order','contact','about'].includes(section.key))};
+
 export function editorForTemplate(templateKey: string | null | undefined) {
   return templateKey ? commerceEditors[templateKey] || null : null;
 }

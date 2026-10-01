@@ -27,7 +27,6 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
     <label className="field"><span>Faixa animada do topo</span><input name="modern_marquee" defaultValue={v(data.content,'modern_marquee')} placeholder="PRODUTINHOS PARA QUEM VIVE A ROTINA VET ✦ FEITO COM AMOR ESPECIALMENTE PARA VOCÊ ✦"/></label>
     <label className="field"><span>Título principal</span><input name="modern_hero_title" defaultValue={v(data.content,'modern_hero_title')} placeholder="Vet-se do seu jeitinho."/></label>
     <label className="field"><span>Texto principal</span><textarea name="modern_hero_text" rows={3} defaultValue={v(data.content,'modern_hero_text')} placeholder="Adesivos, chaveiros, mimos, bottons, ecobags e mais..."/></label>
-    <div className="form-grid"><label className="field"><span>Título do card lateral</span><input name="modern_card_title" defaultValue={v(data.content,'modern_card_title')} placeholder="Escolha seus favoritos e peça pelo WhatsApp."/></label><label className="field"><span>Texto do card lateral</span><input name="modern_card_text" defaultValue={v(data.content,'modern_card_text')} placeholder="Simples e direto, sem cadastro."/></label></div>
    </EditorPanel>:null}
   </Block>
   <Block id="block-2" number="02" title="Catálogo" summary="Visibilidade e texto do bloco">
@@ -42,14 +41,14 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
   </Block>
   <Block id="block-3" number="03" title="Carrinho" summary="Subtítulo e WhatsApp para pedidos">
    <VisibilityToggle name="visibility:cart" label="Exibir Carrinho" description="Desative para remover o carrinho do site e da navegação." defaultChecked={visible(data.content,'show_cart')}/>
-   <label className="field"><span>Subtítulo do carrinho</span><textarea name="order_intro" rows={3} defaultValue={v(data.content,'order_intro')}/></label>
+   {!modern?<label className="field"><span>Subtítulo do carrinho</span><textarea name="order_intro" rows={3} defaultValue={v(data.content,'order_intro')}/></label>:null}
    <label className="field"><span>Número do WhatsApp com DDI</span><input name="whatsapp" inputMode="tel" defaultValue={v(data.contact,'whatsapp')} placeholder="5516999999999"/><small>Use somente números, incluindo o código do país e o DDD.</small></label>
    <label className="field"><span>Mensagem do pedido no WhatsApp</span><textarea name="whatsapp_order_message" rows={6} maxLength={1500} defaultValue={v(data.content,'whatsapp_order_message')||defaultWhatsappOrderMessage}/><small>Personalize o texto e use os campos dinâmicos: <b>{'{itens}'}</b>, <b>{'{total}'}</b>, <b>{'{quantidade}'}</b> e <b>{'{loja}'}</b>. Eles serão preenchidos automaticamente ao enviar o pedido.</small></label>
    <label className="field"><span>Mensagem do botão “Não encontrou o que queria?”</span><textarea name="whatsapp_direct_message" rows={4} maxLength={1000} defaultValue={v(data.content,'whatsapp_direct_message')||defaultWhatsappDirectMessage}/><small>Esta é a mensagem enviada pelo botão de contato direto. Você pode usar <b>{'{loja}'}</b> para inserir automaticamente o nome da loja.</small></label>
   </Block>
   <Block id="block-4" number="04" title="Instagram" summary="Perfil da loja e publicações">
    <VisibilityToggle name="visibility:instagram" label="Exibir Instagram" description="Se o Sobre ficar ativo sozinho, ele ocupará toda a largura disponível." defaultChecked={visible(data.content,'show_instagram')}/>
-   <label className="field"><span>Subtítulo do Instagram</span><textarea name="social_intro" rows={2} defaultValue={v(data.content,'social_intro')}/></label>
+   {!modern?<label className="field"><span>Subtítulo do Instagram</span><textarea name="social_intro" rows={2} defaultValue={v(data.content,'social_intro')}/></label>:null}
    <label className="field"><span>Instagram da loja — usuário ou URL</span><input name="instagram" defaultValue={v(data.contact,'instagram')} placeholder="@perfil ou https://instagram.com/perfil"/><small>Este perfil alimenta o botão de seguir a página da loja no Instagram exibido no site.</small></label>
   </Block>
   <Block id="block-5" number="05" title="Sobre" summary="Apresentação da marca e da criadora">
@@ -58,7 +57,7 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
    {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:creator" slot="creator" label="Foto da criadora" current={mediaValue(data.media.creator,'url')} currentPosition={mediaValue(data.media.creator,'position','center')} currentFit={mediaValue(data.media.creator,'fit','cover')} currentZoom={mediaValue(data.media.creator,'zoom','100')} help="Escolha a foto e ajuste seu enquadramento."/>:null}
    <div className="form-grid"><label className="field"><span>Nome da criadora</span><input name="creator_name" defaultValue={v(data.content,'creator_name')}/></label><label className="field"><span>Instagram da criadora</span><input name="creator_instagram" defaultValue={v(data.content,'creator_instagram')}/></label></div>
    <label className="field"><span>Texto sobre a criadora</span><textarea name="creator_bio" rows={4} defaultValue={v(data.content,'creator_bio')}/></label>
-   <label className="field"><span>Texto do botão de seguir</span><input name="creator_instagram_label" defaultValue={v(data.content,'creator_instagram_label')||'Seguir no Instagram ↗'}/></label>
+   {!modern?<label className="field"><span>Texto do botão de seguir</span><input name="creator_instagram_label" defaultValue={v(data.content,'creator_instagram_label')||'Seguir no Instagram ↗'}/></label>:null}
   </Block>
  </ContentWorkspace>;
 }

@@ -15,15 +15,15 @@ export default async function TemplateEditorPage({params,searchParams}:{params:P
  if(!can(role,'editContent'))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const menuLimit=await menuItemLimitForProject(project.id),data=await readV2Content(project.id),salesRetired=project.slug==='vet-se',selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),modern=selected==='commerce-modern-1',active=selected==='commerce-main-1',canSwitch=can(role,'editAppearance');
  return <div className={styles.page}>
-  <EditorWorkspaceHeader eyebrow="EDITAR SITE" title={project.name} description="Altere os blocos do site e acompanhe tudo no rascunho antes de publicar." facts={salesRetired?[{label:'Modelo',value:modern?'Modern':'Clássico'},{label:'Catálogo',value:`até ${menuLimit} produtos`}]:[{label:'Versão',value:active?'Site completo':'Venda rápida'},{label:'Catálogo',value:`até ${menuLimit} produtos`}]}/>
+  <EditorWorkspaceHeader eyebrow="EDITAR SITE" title={project.name} description="Altere os blocos do site e acompanhe tudo no rascunho antes de publicar." facts={salesRetired?[{label:'Modelo',value:modern?'Modern':'Clássico'},{label:'Catálogo',value:`até ${menuLimit} produtos`}]:[{label:'Versão',value:modern?'Modern':active?'Clássico':'Venda rápida'},{label:'Catálogo',value:`até ${menuLimit} produtos`}]}/>
 
-  {query.template?<div className={styles.success}>Versão completa selecionada no rascunho.</div>:null}
+  {query.template?<div className={styles.success}>Modelo selecionado no rascunho.</div>:null}
   {query.savedContent?<div className={styles.success}>Alterações salvas no rascunho. Confira no Preview.</div>:null}
 
   {!salesRetired?<section className={blocks.versionBar}>
    <div>
     <span>VERSÃO DO SITE</span>
-    <strong>{active?'Site completo ativo no Preview':'Venda rápida ativa no Preview'}</strong>
+    <strong>{modern?'Modern ativo no Preview':active?'Clássico ativo no Preview':'Venda rápida ativa no Preview'}</strong>
     <p>A troca preserva todo o conteúdo das duas versões.</p>
    </div>
    <form action={saveEditorTemplateAction}>

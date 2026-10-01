@@ -40,7 +40,7 @@ h1,h2,h3{margin:0}
 .hero{padding:26px 0 60px}
 .hero-grid{position:relative;overflow:hidden;min-height:560px;border-radius:32px;background:#bddff0;box-shadow:var(--shadow);display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:clamp(20px,3.5vw,40px)}
 .hero-art{position:absolute;inset:0}
-.hero-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,39,54,.02) 0%,rgba(17,39,54,.1) 34%,rgba(17,39,54,.5) 68%,rgba(17,39,54,.9) 100%)}
+.hero-art::after{pointer-events:none;content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,39,54,.02) 0%,rgba(17,39,54,.1) 34%,rgba(17,39,54,.5) 68%,rgba(17,39,54,.9) 100%)}
 .hero-art img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
 .hero-copy{position:relative;z-index:2;max-width:560px;color:#fff}
 .hero h1{font-size:clamp(2.6rem,5.4vw,4.8rem);line-height:.92;letter-spacing:-.05em;margin:14px 0 10px;text-shadow:0 3px 24px rgba(0,0,0,.25)}
@@ -196,7 +196,7 @@ footer{padding:28px 0 50px}
   overflow-y:hidden;
   scroll-snap-type:x proximity;
   overscroll-behavior-inline:contain;
-  scrollbar-width:thin;
+  scrollbar-width:none;
   padding-bottom:8px;
 }
 .products.products-all .card{scroll-snap-align:start;min-width:0}
@@ -214,15 +214,6 @@ footer{padding:28px 0 50px}
 .highlight-copy{transition:transform .38s cubic-bezier(.22,.61,.36,1)}
 .highlight:hover .highlight-copy{transform:translateY(-5px)}
 
-/* Centralização precisa dos botões de fechar */
-.close,.lb-close{
-  display:grid;
-  place-items:center;
-  padding:0;
-  line-height:1;
-  text-align:center;
-}
-
 @media (max-width:980px){
   .products.products-all{grid-auto-columns:calc((100% - 28px)/3)}
 }
@@ -232,8 +223,9 @@ footer{padding:28px 0 50px}
 
 
 /* Cart polish */
+.close{position:relative}
 .close,.lb-close{
-  position:relative;
+  text-align:center;
   display:grid;
   place-items:center;
   padding:0;
@@ -311,7 +303,7 @@ footer{padding:28px 0 50px}
 .plus.pop{animation:plusPop .28s ease}
 
 .hero-grid{--hero-x:0px;--hero-y:0px}
-.hero-art img{transform:translate3d(var(--hero-x),var(--hero-y),0) scale(1.025);transition:transform .32s ease-out,opacity .28s ease}
+.hero-art img{transform:translate3d(var(--hero-x),var(--hero-y),0) scale(calc(1.025 * var(--media-zoom,1)));transition:transform .32s ease-out,opacity .28s ease}
 .hero-art img:not(.loaded),.highlight img:not(.loaded),.card-img img:not(.loaded),.about-photo img:not(.loaded){opacity:0}
 .hero-art img.loaded,.highlight img.loaded,.card-img img.loaded,.about-photo img.loaded{opacity:1}
 
@@ -361,10 +353,10 @@ footer{padding:28px 0 50px}
   .cart-total-mini{display:none}
   .catalog-arrow{display:none}
   .catalog-position{margin-top:6px}
-  .hero-art img{transform:scale(1.02)}
+  .hero-art img{transform:scale(calc(1.02 * var(--media-zoom,1)))}
 }
 @media(prefers-reduced-motion:reduce){
-  .hero-art img{transform:none!important;transition:none}
+  .hero-art img{transform:scale(var(--media-zoom,1))!important;transition:none}
   .highlight:hover,.highlight:hover img,.highlight:hover .highlight-copy{transform:none}
   .cart-pill.cart-pulse,.plus.pop{animation:none}
 }
@@ -560,3 +552,16 @@ footer{padding:28px 0 50px}
 @media(max-width:700px){
   .products-shell.is-carousel{padding-inline:0}
 }
+
+/* Technical integration fixes: checkout fields and viewport-safe drawer. */
+.customer-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
+.customer-fields label{display:grid;gap:5px;font-size:.85rem;font-weight:800;min-width:0}
+.customer-fields input{width:100%;min-width:0;border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:8px 10px;background:#fff;color:var(--ink)}
+.drawer{max-height:calc(100dvh - 36px);display:flex;flex-direction:column}
+.cart-items{min-height:0;flex:1 1 auto}
+.drawer-head,.drawer-foot{flex-shrink:0}
+@media(prefers-reduced-motion:reduce){
+  .commerce-modern-document *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+.card-img img,.about-photo img{transform:scale(var(--media-zoom,1))}

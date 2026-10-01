@@ -74,7 +74,7 @@ const commerceBakeryDefaults: DefaultsFactory = (name) => ({
 
 const defaultsByTemplate: Record<string, DefaultsFactory> = {
   'commerce-main-1': commerceMainDefaults,
-  'commerce-modern-1': commerceMainDefaults,
+  'commerce-modern-1': name=>{const defaults=commerceMainDefaults(name);return {...defaults,appearance:{...defaults.appearance,preview_template_key:'commerce-modern-1'}}},
   'commerce-bakery-1': commerceBakeryDefaults
 };
 
