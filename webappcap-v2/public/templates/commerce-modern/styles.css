@@ -500,3 +500,63 @@ footer{padding:28px 0 50px}
   .chip,.nav-links a,.logo span,.cart-pill{transition:none}
   .chip:hover,.nav-links a:hover,.logo:hover span,.cart-pill:hover{transform:none}
 }
+
+
+/* Final precision tweaks */
+.card-img{
+  aspect-ratio:1 / 1;
+  width:100%;
+  overflow:hidden;
+}
+.card-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* Perfect optical centering for add button */
+.plus{
+  display:grid;
+  place-items:center;
+  padding:0;
+  line-height:1;
+  font-size:0;
+  position:relative;
+}
+.plus::before{
+  content:"+";
+  display:grid;
+  place-items:center;
+  width:100%;
+  height:100%;
+  font-size:22px;
+  font-weight:800;
+  line-height:1;
+  transform:translateY(-1px);
+}
+
+/* Carousel arrows centered between the two rows, outside the image/cards area */
+.products-shell.is-carousel{
+  padding-inline:34px;
+}
+.products-shell.is-carousel .catalog-arrow{
+  top:50%;
+}
+.products-shell.is-carousel .catalog-prev{
+  left:0;
+  transform:translate(-50%,-50%);
+}
+.products-shell.is-carousel .catalog-next{
+  right:0;
+  transform:translate(50%,-50%);
+}
+.products-shell.is-carousel .catalog-arrow:hover{
+  transform:translate(-50%,-50%) scale(1.06);
+}
+.products-shell.is-carousel .catalog-next:hover{
+  transform:translate(50%,-50%) scale(1.06);
+}
+
+@media(max-width:700px){
+  .products-shell.is-carousel{padding-inline:0}
+}
