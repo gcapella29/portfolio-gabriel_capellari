@@ -7,10 +7,10 @@ const text=(record:Record<string,unknown>,key:string,fallback='')=>
   String(record[key]??'').trim()||fallback;
 
 export function CommerceTemplate(props:TemplateRenderProps){
-  const key=text(
+  const key=props.project.templateKey||text(
     props.data.appearance,
     'preview_template_key',
-    props.project.templateKey||'commerce-main-1'
+    'commerce-main-1'
   );
   if(key==='commerce-modern-1')return <CommerceModernTemplate {...props}/>;
   return key.includes('sales')
