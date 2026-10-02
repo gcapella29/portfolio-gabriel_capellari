@@ -1,4 +1,4 @@
-export type SegmentKey = 'portfolio' | 'personal-trainer' | 'food-business' | 'commerce' | 'school';
+export type SegmentKey = 'portfolio' | 'personal-trainer' | 'food-business' | 'commerce' | 'school' | 'institutional';
 export type TemplateStatus = 'ready' | 'planned' | 'legacy';
 export type ProjectRole = 'owner' | 'admin' | 'editor' | 'viewer';
 export type DomainStatus = 'unconfigured' | 'native' | 'pending' | 'active' | 'error';

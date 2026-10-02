@@ -1,0 +1,357 @@
+'use client';
+import {useMemo,useState} from 'react';
+import {
+  institutionalCopy,
+  institutionalData,
+  institutionalLists,
+  institutionalImage,
+  type InstitutionalListKey,
+  type InstitutionalRow,
+} from '@/core/institutional-content';
+import type {V2Content} from '@/core/onboarding-data';
+import ContentWorkspace from '../../content/content-workspace';
+import DirectImageField from '../../content/direct-image-field';
+import EditorBlock from '../editor-block';
+import {saveInstitutionalAction} from './actions';
+import {imageEditorFrame} from '@/core/image-editor-frame';
+import styles from '../trainer/trainer-editor.module.css';
+const text = (value: unknown) => String(value ?? '');
+export default function InstitutionalEditor({
+  projectId,
+  slug,
+  data,
+  canManageMedia,
+  saved,
+}: {
+  projectId: string;
+  slug: string;
+  data: V2Content;
+  canManageMedia: boolean;
+  saved: boolean;
+}) {
+  const initial = useMemo(()=>institutionalData(data.content),[data.content]),
+    [lists, setLists] = useState(()=>initial.lists);
+  const update = (
+    key: InstitutionalListKey,
+    id: string,
+    field: string,
+    value: unknown,
+  ) =>
+    setLists((current) => ({
+      ...current,
+      [key]: current[key].map((row) =>
+        row.id === id ? {...row, [field]: value} : row,
+      ),
+    }));
+  const field = (key: string, label: string, value: unknown) => (
+    <label className="field" key={key}>
+      <span>{label}</span>
+      <textarea
+        name={key}
+        defaultValue={text(value)}
+        maxLength={10000}
+        rows={2}
+      />
+    </label>
+  );
+  const image = (
+    name: string,
+    current: unknown,
+    label: string,
+    slotType = 'photo',
+  ) => {
+    const item =
+      current && typeof current === 'object'
+        ? (current as Record<string, unknown>)
+        : {};
+    return (
+      <DirectImageField
+        key={name}
+        projectId={projectId}
+        name={`uploadedMedia:${name}`}
+        slot={name}
+        label={label}
+        current={institutionalImage(current)}
+        currentPosition={text(item.position) || 'center'}
+        currentFit={text(item.fit) || 'cover'}
+        currentZoom={text(item.zoom) || 100}
+        {...imageEditorFrame('institutional-main-1', slotType)}
+        help="Enquadramento do site. Arraste, ajuste o zoom e salve o rascunho."
+      />
+    );
+  };
+  const nav = [
+    {id: 'institutional-identity', label: 'Identidade'},
+    ...Object.entries(institutionalLists).map(([key, def]) => ({
+      id: `institutional-${key}`,
+      label: def.label,
+    })),
+    {id: 'institutional-contact', label: 'Contato e Pix'},
+    {id: 'institutional-copy', label: 'Textos do modelo'},
+  ];
+  return (
+    <ContentWorkspace
+      slug={slug}
+      previewUrl={`/preview/${encodeURIComponent(slug)}?template=institutional-main-1`}
+      saved={saved}
+      portfolio={false}
+      nav={nav}
+      action={saveInstitutionalAction}
+      embedded
+    >
+      <EditorBlock
+        id="institutional-identity"
+        number="01"
+        title="Identidade e história"
+        summary="Nome, apresentação, períodos e opções de demonstração"
+      >
+        <div className={styles.fields}>
+          <label className="field">
+            <span>Nome da organização</span>
+            <input
+              name="name"
+              defaultValue={text(data.identity.name)}
+              required
+              maxLength={120}
+            />
+          </label>
+          <label className="field">
+            <span>Título da aba do navegador</span>
+            <input
+              name="browser_title"
+              defaultValue={text(data.identity.browser_title)}
+              maxLength={80}
+            />
+          </label>
+          {field(
+            'institutional_history_intro',
+            'Introdução da história',
+            initial.historyIntro,
+          )}
+          {field(
+            'institutional_current_period',
+            'Período da gestão atual',
+            initial.currentPeriod,
+          )}
+          {field(
+            'institutional_previous_period',
+            'Período da gestão anterior',
+            initial.previousPeriod,
+          )}
+          <label className="field">
+            <span>
+              Faixa de demonstração e fotos ilustrativas dos álbuns vazios
+            </span>
+            <select
+              name="institutional_demo"
+              defaultValue={String(initial.demo)}
+            >
+              <option value="true">Mostrar (conteúdo de exemplo)</option>
+              <option value="false">Ocultar (conteúdo real)</option>
+            </select>
+          </label>
+          <label className="field">
+            <span>Fotos das pessoas</span>
+            <select
+              name="institutional_show_photos"
+              defaultValue={String(initial.showPhotos)}
+            >
+              <option value="true">Mostrar quando cadastradas</option>
+              <option value="false">Mostrar somente iniciais</option>
+            </select>
+          </label>
+        </div>
+      </EditorBlock>
+      {(Object.keys(institutionalLists) as InstitutionalListKey[]).map(
+        (key, listIndex) => (
+          <EditorBlock
+            id={`institutional-${key}`}
+            number={String(listIndex + 2).padStart(2, '0')}
+            title={institutionalLists[key].label}
+            summary="Adicione, edite e ordene os itens"
+            key={key}
+          >
+            <input
+              type="hidden"
+              name={`section:${key}`}
+              value={JSON.stringify(lists[key])}
+            />
+            <div className={styles.rows}>
+              {!lists[key].length ? <p>Nenhum item cadastrado.</p> : null}
+              {lists[key].map((row, index) => (
+                <fieldset className={styles.row} key={row.id}>
+                  <legend>Item {index + 1}</legend>
+                  {Object.entries(institutionalLists[key].fields).map(
+                    ([keyField, label]) =>
+                      keyField === 'photo' || keyField === 'image' ? (
+                        canManageMedia ? (
+                          image(
+                            `${key}-${row.id}-${keyField}`,
+                            row[keyField],
+                            label,
+                            keyField === 'image' ? key === 'institutional_campaigns' ? 'campaign' : 'project' : 'photo',
+                          )
+                        ) : null
+                      ) : (
+                        <label className="field" key={keyField}>
+                          <span>{label}</span>
+                          <textarea
+                            value={text(row[keyField])}
+                            onChange={(event) =>
+                              update(key, row.id, keyField, event.target.value)
+                            }
+                            maxLength={10000}
+                            rows={2}
+                          />
+                        </label>
+                      ),
+                  )}
+                  {key === 'institutional_albums' ? (
+                    <>
+                      {(Array.isArray(row.photos) ? row.photos : []).map(
+                        (photo, i) => (
+                          <div key={`${row.id}-photo-${i}`}>
+                            {canManageMedia ? (
+                              image(
+                                `${key}-${row.id}-photo-${i}`,
+                                photo,
+                                `Foto ${i + 1}`,
+                              )
+                            ) : (
+                              <p>Foto {i + 1}</p>
+                            )}
+                          </div>
+                        ),
+                      )}
+                      {canManageMedia ? (
+                        <button
+                          className="action secondary"
+                          type="button"
+                          disabled={
+                            Array.isArray(row.photos) &&
+                            row.photos.length >= 100
+                          }
+                          onClick={() =>
+                            update(key, row.id, 'photos', [
+                              ...(Array.isArray(row.photos) ? row.photos : []),
+                              '',
+                            ])
+                          }
+                        >
+                          Adicionar foto ao álbum
+                        </button>
+                      ) : null}
+                    </>
+                  ) : null}
+                  <div className={styles.fields}>
+                    <button
+                      className="action secondary"
+                      type="button"
+                      disabled={index === 0}
+                      onClick={() =>
+                        setLists((current) => {
+                          const rows = [...current[key]];
+                          [rows[index - 1], rows[index]] = [
+                            rows[index],
+                            rows[index - 1],
+                          ];
+                          return {...current, [key]: rows};
+                        })
+                      }
+                    >
+                      Mover para cima
+                    </button>
+                    <button
+                      className="action secondary"
+                      type="button"
+                      onClick={() =>
+                        setLists((current) => ({
+                          ...current,
+                          [key]: current[key].filter(
+                            (item) => item.id !== row.id,
+                          ),
+                        }))
+                      }
+                    >
+                      Remover item
+                    </button>
+                  </div>
+                </fieldset>
+              ))}
+              <button
+                className="action secondary"
+                type="button"
+                disabled={lists[key].length >= 100}
+                onClick={() =>
+                  setLists((current) => ({
+                    ...current,
+                    [key]: [
+                      ...current[key],
+                      {
+                        id: crypto.randomUUID(),
+                        ...Object.fromEntries(
+                          Object.keys(institutionalLists[key].fields).map(
+                            (field) => [field, ''],
+                          ),
+                        ),
+                        ...(key === 'institutional_albums' ? {photos: []} : {}),
+                      } as InstitutionalRow,
+                    ],
+                  }))
+                }
+              >
+                Adicionar item
+              </button>
+            </div>
+          </EditorBlock>
+        ),
+      )}
+      <EditorBlock
+        id="institutional-contact"
+        number="12"
+        title="Contato e Pix"
+        summary="Canais reais da organização e chave de doação"
+      >
+        <div className={styles.fields}>
+          {[
+            ['whatsapp', 'WhatsApp com DDI'],
+            ['email', 'E-mail'],
+            ['address', 'Endereço'],
+            ['instagram', 'Instagram (URL completa)'],
+            ['pix', 'Chave Pix'],
+            ['pix_name', 'Nome do beneficiário do Pix'],
+          ].map(([key, label]) => field(key, label, data.contact[key]))}
+        </div>
+        <p>
+          O formulário abre uma mensagem no WhatsApp. O Pix apenas copia a
+          chave; não processa pagamentos.
+        </p>
+      </EditorBlock>
+      <EditorBlock
+        id="institutional-copy"
+        number="13"
+        title="Textos e chamadas do modelo"
+        summary="Navegação, hero, títulos e formulário"
+      >
+        <div className={styles.fields}>
+          {Object.entries(institutionalCopy)
+            .filter(
+              ([key]) =>
+                ![
+                  'institutional_main_close',
+                  'institutional_main_footer_brand',
+                  'institutional_main_footer_credit',
+                ].includes(key),
+            )
+            .map(([key, fallback]) =>
+              field(
+                key,
+                `${fallback.trim() || key} — texto`,
+                initial.copy[key as keyof typeof institutionalCopy],
+              ),
+            )}
+        </div>
+      </EditorBlock>
+    </ContentWorkspace>
+  );
+}

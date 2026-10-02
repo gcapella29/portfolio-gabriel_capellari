@@ -1,0 +1,46 @@
+# Institucional — integração e validação
+
+Modelo `institutional-main-1`, categoria `institutional`. Referência: `references/institutional-main-1.html`, fornecida pelo cliente. O `public/templates/institutional/styles.css` corresponde ao bloco CSS original, sem conversão para Tailwind. Cormorant Garamond e Source Sans 3, cores, seções, cartões, breakpoints e animação de entrada foram preservados.
+
+React controla dados, navegação por hash, abas da gestão, filtro de álbuns, dialog de fotos, clipboard e formulário WhatsApp. Shadow DOM isola os seletores genéricos; a ponte aplica as variáveis/reset do documento, mede a barra para posicionar as seções, mantém o zoom dentro da área da foto, centraliza o X e respeita movimento reduzido. Nomes longos podem quebrar linha e os campos mobile usam 16px para evitar zoom involuntário. Não há carrinho, pedidos, cobrança, reserva ou captura automática de leads.
+
+## Dados e editor
+
+- Identidade e contatos seguem `identity` e `contact` compartilhados. Chave/beneficiário Pix ficam em `contact.pix` / `contact.pix_name`.
+- `content.hero_title` / `hero_text` são compartilhados. Os demais textos visuais ficam em `institutional_main_*`.
+- Projetos, doações, campanhas, linha do tempo, valores, diretorias, membros e álbuns são listas `institutional_*`, independentes do modelo visual.
+- Períodos, introdução da história e opções de demonstração/fotos também pertencem ao conteúdo institucional.
+- Cada item tem ID estável. Reordenar/remover um item não associa a foto a outro item. As fotos de um álbum têm slots que não mudam durante a edição; slots removidos são compactados somente ao salvar.
+- Imagens usam os mesmos uploads, permissões e controles do editor existente, com quadros 16:10 nos cartões e 1:1 para pessoas/álbuns, largura máxima 420px. O enquadramento é preservado no site.
+- O editor `/dashboard/[slug]/editor/institutional` usa EditorBlock e ContentWorkspace com o mesmo desenho, estado de rascunho, confirmação de upload e Preview dos outros editores.
+
+Novos projetos recebem exemplos independentes e faixa de demonstração. WhatsApp, e-mail, endereço, Instagram e Pix iniciam vazios; não são copiados os destinos fictícios do HTML. A introdução e o marco de fundação usam o nome do projeto. Projetos existentes sem listas permanecem vazios. Na demonstração, álbuns vazios podem mostrar as ilustrações originais; ao desativar a demonstração, somente fotos cadastradas aparecem.
+
+## Supabase
+
+Execute `supabase/migrations/026_institutional_segment.sql` antes de criar projetos institucionais. A migração somente amplia a constraint de `project_v2_state.segment`; não atualiza projetos existentes, não publica e não altera a RPC de publicação.
+
+A função existente de criação recebe `site_type=local_business`, compatível com o tipo já usado para negócios, enquanto `project_v2_state.segment=institutional` define a categoria real do WebAppCap. A leitura privada e pública reconhece esse segmento. Não é necessária uma nova API de pedidos nem função de pagamentos.
+
+O Preview com `?template=institutional-main-1` lê o rascunho e não salva. Aplicar altera somente `appearance.preview_template_key`. Publicar valida nome, título e WhatsApp com DDI e chama a RPC atômica existente. Alterações posteriores permanecem no rascunho até nova publicação. A badge PUBLICADO exige publicação efetiva, não apenas modelo inicial selecionado.
+
+## Verificação local realizada
+
+Typecheck, suíte de testes do projeto e build de produção. Testes adicionais em DOM simulado: StrictMode, navegação por hash e âncoras, abas de gestão via teclado, filtro de álbum, abrir/fechar lightbox, copiar Pix, mensagem de WhatsApp, desativar exemplos e limpeza de fontes/observers. Ação de salvar com dependências simuladas: reordenação mantém fotos, upload externo ao projeto é rejeitado antes de gravar, URL arbitrária não vira foto, viewer não salva, IDs duplicados são rejeitados e remoção de foto preserva as sobreviventes.
+
+Esses testes não substituem conferência visual no navegador nem fluxo com Supabase real. A migração não foi aplicada remotamente e nenhum convite, publicação ou alteração em projeto real foi executado para testar.
+
+## Teste manual
+
+1. Aplicar a migração e criar um projeto de teste da categoria Institucional. Confira o modelo inicial e o acesso pelo editor e por Modelos.
+2. Comparar o Preview com a referência em desktop, tablet e celular: fontes, hero, barra superior, cartões, gestão, fotos e contato. Testar nome longo e zoom do navegador.
+3. Usar Início/História/Gestão/Fotos/Contato e Voltar/Avançar do navegador. Os CTAs do hero devem chegar a Projetos e Contato; Projetos/Doações/Campanhas devem ficar abaixo da barra.
+4. Editar, adicionar, remover e mover itens. Subir uma imagem para dois projetos, trocar a ordem, salvar e conferir cada foto. Repetir com pessoas, campanhas e fotos dos álbuns. Testar zoom, posição e contain.
+5. Alterar períodos e usar as abas de gestão por clique e teclado. Testar sem diretoria, somente um dirigente, sem membros e com fotos ocultadas.
+6. Filtrar álbuns; abrir e fechar fotos pelo X, Escape e fundo; conferir retorno de foco. Testar álbum vazio e apenas uma foto.
+7. Configurar contatos reais de teste, copiar Pix e verificar beneficiário. Enviar formulário em branco deve focar o campo obrigatório; preenchido deve abrir WhatsApp com assunto, contato e mensagem. Confira campanha individual e meta excedida/zero.
+8. Desativar demonstração: faixa e fotos ilustrativas dos álbuns desaparecem; as fotos cadastradas continuam.
+9. Salvar, visualizar e aplicar modelo sem publicar: o site público deve permanecer igual. Publicar projeto de teste; editar novamente; conferir que a alteração aparece somente depois de republicar.
+10. Validar owner/admin/editor/viewer conforme as permissões existentes. Viewer não deve editar/aplicar/publicar.
+
+Permanece a limitação anterior de gravações sequenciais das seções do rascunho e de edições concorrentes; o fluxo de publicação continua atômico. A validação da criação/convite, Storage, permissões reais, domínio e cache exige ambiente Supabase de teste.

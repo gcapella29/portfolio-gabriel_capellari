@@ -1,0 +1,290 @@
+{
+  "institutional_projects": [
+    {
+      "title": "Natal Solidário",
+      "date": "Dezembro",
+      "cat": "Ação social",
+      "text": "Arrecadação e entrega de brinquedos e cestas para famílias atendidas por entidades da cidade.",
+      "impact": "Famílias atendidas: edite aqui",
+      "id": "institutional_projects-0"
+    },
+    {
+      "title": "Campanha do Agasalho",
+      "date": "Junho",
+      "cat": "Campanha",
+      "text": "Coleta e distribuição de agasalhos e cobertores no inverno.",
+      "impact": "Peças entregues: edite aqui",
+      "id": "institutional_projects-1"
+    },
+    {
+      "title": "Apoio a Entidades",
+      "date": "Todo o ano",
+      "cat": "Parceria",
+      "text": "Reformas, equipamentos e suporte a instituições que cuidam de crianças, idosos e animais.",
+      "impact": "Entidades apoiadas: edite aqui",
+      "id": "institutional_projects-2"
+    }
+  ],
+  "institutional_donations": [
+    {
+      "date": "Mês/20XX",
+      "title": "Cestas básicas",
+      "to": "Entregues a famílias cadastradas",
+      "qty": "00 cestas",
+      "id": "institutional_donations-0"
+    },
+    {
+      "date": "Mês/20XX",
+      "title": "Equipamentos",
+      "to": "Doados a uma entidade da cidade",
+      "qty": "00 itens",
+      "id": "institutional_donations-1"
+    },
+    {
+      "date": "Mês/20XX",
+      "title": "Agasalhos e cobertores",
+      "to": "Distribuídos na Campanha do Agasalho",
+      "qty": "00 peças",
+      "id": "institutional_donations-2"
+    },
+    {
+      "date": "Mês/20XX",
+      "title": "Brinquedos",
+      "to": "Entregues no Natal Solidário",
+      "qty": "00 unidades",
+      "id": "institutional_donations-3"
+    }
+  ],
+  "institutional_campaigns": [
+    {
+      "day": "00",
+      "month": "mês",
+      "title": "Campanha do Agasalho",
+      "text": "Doe agasalhos em bom estado nos pontos de coleta.",
+      "goal": 100,
+      "raised": 40,
+      "unit": "% da meta",
+      "id": "institutional_campaigns-0"
+    },
+    {
+      "day": "00",
+      "month": "mês",
+      "title": "Natal Solidário",
+      "text": "Apadrinhe uma família ou doe brinquedos e alimentos.",
+      "goal": 100,
+      "raised": 15,
+      "unit": "% da meta",
+      "id": "institutional_campaigns-1"
+    },
+    {
+      "day": "00",
+      "month": "mês",
+      "title": "Jantar Beneficente",
+      "text": "Venha jantar com a gente e ajude a financiar nossos projetos.",
+      "goal": 0,
+      "raised": 0,
+      "unit": "",
+      "id": "institutional_campaigns-2"
+    }
+  ],
+  "institutional_timeline": [
+    {
+      "year": "20XX",
+      "title": "Fundação",
+      "text": "Nasce a Alumni Ibitinga, reunindo pessoas com o desejo de servir à comunidade.",
+      "id": "institutional_timeline-0"
+    },
+    {
+      "year": "20XX",
+      "title": "Primeiros projetos",
+      "text": "As primeiras ações sociais mostram o poder da união entre voluntários.",
+      "id": "institutional_timeline-1"
+    },
+    {
+      "year": "20XX",
+      "title": "Crescimento",
+      "text": "Novas parcerias ampliam o alcance das doações e das campanhas.",
+      "id": "institutional_timeline-2"
+    },
+    {
+      "year": "Hoje",
+      "title": "Seguimos servindo",
+      "text": "Uma nova gestão dá continuidade ao legado e abre espaço para novos projetos.",
+      "id": "institutional_timeline-3"
+    }
+  ],
+  "institutional_values": [
+    {
+      "t": "Filantropia",
+      "d": "Ajudar quem precisa, sem esperar nada em troca.",
+      "id": "institutional_values-0"
+    },
+    {
+      "t": "Fraternidade",
+      "d": "Unir pessoas em torno de um propósito maior.",
+      "id": "institutional_values-1"
+    },
+    {
+      "t": "Transparência",
+      "d": "Prestar contas de cada ação e de cada doação.",
+      "id": "institutional_values-2"
+    }
+  ],
+  "institutional_current_board": [
+    {
+      "name": "Nome do Presidente",
+      "role": "Presidente",
+      "photo": "",
+      "id": "institutional_current_board-0"
+    },
+    {
+      "name": "Nome do Vice",
+      "role": "Vice-presidente",
+      "photo": "",
+      "id": "institutional_current_board-1"
+    },
+    {
+      "name": "Nome do Secretário",
+      "role": "1º Secretário",
+      "photo": "",
+      "id": "institutional_current_board-2"
+    },
+    {
+      "name": "Nome do Tesoureiro",
+      "role": "1º Tesoureiro",
+      "photo": "",
+      "id": "institutional_current_board-3"
+    },
+    {
+      "name": "Nome do Diretor",
+      "role": "Diretor de Projetos",
+      "photo": "",
+      "id": "institutional_current_board-4"
+    },
+    {
+      "name": "Nome do Diretor",
+      "role": "Diretor de Comunicação",
+      "photo": "",
+      "id": "institutional_current_board-5"
+    }
+  ],
+  "institutional_current_members": [
+    {
+      "name": "Membro 1",
+      "photo": "",
+      "id": "institutional_current_members-0"
+    },
+    {
+      "name": "Membro 2",
+      "photo": "",
+      "id": "institutional_current_members-1"
+    },
+    {
+      "name": "Membro 3",
+      "photo": "",
+      "id": "institutional_current_members-2"
+    },
+    {
+      "name": "Membro 4",
+      "photo": "",
+      "id": "institutional_current_members-3"
+    },
+    {
+      "name": "Membro 5",
+      "photo": "",
+      "id": "institutional_current_members-4"
+    },
+    {
+      "name": "Membro 6",
+      "photo": "",
+      "id": "institutional_current_members-5"
+    },
+    {
+      "name": "Membro 7",
+      "photo": "",
+      "id": "institutional_current_members-6"
+    },
+    {
+      "name": "Membro 8",
+      "photo": "",
+      "id": "institutional_current_members-7"
+    },
+    {
+      "name": "Membro 9",
+      "photo": "",
+      "id": "institutional_current_members-8"
+    },
+    {
+      "name": "Membro 10",
+      "photo": "",
+      "id": "institutional_current_members-9"
+    },
+    {
+      "name": "Membro 11",
+      "photo": "",
+      "id": "institutional_current_members-10"
+    },
+    {
+      "name": "Membro 12",
+      "photo": "",
+      "id": "institutional_current_members-11"
+    }
+  ],
+  "institutional_previous_board": [
+    {
+      "name": "Nome do Presidente",
+      "role": "Presidente",
+      "photo": "",
+      "id": "institutional_previous_board-0"
+    },
+    {
+      "name": "Nome do Vice",
+      "role": "Vice-presidente",
+      "photo": "",
+      "id": "institutional_previous_board-1"
+    },
+    {
+      "name": "Nome do Secretário",
+      "role": "1º Secretário",
+      "photo": "",
+      "id": "institutional_previous_board-2"
+    },
+    {
+      "name": "Nome do Tesoureiro",
+      "role": "1º Tesoureiro",
+      "photo": "",
+      "id": "institutional_previous_board-3"
+    }
+  ],
+  "institutional_previous_members": [],
+  "institutional_albums": [
+    {
+      "id": "natal",
+      "title": "Natal Solidário",
+      "date": "Dezembro",
+      "photos": [],
+      "count": 8
+    },
+    {
+      "id": "agasalho",
+      "title": "Campanha do Agasalho",
+      "date": "Junho",
+      "photos": [],
+      "count": 6
+    },
+    {
+      "id": "entidades",
+      "title": "Apoio a Entidades",
+      "date": "Ao longo do ano",
+      "photos": [],
+      "count": 4
+    },
+    {
+      "id": "encontros",
+      "title": "Encontros e confraternizações",
+      "date": "Ao longo do ano",
+      "photos": [],
+      "count": 4
+    }
+  ]
+}

@@ -15,6 +15,7 @@ export const segments:Record<SegmentKey,SegmentDefinition>={
   {key:'commerce-bakery-1',segment:'commerce',name:'Padaria',description:'Pães, destaques da casa, cardápio e pedido pelo WhatsApp.',status:'ready'}
  ]},
  'personal-trainer':{key:'personal-trainer',name:'Personal Trainer',description:'Treinos, agenda, método e resultados.',templates:[{key:'personal-trainer-main-1',segment:'personal-trainer',name:'Personal Trainer',description:'Método, modalidades, resultados e agenda com contato pelo WhatsApp.',status:'ready'}]},
+ institutional:{key:'institutional',name:'Institucional',description:'Organizações, projetos, campanhas, gestão e transparência.',templates:[{key:'institutional-main-1',segment:'institutional',name:'Institucional',description:'História, projetos, doações, campanhas, gestão e álbuns de fotos.',status:'ready'}]},
  school:{key:'school',name:'Escola',description:'Cursos, turmas, estrutura e matrículas. Em breve.',templates:[]}
 };
 export function templatesForSegment(segment:SegmentKey){return segments[segment].templates}

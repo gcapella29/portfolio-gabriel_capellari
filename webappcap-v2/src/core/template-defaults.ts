@@ -1,3 +1,4 @@
+import {institutionalDefaults} from './institutional-content.ts';
 import {trainerDefaults} from './trainer-content.ts';
 import type { SegmentKey } from './domain';
 import type { V2Content } from './onboarding-data';
@@ -74,6 +75,7 @@ const commerceBakeryDefaults: DefaultsFactory = (name) => ({
 });
 
 const defaultsByTemplate: Record<string, DefaultsFactory> = {
+  'institutional-main-1':institutionalDefaults,
   'personal-trainer-main-1':trainerDefaults,
   'commerce-main-1': commerceMainDefaults,
   'commerce-modern-1': name=>{const defaults=commerceMainDefaults(name);return {...defaults,appearance:{...defaults.appearance,preview_template_key:'commerce-modern-1'}}},
@@ -81,6 +83,7 @@ const defaultsByTemplate: Record<string, DefaultsFactory> = {
 };
 
 export function initialTemplateForSegment(segment: SegmentKey): string | null {
+  if(segment==='institutional')return 'institutional-main-1';
   if (segment === 'food-business') return 'commerce-main-1';
   if (segment === 'personal-trainer') return 'personal-trainer-main-1';
   if (segment === 'commerce') return 'commerce-bakery-1';
