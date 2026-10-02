@@ -1,4 +1,5 @@
 'use server';
+import {normalizeImagePosition} from '@/core/image-placement';
 import {redirect} from 'next/navigation';
 import {revalidatePath} from 'next/cache';
 import {resolveProjectAccess} from '@/core/session';
@@ -16,7 +17,7 @@ function image(form:FormData,field:string,slot:string,current:unknown,projectId:
  }
  const url=uploaded?trainerImage(uploaded):trainerImage(current);if(!url)return '';
  const position=text(form,`mediaPosition:${slot}`),fit=text(form,`mediaFit:${slot}`),zoom=Number(text(form,`mediaZoom:${slot}`));
- return {...(uploaded||{}),url,position:/^(?:100|\d{1,2})(?:\.\d+)?%\s+(?:100|\d{1,2})(?:\.\d+)?%$/.test(position)?position:'center',fit:['cover','contain','fill'].includes(fit)?fit:'cover',zoom:Math.max(50,Math.min(200,zoom||100))};
+ return {...(uploaded||{}),url,position:normalizeImagePosition(position),fit:['cover','contain','fill'].includes(fit)?fit:'cover',zoom:Math.max(50,Math.min(200,zoom||100))};
 }
 export async function saveTrainerAction(form:FormData){
  const slug=text(form,'slug'),access=await resolveProjectAccess(slug);

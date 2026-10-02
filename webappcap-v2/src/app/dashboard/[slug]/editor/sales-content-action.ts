@@ -1,4 +1,5 @@
 'use server';
+import {normalizeImagePosition} from '@/core/image-placement';
 
 import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
@@ -39,7 +40,7 @@ export async function saveSalesContentAction(formData:FormData){
  if(can(access.role,'manageMedia')){
   const media={...current.media},slot='sales_hero';let changed=false;
   if(text(formData,`removeMedia:${slot}`)==='yes'){delete media[slot];changed=true}else{
-   const rawPosition=text(formData,`mediaPosition:${slot}`),position=/^(?:100(?:\.0)?|\d{1,2}(?:\.\d+)?)%\s+(?:100(?:\.0)?|\d{1,2}(?:\.\d+)?)%$/.test(rawPosition)||['top','center','bottom','left','right'].includes(rawPosition)?rawPosition:'center';
+   const rawPosition=text(formData,`mediaPosition:${slot}`),position=normalizeImagePosition(rawPosition);
    const fit=['cover','contain','fill'].includes(text(formData,`mediaFit:${slot}`))?text(formData,`mediaFit:${slot}`):'cover',zoom=String(Math.max(50,Math.min(200,Number(text(formData,`mediaZoom:${slot}`))||100)));
    const uploaded=directImage(formData,`uploadedMedia:${slot}`,access.project.id),existing=mediaUrl(media[slot]);
    if(uploaded){media[slot]={...uploaded,position,fit,zoom};changed=true}else if(existing&&provided(formData,`mediaPosition:${slot}`)){media[slot]={...(typeof media[slot]==='object'&&media[slot]?media[slot] as Record<string,unknown>:{url:existing}),position,fit,zoom};changed=true}

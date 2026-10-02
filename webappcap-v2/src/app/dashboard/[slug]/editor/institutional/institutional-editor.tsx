@@ -76,13 +76,13 @@ export default function InstitutionalEditor({
         label={label}
         current={institutionalImage(current)}
         currentPosition={text(item.position) || 'center'}
-        currentFit={text(item.fit) || 'cover'}
+        currentFit={text(item.fit) || (slotType === 'hero' ? 'contain' : 'cover')}
         currentZoom={text(item.zoom) || 100}
         {...imageEditorFrame('institutional-main-1', slotType)}
         {...(slotType === 'person' ? {previewMaxWidth: 180} : {})}
         help={
           slotType === 'hero'
-            ? 'Referência desktop 2:1. A capa adapta a altura ao conteúdo e à tela; confira no Preview. Arraste e ajuste o zoom.'
+            ? 'Quadro 16:9, igual ao hero. Use Mostrar inteira para o emblema; arraste e ajuste o zoom.'
             : 'Enquadramento do site. Arraste, ajuste o zoom e salve o rascunho.'
         }
       />

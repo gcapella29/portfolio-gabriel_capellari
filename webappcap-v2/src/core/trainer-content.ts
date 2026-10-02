@@ -1,3 +1,4 @@
+import {imageMediaStyle} from './image-placement.ts';
 import type {CSSProperties} from 'react';
 // Data shared by Personal Trainer templates; presentation copy is namespaced.
 export const trainerLists={
@@ -62,4 +63,4 @@ export function trainerData(content:Record<string,unknown>){
 }
 export function trainerDefaults(name:string){return {identity:{name},content:{...trainerCopy,trainer_agenda:'aberta',trainer_cref:'',trainer_goals:trainerGoals.join('\n'),...structuredClone(trainerExamples)},appearance:{preview_template_key:'personal-trainer-main-1'},contact:{whatsapp:''}}}
 
-export function trainerImageStyle(value:unknown):CSSProperties{const row=value&&typeof value==='object'?value as Record<string,unknown>:{};return {objectPosition:String(row.position||'center'),objectFit:['cover','contain','fill'].includes(String(row.fit))?row.fit as CSSProperties['objectFit']:'cover',transform:`scale(${Math.max(50,Math.min(200,Number(row.zoom)||100))/100})`}}
+export function trainerImageStyle(value:unknown):CSSProperties{return imageMediaStyle(value)}

@@ -1,3 +1,4 @@
+import {imageMediaStyle} from './image-placement.ts';
 import copyDefaults from './institutional-copy.json' with {type: 'json'};
 import examples from './institutional-examples.json' with {type: 'json'};
 import type {CSSProperties} from 'react';
@@ -100,24 +101,7 @@ export function institutionalImage(value: unknown) {
       : value,
   );
 }
-export function institutionalImageStyle(value: unknown): CSSProperties {
-  const item =
-    value && typeof value === 'object'
-      ? (value as Record<string, unknown>)
-      : {};
-  return {
-    objectPosition:
-      /^(?:100|\d{1,2})(?:\.\d+)?%\s+(?:100|\d{1,2})(?:\.\d+)?%$/.test(
-        String(item.position),
-      )
-        ? String(item.position)
-        : 'center',
-    objectFit: ['cover', 'contain', 'fill'].includes(String(item.fit))
-      ? (item.fit as CSSProperties['objectFit'])
-      : 'cover',
-    transform: `scale(${Math.max(50, Math.min(200, Number(item.zoom) || 100)) / 100})`,
-  };
-}
+export function institutionalImageStyle(value:unknown):CSSProperties{return imageMediaStyle(value)}
 export function institutionalRows(
   value: unknown,
   key: InstitutionalListKey,

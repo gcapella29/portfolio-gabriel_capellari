@@ -1,7 +1,17 @@
+/* Institutional identity overrides; original styles.css remains preserved. */
+.institutional-document{--ink:#20233d;--blue:#282582;--gold:#806019;--gold-l:#d4a545;--paper:#f5f6fa;--card:#fff;--muted:#626779;--line:#dfe2eb}
+.top{background:rgba(23,22,79,.97)}
+.hero{background:#282582;padding:68px 0 48px}
+.hero-with-image .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;align-items:center}
+.hero-copy{min-width:0}.hero h1{font-size:clamp(2.8rem,5.2vw,5.2rem);max-width:900px}
+.hero-image{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;border-radius:18px;background:#282582}
+.hero-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.hero-with-image .stats{grid-column:1/-1;margin-top:12px;width:100%}
+.alt,footer,.band{background:#17164f;color:#fff}.band p{color:rgba(255,255,255,.8)}.band .btn-dark{background:var(--gold-l);color:#17164f}
+.card,.person,.album,.info>div{background:#fff;border-color:var(--line);box-shadow:0 4px 18px rgba(23,22,79,.035)}
+.btn-gold{color:#17164f}.card .tag,.kick{color:var(--gold)}
+@media(max-width:800px){.hero{padding:32px 0 36px}.hero-with-image .wrap{grid-template-columns:1fr;gap:24px}.hero-image{grid-row:1}.hero h1{font-size:clamp(2.6rem,9vw,4rem)}.hero-with-image .stats{margin-top:0}.hero .cta{gap:10px;flex-wrap:wrap}.hero .cta .btn{flex:1 1 160px;justify-content:center;text-align:center}}
 /* Optional cover and motion, separate from the preserved reference stylesheet. */
-.hero-image{position:absolute;inset:0;overflow:hidden}
-.hero-image img{width:100%;height:100%;object-fit:cover}
-.hero-image::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(15,29,51,.91),rgba(15,29,51,.64)),linear-gradient(0deg,rgba(15,29,51,.8),transparent 60%)}
 .hero::before{z-index:1;pointer-events:none}.hero .wrap{z-index:2}
 .hero h1,.hero .kick,.hero .cta,.hero .stats{animation:institutional-enter .65s cubic-bezier(.2,.7,.2,1) both}.hero .cta{animation-delay:.1s}.hero .stats{animation-delay:.16s}
 @keyframes institutional-enter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}

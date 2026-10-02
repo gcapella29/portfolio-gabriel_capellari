@@ -1,4 +1,5 @@
 'use server';
+import {normalizeImagePosition} from '@/core/image-placement';
 import {redirect} from 'next/navigation';
 import {revalidatePath} from 'next/cache';
 import {resolveProjectAccess} from '@/core/session';
@@ -57,11 +58,7 @@ function picture(
   return {
     ...(value && typeof value === 'object' ? value : {}),
     url,
-    position: /^(?:100|\d{1,2})(?:\.\d+)?%\s+(?:100|\d{1,2})(?:\.\d+)?%$/.test(
-      position,
-    )
-      ? position
-      : 'center',
+    position: normalizeImagePosition(position),
     fit: ['cover', 'contain', 'fill'].includes(fit) ? fit : 'cover',
     zoom: Math.max(50, Math.min(200, zoom || 100)),
   };

@@ -258,18 +258,9 @@ export function InstitutionalMainTemplate({
                     data-view="inicio"
                     hidden={view !== 'inicio'}
                   >
-                    <div className="hero">
-                      {institutionalImage(data.media.hero) ? (
-                        <div className="hero-image" aria-hidden="true">
-                          <img
-                            src={institutionalImage(data.media.hero)}
-                            style={institutionalImageStyle(data.media.hero)}
-                            alt=""
-                            fetchPriority="high"
-                          />
-                        </div>
-                      ) : null}
+                    <div className={`hero ${institutionalImage(data.media.hero)?"hero-with-image":""}`} >
                       <div className="wrap">
+                        <div className="hero-copy">
                         <p className="kick" style={{color: 'var(--gold-l)'}}>
                           {copy.institutional_main_hero_kicker}
                         </p>
@@ -296,6 +287,17 @@ export function InstitutionalMainTemplate({
                             </a>
                           ) : null}
                         </div>
+                        </div>
+                      {institutionalImage(data.media.hero) ? (
+                        <div className="hero-image" aria-hidden="true">
+                          <img
+                            src={institutionalImage(data.media.hero)}
+                            style={institutionalImageStyle({fit:"contain",...(typeof data.media.hero==="object"?data.media.hero:{})})}
+                            alt=""
+                            fetchPriority="high"
+                          />
+                        </div>
+                      ) : null}
                         <Stats />
                       </div>
                     </div>

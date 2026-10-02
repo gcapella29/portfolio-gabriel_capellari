@@ -1,4 +1,5 @@
 'use client';
+import {imagePositionStyle} from '@/core/image-placement';
 
 import {useCallback,useDeferredValue,useEffect,useMemo,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
@@ -31,7 +32,7 @@ function mapCommerceProductToModern(raw:Row,productIndex:number):Product{
  };
 }
 
-const mediaStyle=(value:unknown,prefix=''):React.CSSProperties=>{const row=value&&typeof value==='object'?value as Row:{};const fit=str(row,`${prefix}fit`,'cover');return {objectPosition:str(row,`${prefix}position`,'center'),objectFit:(['cover','contain','fill'].includes(fit)?fit:'cover') as React.CSSProperties['objectFit'],'--media-zoom':Math.max(50,Math.min(200,Number(row[`${prefix}zoom`])||100))/100} as React.CSSProperties};
+const mediaStyle=(value:unknown,prefix=''):React.CSSProperties=>{const row=value&&typeof value==='object'?value as Row:{};const fit=str(row,`${prefix}fit`,'cover');return {...imagePositionStyle(row[`${prefix}position`]),objectFit:(['cover','contain','fill'].includes(fit)?fit:'cover') as React.CSSProperties['objectFit'],'--media-zoom':Math.max(50,Math.min(200,Number(row[`${prefix}zoom`])||100))/100} as React.CSSProperties};
 
 const markImageLoaded=(event:React.SyntheticEvent<HTMLImageElement>)=>event.currentTarget.classList.add('loaded');
 

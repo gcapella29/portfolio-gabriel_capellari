@@ -56,3 +56,12 @@ A faixa de demonstração foi removida do site. A opção do editor controla som
 Teste também: remover/restaurar a capa; mudar zoom e posição; salvar/republicar; clicar nos avatares das duas gestões; perfil ausente; teclado; navegação entre páginas com animação; preferência de movimento reduzido.
 
 O hero também possui CTA “Seguir no Instagram”, configurado em Contato/Instagram, com texto editável. O botão é omitido enquanto não houver perfil válido. O editor institucional usa grade própria responsiva, campos curtos em inputs, descrições em áreas de texto, cabeçalhos identificados por cargo/nome e controles de ordenação nas duas direções. A foto de cada pessoa fica ao lado dos dados no desktop e abaixo no mobile, com preview compacto de 180px mantendo proporção 1:1. Membros podem ter cargo/função opcional, sem alterar os cadastros existentes.
+
+
+### Identidade institucional e posicionamento compartilhado
+
+A identidade autorizada utiliza azul royal #282582, azul profundo #17164F, dourado #D4A545, fundo #F5F6FA e cartões brancos. O dourado escuro #806019 mantém contraste nos pequenos textos sobre fundo claro. As fontes originais continuam preservadas. O hero opcional apresenta texto e imagem em colunas; no mobile a imagem vem primeiro. O quadro da imagem e do editor tem proporção 16:9, sem sobreposição escura sobre o emblema. Selecione **Mostrar inteira** para preservar todo o desenho.
+
+Todos os controles individuais usam `src/core/image-placement.ts` e `DraggableImagePreview`: arraste relativo ao ponto inicial, deslocamento proporcional de -100% a 100% por eixo, zoom 50–200%, setas/Shift e centralização. O formato `pan(x,y)|posição anterior` preserva o enquadramento anterior e não exige migração. Novo template deve usar `imageMediaStyle` (ou `imagePositionStyle` quando o CSS controla animação/zoom), o componente compartilhado e `normalizeImagePosition` no salvamento. Publicação e leitura de preview continuam iguais.
+
+Teste manual: mover nos quatro sentidos, reduzir zoom e mostrar inteira, salvar/reabrir, comparar Preview desktop/mobile, publicar e comparar o site. Repetir nos modelos Comércio Clássico, Moderno, Padaria, Portfólio e Personal Trainer. Verificar também imagens de cards e antes/depois. Arrastar além do quadro pode deixar áreas vazias intencionalmente; Centralizar restaura o centro sem alterar o zoom. A galeria genérica continua com upload múltiplo; controles de fotos individuais existem nos editores que possuem esses slots.
