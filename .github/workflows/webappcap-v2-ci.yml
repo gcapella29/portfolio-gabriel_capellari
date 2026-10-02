@@ -28,6 +28,7 @@ jobs:
           cache: npm
           cache-dependency-path: webappcap-v2/package-lock.json
       - run: npm ci --no-audit --no-fund
+      - run: npm run lint
       - run: npm run typecheck
       - run: npm test
       - run: npm run build

@@ -82,7 +82,7 @@ export function Footer() {
 }
 
 export function Dock({ t }:{t:StateCopy}) {
-  const {copy,wa}=useTrainer();
+  const {wa}=useTrainer();
   return (
     <div className="dock">
       <div><span className="dot"></span><strong>{t.pill}</strong><small>{t.title}</small></div>

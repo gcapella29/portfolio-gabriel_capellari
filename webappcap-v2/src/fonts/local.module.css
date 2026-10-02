@@ -1,0 +1,13 @@
+.variables{
+  --home-heading:"Fraunces","Fraunces Fallback";
+  --home-body:"Inter","Inter Fallback";
+  --home-mono:"IBM Plex Mono","IBM Plex Mono Fallback";
+  --portfolio-heading:"Fraunces","Fraunces Fallback";
+  --portfolio-body:"Inter","Inter Fallback";
+  --portfolio-mono:"IBM Plex Mono","IBM Plex Mono Fallback";
+  --commerce-fixed-heading:"Archivo Black","Archivo Black Fallback";
+  --commerce-fixed-body:"Inter","Inter Fallback";
+  --commerce-fixed-handwritten:"Caveat","Caveat Fallback";
+  --sales-heading-font:"Archivo Black","Archivo Black Fallback";
+  --sales-body-font:"Inter","Inter Fallback";
+}

@@ -4,7 +4,6 @@ import {
   institutionalInstagram,
   institutionalImage,
   institutionalImageStyle,
-  institutionalUrl,
   type InstitutionalRow,
 } from '@/core/institutional-content';
 import {placeholder, useInstitutional} from './context';

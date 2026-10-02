@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import {useTrainer,type StateCopy} from "./context";
 import type {ChangeEvent,FormEvent} from "react";
 
-export default function Agenda({ t, agenda }:{t:StateCopy;agenda:"aberta"|"fechada"}) {
+export default function Agenda({ t }:{t:StateCopy;agenda:"aberta"|"fechada"}) {
  const {copy,lists,goals,wa}=useTrainer();
  const modes=lists.trainer_modes.map(row=>row.title).filter(Boolean);
   const [f, setF] = useState({ name: "", phone: "", goal: goals[0]||"Outro", mode: modes[0]||"Outro", msg: "" });

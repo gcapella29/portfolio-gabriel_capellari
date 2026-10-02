@@ -1,6 +1,6 @@
 # Revisão técnica geral — 02/10/2026
 
-Branch: `chore/code-quality-audit`, baseada na main após o PR #115. Correções agrupadas; sem merge nesta rodada.
+Branch: `chore/code-quality-audit`, baseada na main após o PR #115. Correções agrupadas; PR #116 mergeado após CI e preview aprovados. O fechamento das pendências está em `docs/audit-follow-up-2026-10-02.md`.
 
 ## Correções
 

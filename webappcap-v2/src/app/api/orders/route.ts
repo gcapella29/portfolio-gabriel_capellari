@@ -1,3 +1,4 @@
+import {sharedRateLimit} from '@/lib/shared-rate-limit';
 import {NextResponse} from 'next/server';
 import {createSupabaseServerClient} from '@/lib/supabase/server';
 
@@ -30,6 +31,9 @@ export async function POST(request:Request){
    return json({ok:false,error:'invalid_input'},400);
   }
 
+  const ip=request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||request.headers.get('x-real-ip')||'unknown';
+  const shared=await sharedRateLimit('orders',`${projectId}:${ip}`,10);
+  if(shared!=='allowed')return json({ok:false,error:shared==='limited'?'rate_limited':'temporarily_unavailable'},shared==='limited'?429:503);
   const sb=await createSupabaseServerClient();
   const saved=await sb.rpc('submit_v2_commerce_order',{
    p_project_id:projectId,

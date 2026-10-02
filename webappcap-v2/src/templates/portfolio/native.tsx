@@ -3,15 +3,13 @@ import {imageMediaStyle} from '@/core/image-placement';
 import {heroCopyStyle,heroTextStyle,heroTextMotion} from '@/core/hero-typography';
 
 import Image from 'next/image';
-import { Fraunces, IBM_Plex_Mono, Inter } from 'next/font/google';
+import fonts from '@/fonts/local.module.css';
+import {preloadSiteFonts} from '@/fonts/preload';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import type { TemplateRenderProps } from '../types';
 import { compactPortfolioEnglishRole, portfolioDefaults as defaults, type LocalizedText } from './native-data';
 import styles from './native.module.css';
 
-const headingFont=Fraunces({subsets:['latin'],weight:'variable',style:['normal','italic'],axes:['opsz'],variable:'--portfolio-heading',display:'swap'});
-const bodyFont=Inter({subsets:['latin'],weight:['400','500','600'],variable:'--portfolio-body',display:'swap'});
-const monoFont=IBM_Plex_Mono({subsets:['latin'],weight:['400','500','600','700'],variable:'--portfolio-mono',display:'swap'});
 
 type Language='pt'|'en';
 type CssVariables=CSSProperties&{'--accent'?:string};
@@ -27,6 +25,7 @@ const storedRows=(record:Record<string,unknown>,key:string)=>{const value=record
 const field=(item:Record<string,unknown>,key:string)=>String(item[key]??'').trim();
 
 export function NativePortfolioTemplate({project,data,preview=false}:TemplateRenderProps){
+ preloadSiteFonts('editorial');
   const [language,setLanguage]=useState<Language>('pt');
   const [slide,setSlide]=useState(0);
   const [activeSection,setActiveSection]=useState('destaques');
@@ -113,7 +112,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const firstName=name.split(' ')[0];const surname=name.split(' ').slice(1).join(' ');
   const cssVariables:CssVariables={'--accent':accent};
 
-  return <div ref={siteRef} className={`${styles.site} ${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`} data-language={language} data-motion-paused={motionPaused?'true':'false'} style={cssVariables}>
+  return <div ref={siteRef} className={`${styles.site} ${fonts.variables}`} data-language={language} data-motion-paused={motionPaused?'true':'false'} style={cssVariables}>
     <div className={styles.progress} aria-hidden="true"/>
     {preview?<div className={styles.preview}>Homologação · renderer nativo</div>:null}
     <a className={styles.skip} href="#sobre">{language==='pt'?'Pular para o conteúdo':'Skip to content'}</a>

@@ -58,7 +58,7 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
   const shadow=el.shadowRoot||el.attachShadow({mode:'open'});
   // Font-face declarations must be registered in the document, while template selectors remain isolated.
   let font=document.querySelector<HTMLLinkElement>('link[data-commerce-modern-font]');
-  if(!font){font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..800&family=Manrope:wght@400..800&display=swap';font.dataset.commerceModernFont='';document.head.appendChild(font)}
+  if(!font){font=document.createElement('link');font.rel='stylesheet';font.href='/fonts/commerce-modern.81ebc83b4cc2.css';font.dataset.commerceModernFont='';document.head.appendChild(font)}
   font.dataset.users=String(Number(font.dataset.users||0)+1);
   const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/templates/commerce-modern/styles.css';
   let cancelled=false,pending=2;

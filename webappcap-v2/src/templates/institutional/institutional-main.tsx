@@ -77,7 +77,7 @@ export function InstitutionalMainTemplate({
       font = document.createElement('link');
       font.rel = 'stylesheet';
       font.href =
-        'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap';
+        '/fonts/institutional.1ce32c29fa16.css';
       font.dataset.institutionalFont = '';
       document.head.append(font);
     }

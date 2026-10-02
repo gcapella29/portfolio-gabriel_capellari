@@ -1,3 +1,4 @@
+import {sharedRateLimit} from '@/lib/shared-rate-limit';
 import {createWindowRateLimiter} from '@/core/rate-limit';
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -15,6 +16,8 @@ export async function POST(request:Request){
   if(!uuid.test(projectId)||!allowed.has(eventType))return response(false,400);
   const ip=request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||request.headers.get('x-real-ip')||'unknown';
   if(limited(`${projectId}:${ip}`))return response(false,429);
+  const shared=await sharedRateLimit('analytics',`${projectId}:${ip}`,40);
+  if(shared!=='allowed')return response(false,shared==='limited'?429:503);
   const sb=await createSupabaseServerClient();
   const result=await sb.rpc('webappcap_track_event',{
     p_project_id:projectId,

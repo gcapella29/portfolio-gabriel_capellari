@@ -59,7 +59,7 @@ export function RepeatableSections({definitions,initial,collapsible=false,embedd
  const parse=(key:string):Item[]=>{const value=initial[key];return Array.isArray(value)?value.filter(item=>item&&typeof item==='object').map(item=>normalizeItem(item as Record<string,unknown>)):[]};
  const [query,setQuery]=useState(''),[category,setCategory]=useState(''),[page,setPage]=useState(0),deferredQuery=useDeferredValue(query.trim().toLowerCase());
  const [sections,setSections]=useState<Record<string,Item[]>>(()=>Object.fromEntries(definitions.map(definition=>[definition.key,parse(definition.key)]))),[uploads,setUploads]=useState<Record<string,UploadState>>({});
- const catalogItems=sections.menu_items||[];
+ const catalogItems=useMemo(()=>sections.menu_items||[],[sections.menu_items]);
  const catalogCategories=useMemo(()=>Array.from(new Set(catalogItems.map(item=>item.category?.trim()).filter(Boolean))).sort(),[catalogItems]);
  const filteredCatalog=useMemo(()=>catalogItems.map((item,index)=>({item,index})).filter(({item})=>(!category||item.category===category)&&(!deferredQuery||`${item.title||''} ${item.description||''} ${item.category||''}`.toLowerCase().includes(deferredQuery))),[catalogItems,category,deferredQuery]);
  const add=useCallback((definition:RepeatableSection)=>{setQuery('');setCategory('');setSections(current=>{const items=current[definition.key]||[];setPage(Math.floor(items.length/20));return {...current,[definition.key]:[...items,Object.fromEntries(definition.fields.map(field=>[field.key,'']))]}})},[]);

@@ -1,3 +1,4 @@
+import {sharedRateLimit} from '@/lib/shared-rate-limit';
 import {createWindowRateLimiter} from '@/core/rate-limit';
 import { NextResponse } from 'next/server';
 import { readPublicSiteBySlug } from '@/core/public-site';
@@ -34,6 +35,8 @@ export async function POST(request:Request){
 
   if(!uuid.test(projectId)||name.length<2||(!phone.test(phoneValue)||phoneValue.replace(/\D/g,'').length<8)||message.length<3||!consentGranted)return json({ok:false,error:'invalid_input'},400);
   if(limited(clientKey(request,projectId)))return json({ok:false,error:'rate_limited'},429);
+  const shared=await sharedRateLimit('leads',clientKey(request,projectId),6);
+  if(shared!=='allowed')return json({ok:false,error:shared==='limited'?'rate_limited':'temporarily_unavailable'},shared==='limited'?429:503);
 
   const sb=createSupabaseAdminClient();
   const result=await sb.rpc('submit_v2_public_lead',{

@@ -48,7 +48,7 @@ export default function CatalogManager({projectId,initialItems,limit,templateKey
   if(!window.confirm('Remover este produto do catálogo? A exclusão será confirmada quando você salvar o rascunho.'))return;
   setRows(current=>current.filter(row=>row.id!==id));setSelected(current=>{const next=new Set(current);next.delete(id);return next});if(openId===id)setOpenId(null);
  };
- const toggleSelected=(id:string)=>setSelected(current=>{const next=new Set(current);next.has(id)?next.delete(id):next.add(id);return next});
+ const toggleSelected=(id:string)=>setSelected(current=>{const next=new Set(current);if(next.has(id))next.delete(id);else next.add(id);return next});
  const toggleVisible=()=>setSelected(current=>{const next=new Set(current);if(allVisibleSelected)visibleIds.forEach(id=>next.delete(id));else visibleIds.forEach(id=>next.add(id));return next});
  const bulkStatus=(active:boolean)=>setRows(current=>current.map(row=>selected.has(row.id)?{...row,item:{...row.item,active:active?'true':'false'}}:row));
  const applyBulkCategory=()=>{const value=bulkCategory.trim();if(!value)return;setRows(current=>current.map(row=>selected.has(row.id)?{...row,item:{...row.item,category:value}}:row));setBulkCategory('')};
