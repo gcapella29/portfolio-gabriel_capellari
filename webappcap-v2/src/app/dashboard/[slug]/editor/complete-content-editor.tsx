@@ -1,3 +1,5 @@
+import Block from './editor-block';
+import {imageEditorFrame} from '@/core/image-editor-frame';
 import ContentWorkspace,{type ContentNavItem} from '../content/content-workspace';
 import DirectImageField from '../content/direct-image-field';
 import {saveCompleteContentAction} from './complete-content-action';
@@ -8,7 +10,7 @@ const mediaValue=(value:unknown,key:'url'|'position'|'fit'|'zoom',fallback='')=>
 const visible=(o:Record<string,unknown>,key:string)=>!(key in o&&String(o[key]).trim().toLowerCase()==='false');
 const defaultWhatsappOrderMessage='Olá! Quero fazer este pedido:\n\n{itens}\n\nTotal: {total}';
 const defaultWhatsappDirectMessage='Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.';
-function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>}
+
 function VisibilityToggle({name,label,description,defaultChecked}:{name:string;label:string;description:string;defaultChecked:boolean}){return <label className={styles.visibilityToggle}><input type="hidden" name={name} value="false"/><span><strong>{label}</strong><small>{description}</small></span><span className={styles.visibilitySwitch}><input type="checkbox" name={name} value="true" defaultChecked={defaultChecked}/><i aria-hidden="true"/></span></label>}
 function EditorPanel({eyebrow,title,description,children}:{eyebrow:string;title:string;description:string;children:React.ReactNode}){return <section className={styles.editorPanel}><div className={styles.editorPanelHead}><span>{eyebrow}</span><strong>{title}</strong><small>{description}</small></div><div className={styles.editorPanelBody}>{children}</div></section>}
 
@@ -19,7 +21,7 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
    <EditorPanel eyebrow="IDENTIDADE" title="Como o site aparece" description="Nome exibido na aba do navegador e nos compartilhamentos.">
     <label className="field"><span>Título da aba do navegador</span><input name="browser_title" maxLength={80} defaultValue={v(data.identity,'browser_title')} placeholder="Ex.: Vet-se — Mimos para quem ama a rotina vet"/><small>Se ficar vazio, o sistema gera automaticamente a partir do nome da loja.</small></label>
    </EditorPanel>
-   {canManageMedia?<EditorPanel eyebrow="CAPA" title="Imagem principal" description="Escolha o enquadramento que aparece logo na abertura do site."><DirectImageField projectId={projectId} name="uploadedMedia:hero" slot="hero" label="Imagem principal" current={mediaValue(data.media.hero,'url')} currentPosition={mediaValue(data.media.hero,'position','center')} currentFit={mediaValue(data.media.hero,'fit','cover')} currentZoom={mediaValue(data.media.hero,'zoom','100')} help="Arraste a imagem na prévia para escolher exatamente o que aparece no bloco."/></EditorPanel>:null}
+   {canManageMedia?<EditorPanel eyebrow="CAPA" title="Imagem principal" description="Escolha o enquadramento que aparece logo na abertura do site."><DirectImageField projectId={projectId} name="uploadedMedia:hero" slot="hero" {...imageEditorFrame(modern?"commerce-modern-1":"commerce-main-1","hero")} label="Imagem principal" current={mediaValue(data.media.hero,'url')} currentPosition={mediaValue(data.media.hero,'position','center')} currentFit={mediaValue(data.media.hero,'fit','cover')} currentZoom={mediaValue(data.media.hero,'zoom','100')} help="Quadro de referência desktop. Ajuste o enquadramento e confira também no Preview mobile."/></EditorPanel>:null}
    <EditorPanel eyebrow="TEXTOS" title="Mensagem principal" description="As duas linhas exibidas abaixo do nome da loja no hero.">
     <div className={styles.heroCopyFields}><label className="field"><span>Primeira linha abaixo do nome</span><input name="tagline" defaultValue={v(data.identity,'tagline')}/></label><label className="field"><span>Segunda linha abaixo do nome</span><input name="hero_kicker" defaultValue={v(data.content,'hero_kicker')}/></label></div>
    </EditorPanel>
@@ -54,7 +56,7 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
   <Block id="block-5" number="05" title="Sobre" summary="Apresentação da marca e da criadora">
    <VisibilityToggle name="visibility:about" label="Exibir Sobre" description="Se o Instagram ficar ativo sozinho, ele ocupará toda a largura disponível." defaultChecked={visible(data.content,'show_about')}/>
    <label className="field"><span>Texto da seção Sobre</span><textarea name="about_main" rows={4} defaultValue={v(data.content,'about_main')}/></label>
-   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:creator" slot="creator" label="Foto da criadora" current={mediaValue(data.media.creator,'url')} currentPosition={mediaValue(data.media.creator,'position','center')} currentFit={mediaValue(data.media.creator,'fit','cover')} currentZoom={mediaValue(data.media.creator,'zoom','100')} help="Escolha a foto e ajuste seu enquadramento."/>:null}
+   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:creator" slot="creator" {...imageEditorFrame(modern?"commerce-modern-1":"commerce-main-1","creator")} label="Foto da criadora" current={mediaValue(data.media.creator,'url')} currentPosition={mediaValue(data.media.creator,'position','center')} currentFit={mediaValue(data.media.creator,'fit','cover')} currentZoom={mediaValue(data.media.creator,'zoom','100')} help="Escolha a foto e ajuste seu enquadramento."/>:null}
    <div className="form-grid"><label className="field"><span>Nome da criadora</span><input name="creator_name" defaultValue={v(data.content,'creator_name')}/></label><label className="field"><span>Instagram da criadora</span><input name="creator_instagram" defaultValue={v(data.content,'creator_instagram')}/></label></div>
    <label className="field"><span>Texto sobre a criadora</span><textarea name="creator_bio" rows={4} defaultValue={v(data.content,'creator_bio')}/></label>
    {!modern?<label className="field"><span>Texto do botão de seguir</span><input name="creator_instagram_label" defaultValue={v(data.content,'creator_instagram_label')||'Seguir no Instagram ↗'}/></label>:null}

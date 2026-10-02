@@ -1,3 +1,4 @@
+import {imageEditorFrame} from '@/core/image-editor-frame';
 import type {RepeatableSection} from '@/core/content-schema';
 import {RepeatableSections} from '@/app/setup/[slug]/[step]/repeatable-sections';
 import ContentWorkspace from '../../content/content-workspace';
@@ -26,7 +27,7 @@ export default function BakeryContentEditor({slug,projectId,canManageMedia,canEd
    <Field name="bakery_hero_subtitle" label="Apresentação" value={v(content,'bakery_hero_subtitle')||'Pães artesanais, salgados, doces e café fresquinho em um ambiente simples, tradicional e acolhedor.'} rows={3}/>
    <Field name="phone" label="Telefone exibido na capa" value={v(data.contact,'phone')}/>
    {canEditAppearance?<HeroTypographyFields initial={data.appearance} includePhone sample={{eyebrow:v(content,'bakery_eyebrow')||'Desde 1998, com pão quente todos os dias',title:v(content,'bakery_hero_title')||v(data.identity,'name'),subtitle:v(content,'bakery_hero_subtitle')||'Pães artesanais, salgados, doces e café fresquinho.',phone:v(data.contact,'phone')?`Telefone: ${v(data.contact,'phone')}`:'Telefone: (00) 0000-0000'}}/>:null}
-   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:bakery_hero" slot="bakery_hero" label="Foto de fundo da capa" current={media(data.media.bakery_hero,'url')} currentPosition={media(data.media.bakery_hero,'position','center')} currentFit={media(data.media.bakery_hero,'fit','cover')} currentZoom={media(data.media.bakery_hero,'zoom','100')} help="A foto aparece sob o gradiente original do modelo."/>:null}
+   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:bakery_hero" slot="bakery_hero" {...imageEditorFrame("commerce-bakery-1","bakery_hero")} label="Foto de fundo da capa" current={media(data.media.bakery_hero,'url')} currentPosition={media(data.media.bakery_hero,'position','center')} currentFit={media(data.media.bakery_hero,'fit','cover')} currentZoom={media(data.media.bakery_hero,'zoom','100')} help="Referência desktop; a altura da capa varia com a tela e o conteúdo. Confira o Preview."/>:null}
   </Block>
   <Block id="bakery-2" number="02" title="Destaques" summary="Textos da seção e carrossel com fotos">
    <Field name="bakery_highlights_eyebrow" label="Chamada curta" value={v(content,'bakery_highlights_eyebrow')||'Destaques da casa'}/>

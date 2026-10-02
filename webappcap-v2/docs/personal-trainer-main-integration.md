@@ -48,3 +48,19 @@ Hero, hierarquia dos botões e comparação antes/depois preservados. `styles.cs
 No mobile: formulário em uma coluna e campos de 16px para evitar zoom automático no iOS, espaçamento dos cards, quebra de textos longos no topo e dock e safe area inferior. ResizeObserver mede topo e dock para ajustar margem de rolagem e espaço inferior; observer ou listener de fallback é removido no unmount. Movimento reduzido continua respeitado.
 
 Validação adicional: compatibilidade dos dados antigos e campo opcional, DOM em StrictMode com altura dinâmica do dock/nav, exibição do público e benefícios e cleanup do observer. Conferir visualmente em 320/390/700px, incluindo texto longo na barra fixa, teclado aberto no formulário e preferência de movimento reduzido.
+
+## Ajustes de enquadramento e caso único
+
+O editor da foto do personal usa quadro 4:5 com largura máxima de 420px, reproduzindo a proporção da foto no site e os mesmos object-fit/object-position/zoom. Os componentes compartilhados aceitam dimensões opcionais; os demais editores mantêm seu quadro anterior. Não é necessário alterar ou migrar a mídia salva.
+
+Quando existe apenas um resultado, a identificação é estática e alinhada ao topo da comparação, sem um seletor que não tem alternativa. O slider antes/depois permanece igual. Vários casos continuam com tabs e navegação por teclado; zero casos continuam ocultando a seção. O CREF permanece como etiqueta inferior na foto, com quebra segura para textos longos; o campo deve conter o registro completo, incluindo o prefixo se desejado.
+
+Verificação: typecheck, 37 testes e build; DOM confirmou quadro proporcional, posição/zoom e edição por teclado, caso único sem tablist, slider mantido e vínculo acessível de identificação, além dos fluxos já verificados. Conferir visualmente o crop entre editor/preview e layouts com zero, um e vários casos.
+
+## Padronização visual dos editores
+
+Os nove grupos do Personal Trainer continuam na mesma ordem e com os mesmos campos. O acabamento usa o bloco compartilhado dos editores de Comércio: número em destaque, título/subtítulo, indicador de abertura, bordas, sombra, espaçamento responsivo e superfície do editor. O workspace compartilhado fornece o dock de salvar/preview, aviso de rascunho e bloqueio de salvamento durante uploads. Ajustar imagens por teclado também marca alterações não salvas.
+
+Os quadros de imagem são limitados a 420px e usam proporções por slot/modelo em `image-editor-frame.ts`. Personal: hero e antes/depois 4:5; catálogo Modern quadrado, Clássico 1.18:1; criadora quadrada; portfólio perfil quadrado, Sobre 4:5 e Contato 16:10. Capas fluidas de Comércio, Modern, Padaria e Venda Rápida usam referência desktop explicitada no editor. Suas alturas dependem da tela/texto; no Modern mobile a foto inteira usa proporção natural, portanto o Preview responsivo continua sendo a referência final. Os ajustes não impõem 4:5 a todos os modelos nem alteram o site publicado. Slots genéricos sem geometria contratada usam referência quadrada. A área de mídia utiliza quadros estáticos correspondentes; não ganha novos controles ou regras de persistência.
+
+Validação final: typecheck, 39 testes e build; DOM do editor em StrictMode verificou ordem dos nove grupos, formulário sem aninhamento, foto proporcional, alteração por teclado e indicação de pendência, remoção de item com atualização do JSON, dock no sidebar e Preview do modelo correto com cleanup. Revisão visual manual permanece necessária para Personal e para os quadros de capa dos demais modelos, incluindo desktop/mobile.

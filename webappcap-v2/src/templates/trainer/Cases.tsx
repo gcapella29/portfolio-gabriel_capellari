@@ -17,15 +17,15 @@ export default function Cases() {
       <div className="wrap" data-reveal>
         <p className="kick">{copy.trainer_main_results_kicker}</p>
         <h2>{copy.trainer_main_results_title.split("\n").map((line,index)=><span key={index}>{index?<br/>:null}{line}</span>)}</h2>
-        <div className="cases">
-          <div className="tabs" role="tablist" aria-label="Escolher caso" aria-orientation="vertical">
+        <div className="cases" data-single={CASES.length===1?"true":undefined}>
+          {CASES.length===1?<div className="tab case-summary"><strong id="case-0">{c.name}</strong><span>{[c.goal,c.result].filter(Boolean).join(' · ')}</span></div>:<div className="tabs" role="tablist" aria-label="Escolher caso" aria-orientation="vertical">
             {CASES.map((x, n) => (
               <button key={n} className="tab" role="tab" id={`case-${n}`} aria-controls="case-panel" tabIndex={n===active?0:-1} onKeyDown={event=>tabKey(event,n)} aria-selected={n === active} onClick={() => pick(n)}>
                 <strong>{x.name}</strong><span>{x.goal} · {x.result}</span>
               </button>
             ))}
-          </div>
-          <div role="tabpanel" id="case-panel" aria-labelledby={`case-${active}`}>
+          </div>}
+          <div role={CASES.length===1?"region":"tabpanel"} id="case-panel" aria-labelledby={`case-${active}`}>
             <div className="ba" style={{ "--p": p + "%" } as CSSProperties}>
               <img style={trainerImageStyle({position:c.after_position,fit:c.after_fit,zoom:c.after_zoom})} src={c.after || ph("FOTO DEPOIS", "#ff5a1f")} alt={`Foto depois: ${c.name}`} />
               <div className="bef"><img style={trainerImageStyle({position:c.before_position,fit:c.before_fit,zoom:c.before_zoom})} src={c.before || ph("FOTO ANTES", "#6f6a62")} alt={`Foto antes: ${c.name}`} /></div>
