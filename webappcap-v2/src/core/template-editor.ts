@@ -7,7 +7,7 @@ export type TemplateEditorSection = {
 export type TemplateEditorDefinition = {
   templateKey: string;
   label: string;
-  mode: 'complete' | 'sales' | 'trainer';
+  mode: 'complete' | 'sales' | 'trainer' | 'institutional';
   sections: TemplateEditorSection[];
 };
 
@@ -63,3 +63,5 @@ export function editorForTemplate(templateKey: string | null | undefined) {
 export function editorSectionsForTemplate(templateKey: string | null | undefined) {
   return editorForTemplate(templateKey)?.sections || [];
 }
+
+templateEditors['institutional-main-1']={templateKey:'institutional-main-1',label:'Institucional',mode:'institutional',sections:[{key:'identity',label:'Identidade e início',description:'Nome e apresentação.'},{key:'projects',label:'Projetos e campanhas',description:'Ações e transparência.'},{key:'history',label:'História',description:'Marcos e valores.'},{key:'management',label:'Gestão',description:'Diretoria e membros.'},{key:'albums',label:'Fotos',description:'Álbuns e imagens.'},{key:'contact',label:'Contato e Pix',description:'Canais e chave de doação.'}]};

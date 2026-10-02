@@ -1,0 +1,37 @@
+/* Institutional identity overrides; original styles.css remains preserved. */
+.institutional-document{--ink:#20233d;--blue:#282582;--gold:#806019;--gold-l:#d4a545;--paper:#f5f6fa;--card:#fff;--muted:#626779;--line:#dfe2eb}
+.top{background:rgba(23,22,79,.97)}
+/* Full-width cover: positioning acts on the image, independently of the copy. */
+.hero{background:linear-gradient(160deg,#17164f,#282582)}
+.hero-image{position:absolute;inset:0;overflow:hidden}
+.hero-image img{width:100%;height:100%;object-fit:cover}
+.hero-image::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(15,29,51,.91),rgba(15,29,51,.64)),linear-gradient(0deg,rgba(15,29,51,.8),transparent 60%);pointer-events:none}
+.alt,footer,.band{background:#17164f;color:#fff}.band p{color:rgba(255,255,255,.8)}.band .btn-dark{background:var(--gold-l);color:#17164f}
+.card,.person,.album,.info>div{background:#fff;border-color:var(--line);box-shadow:0 4px 18px rgba(23,22,79,.035)}
+.btn-gold{color:#17164f}.card .tag,.kick{color:var(--gold)}
+@media(max-width:800px){.hero .cta{gap:10px;flex-wrap:wrap}.hero .cta .btn{flex:1 1 160px;justify-content:center;text-align:center}}
+/* Optional cover and motion, separate from the preserved reference stylesheet. */
+.hero::before{z-index:1;pointer-events:none}.hero .wrap{z-index:2}
+.hero h1,.hero .kick,.hero .cta,.hero .stats{animation:institutional-enter .65s cubic-bezier(.2,.7,.2,1) both}.hero .cta{animation-delay:.1s}.hero .stats{animation-delay:.16s}
+@keyframes institutional-enter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;translate:0 18px;transition:opacity .55s ease var(--reveal-delay,0ms),translate .55s cubic-bezier(.2,.7,.2,1) var(--reveal-delay,0ms)}.reveal.in{opacity:1;translate:0 0}
+.card,.person,.info>div{transition:opacity .55s ease var(--reveal-delay,0ms),translate .55s cubic-bezier(.2,.7,.2,1) var(--reveal-delay,0ms),transform .25s ease,box-shadow .25s ease}.card:hover,.person:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(15,29,51,.1)}
+.btn,.give,.chip,.switch button,.tabs a{transition:transform .2s ease,background .2s ease,box-shadow .2s ease}.give:hover,.chip:hover{transform:translateY(-2px)}.btn:active,.give:active,.chip:active{transform:scale(.97)}
+a.avatar{transition:transform .25s ease,box-shadow .25s ease}a.avatar:hover{transform:scale(1.04);box-shadow:0 0 0 4px rgba(212,162,76,.18)}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;translate:none;transition:none}.hero h1,.hero .kick,.hero .cta,.hero .stats{animation:none}.card:hover,.person:hover,.give:hover,.chip:hover,a.avatar:hover{transform:none}}
+
+.institutional-document [hidden]{display:none!important}
+
+/* Contact actions occupy their entire card, including keyboard focus. */
+.info>.contact-card{display:grid;grid-template-columns:48px minmax(0,1fr) 24px;align-items:center;gap:16px;padding:22px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);text-decoration:none;box-shadow:0 4px 18px rgba(23,22,79,.05);transition:opacity .55s ease var(--reveal-delay,0ms),translate .55s ease var(--reveal-delay,0ms),transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.contact-icon{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#eeedfb;color:#282582;font-size:24px;font-weight:700}.contact-whatsapp .contact-icon{background:#e6f5ed;color:#16633b}.contact-instagram .contact-icon{background:#f3eaf7;color:#743682}.contact-copy{min-width:0;display:grid;gap:4px}.contact-copy strong{font-size:1.12rem;overflow-wrap:anywhere}.contact-arrow{font-size:24px;color:#282582;transition:transform .22s ease}.contact-card:hover{transform:translateY(-3px);border-color:#aaa7d9;box-shadow:0 10px 26px rgba(23,22,79,.1)}.contact-card:hover .contact-arrow{transform:translate(2px,-2px)}.contact-card:focus-visible{outline:3px solid #282582;outline-offset:4px}
+.hero .cta .btn-donation{background:#4946a8;border-color:#7774c7;color:#fff}.hero .cta .btn-instagram{background:#f5f6fa;border-color:#f5f6fa;color:#17164f}.hero .cta .btn-donation:hover{background:#5c58bb}.hero .cta .btn-instagram:hover{background:#e4e3f7}
+@media(max-width:480px){.info>.contact-card{padding:18px;gap:12px;grid-template-columns:42px minmax(0,1fr) 20px}.contact-icon{width:42px;height:42px}}
+@media(prefers-reduced-motion:reduce){.contact-card:hover,.contact-card:hover .contact-arrow{transform:none}.info>.contact-card,.contact-arrow{transition:none}}
+
+.current-projects{position:relative}.project-rail-controls{display:flex;justify-content:flex-end;gap:10px;margin-bottom:14px}.project-rail-controls button{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:#fff;color:#282582;font-size:22px;cursor:pointer}.current-project-rail{display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 4px 20px;scroll-padding:4px}.current-project-rail>.camp{flex:0 0 min(88%,900px);display:grid;grid-template-columns:260px minmax(0,1fr);scroll-snap-align:start;border-radius:20px;overflow:hidden}.current-project-rail .card-media{aspect-ratio:auto;min-height:320px;height:100%}.current-project-rail .card-b{display:flex;flex-direction:column;align-items:flex-start;padding:30px;min-width:0}.current-project-rail h3{font-size:2rem}.current-project-rail .card-b>.btn{margin-top:auto}.project-details{display:flex;flex-wrap:wrap;gap:12px 26px;width:100%;margin:8px 0 24px}.project-details dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-weight:700}.project-details dd{margin:2px 0 0;font-weight:600;overflow-wrap:anywhere}.current-project-rail:focus-visible,.project-rail-controls button:focus-visible{outline:3px solid #282582;outline-offset:4px}.current-project-rail a[aria-disabled=true]{opacity:.55;pointer-events:none}
+@media(max-width:700px){.current-project-rail>.camp{flex-basis:90%;grid-template-columns:1fr}.current-project-rail .card-media{aspect-ratio:16/10;min-height:0}.current-project-rail .card-b{padding:22px}.current-project-rail h3{font-size:1.7rem}}
+
+.current-project-rail .project-date-featured{flex:1 1 100%;padding:14px 18px;border-radius:12px;background:#eeedfb;border-left:4px solid #d4a545;color:#17164f}.project-date-featured dd{font-size:1.35rem;font-weight:800;line-height:1.3}.current-project-rail .card-b>.btn{align-self:stretch;display:flex;justify-content:center;align-items:center;min-height:54px;padding:15px 24px;background:#d4a545;color:#17164f;font-size:1.08rem;font-weight:800;border:1px solid #d4a545;box-shadow:0 5px 14px rgba(128,96,25,.16)}.current-project-rail .card-b>.btn:hover{background:#e2b65d;border-color:#e2b65d}.current-project-rail .card-b>.btn:focus-visible{outline:3px solid #282582;outline-offset:4px}
+/* Section rhythm follows current projects → completed projects → donations. */
+#campanhas{background:#f5f6fa}#projetos{background:#fff}#doacoes{background:#17164f}.band{background:#eeedfb;color:#20233d}.band p{color:#626779}

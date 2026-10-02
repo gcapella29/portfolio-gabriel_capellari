@@ -38,6 +38,7 @@ function EditorSection({id,number,title,summary,open=false,children}:{id:string;
 
 export default async function ContentPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{saved?:string}>}){
  const {slug}=await params,{saved}=await searchParams,{project,role}=await resolveProjectAccess(slug),data=await readV2Content(project.id),portfolio=project.segment==='portfolio',trainer=project.segment==='personal-trainer',definitions=sectionsForSegment(project.segment),previewUrl=`/preview/${encodeURIComponent(project.slug)}`,mediaAccess=can(role,'manageMedia'),menuLimit=project.segment==='food-business'?await menuItemLimitForProject(project.id):0;
+ if(project.segment==='institutional')redirect(`/dashboard/${encodeURIComponent(project.slug)}/editor/institutional`);
  if(trainer)redirect(`/dashboard/${encodeURIComponent(project.slug)}/editor/trainer`);
  if(portfolio){
   const nav:ContentNavItem[]=[{id:'content-introduction',label:'Abertura e perfil'},...definitions.map(def=>({id:`content-${def.key}`,label:def.label})),{id:'content-contact',label:'Contato'},{id:'content-footer',label:'Rodapé'}];

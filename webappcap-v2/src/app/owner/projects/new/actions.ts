@@ -10,7 +10,7 @@ import { initialTemplateForSegment, projectDefaultsForTemplate } from '@/core/te
 import type { SegmentKey } from '@/core/domain';
 
 const slugify=(value:string)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80);
-const siteType=(segment:SegmentKey)=>({'portfolio':'portfolio','personal-trainer':'personal_trainer','food-business':'local_business','commerce':'local_business','school':'language_teacher'}[segment]);
+const siteType=(segment:SegmentKey)=>({'portfolio':'portfolio','personal-trainer':'personal_trainer','food-business':'local_business','commerce':'local_business','school':'language_teacher','institutional':'local_business'}[segment]);
 const creationError=(phase:string,slug:string,error:{message?:string;code?:string;details?:string}|null)=>{
   console.error('createClientProject failed',{phase,slug,code:error?.code,message:error?.message,details:error?.details});
   const params=new URLSearchParams({error:phase,slug,detail:String(error?.message||'Falha inesperada').slice(0,240)});

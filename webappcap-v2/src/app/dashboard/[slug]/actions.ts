@@ -1,4 +1,5 @@
 'use server';
+import {normalizeImagePosition} from '@/core/image-placement';
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -25,7 +26,7 @@ const commerceTextKeys=['catalog_label','nav_home','nav_news','nav_highlights','
 type DirectImage={path:string;url:string};
 const directImage=(form:FormData,key:string,projectId:string):DirectImage|null=>{const raw=text(form,key);if(!raw||raw==='null')return null;try{const value=JSON.parse(raw) as Partial<DirectImage>;const imagePath=String(value.path||''),url=String(value.url||'');if(!imagePath.startsWith(`${projectId}/`)||url!==publicMediaUrl(imagePath))return null;return{path:imagePath,url}}catch{return null}};
 const directImages=(form:FormData,key:string,projectId:string):DirectImage[]=>{const raw=text(form,key);if(!raw)return[];try{const values=JSON.parse(raw);return Array.isArray(values)?values.map(value=>{const imagePath=String(value?.path||''),url=String(value?.url||'');return imagePath.startsWith(`${projectId}/`)&&url===publicMediaUrl(imagePath)?{path:imagePath,url}:null}).filter((value):value is DirectImage=>Boolean(value)):[]}catch{return[]}};
-const imagePosition=(form:FormData,slot:string)=>{const value=text(form,`mediaPosition:${slot}`);return ['top','center','bottom'].includes(value)?value:'center'};
+const imagePosition=(form:FormData,slot:string)=>{const value=text(form,`mediaPosition:${slot}`);return normalizeImagePosition(value)};
 const positioned=(value:unknown,position:string)=>value&&typeof value==='object'?{...(value as Record<string,unknown>),position}:typeof value==='string'&&value?{url:value,position}:null;
 
 export async function saveContentAction(formData:FormData){
@@ -34,7 +35,7 @@ export async function saveContentAction(formData:FormData){
  const menuLimit=access.project.segment==='food-business'?await menuItemLimitForProject(access.project.id):0;
  const structured=repeatables(formData,access.project.segment,menuLimit,Array.isArray(current.content.menu_items)?current.content.menu_items.length:0) as Record<string,Record<string,unknown>[]>;
  const uploadFields=Array.from(formData.entries()).filter(([,value])=>value instanceof File&&value.size) as [string,File][];
- const imageSlots=['hero','logo','creator'] as const;
+ const imageSlots=['hero','logo','creator','about','profile','contact'] as const;
  const hasDirectImages=['uploadedMedia:hero','uploadedMedia:logo','uploadedMedia:creator','uploadedGallery'].some(key=>{const value=text(formData,key);return value&&value!=='null'&&value!=='[]'}),hasMediaControls=imageSlots.some(slot=>formData.has(`mediaPosition:${slot}`)||formData.has(`removeMedia:${slot}`));
  if((uploadFields.length||hasDirectImages||hasMediaControls)&&!can(access.role,'manageMedia'))throw new Error('Sem permissão para editar as fotos.');
  for(const definition of sectionsForSegment(access.project.segment))for(const [index,item] of (structured[definition.key]||[]).entries()){
@@ -48,10 +49,11 @@ export async function saveContentAction(formData:FormData){
  if(access.project.segment==='food-business')Object.assign(content,Object.fromEntries(commerceTextKeys.map(key=>[key,text(formData,key)])));
  await saveV2Section(access.project.id,'content',content);
  const media={...current.media};let mediaChanged=false;
- for(const slot of ['logo','hero','creator'] as const){
+ for(const slot of ['logo','hero','creator','about','profile','contact'] as const){
   if(text(formData,`removeMedia:${slot}`)==='yes'){delete media[slot];mediaChanged=true;continue}
   const position=imagePosition(formData,slot),uploaded=directImage(formData,`uploadedMedia:${slot}`,access.project.id),existing=positioned(media[slot],position);
-  if(uploaded){media[slot]={...uploaded,position};mediaChanged=true}else if(existing&&text(formData,`mediaPosition:${slot}`)){media[slot]=existing;mediaChanged=true}
+  const controls={position,fit:['cover','contain','fill'].includes(text(formData,`mediaFit:${slot}`))?text(formData,`mediaFit:${slot}`):'cover',zoom:Math.max(50,Math.min(200,Number(text(formData,`mediaZoom:${slot}`))||100))};
+  if(uploaded){media[slot]={...uploaded,...controls};mediaChanged=true}else if(existing&&formData.has(`mediaPosition:${slot}`)){media[slot]={...existing,...controls};mediaChanged=true}
  }
  for(const [field,slot] of [['logo','logo'],['heroImage','hero'],['creatorImage','creator']] as const){const file=formData.get(field);if(file instanceof File&&file.size){const uploaded=await uploadProjectImage(access.project.id,file,slot);media[slot]=uploaded?{...uploaded,position:imagePosition(formData,slot)}:uploaded;mediaChanged=true}}
  const directGallery=directImages(formData,'uploadedGallery',access.project.id);
@@ -85,6 +87,12 @@ export async function uploadMediaAction(formData:FormData){
  const slug=slugFrom(formData),access=await resolveProjectAccess(slug);if(!can(access.role,'manageMedia'))throw new Error('Sem permissão para editar mídia.');const current=await readV2Content(access.project.id),media={...current.media};
  const imageSlots=[['logo','logo'],['profileImage','profile'],['heroImage','hero'],['aboutImage','about'],['creatorImage','creator'],['contactImage','contact'],['performanceEvidence','performance_evidence'],['performanceService1','performance_service_1'],['performanceService2','performance_service_2'],['performanceService3','performance_service_3'],['performanceService4','performance_service_4'],['performanceTrainer','performance_trainer']] as const;
  for(const [field,slot] of imageSlots){const file=formData.get(field);if(file instanceof File&&file.size)media[slot]=await uploadProjectImage(access.project.id,file,slot)}
+ for(const [,slot] of imageSlots){
+  if(text(formData,`removeMedia:${slot}`)==='yes'){delete media[slot];continue}
+  const uploaded=directImage(formData,`uploadedMedia:${slot}`,access.project.id);
+  if(uploaded)media[slot]=uploaded;
+  if(media[slot]&&formData.has(`mediaPosition:${slot}`))media[slot]={...(typeof media[slot]==='object'?media[slot] as Record<string,unknown>:{url:String(media[slot])}),position:imagePosition(formData,slot),fit:['cover','contain','fill'].includes(text(formData,`mediaFit:${slot}`))?text(formData,`mediaFit:${slot}`):'cover',zoom:Math.max(50,Math.min(200,Number(text(formData,`mediaZoom:${slot}`))||100))};
+ }
  const heroVideo=formData.get('heroVideo');if(heroVideo instanceof File&&heroVideo.size)media.hero_video=await uploadProjectVideo(access.project.id,heroVideo,'hero-video');
 
  const originalGallery=Array.isArray(media.gallery)?media.gallery:[];

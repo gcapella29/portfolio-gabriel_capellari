@@ -214,3 +214,5 @@
  .bakerySite .hero-content{width:calc(100% - 28px)}
  .bakerySite .bakeryHeroTitle{font-size:clamp(2.35rem,12vw,4rem)!important}
 }
+
+.bakerySite .hero{overflow:hidden}.bakery-hero-media{position:absolute;inset:0;overflow:hidden}.bakery-hero-media img{width:100%;height:100%;object-fit:cover}.bakery-hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.72));pointer-events:none}

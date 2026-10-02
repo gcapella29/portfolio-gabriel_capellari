@@ -1,0 +1,122 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  institutionalInstagram,
+  institutionalDefaults,
+  institutionalData,
+  institutionalRows,
+  institutionalImage,
+} from './institutional-content.ts';
+import {editorForTemplate} from './template-editor.ts';
+import {segments} from './segments.ts';
+test('institutional defaults are independent and do not seed real contact destinations', () => {
+  const a = institutionalDefaults('A'),
+    b = institutionalDefaults('B');
+  a.content.institutional_projects[0].title = 'Changed';
+  assert.notEqual(b.content.institutional_projects[0].title, 'Changed');
+  assert.equal(a.contact.whatsapp, '');
+  assert.equal(a.contact.pix, '');
+  assert.equal(a.appearance.preview_template_key, 'institutional-main-1');
+  assert.equal(
+    editorForTemplate('institutional-main-1')?.mode,
+    'institutional',
+  );
+  assert.equal(segments.institutional.templates[0].status, 'ready');
+});
+test('empty existing projects remain empty and template copy changes are isolated', () => {
+  const model = institutionalData({
+    institutional_demo: false,
+    institutional_main_nav_history: 'Nossa trajetória',
+  });
+  assert.equal(model.lists.institutional_projects.length, 0);
+  assert.equal(model.lists.institutional_albums.length, 0);
+  assert.equal(model.demo, false);
+  assert.equal(model.copy.institutional_main_nav_history, 'Nossa trajetória');
+});
+test('unsafe media URLs and invalid albums are excluded while framing survives', () => {
+  for (const value of [
+    'javascript:alert(1)',
+    '//evil.example/a.jpg',
+    'data:text/html,test',
+    'https://example.com\\@evil/a',
+  ])
+    assert.equal(institutionalImage(value), '');
+  const photo = {
+    url: 'https://example.com/a.jpg',
+    position: '20% 80%',
+    zoom: 120,
+  };
+  const [album] = institutionalRows(
+    [{id: 'a', photos: [photo, 'javascript:evil', null], count: 999}],
+    'institutional_albums',
+  );
+  assert.deepEqual(album.photos, [photo]);
+  assert.equal(album.count, 30);
+});
+test('legacy fundraising fields are removed from current project content',()=>{
+ const [row]=institutionalRows([{id:'project',title:'Ação',goal:100,raised:40,unit:'% da meta'}],'institutional_campaigns');
+ assert.equal(row.title,'Ação');for(const key of ['goal','raised','unit'])assert.equal(key in row,false);
+});
+test('stable IDs survive list reordering and malformed rows are ignored', () => {
+  const rows = institutionalRows(
+    [{id: 'second', name: 'B'}, null, {id: 'first', name: 'A'}],
+    'institutional_current_board',
+  );
+  assert.deepEqual(
+    rows.map((row) => row.id),
+    ['second', 'first'],
+  );
+  assert.equal(
+    new Set(
+      institutionalRows(
+        [{id: 'same'}, {id: 'same'}],
+        'institutional_current_members',
+      ).map((row) => row.id),
+    ).size,
+    2,
+  );
+});
+
+test('individual Instagram accepts handles and Instagram URLs without external destinations', () => {
+  assert.equal(
+    institutionalInstagram('@gabriel.capellari'),
+    'https://www.instagram.com/gabriel.capellari/',
+  );
+  assert.equal(
+    institutionalInstagram('https://instagram.com/gabriel/'),
+    'https://instagram.com/gabriel/',
+  );
+  for (const value of [
+    'javascript:alert(1)',
+    'https://evil.example/person',
+    'https://instagram.com.evil.example/person',
+    'https://user:pass@instagram.com/person',
+    '',
+  ])
+    assert.equal(institutionalInstagram(value), '');
+  assert.equal(
+    institutionalRows(
+      [{id: 'p', name: 'Pessoa', instagram: '@pessoa'}],
+      'institutional_current_members',
+    )[0].instagram,
+    '@pessoa',
+  );
+});
+
+test('block visibility defaults to active and accepts stored boolean or legacy strings',()=>{
+ const active=institutionalData({}).visible;
+ assert.ok(Object.values(active).every(Boolean));
+ const hidden=institutionalData({institutional_visible_projetos:false,institutional_visible_gestao:'false',institutional_visible_hero:true}).visible;
+ assert.equal(hidden.projetos,false);assert.equal(hidden.gestao,false);assert.equal(hidden.hero,true);assert.equal(hidden.contato,true);
+});
+
+test('current projects preserve legacy dates and new event details',()=>{
+ const [old,current]=institutionalRows([{id:'old',day:'12',month:'OUT'},{id:'new',date:'12/10/2026',time:'14h',location:'Praça central'}],'institutional_campaigns');
+ assert.equal(old.date,'12 OUT');assert.equal(current.time,'14h');assert.equal(current.location,'Praça central');
+ assert.equal(institutionalRows([{id:'empty',date:'',day:'12',month:'OUT'}],'institutional_campaigns')[0].date,'');
+});
+
+test('campaign menu adopts current projects while preserving custom labels',()=>{
+ for(const label of ['Campanhas','Campanhas futuras'])assert.equal(institutionalData({institutional_main_sub_campaigns:label}).copy.institutional_main_sub_campaigns,'Projetos em andamento');
+ assert.equal(institutionalData({institutional_main_sub_campaigns:'Ações do mês'}).copy.institutional_main_sub_campaigns,'Ações do mês');
+});

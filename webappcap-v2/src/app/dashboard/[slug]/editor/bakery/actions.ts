@@ -1,4 +1,5 @@
 'use server';
+import {normalizeImagePosition} from '@/core/image-placement';
 import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
 import {resolveProjectAccess} from '@/core/session';
@@ -32,7 +33,7 @@ export async function saveBakeryContentAction(formData:FormData){
    const raw=text(formData,`uploadedMedia:${slot}`);let uploaded:{path?:string;url?:string}|null=null;
    try{uploaded=JSON.parse(raw)}catch{/* Sem nova imagem. */}
    const url=uploaded?.path?.startsWith(`${access.project.id}/`)&&uploaded.url===publicMediaUrl(uploaded.path)?uploaded.url:null;
-   const rawPosition=text(formData,`mediaPosition:${slot}`),position=/^(?:100(?:\.0)?|\d{1,2}(?:\.\d+)?)%\s+(?:100(?:\.0)?|\d{1,2}(?:\.\d+)?)%$/.test(rawPosition)||['top','center','bottom','left','right'].includes(rawPosition)?rawPosition:'center';
+   const rawPosition=text(formData,`mediaPosition:${slot}`),position=normalizeImagePosition(rawPosition);
    const fit=['cover','contain','fill'].includes(text(formData,`mediaFit:${slot}`))?text(formData,`mediaFit:${slot}`):'cover',zoom=String(Math.max(50,Math.min(200,Number(text(formData,`mediaZoom:${slot}`))||100)));
    if(url)media[slot]={path:uploaded!.path,url,position,fit,zoom};
    else if(media[slot]&&formData.has(`mediaPosition:${slot}`))media[slot]={...(typeof media[slot]==='object'?media[slot] as Record<string,unknown>:{url:String(media[slot])}),position,fit,zoom};

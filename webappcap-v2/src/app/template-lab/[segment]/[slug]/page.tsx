@@ -6,7 +6,7 @@ import { templatesForSegment } from '@/core/segments';
 import type { SegmentKey } from '@/core/domain';
 import { renderTemplate } from '@/templates/registry';
 
-const segments:SegmentKey[]=['portfolio','personal-trainer','food-business','commerce','school'];
+const segments:SegmentKey[]=['portfolio','personal-trainer','food-business','commerce','school','institutional'];
 export default async function TemplateLabPage({params,searchParams}:{params:Promise<{segment:string;slug:string}>;searchParams:Promise<{template?:string}>}){
  const {segment,slug}=await params,{template}=await searchParams;
  if(!segments.includes(segment as SegmentKey))notFound();
