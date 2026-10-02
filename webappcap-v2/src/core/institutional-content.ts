@@ -151,8 +151,13 @@ export function campaignProgress(row: InstitutionalRow) {
     percent: goal ? Math.min(100, (raised / goal) * 100) : 0,
   };
 }
+export const institutionalBlocks = {hero:'Hero / capa',stats:'Números do hero',projetos:'Projetos',doacoes:'Doações',campanhas:'Campanhas',band:'Chamada final',historia:'História',valores:'Valores',gestao:'Gestão e membros',fotos:'Álbuns de fotos',contato:'Contato'} as const;
+export function institutionalVisibility(content:Record<string,unknown>){
+ return Object.fromEntries(Object.keys(institutionalBlocks).map(key=>[key,content[`institutional_visible_${key}`]!==false&&content[`institutional_visible_${key}`]!=='false'])) as Record<keyof typeof institutionalBlocks,boolean>;
+}
 export function institutionalData(content: Record<string, unknown>) {
   return {
+    visible: institutionalVisibility(content),
     copy: Object.fromEntries(
       Object.entries(institutionalCopy).map(([key, fallback]) => [
         key,

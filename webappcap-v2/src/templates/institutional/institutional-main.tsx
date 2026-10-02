@@ -50,7 +50,7 @@ export function InstitutionalMainTemplate({
           : undefined,
     };
   }, [data.content, data.identity.name, data.contact, project.name]);
-  const {copy, name} = model;
+  const {copy, name, visible} = model;
   const instagram = institutionalInstagram(data.contact.instagram);
   useEffect(() => {
     alive.current = true;
@@ -96,11 +96,11 @@ export function InstitutionalMainTemplate({
     if (!mount) return;
     const route = () => {
       const hash = window.location.hash.slice(1),
-        next = views.includes(hash) ? hash : 'inicio';
+        next = views.includes(hash) && (hash === 'inicio' || visible[hash as 'historia'|'gestao'|'fotos'|'contato']) ? hash : 'inicio';
       setView(next);
       if (frame.current !== null) cancelAnimationFrame(frame.current);
       frame.current = requestAnimationFrame(() => {
-        if (['projetos', 'doacoes', 'campanhas'].includes(hash))
+        if (['projetos', 'doacoes', 'campanhas'].includes(hash) && visible[hash as 'projetos'|'doacoes'|'campanhas'])
           root.current?.querySelector(`#${hash}`)?.scrollIntoView({
             behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
               .matches
@@ -116,7 +116,7 @@ export function InstitutionalMainTemplate({
       window.removeEventListener('hashchange', route);
       if (frame.current !== null) cancelAnimationFrame(frame.current);
     };
-  }, [mount]);
+  }, [mount, visible]);
   useEffect(() => {
     if (!mount) return;
     const top = root.current?.querySelector<HTMLElement>('.top');
@@ -222,31 +222,31 @@ export function InstitutionalMainTemplate({
                         {copy.institutional_main_nav_home}
                       </a>
                       <a
-                        href="#historia"
+                        hidden={!visible.historia} href="#historia"
                         aria-current={view === 'historia' ? 'page' : undefined}
                       >
                         {copy.institutional_main_nav_history}
                       </a>
                       <a
-                        href="#gestao"
+                        hidden={!visible.gestao} href="#gestao"
                         aria-current={view === 'gestao' ? 'page' : undefined}
                       >
                         {copy.institutional_main_nav_management}
                       </a>
                       <a
-                        href="#fotos"
+                        hidden={!visible.fotos} href="#fotos"
                         aria-current={view === 'fotos' ? 'page' : undefined}
                       >
                         {copy.institutional_main_nav_photos}
                       </a>
                       <a
-                        href="#contato"
+                        hidden={!visible.contato} href="#contato"
                         aria-current={view === 'contato' ? 'page' : undefined}
                       >
                         {copy.institutional_main_nav_contact}
                       </a>
                     </nav>
-                    <a className="give" href="#contato">
+                    <a className="give" hidden={!visible.contato} href="#contato">
                       {copy.institutional_main_help_cta}
                     </a>
                   </div>
@@ -258,9 +258,18 @@ export function InstitutionalMainTemplate({
                     data-view="inicio"
                     hidden={view !== 'inicio'}
                   >
-                    <div className={`hero ${institutionalImage(data.media.hero)?"hero-with-image":""}`} >
+                    <div className="hero" hidden={!visible.hero}>
+                      {institutionalImage(data.media.hero) ? (
+                        <div className="hero-image" aria-hidden="true">
+                          <img
+                            src={institutionalImage(data.media.hero)}
+                            style={institutionalImageStyle(data.media.hero)}
+                            alt=""
+                            fetchPriority="high"
+                          />
+                        </div>
+                      ) : null}
                       <div className="wrap">
-                        <div className="hero-copy">
                         <p className="kick" style={{color: 'var(--gold-l)'}}>
                           {copy.institutional_main_hero_kicker}
                         </p>
@@ -270,10 +279,10 @@ export function InstitutionalMainTemplate({
                         </h1>
                         <p>{copy.hero_text}</p>
                         <div className="cta">
-                          <a className="btn btn-gold" href="#projetos">
+                          <a className="btn btn-gold" hidden={!visible.projetos} href="#projetos">
                             {copy.institutional_main_projects_cta}
                           </a>
-                          <a className="btn btn-line" href="#contato">
+                          <a className="btn btn-line" hidden={!visible.contato} href="#contato">
                             {copy.institutional_main_donation_cta}
                           </a>
                           {instagram ? (
@@ -287,35 +296,24 @@ export function InstitutionalMainTemplate({
                             </a>
                           ) : null}
                         </div>
-                        </div>
-                      {institutionalImage(data.media.hero) ? (
-                        <div className="hero-image" aria-hidden="true">
-                          <img
-                            src={institutionalImage(data.media.hero)}
-                            style={institutionalImageStyle({fit:"contain",...(typeof data.media.hero==="object"?data.media.hero:{})})}
-                            alt=""
-                            fetchPriority="high"
-                          />
-                        </div>
-                      ) : null}
-                        <Stats />
+                        {visible.stats ? <Stats /> : null}
                       </div>
                     </div>
-                    <div className="sub">
+                    <div className="sub" hidden={!visible.projetos && !visible.doacoes && !visible.campanhas}>
                       <div className="wrap">
-                        <a href="#projetos">
+                        <a hidden={!visible.projetos} href="#projetos">
                           {copy.institutional_main_sub_projects}
                         </a>
-                        <a href="#doacoes">
+                        <a hidden={!visible.doacoes} href="#doacoes">
                           {copy.institutional_main_sub_donations}
                         </a>
-                        <a href="#campanhas">
+                        <a hidden={!visible.campanhas} href="#campanhas">
                           {copy.institutional_main_sub_campaigns}
                         </a>
                       </div>
                     </div>
 
-                    <section id="projetos">
+                    <section hidden={!visible.projetos} id="projetos">
                       <div className="wrap">
                         <div className="head">
                           <p className="kick">
@@ -334,7 +332,7 @@ export function InstitutionalMainTemplate({
                       </div>
                     </section>
 
-                    <section id="doacoes" className="alt">
+                    <section hidden={!visible.doacoes} id="doacoes" className="alt">
                       <div className="wrap">
                         <div className="head">
                           <p className="kick">
@@ -353,7 +351,7 @@ export function InstitutionalMainTemplate({
                       </div>
                     </section>
 
-                    <section id="campanhas">
+                    <section hidden={!visible.campanhas} id="campanhas">
                       <div className="wrap">
                         <div className="head">
                           <p className="kick">
@@ -372,11 +370,11 @@ export function InstitutionalMainTemplate({
                       </div>
                     </section>
 
-                    <section className="band">
+                    <section className="band" hidden={!visible.band || !visible.contato}>
                       <div className="wrap">
                         <h2>{copy.institutional_main_band_title}</h2>
                         <p>{copy.institutional_main_band_text}</p>
-                        <a className="btn btn-dark" href="#contato">
+                        <a className="btn btn-dark" hidden={!visible.contato} href="#contato">
                           {copy.institutional_main_contact_cta}
                         </a>
                       </div>
@@ -386,7 +384,7 @@ export function InstitutionalMainTemplate({
                   <div
                     className="view"
                     data-view="historia"
-                    hidden={view !== 'historia'}
+                    hidden={view !== 'historia' || !visible.historia}
                   >
                     <section>
                       <div className="wrap">
@@ -402,7 +400,7 @@ export function InstitutionalMainTemplate({
                           <p className="lead">{model.historyIntro}</p>
                         </div>
                         <Timeline />
-                        <div className="vals">
+                        <div className="vals" hidden={!visible.valores}>
                           <p className="kick">
                             {copy.institutional_main_values_kicker}
                           </p>
@@ -415,7 +413,7 @@ export function InstitutionalMainTemplate({
                   <div
                     className="view"
                     data-view="gestao"
-                    hidden={view !== 'gestao'}
+                    hidden={view !== 'gestao' || !visible.gestao}
                   >
                     <section>
                       <div className="wrap">
@@ -439,7 +437,7 @@ export function InstitutionalMainTemplate({
                   <div
                     className="view"
                     data-view="fotos"
-                    hidden={view !== 'fotos'}
+                    hidden={view !== 'fotos' || !visible.fotos}
                   >
                     <section>
                       <div className="wrap">
@@ -465,7 +463,7 @@ export function InstitutionalMainTemplate({
                   <div
                     className="view"
                     data-view="contato"
-                    hidden={view !== 'contato'}
+                    hidden={view !== 'contato' || !visible.contato}
                   >
                     <section>
                       <div className="wrap">

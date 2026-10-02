@@ -117,3 +117,10 @@ test('individual Instagram accepts handles and Instagram URLs without external d
     '@pessoa',
   );
 });
+
+test('block visibility defaults to active and accepts stored boolean or legacy strings',()=>{
+ const active=institutionalData({}).visible;
+ assert.ok(Object.values(active).every(Boolean));
+ const hidden=institutionalData({institutional_visible_projetos:false,institutional_visible_gestao:'false',institutional_visible_hero:true}).visible;
+ assert.equal(hidden.projetos,false);assert.equal(hidden.gestao,false);assert.equal(hidden.hero,true);assert.equal(hidden.contato,true);
+});

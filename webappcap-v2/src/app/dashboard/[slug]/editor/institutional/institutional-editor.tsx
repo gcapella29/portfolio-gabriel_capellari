@@ -2,6 +2,7 @@
 import {useMemo, useState} from 'react';
 import {
   institutionalCopy,
+  institutionalBlocks,
   institutionalData,
   institutionalLists,
   institutionalImage,
@@ -76,13 +77,13 @@ export default function InstitutionalEditor({
         label={label}
         current={institutionalImage(current)}
         currentPosition={text(item.position) || 'center'}
-        currentFit={text(item.fit) || (slotType === 'hero' ? 'contain' : 'cover')}
+        currentFit={text(item.fit) || 'cover'}
         currentZoom={text(item.zoom) || 100}
         {...imageEditorFrame('institutional-main-1', slotType)}
         {...(slotType === 'person' ? {previewMaxWidth: 180} : {})}
         help={
           slotType === 'hero'
-            ? 'Quadro 16:9, igual ao hero. Use Mostrar inteira para o emblema; arraste e ajuste o zoom.'
+            ? 'Imagem grande ao fundo. Referência desktop 2:1; a altura varia com o conteúdo e a tela. Arraste livremente, ajuste o zoom e confira no Preview.'
             : 'Enquadramento do site. Arraste, ajuste o zoom e salve o rascunho.'
         }
       />
@@ -123,6 +124,7 @@ export default function InstitutionalEditor({
               maxLength={120}
             />
           </label>
+          {field('institutional_main_hero_kicker','Frase acima do título do hero (organização e cidade)',initial.copy.institutional_main_hero_kicker)}
           <label className="field">
             <span>Título da aba do navegador</span>
             <input
@@ -166,6 +168,7 @@ export default function InstitutionalEditor({
               <option value="false">Mostrar somente iniciais</option>
             </select>
           </label>
+          <fieldset className={styles.row}><legend>Blocos visíveis no site</legend><div className={styles.fields}>{Object.entries(institutionalBlocks).map(([key,label])=><label className="field" key={key}><span>{label}</span><select name={`institutional_visible_${key}`} defaultValue={String(initial.visible[key as keyof typeof institutionalBlocks])}><option value="true">Ativado</option><option value="false">Desativado</option></select></label>)}</div><p>Ocultar preserva os dados. Os links para blocos desativados também ficam ocultos. Salve e confira no Preview.</p></fieldset>
           {canManageMedia
             ? image('hero', data.media.hero, 'Foto do hero (opcional)', 'hero')
             : null}
@@ -408,6 +411,7 @@ export default function InstitutionalEditor({
               ([key]) =>
                 ![
                   'institutional_main_demo_notice',
+                  'institutional_main_hero_kicker',
                   'institutional_main_close',
                   'institutional_main_footer_brand',
                   'institutional_main_footer_credit',

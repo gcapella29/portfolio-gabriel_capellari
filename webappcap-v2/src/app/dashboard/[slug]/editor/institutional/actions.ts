@@ -11,6 +11,7 @@ import {
 } from '@/core/onboarding-data';
 import {
   institutionalCopy,
+  institutionalBlocks,
   institutionalLists,
   institutionalRows,
   type InstitutionalListKey,
@@ -99,6 +100,13 @@ export async function saveInstitutionalAction(form: FormData) {
     if (!['true', 'false'].includes(text(form, key)))
       throw new Error('Opção inválida. Nada foi salvo.');
     content[key] = text(form, key) === 'true';
+  }
+  for(const key of Object.keys(institutionalBlocks)){
+    const field=`institutional_visible_${key}`;
+    if(!form.has(field))continue; // Preserve existing visibility for older open editor forms.
+    const value=text(form,field);
+    if(!['true','false'].includes(value))throw new Error('Visibilidade inválida. Nada foi salvo.');
+    content[field]=value==='true';
   }
   const allowed = can(access.role, 'manageMedia');
   for (const key of Object.keys(institutionalLists) as InstitutionalListKey[]) {
