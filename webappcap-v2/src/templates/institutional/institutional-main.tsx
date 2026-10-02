@@ -1,5 +1,7 @@
 'use client';
 import {useEffect, useMemo, useRef, useState} from 'react';
+import type {CSSProperties} from 'react';
+import {imageMediaStyle} from '@/core/image-placement';
 import {createPortal} from 'react-dom';
 import {
   institutionalInstagram,
@@ -167,6 +169,12 @@ export function InstitutionalMainTemplate({
     nodes.forEach((node) => observer.observe(node));
     return () => observer.disconnect();
   }, [mount, view, album, model.lists]);
+  useEffect(() => {
+    const active = root.current?.querySelector<HTMLElement>('.tabs [aria-current="page"]');
+    if (!mount || !active || !window.matchMedia('(max-width: 960px)').matches) return;
+    const tabs = active.parentElement;
+    if (tabs) tabs.scrollTo({left: Math.max(0, active.offsetLeft - tabs.offsetLeft - (tabs.clientWidth - active.clientWidth) / 2), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  }, [mount, view]);
   const notify = (message: string) => {
     if (!alive.current) return;
     setToast(message);
@@ -263,7 +271,11 @@ export function InstitutionalMainTemplate({
                         <div className="hero-image" aria-hidden="true">
                           <img
                             src={institutionalImage(data.media.hero)}
-                            style={institutionalImageStyle(data.media.hero)}
+                            style={(() => {
+                              const hero = data.media.hero && typeof data.media.hero === 'object' ? data.media.hero as Record<string, unknown> : {};
+                              const mobile = imageMediaStyle({...hero, ...(hero.mobile && typeof hero.mobile === 'object' ? hero.mobile : {})});
+                              return {...institutionalImageStyle(data.media.hero), '--hero-mobile-position': mobile.objectPosition, '--hero-mobile-translate': mobile.translate, '--hero-mobile-transform': mobile.transform, '--hero-mobile-fit': mobile.objectFit} as CSSProperties;
+                            })()}
                             alt=""
                             fetchPriority="high"
                           />
@@ -279,7 +291,7 @@ export function InstitutionalMainTemplate({
                         </h1>
                         <p>{copy.hero_text}</p>
                         <div className="cta">
-                          <a className="btn btn-gold" hidden={!visible.projetos} href="#projetos">
+                          <a className="btn btn-gold btn-projects" hidden={!visible.projetos} href="#projetos">
                             {copy.institutional_main_projects_cta}
                           </a>
                           <a className="btn btn-line btn-donation" hidden={!visible.contato} href="#contato">

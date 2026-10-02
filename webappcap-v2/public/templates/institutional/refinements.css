@@ -35,3 +35,32 @@ a.avatar{transition:transform .25s ease,box-shadow .25s ease}a.avatar:hover{tran
 .current-project-rail .project-date-featured{flex:1 1 100%;padding:14px 18px;border-radius:12px;background:#eeedfb;border-left:4px solid #d4a545;color:#17164f}.project-date-featured dd{font-size:1.35rem;font-weight:800;line-height:1.3}.current-project-rail .card-b>.btn{align-self:stretch;display:flex;justify-content:center;align-items:center;min-height:54px;padding:15px 24px;background:#d4a545;color:#17164f;font-size:1.08rem;font-weight:800;border:1px solid #d4a545;box-shadow:0 5px 14px rgba(128,96,25,.16)}.current-project-rail .card-b>.btn:hover{background:#e2b65d;border-color:#e2b65d}.current-project-rail .card-b>.btn:focus-visible{outline:3px solid #282582;outline-offset:4px}
 /* Section rhythm follows current projects → completed projects → donations. */
 #campanhas{background:#f5f6fa}#projetos{background:#fff}#doacoes{background:#17164f}.band{background:#eeedfb;color:#20233d}.band p{color:#626779}
+
+/* Mobile refinements preserve the desktop reference. */
+.project-count{margin-right:auto;align-self:center;color:var(--muted);font-weight:700;font-size:.92rem}
+@media(max-width:960px){
+  .tabs{position:relative;scroll-padding-inline:8px;padding:4px 0 8px;scrollbar-width:thin;scrollbar-color:var(--gold-l) transparent}
+  .tabs a{min-height:44px;display:flex;align-items:center}
+  .tabs::-webkit-scrollbar{height:3px}.tabs::-webkit-scrollbar-thumb{background:var(--gold-l);border-radius:8px}
+}
+@media(max-width:640px){
+  .hero{padding:48px 0 38px}
+  .hero h1{font-size:clamp(2.8rem,11vw,4rem);line-height:1.02;overflow-wrap:anywhere}
+  .hero .kick{font-size:.78rem;letter-spacing:.09em}
+  .hero p{font-size:1.05rem;margin:18px 0 22px}
+  .hero .cta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .hero .cta .btn{padding:12px 14px;min-height:50px;font-size:.95rem;line-height:1.25}
+  .hero .cta .btn-projects{grid-column:1/-1}
+  .hero .stats{margin-top:32px;gap:0 16px}.hero .stats strong{font-size:2.8rem}.hero .stats div{padding:16px 0}
+  .hero-image img{object-position:var(--hero-mobile-position)!important;translate:var(--hero-mobile-translate)!important;transform:var(--hero-mobile-transform)!important;object-fit:var(--hero-mobile-fit)!important}
+  .current-project-rail{gap:16px}.current-project-rail .card-media{aspect-ratio:16/9}
+  .current-project-rail .card-b{padding:18px}.current-project-rail h3{font-size:1.6rem}
+  .project-details{gap:10px 18px;margin:4px 0 18px}.current-project-rail .project-date-featured{padding:12px 14px}
+  .project-date-featured dd{font-size:1.25rem}
+  .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--gold-l) transparent;padding:4px 3px 10px;scroll-padding:3px}
+  .chip{flex-shrink:0;white-space:nowrap;min-height:44px}
+  #lb{max-width:calc(100vw - 24px);max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow:auto;margin:auto}
+  #lb img{max-width:100%;max-height:calc(100dvh - 120px - env(safe-area-inset-top) - env(safe-area-inset-bottom));object-fit:contain}
+  .lb-x{top:10px;right:10px;z-index:2;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+  #lb p{padding:0 8px;overflow-wrap:anywhere}
+}
