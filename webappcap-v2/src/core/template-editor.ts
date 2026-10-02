@@ -7,11 +7,11 @@ export type TemplateEditorSection = {
 export type TemplateEditorDefinition = {
   templateKey: string;
   label: string;
-  mode: 'complete' | 'sales';
+  mode: 'complete' | 'sales' | 'trainer';
   sections: TemplateEditorSection[];
 };
 
-const commerceEditors: Record<string, TemplateEditorDefinition> = {
+const templateEditors: Record<string, TemplateEditorDefinition> = {
   'commerce-main-1': {
     templateKey: 'commerce-main-1',
     label: 'Completo',
@@ -52,10 +52,12 @@ const commerceEditors: Record<string, TemplateEditorDefinition> = {
   }
 };
 
-commerceEditors['commerce-modern-1']={templateKey:'commerce-modern-1',label:'Modern',mode:'complete',sections:commerceEditors['commerce-main-1'].sections.filter(section=>['identity','highlights','menu','order','contact','about'].includes(section.key))};
+templateEditors['commerce-modern-1']={templateKey:'commerce-modern-1',label:'Modern',mode:'complete',sections:templateEditors['commerce-main-1'].sections.filter(section=>['identity','highlights','menu','order','contact','about'].includes(section.key))};
+
+templateEditors['personal-trainer-main-1']={templateKey:'personal-trainer-main-1',label:'Personal Trainer',mode:'trainer',sections:[{key:'identity',label:'Identidade e início',description:'Nome, CREF, foto e hero.'},{key:'agenda',label:'Agenda e contato',description:'Estado, WhatsApp e chamadas.'},{key:'method',label:'Método',description:'Etapas do acompanhamento.'},{key:'results',label:'Resultados',description:'Comparador de antes e depois.'},{key:'modes',label:'Modalidades',description:'Formas de atendimento.'},{key:'testimonials',label:'Depoimentos',description:'Relatos dos alunos.'},{key:'faq',label:'FAQ',description:'Perguntas e respostas.'},{key:'copy',label:'Textos do modelo',description:'Navegação e chamadas.'}]};
 
 export function editorForTemplate(templateKey: string | null | undefined) {
-  return templateKey ? commerceEditors[templateKey] || null : null;
+  return templateKey ? templateEditors[templateKey] || null : null;
 }
 
 export function editorSectionsForTemplate(templateKey: string | null | undefined) {

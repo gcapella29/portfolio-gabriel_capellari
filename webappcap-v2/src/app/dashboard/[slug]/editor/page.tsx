@@ -11,6 +11,7 @@ import EditorWorkspaceHeader from '../editor-workspace-header';
 
 export default async function TemplateEditorPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{template?:string;savedContent?:string}>}){
  const {slug}=await params,query=await searchParams,{project,role}=await resolveProjectAccess(slug);
+ if(project.segment==='personal-trainer')redirect(`/dashboard/${encodeURIComponent(project.slug)}/editor/trainer`);
  if(project.segment!=='food-business')redirect(`/dashboard/${encodeURIComponent(project.slug)}/content`);
  if(!can(role,'editContent'))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const menuLimit=await menuItemLimitForProject(project.id),data=await readV2Content(project.id),salesRetired=project.slug==='vet-se',selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1'),modern=selected==='commerce-modern-1',active=selected==='commerce-main-1',canSwitch=can(role,'editAppearance');

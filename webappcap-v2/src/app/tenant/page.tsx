@@ -11,10 +11,10 @@ type TenantProps={searchParams:Promise<{host?:string}>};
 export async function generateMetadata({searchParams}:TenantProps):Promise<Metadata>{
   const {host}=await searchParams,result=host?await readSite(host):null;
   if(!result)return {title:{absolute:'Projeto não encontrado — WebAppCap'},robots:{index:false,follow:false}};
-  const name=String(result.project.name||result.data.identity.name).trim();
-  const role=String(result.data.content.hero_text||'Portfólio profissional').split('·')[0].trim();
+  const name=String(result.project.segment==='personal-trainer'?result.data.identity.name||result.project.name:result.project.name||result.data.identity.name).trim();
+  const role=String(result.project.segment==='personal-trainer'?'Personal Trainer':result.data.content.hero_text||'Portfólio profissional').split('·')[0].trim();
   const customTitle=String(result.data.identity.browser_title||'').trim();
-  const description=String(result.data.identity.description||role).trim().slice(0,160);
+  const description=String(result.data.identity.description||(result.project.segment==='personal-trainer'?result.data.content.hero_text:role)||role).trim().slice(0,160);
   const canonical=result.state.custom_domain&&result.state.domain_status==='active'
     ?`https://${result.state.custom_domain}`
     :result.state.native_subdomain?`https://${result.state.native_subdomain}.webappcap.com.br`:undefined;

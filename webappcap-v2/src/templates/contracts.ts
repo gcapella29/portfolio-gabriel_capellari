@@ -9,6 +9,7 @@ export type TemplateContract={
 };
 
 export const templateContracts:Record<string,TemplateContract>={
+ 'personal-trainer-main-1':{key:'personal-trainer-main-1',segment:'personal-trainer',version:1,requiredContent:['identity.name','content.hero_title','contact.whatsapp'],optionalContent:['content.trainer_cref','content.trainer_results'],media:{hero:true,galleryMax:0},appearance:{accent:false,headingFont:false,bodyFont:false,alignment:false,density:false,scale:false},notes:['Preservar CSS e fontes da referência React.','Agenda indica disponibilidade; formulário prepara mensagem para WhatsApp.']},
  'portfolio-legacy-1':{key:'portfolio-legacy-1',segment:'portfolio',version:1,requiredContent:['identity.name','content.hero_title'],optionalContent:[],media:{hero:true,galleryMax:12},appearance:{accent:true,headingFont:false,bodyFont:false,alignment:false,density:false,scale:false}},
  'portfolio-native-1':{key:'portfolio-native-1',segment:'portfolio',version:1,requiredContent:['identity.name','content.hero_title'],optionalContent:[],media:{hero:true,galleryMax:12},appearance:{accent:true,headingFont:false,bodyFont:false,alignment:false,density:false,scale:false}}
 };

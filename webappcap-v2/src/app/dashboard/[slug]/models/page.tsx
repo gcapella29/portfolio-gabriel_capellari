@@ -9,9 +9,9 @@ import styles from './models.module.css';
 
 export default async function ModelsPage({params,searchParams}:{params:Promise<{slug:string}>;searchParams:Promise<{template?:string}>}){
  const {slug}=await params,query=await searchParams,{project,role}=await resolveProjectAccess(slug);
- if(project.segment!=='food-business')redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
+ if(!['food-business','personal-trainer'].includes(project.segment))redirect(`/dashboard/${encodeURIComponent(project.slug)}`);
  const data=await readV2Content(project.id);
- const selected=String(data.appearance.preview_template_key||project.templateKey||'commerce-main-1');
+ const selected=String(data.appearance.preview_template_key||project.templateKey||'');
  const templates=templatesForSegment(project.segment).filter(item=>item.status==='ready'&&!(project.slug==='vet-se'&&item.key==='commerce-sales-1'));
  const canApply=can(role,'editAppearance');
  return <div className={styles.page}>

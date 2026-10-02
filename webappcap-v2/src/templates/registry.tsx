@@ -1,3 +1,4 @@
+import {PersonalTrainerMainTemplate} from './trainer/trainer-main';
 import type { ComponentType } from 'react';
 import { NativeMainParityPortfolioTemplate } from './portfolio/native-main-parity';
 import { CommerceTemplate } from './commerce/commerce';
@@ -6,6 +7,7 @@ import type { TemplateRenderProps } from './types';
 import './hero-text-motion.css';
 
 const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
+  'personal-trainer-main-1':PersonalTrainerMainTemplate,
   'portfolio-legacy-1': NativeMainParityPortfolioTemplate,
   'portfolio-native-1': NativeMainParityPortfolioTemplate,
   'commerce-main-1': CommerceTemplate,
