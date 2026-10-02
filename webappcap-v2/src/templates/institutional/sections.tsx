@@ -39,7 +39,7 @@ export function Projects() {
     model: {lists},
   } = useInstitutional();
   return (
-    <div className="grid g3">
+    <div className="grid g3 completed-project-rail" tabIndex={0} role="region" aria-label="Projetos realizados">
       {lists.institutional_projects.map((p, i) => (
         <article className="card" key={p.id}>
           <div className="card-media">

@@ -64,3 +64,11 @@ a.avatar{transition:transform .25s ease,box-shadow .25s ease}a.avatar:hover{tran
   .lb-x{top:10px;right:10px;z-index:2;box-shadow:0 2px 12px rgba(0,0,0,.2)}
   #lb p{padding:0 8px;overflow-wrap:anywhere}
 }
+
+/* Completed projects scroll horizontally only on mobile. */
+@media(max-width:640px){
+  .completed-project-rail{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:4px;padding:4px 4px 18px;scrollbar-width:thin;scrollbar-color:var(--gold-l) transparent}
+  .completed-project-rail>.card{flex:0 0 88%;min-width:0;scroll-snap-align:start;overflow-wrap:anywhere}
+  .completed-project-rail>.card:only-child{flex-basis:100%}
+  .completed-project-rail:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+}
