@@ -71,7 +71,7 @@
  .sequenceHead{
   display:grid;
   grid-template-columns:minmax(0,1fr) minmax(280px,.42fr);
-  align-items:end;
+  align-items:flex-end;
   column-gap:28px;
  }
  .sequenceHead>span,.sequenceHead>h2{grid-column:1}

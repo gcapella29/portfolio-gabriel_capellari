@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {activeCommerceProducts,restoreModernCart} from './commerce-catalog.ts';
+import {activeCommerceProducts,restoreModernCart,restoreCatalogCart} from './commerce-catalog.ts';
 import {parseCommerceOrderItems} from './commerce-order-input.ts';
 
 test('inactive and malformed catalog rows do not shift published order references',()=>{
@@ -20,4 +20,11 @@ test('orders preserve all references or reject the entire payload',()=>{
  for(const value of [null,[],[{productIndex:null,quantity:1}],[{productIndex:1.2,quantity:1}],[{productIndex:1,quantity:1000}],[{productIndex:'1',quantity:1}],[{productIndex:1,quantity:1},{productIndex:1,quantity:2}],[{productIndex:1,quantity:1},null]])assert.equal(parseCommerceOrderItems(value),null);
  assert.equal(parseCommerceOrderItems(Array.from({length:81},(_,productIndex)=>({productIndex,quantity:1})))?.length,81);
  assert.equal(parseCommerceOrderItems(Array.from({length:1001},(_,productIndex)=>({productIndex,quantity:1}))),null);
+});
+
+test('zero-based bakery carts are restored only for the same catalog',()=>{
+ const ids=new Set([0,1]);
+ assert.deepEqual(restoreCatalogCart({signature:'v1',items:{0:2,1:3,2:4,'01':5}},'v1',ids),{'0':2,'1':3});
+ assert.deepEqual(restoreCatalogCart({signature:'v1',items:{0:2}},'v2',ids),{});
+ assert.deepEqual(restoreModernCart({signature:'v1',items:{0:2,1:3}},'v1',ids),{'1':3});
 });

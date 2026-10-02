@@ -6,8 +6,16 @@ import { normalizeV2Content } from './content-snapshot';
 export type V2Content = {identity:Record<string,unknown>;content:Record<string,unknown>;media:Record<string,unknown>;appearance:Record<string,unknown>;contact:Record<string,unknown>};
 
 export async function readV2Content(projectId:string):Promise<V2Content>{const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_content').select('identity,content,media,appearance,contact').eq('project_id',projectId).maybeSingle();if(q.error&&q.error.code!=='PGRST116')throw q.error;return normalizeV2Content(q.data)}
-export async function ensureV2Content(projectId:string){const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_content').upsert({project_id:projectId},{onConflict:'project_id'});if(q.error)throw q.error}
-export async function saveV2Section(projectId:string,section:keyof V2Content,value:Record<string,unknown>){const sb=await createSupabaseServerClient();await ensureV2Content(projectId);const q=await sb.from('project_v2_content').update({[section]:value,updated_at:new Date().toISOString()}).eq('project_id',projectId);if(q.error)throw q.error}
+export async function ensureV2Content(projectId:string){const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_content').upsert({project_id:projectId},{onConflict:'project_id',ignoreDuplicates:true});if(q.error)throw q.error}
+// Validate the entire form first, then update all submitted draft sections together.
+export async function saveV2Sections(projectId:string,sections:Partial<V2Content>){
+ const sb=await createSupabaseServerClient();
+ const ensured=await sb.from('project_v2_content').upsert({project_id:projectId},{onConflict:'project_id',ignoreDuplicates:true});
+ if(ensured.error)throw ensured.error;
+ const saved=await sb.from('project_v2_content').update({...sections,updated_at:new Date().toISOString()}).eq('project_id',projectId);
+ if(saved.error)throw saved.error;
+}
+export async function saveV2Section(projectId:string,section:keyof V2Content,value:Record<string,unknown>){await saveV2Sections(projectId,{[section]:value})}
 export async function updateOnboardingState(projectId:string,step:OnboardingStep,patch:Record<string,unknown>={}){const sb=await createSupabaseServerClient();const q=await sb.from('project_v2_state').update({onboarding_step:step,lifecycle:step==='completed'?'ready-to-publish':'onboarding',updated_at:new Date().toISOString(),...patch}).eq('project_id',projectId);if(q.error)throw q.error}
 export function validateTemplateForProject(project:ProjectContext,templateKey:string){const template=getTemplate(project.segment,templateKey);if(!template||template.status==='planned')return null;return template}
 export function publicMediaUrl(path:string){const base=process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/,'');return base?`${base}/storage/v1/object/public/webappcap-v2-sites/${path}`:path}
@@ -26,7 +34,7 @@ export async function uploadProjectImage(projectId:string,file:File,slot:string)
 }
 
 export async function removeProjectMedia(projectId:string,paths:string[]){
- const safe=[...new Set(paths.filter(path=>path.startsWith(`${projectId}/`)))];
+ const safe=[...new Set(paths.filter(path=>path.startsWith(`${projectId}/`)&&!path.split('/').some(part=>part==='..'||part==='.'||!part)))];
  if(!safe.length)return;
  const sb=await createSupabaseServerClient();
  const result=await sb.storage.from('webappcap-v2-sites').remove(safe);

@@ -6,7 +6,7 @@ import {resolveProjectAccess} from '@/core/session';
 import {can} from '@/core/permissions';
 import {
   readV2Content,
-  saveV2Section,
+  saveV2Sections,
   publicMediaUrl,
 } from '@/core/onboarding-data';
 import {
@@ -211,11 +211,8 @@ export async function saveInstitutionalAction(form: FormData) {
     } else delete hero.mobile;
     media.hero = hero;
   }
-  // Reuse the existing draft writes and atomic publication flow.
-  await saveV2Section(access.project.id, 'identity', identity);
-  await saveV2Section(access.project.id, 'content', content);
-  await saveV2Section(access.project.id, 'contact', contact);
-  if (allowed) await saveV2Section(access.project.id, 'media', media);
+  // Save the whole draft form together; publication keeps its atomic RPC.
+  await saveV2Sections(access.project.id, {identity, content, contact, ...(allowed ? {media} : {})});
   const base = `/dashboard/${encodeURIComponent(slug)}`;
   revalidatePath(`${base}/editor/institutional`);
   revalidatePath(`/preview/${encodeURIComponent(slug)}`);

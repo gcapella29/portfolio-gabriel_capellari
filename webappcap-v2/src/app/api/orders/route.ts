@@ -13,6 +13,7 @@ function json(body:Record<string,unknown>,status=200){
 export async function POST(request:Request){
  try{
   const raw=await request.json() as Record<string,unknown>;
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return json({ok:false,error:'invalid_input'},400);
   const projectId=cleanText(raw.projectId,120);
   const templateKey=cleanText(raw.templateKey,80);
   const items=parseCommerceOrderItems(raw.items);
@@ -20,7 +21,7 @@ export async function POST(request:Request){
   const customerPhone=cleanPhone(raw.customerPhone);
 
   if(
-   !projectId||
+   !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(projectId)||
    !['commerce-main-1','commerce-modern-1','commerce-sales-1','commerce-bakery-1'].includes(templateKey)||
    !items||
    customerName.length<2||

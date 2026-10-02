@@ -37,6 +37,8 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const siteRef=useRef<HTMLDivElement>(null);
   const heroBackgroundRef=useRef<HTMLDivElement>(null);
   const touchStartRef=useRef<number|null>(null);
+  const shareTimer=useRef<number|null>(null);
+  useEffect(()=>()=>{if(shareTimer.current)clearTimeout(shareTimer.current)},[]);
 
   const name=stringValue(data.identity,'name',project.name||defaults.identity.name).replace(/["”]+$/,'').trim();
   const location=stringValue(data.identity,'location',defaults.identity.location);
@@ -75,7 +77,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const accent=stringValue(data.appearance,'accent','#e3bb3d');
   const footerText:LocalizedText={pt:stringValue(data.content,'footer_text_pt',`${name.toUpperCase()} · JORNALISMO DE POKER · IBITINGA, SP — BRASIL`),en:stringValue(data.content,'footer_text_en',`${name.toUpperCase()} · POKER JOURNALISM · IBITINGA, SP — BRAZIL`)};
 
-  useEffect(()=>{const stored=window.localStorage.getItem('portfolio-language');if(stored==='en')setLanguage('en')},[]);
+  useEffect(()=>{try{const stored=window.localStorage.getItem('portfolio-language');if(stored==='en')setLanguage('en')}catch{/* Use the default language if storage is blocked. */}},[]);
   useEffect(()=>{
     if(motionPaused)return;
     const timer=window.setInterval(()=>{
@@ -83,7 +85,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
     },2200);
     return()=>window.clearInterval(timer);
   },[motionPaused]);
-  useEffect(()=>{if(gallery.length<2)return;const timer=window.setInterval(()=>setSlide(current=>(current+1)%gallery.length),10000);return()=>window.clearInterval(timer)},[gallery.length]);
+  useEffect(()=>{if(gallery.length<2||motionPaused||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;const timer=window.setInterval(()=>{if(!document.hidden)setSlide(current=>(current+1)%gallery.length)},10000);return()=>window.clearInterval(timer)},[gallery.length,motionPaused]);
   useEffect(()=>{
     const root=siteRef.current;if(!root)return;
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -104,9 +106,9 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
     const schedule=()=>{if(!frame)frame=window.requestAnimationFrame(update)};update();window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});return()=>{window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);if(frame)window.cancelAnimationFrame(frame)};
   },[]);
 
-  const chooseLanguage=(next:Language)=>{setLanguage(next);window.localStorage.setItem('portfolio-language',next)};
+  const chooseLanguage=(next:Language)=>{setLanguage(next);try{window.localStorage.setItem('portfolio-language',next)}catch{/* Language remains active for this visit. */}};
   const moveSlide=(direction:number)=>setSlide(current=>(current+direction+gallery.length)%gallery.length);
-  const share=async()=>{const payload={title:`${name} — ${language==='pt'?'Jornalista de Poker':'Poker Journalist'}`,text:language==='pt'?'Portfólio profissional de Gabriel Capellari.':'Gabriel Capellari professional portfolio.',url:window.location.href};if(navigator.share){try{await navigator.share(payload);return}catch(error){if(error instanceof DOMException&&error.name==='AbortError')return}}try{await navigator.clipboard.writeText(window.location.href)}catch{return}setShareFeedback(true);window.setTimeout(()=>setShareFeedback(false),1800)};
+  const share=async()=>{const payload={title:`${name} — ${language==='pt'?'Jornalista de Poker':'Poker Journalist'}`,text:language==='pt'?'Portfólio profissional de Gabriel Capellari.':'Gabriel Capellari professional portfolio.',url:window.location.href};if(navigator.share){try{await navigator.share(payload);return}catch(error){if(error instanceof DOMException&&error.name==='AbortError')return}}try{await navigator.clipboard.writeText(window.location.href)}catch{return}setShareFeedback(true);if(shareTimer.current)clearTimeout(shareTimer.current);shareTimer.current=window.setTimeout(()=>setShareFeedback(false),1800)};
   const submitLead=async(event:FormEvent<HTMLFormElement>)=>{event.preventDefault();setLeadState('sending');const form=event.currentTarget;const formData=new FormData(form);formData.set('projectId',project.id);try{const response=await fetch('/api/leads',{method:'POST',body:formData});if(!response.ok)throw new Error('submit_failed');form.reset();setLeadState('success')}catch{setLeadState('error')}};
   const firstName=name.split(' ')[0];const surname=name.split(' ').slice(1).join(' ');
   const cssVariables:CssVariables={'--accent':accent};

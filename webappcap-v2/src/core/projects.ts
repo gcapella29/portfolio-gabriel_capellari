@@ -28,6 +28,7 @@ export async function projectForUser(slug: string, userId: string): Promise<Reso
   if (!role) return null;
 
   const state = await sb.from('project_v2_state').select('segment,template_key,lifecycle,onboarding_step').eq('project_id', p.data.id).maybeSingle();
+  if(state.error)throw state.error;
   const segment = segmentFromValue(state.data?.segment || p.data.site_type);
   const onboardingStep = (state.data?.onboarding_step || (segment === 'portfolio' ? 'completed' : 'template')) as OnboardingStep;
   const lifecycle = (state.data?.lifecycle || (p.data.is_published ? 'published' : 'draft')) as ProjectLifecycle;
@@ -49,10 +50,12 @@ export async function projectForUser(slug: string, userId: string): Promise<Reso
 
 export async function projectsForUser(userId: string) {
   const sb = await createSupabaseServerClient();
-  const memberships = await sb.from('project_members').select('project_id,role').eq('user_id', userId);
+  const [memberships,owned]=await Promise.all([
+    sb.from('project_members').select('project_id,role').eq('user_id',userId),
+    sb.from('projects').select('id,slug,name,site_type,is_published,owner_id,archived_at').eq('owner_id',userId)
+  ]);
   if (memberships.error) throw memberships.error;
   const ids = memberships.data?.map(item => item.project_id) || [];
-  const owned = await sb.from('projects').select('id,slug,name,site_type,is_published,owner_id,archived_at').eq('owner_id', userId);
   if (owned.error) throw owned.error;
   const memberProjects = ids.length ? await sb.from('projects').select('id,slug,name,site_type,is_published,owner_id,archived_at').in('id', ids) : {data:[],error:null};
   if (memberProjects.error) throw memberProjects.error;

@@ -1,3 +1,4 @@
+import {createWindowRateLimiter} from '@/core/rate-limit';
 import { NextResponse } from 'next/server';
 import { readPublicSiteBySlug } from '@/core/public-site';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
@@ -5,10 +6,9 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 const clean=(value:FormDataEntryValue|null,max:number)=>String(value||'').trim().replace(/[\u0000-\u001f\u007f]/g,' ').slice(0,max);
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const phone=/^[+()\-\s\d]{8,40}$/;
-const buckets=new Map<string,{count:number;reset:number}>();
+const limited=createWindowRateLimiter(6);
 
 function clientKey(request:Request,projectId:string){const forwarded=request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||request.headers.get('x-real-ip')||'unknown';return `${projectId}:${forwarded}`}
-function limited(key:string){const now=Date.now(),current=buckets.get(key);if(!current||current.reset<now){buckets.set(key,{count:1,reset:now+60_000});return false}current.count+=1;return current.count>6}
 function json(body:Record<string,unknown>,status=200){return NextResponse.json(body,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}})}
 
 export async function POST(request:Request){
@@ -32,7 +32,7 @@ export async function POST(request:Request){
     projectId=publicSite?.project.id||'';
   }
 
-  if(!uuid.test(projectId)||name.length<2||!phone.test(phoneValue)||message.length<3||!consentGranted)return json({ok:false,error:'invalid_input'},400);
+  if(!uuid.test(projectId)||name.length<2||(!phone.test(phoneValue)||phoneValue.replace(/\D/g,'').length<8)||message.length<3||!consentGranted)return json({ok:false,error:'invalid_input'},400);
   if(limited(clientKey(request,projectId)))return json({ok:false,error:'rate_limited'},429);
 
   const sb=createSupabaseAdminClient();
