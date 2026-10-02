@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { readPublishedRootContent } from '@/core/root-site';
+import {readPublishedHomeProjects} from '@/core/home-projects';
 import { HomeSite } from './home-site';
 
 export const metadata:Metadata={
@@ -17,6 +18,6 @@ export const metadata:Metadata={
 };
 
 export default async function HomePage(){
-  const content=await readPublishedRootContent();
-  return <HomeSite content={content}/>;
+  const [content,publishedProjects]=await Promise.all([readPublishedRootContent(),readPublishedHomeProjects()]);
+  return <HomeSite content={content} publishedProjects={publishedProjects}/>;
 }
