@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { resolveProjectAccess } from '@/core/session';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { removeProjectMedia } from '@/core/remove-project-media';
 
 export type DeleteProjectState = {
   error: string | null;
@@ -110,19 +111,21 @@ export async function permanentlyDeleteArchivedProjectAction(
   try {
     // Project uploads use a flat project-id prefix. Remove storage through the API
     // before deleting the database row so the owner's storage policy still applies.
-    for(let page=0;page<100;page++){
+    await removeProjectMedia(async () => {
       const listing=await bucket.list(archivedProject.id,{limit:1000});
       if(listing.error)throw listing.error;
       const files=(listing.data||[]).filter(item=>item.id).map(item=>`${archivedProject.id}/${item.name}`);
-      if(!files.length)break;
-      for(let i=0;i<files.length;i+=100){const removed=await bucket.remove(files.slice(i,i+100));if(removed.error)throw removed.error}
-      if(page===99)throw new Error('O projeto possui mais arquivos do que o limite de uma operação.');
-    }
+      return files;
+    }, async files => {
+      const removed=await bucket.remove(files);
+      if(removed.error)throw removed.error;
+    });
     const deleted=await sb.rpc('permanently_delete_archived_project',{target_project_id:archivedProject.id});
     if(deleted.error)throw deleted.error;
   }catch(error){
-    console.error('[owner:permanent-delete]',{slug,message:error instanceof Error?error.message:String(error)});
-    return{error:'Não foi possível concluir a exclusão. Confira a migração 022 e tente novamente.'};
+    const detail = error && typeof error === 'object' && 'message' in error ? String(error.message) : String(error);
+    console.error('[owner:permanent-delete]',{slug,message:detail});
+    return{error:detail.includes('migração 025') ? detail : 'Não foi possível concluir a exclusão. O projeto continua arquivado. Consulte os logs do servidor para identificar a falha.'};
   }
   revalidatePath('/owner/projects');
   redirect(`/owner/projects?permanentlyDeleted=${encodeURIComponent(slug)}`);
