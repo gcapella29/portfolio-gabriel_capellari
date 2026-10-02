@@ -17,6 +17,7 @@ import {saveInstitutionalAction} from './actions';
 import {imageEditorFrame} from '@/core/image-editor-frame';
 import styles from './institutional-editor.module.css';
 const text = (value: unknown) => String(value ?? '');
+const listOrder:InstitutionalListKey[]=['institutional_campaigns',...Object.keys(institutionalLists).filter(key=>key!=='institutional_campaigns') as InstitutionalListKey[]];
 export default function InstitutionalEditor({
   projectId,
   slug,
@@ -93,9 +94,9 @@ export default function InstitutionalEditor({
   const listBlock:Partial<Record<InstitutionalListKey,keyof typeof institutionalBlocks>> = {institutional_projects:'projetos',institutional_donations:'doacoes',institutional_campaigns:'campanhas',institutional_timeline:'historia',institutional_values:'valores',institutional_current_board:'current_board',institutional_current_members:'current_members',institutional_previous_board:'previous_board',institutional_previous_members:'previous_members',institutional_albums:'fotos'};
   const nav = [
     {id: 'institutional-identity', label: 'Identidade'},
-    ...Object.entries(institutionalLists).map(([key, def]) => ({
+    ...listOrder.map((key) => ({
       id: `institutional-${key}`,
-      label: def.label,
+      label: institutionalLists[key].label,
     })),
     {id: 'institutional-contact', label: 'Contato e Pix'},
     {id: 'institutional-copy', label: 'Textos do modelo'},
@@ -177,7 +178,7 @@ export default function InstitutionalEditor({
             : null}
         </div>
       </EditorBlock>
-      {(Object.keys(institutionalLists) as InstitutionalListKey[]).map(
+      {listOrder.map(
         (key, listIndex) => (
           <EditorBlock
             id={`institutional-${key}`}
