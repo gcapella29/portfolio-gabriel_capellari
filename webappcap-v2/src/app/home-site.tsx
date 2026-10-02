@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import { Fraunces, IBM_Plex_Mono, Inter } from 'next/font/google';
+import {HomeProjectCarousel} from './home-project-carousel';
+import {parseHomeProjectCases,mergeHomeProjectCases,type HomeProjectCase} from '@/core/home-project-cases';
 import { HomeHeader } from './home-header';
 import { HomeLeadForm } from './home-lead-form';
 import { HomeMotion } from './home-motion';
@@ -75,15 +77,10 @@ const defaultQuestions=[
   {question:'Como começamos?',answer:'Envie o formulário ou chame pelo WhatsApp. Primeiro entendemos seu objetivo; depois você recebe os próximos passos, sem compromisso.'}
 ];
 
-export function HomeSite({content={},preview=false}:{content?:RootSiteContent;preview?:boolean}){
+export function HomeSite({content={},preview=false,publishedProjects=[]}:{content?:RootSiteContent;preview?:boolean;publishedProjects?:HomeProjectCase[]}){
   const value=(key:string,fallback:string)=>rootValue(content,key,fallback);
   const lines=(raw:string)=>raw.split(/\r?\n/).map(item=>item.trim()).filter(Boolean);
-  const projectCases=lines(value('projects_cases',defaultProjectCasesText)).map((line,index)=>{
-    const [name='',url='',category='',description='',factsRaw='',tagsRaw='']=line.split('|').map(part=>part.trim());
-    const facts=factsRaw.split(';').map(item=>item.trim()).filter(Boolean).map(item=>{const [label,...rest]=item.split(':');return{label:label.trim(),text:rest.join(':').trim()}}).filter(item=>item.label&&item.text).slice(0,3);
-    const tags=tagsRaw.split(';').map(item=>item.trim()).filter(Boolean).slice(0,4);
-    return{name,url,category,description,facts,tags,index};
-  }).filter(project=>project.name&&project.url);
+  const projectCases=mergeHomeProjectCases(parseHomeProjectCases(value('projects_cases',defaultProjectCasesText)),publishedProjects);
   const marqueeItems=lines(value('marquee_items',defaultMarqueeItems.map(item=>item.replace(/ ◆$/,'')).slice(0,8).join('\n'))).map(item=>`${item} ◆`);
   const marqueeSequence=Array.from({length:Math.ceil(8/marqueeItems.length)},()=>marqueeItems).flat();
   const steps=lines(value('process_steps',defaultSteps.map(item=>`${item.title} | ${item.text}`).join('\n'))).map((item,index)=>{const [title,...text]=item.split('|');return{number:String(index+1).padStart(2,'0'),title:title.trim(),text:text.join('|').trim()}}).filter(item=>item.title&&item.text);
@@ -162,20 +159,24 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
         <div className={styles.sectionLabel}><span>03</span> Projetos em destaque</div>
         <div><h2>{value('projects_title','Ideias diferentes. Uma plataforma que se adapta.')}</h2><p>{value('projects_description','Do portfólio editorial à loja digital, o WebAppCap muda de forma sem perder gestão, performance e identidade.')}</p></div>
       </div>
-      <div className={projectStyles.stack}>
+      <HomeProjectCarousel count={projectCases.length}>
         {projectCases.map((project,index)=><article className={projectStyles.caseCard} data-reveal data-case-index={index} key={`${project.name}-${index}`}>
           <a className={projectStyles.preview} href={project.url} target="_blank" rel="noreferrer" aria-label={`Abrir projeto ${project.name}`}>
             <div className={projectStyles.browserBar}><i/><i/><i/><span>{project.url.replace(/^https?:\/\//,'').replace(/\/$/,'')}</span></div>
-            {index===0?
+            {project.name==='Gabriel Capellari'?
               <div className={projectStyles.portfolioPreview}>
                 <Image src="/assets/media/hero-gabriel.jpg" alt="" fill sizes="(max-width: 800px) 100vw, 54vw"/>
                 <div className={projectStyles.portfolioTop}><span>🇧🇷　🇬🇧</span><span>IBITINGA · SP · BR</span></div>
                 <div className={projectStyles.portfolioName}><span>Gabriel</span><em>Capellari”</em><small>Jornalista de Poker · Professor · Redator</small><b>Ver meu trabalho ↘</b></div>
               </div>
-              :
+              :project.name==='Vet-se'?
               <div className={projectStyles.storePreview}>
                 <div className={projectStyles.storeTop}><strong>Vet-se</strong><span>Início　 Catálogo　 Carrinho　 Sobre</span><b>Ver produtos</b></div>
                 <div className={projectStyles.storeHero}><Image src="/assets/media/vet-hero.webp" alt="" fill sizes="(max-width: 800px) 100vw, 54vw"/><div><h3>Vet-se</h3><p>Adesivos · Chaveiros · Mimos · Bottons · Ecobags e mais</p><em>Feito com amor especialmente para você!</em></div></div>
+              </div>:
+              <div className={projectStyles.genericPreview}>
+                {project.image?<img src={project.image} alt="" loading="lazy" decoding="async"/>:null}
+                <div><small>{project.category}</small><h3>{project.name}</h3><span>Conhecer projeto ↗</span></div>
               </div>}
           </a>
           <div className={projectStyles.info}>
@@ -186,7 +187,7 @@ export function HomeSite({content={},preview=false}:{content?:RootSiteContent;pr
             <a className={projectStyles.visit} href={project.url} target="_blank" rel="noreferrer">Visitar projeto <span>↗</span></a>
           </div>
         </article>)}
-      </div>
+      </HomeProjectCarousel>
     </section>
 
     <section className={styles.services} id="servicos">
