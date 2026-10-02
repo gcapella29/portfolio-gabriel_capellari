@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { Fraunces, IBM_Plex_Mono, Inter } from 'next/font/google';
+import fonts from '@/fonts/local.module.css';
+import {preloadSiteFonts} from '@/fonts/preload';
 import {HomeProjectCarousel} from './home-project-carousel';
 import {parseHomeProjectCases,mergeHomeProjectCases,type HomeProjectCase} from '@/core/home-project-cases';
 import { HomeHeader } from './home-header';
@@ -9,9 +10,6 @@ import { rootValue, type RootSiteContent } from '@/core/root-site';
 import styles from './home.module.css';
 import projectStyles from './home-projects.module.css';
 
-const headingFont=Fraunces({subsets:['latin'],weight:'variable',axes:['opsz'],variable:'--home-heading',display:'swap'});
-const bodyFont=Inter({subsets:['latin'],weight:['400','500','600','700'],variable:'--home-body',display:'swap'});
-const monoFont=IBM_Plex_Mono({subsets:['latin'],weight:['400','500','600','700'],variable:'--home-mono',display:'swap'});
 const DEFAULT_PORTFOLIO_URL='https://capellari.webappcap.com.br';
 const DEFAULT_VETSE_URL='https://vet-se.webappcap.com.br';
 const defaultProjectCases=[
@@ -78,6 +76,7 @@ const defaultQuestions=[
 ];
 
 export function HomeSite({content={},preview=false,publishedProjects=[]}:{content?:RootSiteContent;preview?:boolean;publishedProjects?:HomeProjectCase[]}){
+ preloadSiteFonts('editorial');
   const value=(key:string,fallback:string)=>rootValue(content,key,fallback);
   const lines=(raw:string)=>raw.split(/\r?\n/).map(item=>item.trim()).filter(Boolean);
   const projectCases=mergeHomeProjectCases(parseHomeProjectCases(value('projects_cases',defaultProjectCasesText)),publishedProjects);
@@ -88,7 +87,7 @@ export function HomeSite({content={},preview=false,publishedProjects=[]}:{conten
   const services=lines(value('services',defaultServices.map(item=>`${item.title} | ${item.text} | ${item.items.join('; ')}`).join('\n'))).map((item,index)=>{const [title,text='',rawItems='']=item.split('|');return{number:String(index+1).padStart(2,'0'),title:title.trim(),text:text.trim(),items:rawItems.split(';').map(part=>part.trim()).filter(Boolean)}}).filter(item=>item.title);
   const commitments=lines(value('commitments',defaultCommitments.map(item=>`${item.label} | ${item.title} | ${item.text}`).join('\n'))).map(item=>{const [label,title='',...text]=item.split('|');return{label:label.trim(),title:title.trim(),text:text.join('|').trim()}}).filter(item=>item.label&&item.title);
   const questions=lines(value('faq',defaultQuestions.map(item=>`${item.question} | ${item.answer}`).join('\n'))).map(item=>{const [question,...answer]=item.split('|');return{question:question.trim(),answer:answer.join('|').trim()}}).filter(item=>item.question&&item.answer);
-  return <main className={`${styles.site} ${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`} data-home-root>
+  return <main className={`${styles.site} ${fonts.variables}`} data-home-root>
     <HomeMotion/>
     <HomeHeader/>
 

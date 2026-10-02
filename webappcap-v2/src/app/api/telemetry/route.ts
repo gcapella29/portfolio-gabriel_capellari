@@ -1,3 +1,4 @@
+import {sharedRateLimit} from '@/lib/shared-rate-limit';
 import {createWindowRateLimiter} from '@/core/rate-limit';
 import {NextResponse} from 'next/server';
 
@@ -25,6 +26,8 @@ export async function POST(request:Request){
   const ip=request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||
     request.headers.get('x-real-ip')||'unknown';
   if(limited(ip))return response(false,429);
+  const shared=await sharedRateLimit('telemetry',ip,24);
+  if(shared!=='allowed')return response(false,shared==='limited'?429:503);
 
   const event={
     source:'webappcap-client',
