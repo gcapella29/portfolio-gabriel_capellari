@@ -1,3 +1,5 @@
+import Block from './editor-block';
+import {imageEditorFrame} from '@/core/image-editor-frame';
 import {commerceSettings} from '@/core/commerce-settings';
 import ContentWorkspace,{type ContentNavItem} from '../content/content-workspace';
 import DirectImageField from '../content/direct-image-field';
@@ -9,16 +11,13 @@ const mediaValue=(value:unknown,key:'url'|'position'|'fit'|'zoom',fallback='')=>
 const defaultSalesWhatsappMessage='Olá! Quero fazer um pedido na {loja}.\n\nITENS DO PEDIDO\n{itens}\n\n💰 TOTAL: {total}';
 const defaultDirectWhatsappMessage='Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.';
 
-function Block({id,number,title,summary,children,open=false}:{id:string;number:string;title:string;summary:string;children:React.ReactNode;open?:boolean}){
- return <details className={styles.block} id={id} open={open}><summary><b>{number}</b><span><strong>{title}</strong><small>{summary}</small></span></summary><div className={styles.blockBody}>{children}</div></details>;
-}
 
 export default function SalesContentEditor({slug,projectId,canManageMedia,saved=false,data}:{slug:string;projectId:string;canManageMedia:boolean;saved?:boolean;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>}}){
  const settings=commerceSettings(data.content);
  const nav:ContentNavItem[]=[{id:'sales-block-1',label:'Bloco 1 · Cabeçalho'},{id:'sales-block-2',label:'Bloco 2 · Catálogo'},{id:'sales-block-3',label:'Bloco 3 · WhatsApp'}];
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={saved} portfolio={false} nav={nav} action={saveSalesContentAction} embedded>
   <Block id="sales-block-1" number="01" title="Cabeçalho" summary="Foto de capa e frase exibida junto ao nome da loja">
-   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:sales_hero" slot="sales_hero" label="Foto de capa do hero" current={mediaValue(data.media.sales_hero,'url')} currentPosition={mediaValue(data.media.sales_hero,'position','center')} currentFit={mediaValue(data.media.sales_hero,'fit','cover')} currentZoom={mediaValue(data.media.sales_hero,'zoom','100')} help="Escolha a foto de capa e arraste para ajustar o enquadramento."/>:null}
+   {canManageMedia?<DirectImageField projectId={projectId} name="uploadedMedia:sales_hero" slot="sales_hero" {...imageEditorFrame("commerce-sales-1","sales_hero")} label="Foto de capa do hero" current={mediaValue(data.media.sales_hero,'url')} currentPosition={mediaValue(data.media.sales_hero,'position','center')} currentFit={mediaValue(data.media.sales_hero,'fit','cover')} currentZoom={mediaValue(data.media.sales_hero,'zoom','100')} help="Escolha a foto de capa e arraste para ajustar o enquadramento."/>:null}
    <label className="field"><span>Frase principal</span><input name="sales_tagline" defaultValue={v(data.content,'sales_tagline')||v(data.identity,'tagline')} placeholder="Escolha e peça pelo WhatsApp."/></label>
    <p className={styles.fixedNote}>O nome da loja é compartilhado com o projeto e não precisa ser repetido neste editor.</p>
   </Block>

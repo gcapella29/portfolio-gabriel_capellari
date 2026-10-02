@@ -1,6 +1,7 @@
 'use client';
 
 import {useDeferredValue,useMemo,useState} from 'react';
+import {imageEditorFrame} from '@/core/image-editor-frame';
 import DraggableImagePreview from '../content/draggable-image-preview';
 import {uploadProjectImageDirect} from '@/lib/supabase/project-image-upload';
 import styles from './catalog.module.css';
@@ -18,7 +19,7 @@ function emptyProduct():Product{
 function field(item:Product,key:string){return item[key]||''}
 function isActive(item:Product){return field(item,'active').trim().toLowerCase()!=='false'}
 
-export default function CatalogManager({projectId,initialItems,limit}:{projectId:string;initialItems:Product[];limit:number}){
+export default function CatalogManager({projectId,initialItems,limit,templateKey}:{templateKey:string;projectId:string;initialItems:Product[];limit:number}){
  const [rows,setRows]=useState<CatalogRow[]>(()=>initialItems.map((item,index)=>({id:`saved-${index}`,item})));
  const [query,setQuery]=useState(''),[category,setCategory]=useState(''),[status,setStatus]=useState<StatusFilter>('all'),[page,setPage]=useState(0),[openId,setOpenId]=useState<string|null>(null),[uploading,setUploading]=useState<string|null>(null),[uploadError,setUploadError]=useState(''),[selected,setSelected]=useState<Set<string>>(()=>new Set()),[bulkCategory,setBulkCategory]=useState('');
  const deferredQuery=useDeferredValue(query.trim().toLowerCase());
@@ -101,7 +102,7 @@ export default function CatalogManager({projectId,initialItems,limit}:{projectId
     {isOpen?<div className={styles.editor}>
      <div className={styles.imageColumn}>
       <div className={styles.imageFrame} data-uploading={uploading===row.id}>
-       {field(item,'image')?<DraggableImagePreview src={field(item,'image')} alt={field(item,'title')||'Produto'} position={field(item,'image_position')||'center'} fit={field(item,'image_fit')||'cover'} zoom={zoom} onPositionChange={value=>update(row.id,'image_position',value)} onZoomChange={value=>update(row.id,'image_zoom',String(value))}/>:<div className={styles.imageEmpty}>Sem imagem</div>}
+       {field(item,'image')?<DraggableImagePreview aspectRatio={imageEditorFrame(templateKey,"product").previewAspectRatio} src={field(item,'image')} alt={field(item,'title')||'Produto'} position={field(item,'image_position')||'center'} fit={field(item,'image_fit')||'cover'} zoom={zoom} onPositionChange={value=>update(row.id,'image_position',value)} onZoomChange={value=>update(row.id,'image_zoom',String(value))}/>:<div className={styles.imageEmpty}>Sem imagem</div>}
       </div>
       <label className="action secondary"><b>{uploading===row.id?'Enviando…':field(item,'image')?'Trocar imagem':'Adicionar imagem'}</b><input className={styles.fileInput} type="file" accept="image/jpeg,image/png,image/webp,image/gif" disabled={uploading===row.id} onChange={event=>{const file=event.currentTarget.files?.[0];if(file)void upload(row.id,file);event.currentTarget.value=''}}/></label>
       {field(item,'image')?<button type="button" className="action secondary" onClick={()=>update(row.id,'image','')}>Remover imagem</button>:null}

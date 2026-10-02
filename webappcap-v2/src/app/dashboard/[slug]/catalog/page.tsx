@@ -36,7 +36,7 @@ export default async function CatalogPage({
   {saved?<div className="notice success"><strong>Catálogo salvo no rascunho.</strong> Confira no Preview e publique quando estiver tudo certo.</div>:null}
   <form id="catalog-manager-form" action={saveCatalogAction}>
    <input type="hidden" name="slug" value={project.slug}/>
-   <CatalogManager projectId={project.id} initialItems={items} limit={Math.max(limit,items.length)}/>
+   <CatalogManager templateKey={String(data.appearance.preview_template_key||project.templateKey)} projectId={project.id} initialItems={items} limit={Math.max(limit,items.length)}/>
   </form>
   <EditorPageControls formId="catalog-manager-form" previewUrl={`/preview/${encodeURIComponent(project.slug)}`} saved={Boolean(saved)} saveLabel="Salvar catálogo"/>
  </div>;
