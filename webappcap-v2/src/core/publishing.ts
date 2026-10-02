@@ -40,6 +40,8 @@ export async function publishV2Project(projectId:string){
     throw new Error('Informe o título principal do site antes de publicar.');
   }
 
+  if(selectedTemplate==='personal-trainer-main-1'&&!/^\d{10,15}$/.test(String(data.contact.whatsapp||'').replace(/\D/g,'')))throw new Error('Configure o WhatsApp do personal trainer com DDI antes de publicar.');
+
   const published=await sb.rpc('publish_v2_project_atomic',{
     p_project_id:projectId,
     p_template_key:selectedTemplate

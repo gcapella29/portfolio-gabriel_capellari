@@ -47,7 +47,7 @@ function toCard(project:OwnerProjectView):CardModel{
   [plural(project.leadsTotal,'lead','leads'),project.leadsNew>0?plural(project.leadsNew,'novo','novos'):`Atualizado ${updatedLabel(project.updatedAt)}`];
  return {
   key:project.id,kind:'project',name:project.name,host,siteType:project.siteType,published:project.published,archived:project.archived,status:project.archived?'Arquivado':lifecycleLabel(project.lifecycle),attention:!project.archived&&needsAttention(project),
-  badges:[segmentLabel(project.siteType)],facts,manageHref:project.siteType==='commerce'?`/dashboard/${encodeURIComponent(project.slug)}/editor/bakery`:commerce?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`,previewHref:`/preview/${encodeURIComponent(project.slug)}`,siteHref:project.published?`https://${host}`:null,project
+  badges:[segmentLabel(project.siteType)],facts,manageHref:project.siteType==='personal-trainer'?`/dashboard/${encodeURIComponent(project.slug)}/editor/trainer`:project.siteType==='commerce'?`/dashboard/${encodeURIComponent(project.slug)}/editor/bakery`:commerce?`/dashboard/${encodeURIComponent(project.slug)}/editor`:`/dashboard/${encodeURIComponent(project.slug)}/content`,previewHref:`/preview/${encodeURIComponent(project.slug)}`,siteHref:project.published?`https://${host}`:null,project
  };
 }
 

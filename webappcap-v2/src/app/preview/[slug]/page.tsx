@@ -18,8 +18,8 @@ export async function generateMetadata({params}:{params:Promise<{slug:string}>})
   const {slug}=await params;
   const {project,data}=await readDraft(slug);
   const custom=String(data.identity.browser_title||'').trim();
-  const name=String(project.name||data.identity.name||'Projeto').trim();
-  const role=String(project.segment==='food-business'||project.segment==='commerce'?data.identity.tagline||'Catálogo e pedidos':data.content.hero_text||'Portfólio profissional').split('·')[0].trim();
+  const name=String(project.segment==='personal-trainer'?data.identity.name||project.name:project.name||data.identity.name||'Projeto').trim();
+  const role=String(project.segment==='food-business'||project.segment==='commerce'?data.identity.tagline||'Catálogo e pedidos':project.segment==='personal-trainer'?'Personal Trainer':data.content.hero_text||'Portfólio profissional').split('·')[0].trim();
   return {title:{absolute:custom||`${name} — ${role}`},robots:{index:false,follow:false}};
 }
 
