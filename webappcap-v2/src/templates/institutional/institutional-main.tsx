@@ -138,7 +138,7 @@ export function InstitutionalMainTemplate({
   useEffect(() => {
     if (!mount || !root.current) return;
     const nodes = root.current.querySelectorAll(
-      '.view:not([hidden]) .head,.view:not([hidden]) .card,.view:not([hidden]) .don,.view:not([hidden]) .tl,.view:not([hidden]) .person,.view:not([hidden]) .album,.view:not([hidden]) .info>div,.view:not([hidden]) .form',
+      '.view:not([hidden]) .head,.view:not([hidden]) .card,.view:not([hidden]) .don,.view:not([hidden]) .tl,.view:not([hidden]) .person,.view:not([hidden]) .album,.view:not([hidden]) .info>div,.view:not([hidden]) .contact-card,.view:not([hidden]) .form',
     );
     nodes.forEach((node, index) => {
       node.classList.add('reveal');
@@ -282,12 +282,12 @@ export function InstitutionalMainTemplate({
                           <a className="btn btn-gold" hidden={!visible.projetos} href="#projetos">
                             {copy.institutional_main_projects_cta}
                           </a>
-                          <a className="btn btn-line" hidden={!visible.contato} href="#contato">
+                          <a className="btn btn-line btn-donation" hidden={!visible.contato} href="#contato">
                             {copy.institutional_main_donation_cta}
                           </a>
                           {instagram ? (
                             <a
-                              className="btn btn-line"
+                              className="btn btn-line btn-instagram"
                               href={instagram}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -312,6 +312,25 @@ export function InstitutionalMainTemplate({
                         </a>
                       </div>
                     </div>
+
+                    <section hidden={!visible.campanhas} id="campanhas">
+                      <div className="wrap">
+                        <div className="head">
+                          <p className="kick">
+                            {copy.institutional_main_campaigns_kicker}
+                          </p>
+                          <h2>
+                            {copy.institutional_main_campaigns_title}
+                            <br />
+                            {copy.institutional_main_campaigns_title_end}
+                          </h2>
+                          <p className="lead">
+                            {copy.institutional_main_campaigns_intro}
+                          </p>
+                        </div>
+                        <Campaigns />
+                      </div>
+                    </section>
 
                     <section hidden={!visible.projetos} id="projetos">
                       <div className="wrap">
@@ -348,25 +367,6 @@ export function InstitutionalMainTemplate({
                           </p>
                         </div>
                         <Donations />
-                      </div>
-                    </section>
-
-                    <section hidden={!visible.campanhas} id="campanhas">
-                      <div className="wrap">
-                        <div className="head">
-                          <p className="kick">
-                            {copy.institutional_main_campaigns_kicker}
-                          </p>
-                          <h2>
-                            {copy.institutional_main_campaigns_title}
-                            <br />
-                            {copy.institutional_main_campaigns_title_end}
-                          </h2>
-                          <p className="lead">
-                            {copy.institutional_main_campaigns_intro}
-                          </p>
-                        </div>
-                        <Campaigns />
                       </div>
                     </section>
 

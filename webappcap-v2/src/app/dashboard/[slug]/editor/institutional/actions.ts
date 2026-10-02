@@ -108,6 +108,8 @@ export async function saveInstitutionalAction(form: FormData) {
     if(!['true','false'].includes(value))throw new Error('Visibilidade inválida. Nada foi salvo.');
     content[field]=value==='true';
   }
+  const managementBlocks=['current_board','current_members','previous_board','previous_members'];
+  if(managementBlocks.every(key=>form.has(`institutional_visible_${key}`)))content.institutional_visible_gestao=managementBlocks.some(key=>content[`institutional_visible_${key}`]===true);
   const allowed = can(access.role, 'manageMedia');
   for (const key of Object.keys(institutionalLists) as InstitutionalListKey[]) {
     let parsed: unknown;

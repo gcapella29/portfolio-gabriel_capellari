@@ -124,3 +124,9 @@ test('block visibility defaults to active and accepts stored boolean or legacy s
  const hidden=institutionalData({institutional_visible_projetos:false,institutional_visible_gestao:'false',institutional_visible_hero:true}).visible;
  assert.equal(hidden.projetos,false);assert.equal(hidden.gestao,false);assert.equal(hidden.hero,true);assert.equal(hidden.contato,true);
 });
+
+test('current projects preserve legacy dates and new event details',()=>{
+ const [old,current]=institutionalRows([{id:'old',day:'12',month:'OUT'},{id:'new',date:'12/10/2026',time:'14h',location:'Praça central'}],'institutional_campaigns');
+ assert.equal(old.date,'12 OUT');assert.equal(current.time,'14h');assert.equal(current.location,'Praça central');
+ assert.equal(institutionalRows([{id:'empty',date:'',day:'12',month:'OUT'}],'institutional_campaigns')[0].date,'');
+});

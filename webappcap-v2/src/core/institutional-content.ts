@@ -25,10 +25,11 @@ export const institutionalLists = {
     },
   },
   institutional_campaigns: {
-    label: 'Campanhas futuras',
+    label: 'Projetos em andamento',
     fields: {
-      day: 'Dia',
-      month: 'Mês',
+      date: 'Data',
+      time: 'Horário',
+      location: 'Local',
       title: 'Título',
       text: 'Descrição',
       goal: 'Meta (0 para ocultar)',
@@ -124,7 +125,7 @@ export function institutionalRows(
             ? institutionalImage(item[field])
               ? item[field]
               : ''
-            : String(item[field] ?? '').slice(0, 10000);
+            : String(key === 'institutional_campaigns' && field === 'date' && item.date === undefined ? [item.day,item.month].filter(Boolean).join(' ') : item[field] ?? '').slice(0, 10000);
       if (key === 'institutional_albums') {
         row.photos = Array.isArray(item.photos)
           ? item.photos
@@ -151,7 +152,7 @@ export function campaignProgress(row: InstitutionalRow) {
     percent: goal ? Math.min(100, (raised / goal) * 100) : 0,
   };
 }
-export const institutionalBlocks = {hero:'Hero / capa',stats:'Números do hero',projetos:'Projetos',doacoes:'Doações',campanhas:'Campanhas',band:'Chamada final',historia:'História',valores:'Valores',gestao:'Gestão e membros',fotos:'Álbuns de fotos',contato:'Contato'} as const;
+export const institutionalBlocks = {hero:'Hero / capa',stats:'Números do hero',projetos:'Projetos',doacoes:'Doações',campanhas:'Projetos em andamento',band:'Chamada final',historia:'História',valores:'Valores',gestao:'Gestão e membros',current_board:'Diretoria atual',current_members:'Membros atuais',previous_board:'Diretoria anterior',previous_members:'Membros anteriores',fotos:'Álbuns de fotos',contato:'Contato'} as const;
 export function institutionalVisibility(content:Record<string,unknown>){
  return Object.fromEntries(Object.keys(institutionalBlocks).map(key=>[key,content[`institutional_visible_${key}`]!==false&&content[`institutional_visible_${key}`]!=='false'])) as Record<keyof typeof institutionalBlocks,boolean>;
 }
@@ -161,7 +162,7 @@ export function institutionalData(content: Record<string, unknown>) {
     copy: Object.fromEntries(
       Object.entries(institutionalCopy).map(([key, fallback]) => [
         key,
-        content[key] === undefined
+        content[key] === undefined || content[key] === ({institutional_main_campaigns_kicker:'Campanhas futuras',institutional_main_campaigns_title:'Vem aí, e você',institutional_main_campaigns_title_end:'pode participar',institutional_main_campaigns_intro:'Conheça as próximas campanhas e veja como contribuir.',institutional_main_sub_campaigns:'Campanhas'} as Record<string,string>)[key]
           ? fallback
           : String(content[key] ?? '').slice(0, 10000),
       ]),

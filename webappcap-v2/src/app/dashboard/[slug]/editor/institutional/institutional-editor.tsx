@@ -89,6 +89,8 @@ export default function InstitutionalEditor({
       />
     );
   };
+  const activation = (key:keyof typeof institutionalBlocks) => <label className={`field ${styles.activation}`}><span>{institutionalBlocks[key]} no site</span><select name={`institutional_visible_${key}`} defaultValue={String(initial.visible[key] && (!['current_board','current_members','previous_board','previous_members'].includes(key) || initial.visible.gestao))}><option value="true">Ativado</option><option value="false">Desativado</option></select></label>;
+  const listBlock:Partial<Record<InstitutionalListKey,keyof typeof institutionalBlocks>> = {institutional_projects:'projetos',institutional_donations:'doacoes',institutional_campaigns:'campanhas',institutional_timeline:'historia',institutional_values:'valores',institutional_current_board:'current_board',institutional_current_members:'current_members',institutional_previous_board:'previous_board',institutional_previous_members:'previous_members',institutional_albums:'fotos'};
   const nav = [
     {id: 'institutional-identity', label: 'Identidade'},
     ...Object.entries(institutionalLists).map(([key, def]) => ({
@@ -114,6 +116,7 @@ export default function InstitutionalEditor({
         title="Identidade e história"
         summary="Nome, foto de capa, apresentação e períodos"
       >
+        <div className={styles.activationRow}>{activation("hero")}{activation("stats")}</div>
         <div className={styles.fields}>
           <label className="field">
             <span>Nome da organização</span>
@@ -168,7 +171,7 @@ export default function InstitutionalEditor({
               <option value="false">Mostrar somente iniciais</option>
             </select>
           </label>
-          <fieldset className={styles.row}><legend>Blocos visíveis no site</legend><div className={styles.fields}>{Object.entries(institutionalBlocks).map(([key,label])=><label className="field" key={key}><span>{label}</span><select name={`institutional_visible_${key}`} defaultValue={String(initial.visible[key as keyof typeof institutionalBlocks])}><option value="true">Ativado</option><option value="false">Desativado</option></select></label>)}</div><p>Ocultar preserva os dados. Os links para blocos desativados também ficam ocultos. Salve e confira no Preview.</p></fieldset>
+
           {canManageMedia
             ? image('hero', data.media.hero, 'Foto do hero (opcional)', 'hero')
             : null}
@@ -183,6 +186,7 @@ export default function InstitutionalEditor({
             summary="Adicione, edite e ordene os itens"
             key={key}
           >
+            {listBlock[key] ? activation(listBlock[key]!) : null}
             <input
               type="hidden"
               name={`section:${key}`}
@@ -384,6 +388,7 @@ export default function InstitutionalEditor({
         title="Contato e Pix"
         summary="Canais reais da organização e chave de doação"
       >
+        {activation("contato")}
         <div className={styles.fields}>
           {[
             ['whatsapp', 'WhatsApp com DDI'],
@@ -405,6 +410,7 @@ export default function InstitutionalEditor({
         title="Textos e chamadas do modelo"
         summary="Navegação, hero, títulos e formulário"
       >
+        {activation("band")}
         <div className={styles.fields}>
           {Object.entries(institutionalCopy)
             .filter(

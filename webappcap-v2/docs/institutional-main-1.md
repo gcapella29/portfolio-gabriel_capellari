@@ -68,3 +68,9 @@ Teste manual: mover nos quatro sentidos, reduzir zoom e mostrar inteira, salvar/
 
 
 No editor, Identidade e hero contém a frase acima do título (organização/cidade) e os seletores de visibilidade de hero, números, projetos, doações, campanhas, chamada final, história, valores, gestão/membros, fotos e contato. Desativar preserva conteúdo e esconde navegação/CTAs correspondentes; links diretos de páginas desativadas voltam ao início. Configurações ausentes em projetos antigos mantêm todos os blocos ativos.
+
+Os avisos introdutório e de salvamento acima do editor foram removidos; o status de rascunho permanece no controle compartilhado de salvamento. Cada seletor de ativação fica no início do respectivo bloco de edição. Hero/números ficam em Identidade, e chamada final em Textos. Diretorias e membros das duas gestões têm visibilidade independente; a página Gestão fica oculta se os quatro grupos forem desativados.
+
+Cards de WhatsApp, Instagram e e-mail são links completos com foco de teclado, ícones e hover suave. O hero usa dourado para Projetos, azul para Doação e claro para Instagram. O hero aprovado continua com sua geometria anterior; não foi expandido após a confirmação de que o preview local estava desatualizado.
+
+A lista existente institutional_campaigns passa a Projetos em andamento, logo após o hero/menu local, antes dos projetos realizados. Os cards grandes têm rolagem lateral, setas (quando há mais de um), foto, descrição, data, horário e local. Datas antigas dia/mês são preservadas no campo Data. Metas existentes continuam opcionais. Quero ajudar abre WhatsApp com o título do projeto; sem WhatsApp válido o CTA fica desabilitado. Nenhuma lista ou dado foi duplicado.

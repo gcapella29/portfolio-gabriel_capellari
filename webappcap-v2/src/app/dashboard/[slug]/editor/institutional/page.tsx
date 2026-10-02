@@ -26,16 +26,6 @@ export default async function InstitutionalEditorPage({
         description="Projetos, campanhas, história, gestão e fotos. Salve no rascunho, confira no Preview e publique."
         facts={[{label: 'Modelo', value: 'Institucional'}]}
       />
-      <p className="notice">
-        Substitua os textos, nomes e imagens de exemplo por informações reais.
-        Configure o WhatsApp e confira a chave e o beneficiário do Pix antes de
-        publicar.
-      </p>
-      {saved ? (
-        <div className="notice success" role="status">
-          Salvo no rascunho. Confira no Preview antes de publicar.
-        </div>
-      ) : null}
       <section className={styles.realEditor}>
         <InstitutionalEditor
           projectId={project.id}

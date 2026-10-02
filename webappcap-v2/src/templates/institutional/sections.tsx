@@ -87,17 +87,16 @@ export function Campaigns() {
   const {
     model: {lists, wa, copy},
   } = useInstitutional();
+  const rail=useRef<HTMLDivElement>(null);
+  const scroll=(direction:number)=>{const node=rail.current;if(node)node.scrollBy({left:direction*node.clientWidth*.9,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})};
   return (
-    <div className="grid g3">
+    <div className="current-projects"><div className="project-rail-controls" hidden={lists.institutional_campaigns.length<2}><button type="button" onClick={()=>scroll(-1)} aria-label="Projeto anterior">←</button><button type="button" onClick={()=>scroll(1)} aria-label="Próximo projeto">→</button></div><div className="current-project-rail" ref={rail} tabIndex={0} role="region" aria-label="Projetos em andamento">
+      {!lists.institutional_campaigns.length?<p>Nenhum projeto em andamento cadastrado.</p>:null}
       {lists.institutional_campaigns.map((c, i) => {
         const p = campaignProgress(c),
-          href = wa('Olá! Quero ajudar na campanha: ' + t(c.title));
+          href = wa('Olá! Quero ajudar no projeto: ' + t(c.title));
         return (
           <article className="card camp" key={c.id}>
-            <div className="date">
-              <b>{t(c.day)}</b>
-              {t(c.month)}
-            </div>
             <div className="card-media">
               <img
                 src={
@@ -111,6 +110,7 @@ export function Campaigns() {
             <div className="card-b">
               <h3>{t(c.title)}</h3>
               <p>{t(c.text)}</p>
+              {[c.date,c.time,c.location].some(Boolean)?<dl className="project-details">{[['Data',c.date],['Horário',c.time],['Local',c.location]].map(([label,value])=>value?<div key={String(label)}><dt>{t(label)}</dt><dd>{t(value)}</dd></div>:null)}</dl>:null}
               {p.goal > 0 ? (
                 <>
                   <div
@@ -131,7 +131,8 @@ export function Campaigns() {
               ) : null}
               <a
                 className="btn btn-dark"
-                href={href || '#contato'}
+                href={href || undefined}
+                aria-disabled={!href}
                 {...(href ? external : {})}
               >
                 {copy.institutional_main_help_cta}
@@ -140,7 +141,7 @@ export function Campaigns() {
           </article>
         );
       })}
-    </div>
+    </div></div>
   );
 }
 export function Timeline() {
@@ -213,17 +214,19 @@ function Avatar({person}: {person: InstitutionalRow}) {
 }
 export function Management() {
   const {model} = useInstitutional(),
-    [previous, setPrevious] = useState(false);
+    [previousChoice, setPrevious] = useState(false);
+  const currentEnabled=model.visible.current_board||model.visible.current_members,previousEnabled=model.visible.previous_board||model.visible.previous_members;
+  const previous=currentEnabled?(previousEnabled?previousChoice:false):true;
   const board = previous
-      ? model.lists.institutional_previous_board
-      : model.lists.institutional_current_board,
+      ? (model.visible.previous_board?model.lists.institutional_previous_board:[])
+      : (model.visible.current_board?model.lists.institutional_current_board:[]),
     members = previous
-      ? model.lists.institutional_previous_members
-      : model.lists.institutional_current_members;
+      ? (model.visible.previous_members?model.lists.institutional_previous_members:[])
+      : (model.visible.current_members?model.lists.institutional_current_members:[]);
   return (
     <>
       <div className="switch" role="tablist" aria-label="Escolher gestão">
-        {[false, true].map((prior) => (
+        {[false, true].filter(prior=>prior?previousEnabled:currentEnabled).map((prior) => (
           <button
             type="button"
             role="tab"
@@ -244,6 +247,7 @@ export function Management() {
                     : event.key === 'End'
                       ? true
                       : !previous;
+                if(!(next?previousEnabled:currentEnabled))return;
                 setPrevious(next);
                 event.currentTarget.parentElement
                   ?.querySelector<HTMLButtonElement>(next ? '#tAnt' : '#tAtual')
@@ -265,7 +269,7 @@ export function Management() {
         <p className="period">
           {previous ? model.previousPeriod : model.currentPeriod}
         </p>
-        <p className="kick">Diretoria</p>
+        {board.length?<p className="kick">Diretoria</p>:null}
         <div className="people">
           {board.map((p, i) => (
             <div className={`person ${i === 0 ? 'lead-p' : ''}`} key={p.id}>
@@ -435,7 +439,7 @@ export function ContactInfo() {
       notify,
     } = useInstitutional(),
     href = wa(),
-    instagram = institutionalUrl(contact.instagram),
+    instagram = institutionalInstagram(contact.instagram),
     email = t(contact.email);
   const copy = async () => {
     try {
@@ -448,18 +452,13 @@ export function ContactInfo() {
   return (
     <div className="info">
       {href ? (
-        <div>
-          <small>WhatsApp</small>
-          <a href={href} {...external}>
-            Chamar agora
-          </a>
-        </div>
+        <a className="contact-card contact-whatsapp" href={href} {...external}>
+          <span className="contact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 11.5a8 8 0 0 1-8 8c-1.4 0-2.8-.4-4-1L4 20l1.5-4a8 8 0 1 1 14.5-4.5Z"/><path d="M8 10h8M8 14h5"/></svg></span>
+          <span className="contact-copy"><small>WhatsApp</small><strong>Chamar agora</strong></span><span className="contact-arrow" aria-hidden="true">↗</span>
+        </a>
       ) : null}
       {/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? (
-        <div>
-          <small>E-mail</small>
-          <a href={`mailto:${email}`}>{email}</a>
-        </div>
+        <a className="contact-card" href={`mailto:${email}`}><span className="contact-icon" aria-hidden="true">@</span><span className="contact-copy"><small>E-mail</small><strong>{email}</strong></span><span className="contact-arrow" aria-hidden="true">↗</span></a>
       ) : null}
       {contact.address ? (
         <div>
@@ -468,12 +467,10 @@ export function ContactInfo() {
         </div>
       ) : null}
       {instagram ? (
-        <div>
-          <small>Redes sociais</small>
-          <a href={instagram} {...external}>
-            Instagram ↗
-          </a>
-        </div>
+        <a className="contact-card contact-instagram" href={instagram} {...external}>
+          <span className="contact-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/></svg></span>
+          <span className="contact-copy"><small>Redes sociais</small><strong>Seguir no Instagram</strong></span><span className="contact-arrow" aria-hidden="true">↗</span>
+        </a>
       ) : null}
       {contact.pix ? (
         <div className="pix">
