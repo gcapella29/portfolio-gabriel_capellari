@@ -1,22 +1,23 @@
+import {cache} from 'react';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { projectsForUser, projectForUser } from './projects';
 import { destinationForUser } from './onboarding';
 import type { ProjectRole } from './domain';
 
-export async function requireUser() {
+export const requireUser=cache(async function requireUser() {
   const sb = await createSupabaseServerClient();
   const { data, error } = await sb.auth.getUser();
   if (error || !data.user) redirect('/login');
   return data.user;
-}
+});
 
-export async function resolveProjectAccess(slug: string) {
+export const resolveProjectAccess=cache(async function resolveProjectAccess(slug: string) {
   const user = await requireUser();
   const access = await projectForUser(slug, user.id);
   if (!access) redirect('/unauthorized');
   return { user, ...access };
-}
+});
 
 export async function isPlatformOwner(userId: string) {
   const sb = await createSupabaseServerClient();

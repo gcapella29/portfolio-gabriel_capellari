@@ -4,7 +4,7 @@ import {redirect} from 'next/navigation';
 import {revalidatePath} from 'next/cache';
 import {resolveProjectAccess} from '@/core/session';
 import {can} from '@/core/permissions';
-import {readV2Content,saveV2Section,publicMediaUrl} from '@/core/onboarding-data';
+import {readV2Content,saveV2Sections,publicMediaUrl} from '@/core/onboarding-data';
 import {trainerCopy,trainerLists,trainerStates,trainerRows,type TrainerListKey,trainerImage} from '@/core/trainer-content';
 const text=(form:FormData,key:string)=>String(form.get(key)||'').trim();
 function image(form:FormData,field:string,slot:string,current:unknown,projectId:string){
@@ -13,11 +13,11 @@ function image(form:FormData,field:string,slot:string,current:unknown,projectId:
  if(raw&&raw!=='null'){
   try{uploaded=JSON.parse(raw)}catch{throw new Error('Imagem inválida. Nada foi salvo.')}
   const path=String(uploaded?.path||'');
-  if(!path.startsWith(`${projectId}/`)||String(uploaded?.url||'')!==publicMediaUrl(path))throw new Error('Imagem incompatível com o projeto. Nada foi salvo.');
+  if((!path.startsWith(`${projectId}/`)||path.split('/').some(part=>part==='..'||part==='.'||!part))||String(uploaded?.url||'')!==publicMediaUrl(path))throw new Error('Imagem incompatível com o projeto. Nada foi salvo.');
  }
  const url=uploaded?trainerImage(uploaded):trainerImage(current);if(!url)return '';
  const position=text(form,`mediaPosition:${slot}`),fit=text(form,`mediaFit:${slot}`),zoom=Number(text(form,`mediaZoom:${slot}`));
- return {...(uploaded||{}),url,position:normalizeImagePosition(position),fit:['cover','contain','fill'].includes(fit)?fit:'cover',zoom:Math.max(50,Math.min(200,zoom||100))};
+ return {...(uploaded||(current&&typeof current==='object'?current:{})),url,position:normalizeImagePosition(position),fit:['cover','contain','fill'].includes(fit)?fit:'cover',zoom:Math.max(50,Math.min(200,zoom||100))};
 }
 export async function saveTrainerAction(form:FormData){
  const slug=text(form,'slug'),access=await resolveProjectAccess(slug);
@@ -39,7 +39,11 @@ export async function saveTrainerAction(form:FormData){
     if(!can(access.role,'manageMedia')){
      if(row[field]!==trainerImage(currentRows[index]?.[field]))throw new Error('Sem permissão para editar imagens.');
      next[field]=currentRows[index]?.[field]||'';
-    }else next[field]=image(form,`${key}:${index}:${field}`,`${key}-${index}-${field}`,row[field],access.project.id);
+    }else{
+     const stored=currentRows.flatMap(item=>[item.before,item.after]).find(value=>trainerImage(value)===row[field]);
+     if(row[field]&&!stored)throw new Error('Imagem incompatível com o projeto. Nada foi salvo.');
+     next[field]=image(form,`${key}:${index}:${field}`,`${key}-${index}-${field}`,stored,access.project.id);
+    }
    }
    for(const field of ['before','after'])for(const property of ['position','fit','zoom'])delete next[`${field}_${property}`];
    return next;
@@ -49,6 +53,6 @@ export async function saveTrainerAction(form:FormData){
  const name=text(form,'name').slice(0,120);if(!name)throw new Error('Informe o nome profissional. Nada foi salvo.');
  const identity={...current.identity,name,browser_title:text(form,'browser_title').slice(0,80)},contact={...current.contact,whatsapp:text(form,'whatsapp').replace(/\D/g,'').slice(0,15)};
  // Validate the entire payload before writing; publication keeps the existing atomic RPC.
- await saveV2Section(access.project.id,'identity',identity);await saveV2Section(access.project.id,'content',content);await saveV2Section(access.project.id,'contact',contact);await saveV2Section(access.project.id,'media',media);
+ await saveV2Sections(access.project.id,{identity,content,contact,...(can(access.role,'manageMedia')?{media}:{})});
  const base=`/dashboard/${encodeURIComponent(slug)}`;revalidatePath(`${base}/editor/trainer`);revalidatePath(`/preview/${encodeURIComponent(slug)}`);redirect(`${base}/editor/trainer?saved=1`);
 }

@@ -22,7 +22,11 @@ export async function commerceOrdersForProject(projectId:string,options?:{since?
  const sb=await createSupabaseServerClient(),limit=Math.max(1,Math.min(options?.limit||500,1000));
  let query=sb.from('commerce_orders').select('id,template_key,items,total,customer_name,customer_phone,created_at').eq('project_id',projectId).order('created_at',{ascending:false}).limit(limit);
  if(options?.since)query=query.gte('created_at',options.since);
- const dedicated=await query;
+ let legacy=sb.from('site_leads').select('id,name,phone,message,created_at').eq('project_id',projectId).like('message','WEBAPPCAP_ORDER_V1|%').order('created_at',{ascending:false}).limit(limit);
+ if(options?.since)legacy=legacy.gte('created_at',options.since);
+
+ const [dedicated,fallback]=await Promise.all([query,legacy]);
+ for(const result of [dedicated,fallback])if(result.error&&!['42P01','PGRST205'].includes(result.error.code))throw result.error;
  const rows:CommerceOrder[]=dedicated.error?[]:(dedicated.data||[]).map(row=>({
   id:String(row.id),
   templateKey:String(row.template_key),
@@ -33,9 +37,6 @@ export async function commerceOrdersForProject(projectId:string,options?:{since?
   customerPhone:String(row.customer_phone||'').trim()||undefined
  }));
 
- let legacy=sb.from('site_leads').select('id,name,phone,message,created_at').eq('project_id',projectId).like('message','WEBAPPCAP_ORDER_V1|%').order('created_at',{ascending:false}).limit(limit);
- if(options?.since)legacy=legacy.gte('created_at',options.since);
- const fallback=await legacy;
  if(!fallback.error)rows.push(...(fallback.data||[]).map(parseFallback).filter((order):order is CommerceOrder=>Boolean(order)));
 
  return rows.sort((a,b)=>new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime()).slice(0,limit);

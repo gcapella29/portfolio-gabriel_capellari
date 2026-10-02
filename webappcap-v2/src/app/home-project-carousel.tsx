@@ -11,9 +11,11 @@ export function HomeProjectCarousel({children,count}:{children:ReactNode;count:n
       Array.from(node.children).forEach((card,i)=>{const delta=Math.abs(card.getBoundingClientRect().left-left-4);if(delta<distance){distance=delta;nearest=i;}});
       setIndex(nearest);
     };
-    node.addEventListener('scroll',measure,{passive:true});
+    let frame=0;
+    const schedule=()=>{if(!frame)frame=requestAnimationFrame(()=>{frame=0;measure()})};
+    node.addEventListener('scroll',schedule,{passive:true});
     const observer=typeof ResizeObserver==='undefined'?null:new ResizeObserver(measure);observer?.observe(node);measure();
-    return()=>{node.removeEventListener('scroll',measure);observer?.disconnect();};
+    return()=>{node.removeEventListener('scroll',schedule);observer?.disconnect();if(frame)cancelAnimationFrame(frame);};
   },[count]);
   const move=(direction:number)=>{
     const node=rail.current,card=node?.children[Math.max(0,Math.min(count-1,index+direction))] as HTMLElement|undefined;
