@@ -301,15 +301,16 @@ export function InstitutionalMainTemplate({
                     </div>
                     <div className="sub" hidden={!visible.projetos && !visible.doacoes && !visible.campanhas}>
                       <div className="wrap">
+                        <a hidden={!visible.campanhas} href="#campanhas">
+                          {copy.institutional_main_sub_campaigns}
+                        </a>
                         <a hidden={!visible.projetos} href="#projetos">
                           {copy.institutional_main_sub_projects}
                         </a>
                         <a hidden={!visible.doacoes} href="#doacoes">
                           {copy.institutional_main_sub_donations}
                         </a>
-                        <a hidden={!visible.campanhas} href="#campanhas">
-                          {copy.institutional_main_sub_campaigns}
-                        </a>
+
                       </div>
                     </div>
 

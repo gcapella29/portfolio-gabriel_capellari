@@ -130,3 +130,8 @@ test('current projects preserve legacy dates and new event details',()=>{
  assert.equal(old.date,'12 OUT');assert.equal(current.time,'14h');assert.equal(current.location,'Praça central');
  assert.equal(institutionalRows([{id:'empty',date:'',day:'12',month:'OUT'}],'institutional_campaigns')[0].date,'');
 });
+
+test('campaign menu adopts current projects while preserving custom labels',()=>{
+ for(const label of ['Campanhas','Campanhas futuras'])assert.equal(institutionalData({institutional_main_sub_campaigns:label}).copy.institutional_main_sub_campaigns,'Projetos em andamento');
+ assert.equal(institutionalData({institutional_main_sub_campaigns:'Ações do mês'}).copy.institutional_main_sub_campaigns,'Ações do mês');
+});

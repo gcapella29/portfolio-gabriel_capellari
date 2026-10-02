@@ -162,7 +162,7 @@ export function institutionalData(content: Record<string, unknown>) {
     copy: Object.fromEntries(
       Object.entries(institutionalCopy).map(([key, fallback]) => [
         key,
-        content[key] === undefined || content[key] === ({institutional_main_campaigns_kicker:'Campanhas futuras',institutional_main_campaigns_title:'Vem aí, e você',institutional_main_campaigns_title_end:'pode participar',institutional_main_campaigns_intro:'Conheça as próximas campanhas e veja como contribuir.',institutional_main_sub_campaigns:'Campanhas'} as Record<string,string>)[key]
+        content[key] === undefined || (key === 'institutional_main_sub_campaigns' && ['Campanhas','Campanhas futuras'].includes(String(content[key]))) || content[key] === ({institutional_main_campaigns_kicker:'Campanhas futuras',institutional_main_campaigns_title:'Vem aí, e você',institutional_main_campaigns_title_end:'pode participar',institutional_main_campaigns_intro:'Conheça as próximas campanhas e veja como contribuir.',institutional_main_sub_campaigns:'Campanhas'} as Record<string,string>)[key]
           ? fallback
           : String(content[key] ?? '').slice(0, 10000),
       ]),
