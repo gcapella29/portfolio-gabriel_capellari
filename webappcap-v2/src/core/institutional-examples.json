@@ -61,9 +61,6 @@
       "month": "mês",
       "title": "Campanha do Agasalho",
       "text": "Doe agasalhos em bom estado nos pontos de coleta.",
-      "goal": 100,
-      "raised": 40,
-      "unit": "% da meta",
       "id": "institutional_campaigns-0"
     },
     {
@@ -71,9 +68,6 @@
       "month": "mês",
       "title": "Natal Solidário",
       "text": "Apadrinhe uma família ou doe brinquedos e alimentos.",
-      "goal": 100,
-      "raised": 15,
-      "unit": "% da meta",
       "id": "institutional_campaigns-1"
     },
     {
@@ -81,9 +75,6 @@
       "month": "mês",
       "title": "Jantar Beneficente",
       "text": "Venha jantar com a gente e ajude a financiar nossos projetos.",
-      "goal": 0,
-      "raised": 0,
-      "unit": "",
       "id": "institutional_campaigns-2"
     }
   ],

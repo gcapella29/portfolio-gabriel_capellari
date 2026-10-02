@@ -32,9 +32,6 @@ export const institutionalLists = {
       location: 'Local',
       title: 'Título',
       text: 'Descrição',
-      goal: 'Meta (0 para ocultar)',
-      raised: 'Arrecadado',
-      unit: 'Unidade / complemento',
       image: 'Foto',
     },
   },
@@ -139,18 +136,6 @@ export function institutionalRows(
       }
       return row;
     });
-}
-export function campaignProgress(row: InstitutionalRow) {
-  const finite = (value: unknown) =>
-    Number.isFinite(Number(value)) ? Math.max(0, Number(value)) : 0;
-  const goal = finite(row.goal),
-    raised = finite(row.raised);
-  return {
-    goal,
-    raised,
-    value: Math.min(goal, raised),
-    percent: goal ? Math.min(100, (raised / goal) * 100) : 0,
-  };
 }
 export const institutionalBlocks = {hero:'Hero / capa',stats:'Números do hero',projetos:'Projetos',doacoes:'Doações',campanhas:'Projetos em andamento',band:'Chamada final',historia:'História',valores:'Valores',gestao:'Gestão e membros',current_board:'Diretoria atual',current_members:'Membros atuais',previous_board:'Diretoria anterior',previous_members:'Membros anteriores',fotos:'Álbuns de fotos',contato:'Contato'} as const;
 export function institutionalVisibility(content:Record<string,unknown>){

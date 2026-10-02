@@ -2,7 +2,6 @@
 import {useEffect, useRef, useState} from 'react';
 import {
   institutionalInstagram,
-  campaignProgress,
   institutionalImage,
   institutionalImageStyle,
   institutionalUrl,
@@ -93,8 +92,7 @@ export function Campaigns() {
     <div className="current-projects"><div className="project-rail-controls" hidden={lists.institutional_campaigns.length<2}><button type="button" onClick={()=>scroll(-1)} aria-label="Projeto anterior">←</button><button type="button" onClick={()=>scroll(1)} aria-label="Próximo projeto">→</button></div><div className="current-project-rail" ref={rail} tabIndex={0} role="region" aria-label="Projetos em andamento">
       {!lists.institutional_campaigns.length?<p>Nenhum projeto em andamento cadastrado.</p>:null}
       {lists.institutional_campaigns.map((c, i) => {
-        const p = campaignProgress(c),
-          href = wa('Olá! Quero ajudar no projeto: ' + t(c.title));
+        const href = wa('Olá! Quero ajudar no projeto: ' + t(c.title));
         return (
           <article className="card camp" key={c.id}>
             <div className="card-media">
@@ -110,25 +108,7 @@ export function Campaigns() {
             <div className="card-b">
               <h3>{t(c.title)}</h3>
               <p>{t(c.text)}</p>
-              {[c.date,c.time,c.location].some(Boolean)?<dl className="project-details">{[['Data',c.date],['Horário',c.time],['Local',c.location]].map(([label,value])=>value?<div key={String(label)}><dt>{t(label)}</dt><dd>{t(value)}</dd></div>:null)}</dl>:null}
-              {p.goal > 0 ? (
-                <>
-                  <div
-                    className="bar"
-                    role="progressbar"
-                    aria-label={`Arrecadação: ${t(c.title)}`}
-                    aria-valuenow={p.value}
-                    aria-valuemin={0}
-                    aria-valuemax={p.goal}
-                  >
-                    <i style={{width: p.percent + '%'}} />
-                  </div>
-                  <div className="small">
-                    {p.raised}
-                    {t(c.unit)}
-                  </div>
-                </>
-              ) : null}
+              {[c.date,c.time,c.location].some(Boolean)?<dl className="project-details">{[['Data',c.date],['Horário',c.time],['Local',c.location]].map(([label,value])=>value?<div className={label === 'Data' ? 'project-date-featured' : undefined} key={String(label)}><dt>{t(label)}</dt><dd>{t(value)}</dd></div>:null)}</dl>:null}
               <a
                 className="btn btn-dark"
                 href={href || undefined}

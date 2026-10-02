@@ -6,7 +6,6 @@ import {
   institutionalData,
   institutionalRows,
   institutionalImage,
-  campaignProgress,
 } from './institutional-content.ts';
 import {editorForTemplate} from './template-editor.ts';
 import {segments} from './segments.ts';
@@ -54,23 +53,9 @@ test('unsafe media URLs and invalid albums are excluded while framing survives',
   assert.deepEqual(album.photos, [photo]);
   assert.equal(album.count, 30);
 });
-test('campaign progress bounds visual and accessible values and handles nonfinite inputs', () => {
-  assert.deepEqual(campaignProgress({id: 'a', goal: 100, raised: 150}), {
-    goal: 100,
-    raised: 150,
-    value: 100,
-    percent: 100,
-  });
-  assert.deepEqual(campaignProgress({id: 'a', goal: 'NaN', raised: -20}), {
-    goal: 0,
-    raised: 0,
-    value: 0,
-    percent: 0,
-  });
-  assert.equal(
-    campaignProgress({id: 'a', goal: Infinity, raised: 4}).percent,
-    0,
-  );
+test('legacy fundraising fields are removed from current project content',()=>{
+ const [row]=institutionalRows([{id:'project',title:'Ação',goal:100,raised:40,unit:'% da meta'}],'institutional_campaigns');
+ assert.equal(row.title,'Ação');for(const key of ['goal','raised','unit'])assert.equal(key in row,false);
 });
 test('stable IDs survive list reordering and malformed rows are ignored', () => {
   const rows = institutionalRows(

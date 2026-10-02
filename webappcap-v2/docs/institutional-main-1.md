@@ -38,7 +38,7 @@ Esses testes não substituem conferência visual no navegador nem fluxo com Supa
 4. Editar, adicionar, remover e mover itens. Subir uma imagem para dois projetos, trocar a ordem, salvar e conferir cada foto. Repetir com pessoas, campanhas e fotos dos álbuns. Testar zoom, posição e contain.
 5. Alterar períodos e usar as abas de gestão por clique e teclado. Testar sem diretoria, somente um dirigente, sem membros e com fotos ocultadas.
 6. Filtrar álbuns; abrir e fechar fotos pelo X, Escape e fundo; conferir retorno de foco. Testar álbum vazio e apenas uma foto.
-7. Configurar contatos reais de teste, copiar Pix e verificar beneficiário. Enviar formulário em branco deve focar o campo obrigatório; preenchido deve abrir WhatsApp com assunto, contato e mensagem. Confira campanha individual e meta excedida/zero.
+7. Configurar contatos reais de teste, copiar Pix e verificar beneficiário. Enviar formulário em branco deve focar o campo obrigatório; preenchido deve abrir WhatsApp com assunto, contato e mensagem. Confira o CTA individual do projeto, data, horário e local.
 8. Desativar demonstração: fotos ilustrativas dos álbuns desaparecem; as fotos cadastradas continuam.
 9. Salvar, visualizar e aplicar modelo sem publicar: o site público deve permanecer igual. Publicar projeto de teste; editar novamente; conferir que a alteração aparece somente depois de republicar.
 10. Validar owner/admin/editor/viewer conforme as permissões existentes. Viewer não deve editar/aplicar/publicar.
@@ -73,4 +73,6 @@ Os avisos introdutório e de salvamento acima do editor foram removidos; o statu
 
 Cards de WhatsApp, Instagram e e-mail são links completos com foco de teclado, ícones e hover suave. O hero usa dourado para Projetos, azul para Doação e claro para Instagram. O hero aprovado continua com sua geometria anterior; não foi expandido após a confirmação de que o preview local estava desatualizado.
 
-A lista existente institutional_campaigns passa a Projetos em andamento, logo após o hero/menu local, antes dos projetos realizados. Os cards grandes têm rolagem lateral, setas (quando há mais de um), foto, descrição, data, horário e local. Datas antigas dia/mês são preservadas no campo Data. Metas existentes continuam opcionais. Quero ajudar abre WhatsApp com o título do projeto; sem WhatsApp válido o CTA fica desabilitado. Nenhuma lista ou dado foi duplicado.
+A lista existente institutional_campaigns passa a Projetos em andamento, logo após o hero/menu local, antes dos projetos realizados. Os cards grandes têm rolagem lateral, setas (quando há mais de um), foto, descrição, data, horário e local. Datas antigas dia/mês são preservadas no campo Data. Campos de meta, arrecadado, unidade e progresso foram removidos. Quero ajudar abre WhatsApp com o título do projeto; sem WhatsApp válido o CTA fica desabilitado. Nenhuma lista ou dado foi duplicado.
+
+Data recebe selo destacado e Quero ajudar usa botão dourado mais largo. Os fundos seguem a nova ordem: projetos em andamento cinza claro, realizados branco, doações azul profundo e chamada final azul claro.
