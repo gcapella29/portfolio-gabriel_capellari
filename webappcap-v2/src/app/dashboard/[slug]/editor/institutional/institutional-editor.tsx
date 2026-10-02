@@ -14,7 +14,7 @@ import DirectImageField from '../../content/direct-image-field';
 import EditorBlock from '../editor-block';
 import {saveInstitutionalAction} from './actions';
 import {imageEditorFrame} from '@/core/image-editor-frame';
-import styles from '../trainer/trainer-editor.module.css';
+import styles from './institutional-editor.module.css';
 const text = (value: unknown) => String(value ?? '');
 export default function InstitutionalEditor({
   projectId,
@@ -79,6 +79,7 @@ export default function InstitutionalEditor({
         currentFit={text(item.fit) || 'cover'}
         currentZoom={text(item.zoom) || 100}
         {...imageEditorFrame('institutional-main-1', slotType)}
+        {...(slotType === 'person' ? {previewMaxWidth: 180} : {})}
         help={
           slotType === 'hero'
             ? 'Referência desktop 2:1. A capa adapta a altura ao conteúdo e à tela; confira no Preview. Arraste e ajuste o zoom.'
@@ -187,34 +188,73 @@ export default function InstitutionalEditor({
             <div className={styles.rows}>
               {!lists[key].length ? <p>Nenhum item cadastrado.</p> : null}
               {lists[key].map((row, index) => (
-                <fieldset className={styles.row} key={row.id}>
-                  <legend>Item {index + 1}</legend>
+                <fieldset
+                  className={`${styles.row} ${(key.includes('board') || key.includes('members')) && canManageMedia ? styles.personRow : ''}`}
+                  key={row.id}
+                >
+                  <legend>
+                    {key.includes('board') || key.includes('members')
+                      ? `${text(row.role) || (key.includes('board') ? 'Cargo não definido' : 'Membro')} · ${text(row.name) || 'Nome não informado'}`
+                      : `${index + 1}. ${text(row.title || row.t) || 'Novo item'}`}
+                  </legend>
                   {Object.entries(institutionalLists[key].fields).map(
                     ([keyField, label]) =>
                       keyField === 'photo' || keyField === 'image' ? (
                         canManageMedia ? (
-                          image(
-                            `${key}-${row.id}-${keyField}`,
-                            row[keyField],
-                            label,
-                            keyField === 'image'
-                              ? key === 'institutional_campaigns'
-                                ? 'campaign'
-                                : 'project'
-                              : 'photo',
-                          )
+                          <div key={keyField} className={styles.media}>
+                            {image(
+                              `${key}-${row.id}-${keyField}`,
+                              row[keyField],
+                              label,
+                              keyField === 'image'
+                                ? key === 'institutional_campaigns'
+                                  ? 'campaign'
+                                  : 'project'
+                                : 'person',
+                            )}
+                          </div>
                         ) : null
                       ) : (
-                        <label className="field" key={keyField}>
+                        <label
+                          className={`field ${['text', 'd', 'impact'].includes(keyField) ? styles.wide : ''}`}
+                          key={keyField}
+                        >
                           <span>{label}</span>
-                          <textarea
-                            value={text(row[keyField])}
-                            onChange={(event) =>
-                              update(key, row.id, keyField, event.target.value)
-                            }
-                            maxLength={10000}
-                            rows={2}
-                          />
+                          {['text', 'd', 'impact'].includes(keyField) ? (
+                            <textarea
+                              value={text(row[keyField])}
+                              onChange={(event) =>
+                                update(
+                                  key,
+                                  row.id,
+                                  keyField,
+                                  event.target.value,
+                                )
+                              }
+                              maxLength={10000}
+                              rows={3}
+                            />
+                          ) : (
+                            <input
+                              value={text(row[keyField])}
+                              onChange={(event) =>
+                                update(
+                                  key,
+                                  row.id,
+                                  keyField,
+                                  event.target.value,
+                                )
+                              }
+                              maxLength={keyField === 'instagram' ? 1000 : 300}
+                              placeholder={
+                                keyField === 'role'
+                                  ? 'Ex.: Presidente, Vice-presidente, Secretário'
+                                  : keyField === 'instagram'
+                                    ? '@usuario ou https://instagram.com/usuario'
+                                    : undefined
+                              }
+                            />
+                          )}
                         </label>
                       ),
                   )}
@@ -255,7 +295,7 @@ export default function InstitutionalEditor({
                       ) : null}
                     </>
                   ) : null}
-                  <div className={styles.fields}>
+                  <div className={styles.rowActions}>
                     <button
                       className="action secondary"
                       type="button"
@@ -272,6 +312,23 @@ export default function InstitutionalEditor({
                       }
                     >
                       Mover para cima
+                    </button>
+                    <button
+                      className="action secondary"
+                      type="button"
+                      disabled={index === lists[key].length - 1}
+                      onClick={() =>
+                        setLists((current) => {
+                          const rows = [...current[key]];
+                          [rows[index], rows[index + 1]] = [
+                            rows[index + 1],
+                            rows[index],
+                          ];
+                          return {...current, [key]: rows};
+                        })
+                      }
+                    >
+                      Mover para baixo
                     </button>
                     <button
                       className="action secondary"

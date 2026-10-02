@@ -57,6 +57,7 @@ export const institutionalLists = {
     label: 'Membros atuais',
     fields: {
       name: 'Nome',
+      role: 'Cargo / função (opcional)',
       photo: 'Foto',
       instagram: 'Instagram (URL ou @usuário)',
     },
@@ -74,6 +75,7 @@ export const institutionalLists = {
     label: 'Membros anteriores',
     fields: {
       name: 'Nome',
+      role: 'Cargo / função (opcional)',
       photo: 'Foto',
       instagram: 'Instagram (URL ou @usuário)',
     },

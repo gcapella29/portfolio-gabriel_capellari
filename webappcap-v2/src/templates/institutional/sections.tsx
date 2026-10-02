@@ -292,6 +292,7 @@ export function Management() {
                 <div className="person" key={p.id}>
                   <Avatar person={p} />
                   <h3>{t(p.name)}</h3>
+                  {p.role?<span>{t(p.role)}</span>:null}
                 </div>
               ))}
             </div>

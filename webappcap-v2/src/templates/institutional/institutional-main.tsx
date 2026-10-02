@@ -2,6 +2,7 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {
+  institutionalInstagram,
   institutionalData,
   institutionalImage,
   institutionalImageStyle,
@@ -50,6 +51,7 @@ export function InstitutionalMainTemplate({
     };
   }, [data.content, data.identity.name, data.contact, project.name]);
   const {copy, name} = model;
+  const instagram = institutionalInstagram(data.contact.instagram);
   useEffect(() => {
     alive.current = true;
     if (!host.current) return;
@@ -283,6 +285,16 @@ export function InstitutionalMainTemplate({
                           <a className="btn btn-line" href="#contato">
                             {copy.institutional_main_donation_cta}
                           </a>
+                          {instagram ? (
+                            <a
+                              className="btn btn-line"
+                              href={instagram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {copy.institutional_main_instagram_cta}
+                            </a>
+                          ) : null}
                         </div>
                         <Stats />
                       </div>

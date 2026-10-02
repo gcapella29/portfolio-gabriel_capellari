@@ -54,3 +54,5 @@ A faixa de demonstração foi removida do site. A opção do editor controla som
 `refinements.css` separado adiciona entrada suave no hero, revelação das seções, hover de cartões/avatares e microinterações dos botões. Movimento reduzido é respeitado e os observers são desconectados. O CSS da referência continua intacto.
 
 Teste também: remover/restaurar a capa; mudar zoom e posição; salvar/republicar; clicar nos avatares das duas gestões; perfil ausente; teclado; navegação entre páginas com animação; preferência de movimento reduzido.
+
+O hero também possui CTA “Seguir no Instagram”, configurado em Contato/Instagram, com texto editável. O botão é omitido enquanto não houver perfil válido. O editor institucional usa grade própria responsiva, campos curtos em inputs, descrições em áreas de texto, cabeçalhos identificados por cargo/nome e controles de ordenação nas duas direções. A foto de cada pessoa fica ao lado dos dados no desktop e abaixo no mobile, com preview compacto de 180px mantendo proporção 1:1. Membros podem ter cargo/função opcional, sem alterar os cadastros existentes.
