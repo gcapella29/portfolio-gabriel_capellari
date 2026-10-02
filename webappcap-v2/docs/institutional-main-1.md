@@ -84,3 +84,5 @@ Mobile-only hero spacing/type and primary/secondary CTA grid; optional independe
 Scrollable tabs expose a thin scrollbar and center the selected view. Project carousel shows its current card/total and uses a smaller mobile image/body. Album chips use a single scrollable row on mobile. Lightbox close button sits inside the photo and viewport bounds respect safe-area insets.
 
 Manual checks: 320/390/430px portrait and landscape; long hero/menu/project labels; 0/1/many projects; swipe counter; every hidden CTA combination; mobile crop save/reload/preview/publication and desktop unchanged; iPhone lightbox close/scroll/focus; reduced motion.
+
+Completed projects ("O que já fizemos juntos") use a horizontal snap rail at widths up to 640px, with the next card partly visible and a thin scrollbar. A single card uses the full available width. The desktop grid is unchanged. Verify touch swipe, keyboard scrolling, long descriptions and 0/1/multiple cards.
