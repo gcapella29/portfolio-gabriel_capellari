@@ -201,6 +201,16 @@ export async function saveInstitutionalAction(form: FormData) {
       true,
       access.project.id,
     );
+  if (allowed && media.hero && typeof media.hero === 'object' && form.has('heroMobileEnabled')) {
+    const enabled = text(form, 'heroMobileEnabled');
+    if (!['true', 'false'].includes(enabled)) throw new Error('Enquadramento mobile inválido.');
+    const hero = {...media.hero as Record<string, unknown>};
+    if (enabled === 'true') {
+      const fit = text(form, 'heroMobileFit');
+      hero.mobile = {position: normalizeImagePosition(text(form, 'heroMobilePosition')), fit: ['cover', 'contain', 'fill'].includes(fit) ? fit : 'cover', zoom: Math.max(50, Math.min(200, Number(text(form, 'heroMobileZoom')) || 100))};
+    } else delete hero.mobile;
+    media.hero = hero;
+  }
   // Reuse the existing draft writes and atomic publication flow.
   await saveV2Section(access.project.id, 'identity', identity);
   await saveV2Section(access.project.id, 'content', content);

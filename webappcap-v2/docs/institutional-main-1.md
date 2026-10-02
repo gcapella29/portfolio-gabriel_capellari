@@ -76,3 +76,11 @@ Cards de WhatsApp, Instagram e e-mail são links completos com foco de teclado, 
 A lista existente institutional_campaigns passa a Projetos em andamento, logo após o hero/menu local, antes dos projetos realizados. Os cards grandes têm rolagem lateral, setas (quando há mais de um), foto, descrição, data, horário e local. Datas antigas dia/mês são preservadas no campo Data. Campos de meta, arrecadado, unidade e progresso foram removidos. Quero ajudar abre WhatsApp com o título do projeto; sem WhatsApp válido o CTA fica desabilitado. Nenhuma lista ou dado foi duplicado.
 
 Data recebe selo destacado e Quero ajudar usa botão dourado mais largo. Os fundos seguem a nova ordem: projetos em andamento cinza claro, realizados branco, doações azul profundo e chamada final azul claro.
+
+## Mobile refinements
+
+Mobile-only hero spacing/type and primary/secondary CTA grid; optional independent hero framing stored in `media.hero.mobile` (same image URL, no duplicate asset). The editor uses a 390×640 reference; the live height varies with content. Missing mobile configuration follows desktop. Existing atomic publication copies these fields without changing its flow.
+
+Scrollable tabs expose a thin scrollbar and center the selected view. Project carousel shows its current card/total and uses a smaller mobile image/body. Album chips use a single scrollable row on mobile. Lightbox close button sits inside the photo and viewport bounds respect safe-area insets.
+
+Manual checks: 320/390/430px portrait and landscape; long hero/menu/project labels; 0/1/many projects; swipe counter; every hidden CTA combination; mobile crop save/reload/preview/publication and desktop unchanged; iPhone lightbox close/scroll/focus; reduced motion.

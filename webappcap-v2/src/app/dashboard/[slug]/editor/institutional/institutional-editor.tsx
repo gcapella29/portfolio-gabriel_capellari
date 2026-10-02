@@ -12,6 +12,7 @@ import {
 import type {V2Content} from '@/core/onboarding-data';
 import ContentWorkspace from '../../content/content-workspace';
 import DirectImageField from '../../content/direct-image-field';
+import MobileHeroFraming from './mobile-hero-framing';
 import EditorBlock from '../editor-block';
 import {saveInstitutionalAction} from './actions';
 import {imageEditorFrame} from '@/core/image-editor-frame';
@@ -174,7 +175,7 @@ export default function InstitutionalEditor({
           </label>
 
           {canManageMedia
-            ? image('hero', data.media.hero, 'Foto do hero (opcional)', 'hero')
+            ? <>{image('hero', data.media.hero, 'Foto do hero (opcional)', 'hero')}<MobileHeroFraming hero={data.media.hero}/></>
             : null}
         </div>
       </EditorBlock>

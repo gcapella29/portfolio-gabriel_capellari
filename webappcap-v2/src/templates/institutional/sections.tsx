@@ -87,9 +87,22 @@ export function Campaigns() {
     model: {lists, wa, copy},
   } = useInstitutional();
   const rail=useRef<HTMLDivElement>(null);
+  const [current, setCurrent] = useState(0);
+  const count = lists.institutional_campaigns.length;
+  const updateCurrent = () => {
+    const node = rail.current;
+    if (!node) return;
+    const left = node.getBoundingClientRect().left;
+    let closest = 0, distance = Infinity;
+    Array.from(node.querySelectorAll<HTMLElement>('.camp')).forEach((card, index) => {
+      const delta = Math.abs(card.getBoundingClientRect().left - left - 4);
+      if (delta < distance) { distance = delta; closest = index; }
+    });
+    setCurrent(closest);
+  };
   const scroll=(direction:number)=>{const node=rail.current;if(node)node.scrollBy({left:direction*node.clientWidth*.9,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})};
   return (
-    <div className="current-projects"><div className="project-rail-controls" hidden={lists.institutional_campaigns.length<2}><button type="button" onClick={()=>scroll(-1)} aria-label="Projeto anterior">←</button><button type="button" onClick={()=>scroll(1)} aria-label="Próximo projeto">→</button></div><div className="current-project-rail" ref={rail} tabIndex={0} role="region" aria-label="Projetos em andamento">
+    <div className="current-projects"><div className="project-rail-controls" hidden={count<2}><span className="project-count" aria-live="polite" aria-atomic="true">{Math.min(current + 1, count)} de {count}</span><button type="button" onClick={()=>scroll(-1)} aria-label="Projeto anterior">←</button><button type="button" onClick={()=>scroll(1)} aria-label="Próximo projeto">→</button></div><div className="current-project-rail" onScroll={updateCurrent} ref={rail} tabIndex={0} role="region" aria-label="Projetos em andamento">
       {!lists.institutional_campaigns.length?<p>Nenhum projeto em andamento cadastrado.</p>:null}
       {lists.institutional_campaigns.map((c, i) => {
         const href = wa('Olá! Quero ajudar no projeto: ' + t(c.title));
@@ -297,7 +310,11 @@ export function AlbumChips() {
             className="chip"
             key={row.id}
             aria-pressed={album === row.id}
-            onClick={() => setAlbum(row.id)}
+            onClick={(event) => {
+              setAlbum(row.id);
+              const chip = event.currentTarget, container = chip.parentElement;
+              if (container && window.matchMedia('(max-width: 640px)').matches) container.scrollTo({left: Math.max(0, chip.offsetLeft - container.offsetLeft - (container.clientWidth - chip.clientWidth) / 2), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+            }}
           >
             {t(row.title)}
           </button>
