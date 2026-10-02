@@ -7,6 +7,10 @@
 .plan ul{list-style:none;padding:0;margin-top:6px}
 .plan li{position:relative;padding-left:22px;margin:10px 0}
 .plan li::before{content:"✓";position:absolute;left:0;color:var(--acc);font-weight:600}
+.cases[data-single="true"]{align-items:start}
+.case-summary{background:var(--ink);color:#fff;cursor:default}
+.case-summary span{color:rgba(255,255,255,.7)}
+.cref{max-width:calc(100% - 24px);overflow-wrap:anywhere}
 .trainer-document section,.trainer-document header{scroll-margin-top:calc(var(--nav-height,64px) + 8px)}
 @media(prefers-reduced-motion:no-preference){
   .js [data-reveal]{transform:translateY(16px);transition:opacity .55s ease,transform .55s cubic-bezier(.22,.61,.36,1)}
