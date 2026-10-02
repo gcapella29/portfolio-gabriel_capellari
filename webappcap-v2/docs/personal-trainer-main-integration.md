@@ -40,3 +40,11 @@ Não foi possível medir aparência em navegador real neste ambiente. Integraç�
 6. Enviar formulário sem nome/telefone e depois com dados válidos; conferir mensagem e destino de WhatsApp nos dois estados. Sem WhatsApp, publicação deve ser bloqueada com explicação.
 7. Comparar com o React em 1440, 900, 700 e 390px; fontes, hero, quadros, grid, FAQ, dock e espaço inferior. Testar redução de movimento.
 8. Confirmar Clássico, Modern, Padaria e Portfólio no mesmo deploy. Conferir aplicação/publicação com owner/admin e bloqueio de troca com editor/viewer.
+
+## Refinamentos autorizados
+
+Hero, hierarquia dos botões e comparação antes/depois preservados. `styles.css` segue idêntico à referência; `refinements.css` contém apenas os ajustes autorizados: revelação mais curta e suave, entrada sequencial das modalidades, benefícios com marcadores, acabamento dos cards e campo opcional compartilhado `trainer_modes[].audience` (“Para quem é indicado”). Conteúdo existente sem esse campo continua válido; nenhum perfil de público é inventado a partir do nome da modalidade.
+
+No mobile: formulário em uma coluna e campos de 16px para evitar zoom automático no iOS, espaçamento dos cards, quebra de textos longos no topo e dock e safe area inferior. ResizeObserver mede topo e dock para ajustar margem de rolagem e espaço inferior; observer ou listener de fallback é removido no unmount. Movimento reduzido continua respeitado.
+
+Validação adicional: compatibilidade dos dados antigos e campo opcional, DOM em StrictMode com altura dinâmica do dock/nav, exibição do público e benefícios e cleanup do observer. Conferir visualmente em 320/390/700px, incluindo texto longo na barra fixa, teclado aberto no formulário e preferência de movimento reduzido.

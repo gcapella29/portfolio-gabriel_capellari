@@ -26,10 +26,12 @@ export function Plans({ t }:{t:StateCopy}) {
         <p className="kick">{copy.trainer_main_modes_kicker}</p>
         <h2><Lines text={copy.trainer_main_modes_title}/></h2>
         <div className="plans">
-          {lists.trainer_modes.map((x) => (
-            <div className="plan" key={x.title}>
-              <h3>{x.title}</h3><p>{x.description}</p>
-              <ul>{x.features.split("\n").filter(Boolean).map((l) => <li key={l}>{l}</li>)}</ul>
+          {lists.trainer_modes.map((x,index) => (
+            <div className="plan" key={index} style={{animationDelay:`${Math.min(index,4)*60}ms`}}>
+              <h3>{x.title}</h3>
+              {x.audience?<p className="plan-audience"><strong>Ideal para</strong> {x.audience}</p>:null}
+              <p>{x.description}</p>
+              <ul>{x.features.split("\n").map(l=>l.trim()).filter(Boolean).map((l,index) => <li key={index}>{l}</li>)}</ul>
               <a href={wa(t.msg)} {...link}>{copy.trainer_main_modes_cta}</a>
             </div>
           ))}

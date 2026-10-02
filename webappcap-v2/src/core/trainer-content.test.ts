@@ -14,3 +14,7 @@ test('Trainer media rejects executable URLs and preserves framing for before/aft
  assert.equal(trainerImage('javascript:alert(1)'),'');assert.equal(trainerImage('//evil.example/img'),'');assert.equal(trainerImage('data:text/html,hello'),'');
  const rows=trainerRows([{name:'Aluno',before:{url:'https://example.com/a.jpg',position:'20% 80%',fit:'contain',zoom:120},after:'/image.jpg'},null], 'trainer_results');assert.equal(rows.length,1);assert.equal(rows[0].before,'https://example.com/a.jpg');assert.equal(rows[0].before_position,'20% 80%');assert.equal(rows[0].before_zoom,'120');
 });
+test('Modalities accept an optional audience without requiring migration of existing content',()=>{
+ const rows=trainerRows([{title:'Online',description:'Plano individual',features:'Suporte',audience:'Quem treina em casa'},{title:'Presencial'}], 'trainer_modes');
+ assert.equal(rows[0].audience,'Quem treina em casa');assert.equal(rows[1].audience,'');assert.equal(rows[1].title,'Presencial');
+});

@@ -4,7 +4,7 @@ export const trainerLists={
  trainer_stats:{label:'Indicadores profissionais',fields:{value:'Valor',label:'Descrição'}},
  trainer_method:{label:'Etapas do método',fields:{title:'Título',description:'Descrição'}},
  trainer_results:{label:'Resultados / antes e depois',fields:{name:'Nome / identificação',goal:'Objetivo',result:'Resultado',detail:'Período e frequência',before:'Foto antes',after:'Foto depois'}},
- trainer_modes:{label:'Modalidades',fields:{title:'Título',description:'Descrição',features:'Benefícios (um por linha)'}},
+ trainer_modes:{label:'Modalidades',fields:{title:'Título',audience:'Para quem é indicado (opcional)',description:'Descrição',features:'Benefícios (um por linha)'}},
  testimonials:{label:'Depoimentos',fields:{text:'Depoimento',name:'Nome',role:'Identificação'}},
  faq:{label:'Perguntas frequentes',fields:{question:'Pergunta',answer:'Resposta'}}
 } as const;
