@@ -33,6 +33,7 @@ export default async function RootEditorPage({searchParams}:{searchParams:Promis
   </aside>
   <main className={dashboardStyles.main}>
    <header className={dashboardStyles.topbar}><div className={dashboardStyles.topIdentity}><span>PROJETO</span><strong>WebAppCap — Raiz</strong></div><div className={dashboardStyles.topActions}>
+    <Link href="/dashboard/gabriel-capellari/leads" className={dashboardStyles.buttonGhost}>Leads</Link>
     <RootPreviewControl className={dashboardStyles.buttonGhost} label="Preview"/>
     <a className={dashboardStyles.buttonGhost} href="https://www.webappcap.com.br" target="_blank" rel="noreferrer">Ver site ↗</a>
     <form action={publishRootAction}><button className={dashboardStyles.publish}>Publicar</button></form>

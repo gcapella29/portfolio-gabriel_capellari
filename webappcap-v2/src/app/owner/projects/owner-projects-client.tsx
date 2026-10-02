@@ -83,7 +83,7 @@ export default function OwnerProjectsClient({projects}:{projects:OwnerProjectVie
     </div>
    </div>
    <div className={styles.cardFooter}>
-    <div className={styles.cardActions}>{card.archived?<span className={styles.secondaryAction}>Arquivado · {card.project?.slug}</span>:<><Link href={card.manageHref} className={styles.primaryAction}>Gerenciar <span>→</span></Link><Link href={card.previewHref} target="_blank" className={styles.secondaryAction}>Preview</Link>{card.siteHref?<a href={card.siteHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>Site ↗</a>:null}</>}</div>
+    <div className={styles.cardActions}>{card.archived?<span className={styles.secondaryAction}>Arquivado · {card.project?.slug}</span>:<><Link href={card.manageHref} className={styles.primaryAction}>Gerenciar <span>→</span></Link>{card.kind==='root'?<Link href="/dashboard/gabriel-capellari/leads" className={styles.secondaryAction}>Leads</Link>:null}<Link href={card.previewHref} target="_blank" className={styles.secondaryAction}>Preview</Link>{card.siteHref?<a href={card.siteHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>Site ↗</a>:null}</>}</div>
     {card.kind==='project'&&card.project&&card.project.siteType!=='portfolio'?card.archived?<PermanentDeleteDialog target={{slug:card.project.slug,name:card.project.name}}/>:<details className={styles.moreMenu}><summary aria-label={`Mais ações para ${card.name}`} title="Mais ações">•••</summary><div className={styles.moreMenuPanel}><DeleteProjectDialog target={{slug:card.project.slug,name:card.project.name}}/></div></details>:null}
    </div>
   </article>)}</div>}
