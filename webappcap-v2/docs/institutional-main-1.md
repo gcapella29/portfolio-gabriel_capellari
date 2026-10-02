@@ -14,7 +14,7 @@ React controla dados, navegação por hash, abas da gestão, filtro de álbuns, 
 - Imagens usam os mesmos uploads, permissões e controles do editor existente, com quadros 16:10 nos cartões e 1:1 para pessoas/álbuns, largura máxima 420px. O enquadramento é preservado no site.
 - O editor `/dashboard/[slug]/editor/institutional` usa EditorBlock e ContentWorkspace com o mesmo desenho, estado de rascunho, confirmação de upload e Preview dos outros editores.
 
-Novos projetos recebem exemplos independentes e faixa de demonstração. WhatsApp, e-mail, endereço, Instagram e Pix iniciam vazios; não são copiados os destinos fictícios do HTML. A introdução e o marco de fundação usam o nome do projeto. Projetos existentes sem listas permanecem vazios. Na demonstração, álbuns vazios podem mostrar as ilustrações originais; ao desativar a demonstração, somente fotos cadastradas aparecem.
+Novos projetos recebem exemplos independentes, sem faixa de demonstração no site. WhatsApp, e-mail, endereço, Instagram e Pix iniciam vazios; não são copiados os destinos fictícios do HTML. A introdução e o marco de fundação usam o nome do projeto. Projetos existentes sem listas permanecem vazios. Na demonstração, álbuns vazios podem mostrar as ilustrações originais; ao desativar as fotos ilustrativas, somente fotos cadastradas aparecem.
 
 ## Supabase
 
@@ -39,8 +39,18 @@ Esses testes não substituem conferência visual no navegador nem fluxo com Supa
 5. Alterar períodos e usar as abas de gestão por clique e teclado. Testar sem diretoria, somente um dirigente, sem membros e com fotos ocultadas.
 6. Filtrar álbuns; abrir e fechar fotos pelo X, Escape e fundo; conferir retorno de foco. Testar álbum vazio e apenas uma foto.
 7. Configurar contatos reais de teste, copiar Pix e verificar beneficiário. Enviar formulário em branco deve focar o campo obrigatório; preenchido deve abrir WhatsApp com assunto, contato e mensagem. Confira campanha individual e meta excedida/zero.
-8. Desativar demonstração: faixa e fotos ilustrativas dos álbuns desaparecem; as fotos cadastradas continuam.
+8. Desativar demonstração: fotos ilustrativas dos álbuns desaparecem; as fotos cadastradas continuam.
 9. Salvar, visualizar e aplicar modelo sem publicar: o site público deve permanecer igual. Publicar projeto de teste; editar novamente; conferir que a alteração aparece somente depois de republicar.
 10. Validar owner/admin/editor/viewer conforme as permissões existentes. Viewer não deve editar/aplicar/publicar.
 
 Permanece a limitação anterior de gravações sequenciais das seções do rascunho e de edições concorrentes; o fluxo de publicação continua atômico. A validação da criação/convite, Storage, permissões reais, domínio e cache exige ambiente Supabase de teste.
+
+## Refinamentos solicitados
+
+A faixa de demonstração foi removida do site. A opção do editor controla somente as fotos ilustrativas dos álbuns vazios. Diretoria e membros atuais/anteriores têm campo Instagram (link ou @usuário); o avatar abre esse perfil em nova aba, e sem perfil cadastrado permanece sem link. Destinos fora de instagram.com são rejeitados pelo normalizador.
+
+`media.hero` aceita foto opcional de fundo com posição, ajuste e zoom no editor compartilhado. A camada escura preserva legibilidade. O quadro do editor usa uma referência desktop 1440:720; a altura real é fluida e deve ser conferida no Preview, especialmente no mobile. Sem foto, permanece o gradiente original.
+
+`refinements.css` separado adiciona entrada suave no hero, revelação das seções, hover de cartões/avatares e microinterações dos botões. Movimento reduzido é respeitado e os observers são desconectados. O CSS da referência continua intacto.
+
+Teste também: remover/restaurar a capa; mudar zoom e posição; salvar/republicar; clicar nos avatares das duas gestões; perfil ausente; teclado; navegação entre páginas com animação; preferência de movimento reduzido.

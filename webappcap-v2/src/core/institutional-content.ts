@@ -46,19 +46,37 @@ export const institutionalLists = {
   },
   institutional_current_board: {
     label: 'Diretoria atual',
-    fields: {name: 'Nome', role: 'Cargo', photo: 'Foto'},
+    fields: {
+      name: 'Nome',
+      role: 'Cargo',
+      photo: 'Foto',
+      instagram: 'Instagram (URL ou @usuário)',
+    },
   },
   institutional_current_members: {
     label: 'Membros atuais',
-    fields: {name: 'Nome', photo: 'Foto'},
+    fields: {
+      name: 'Nome',
+      photo: 'Foto',
+      instagram: 'Instagram (URL ou @usuário)',
+    },
   },
   institutional_previous_board: {
     label: 'Diretoria anterior',
-    fields: {name: 'Nome', role: 'Cargo', photo: 'Foto'},
+    fields: {
+      name: 'Nome',
+      role: 'Cargo',
+      photo: 'Foto',
+      instagram: 'Instagram (URL ou @usuário)',
+    },
   },
   institutional_previous_members: {
     label: 'Membros anteriores',
-    fields: {name: 'Nome', photo: 'Foto'},
+    fields: {
+      name: 'Nome',
+      photo: 'Foto',
+      instagram: 'Instagram (URL ou @usuário)',
+    },
   },
   institutional_albums: {
     label: 'Álbuns de fotos',
@@ -197,4 +215,22 @@ export function institutionalDefaults(name: string) {
     },
     appearance: {preview_template_key: 'institutional-main-1'},
   };
+}
+
+export function institutionalInstagram(value: unknown) {
+  const raw = String(value ?? '').trim();
+  if (!raw) return '';
+  if (/^@?[a-zA-Z0-9._]{1,30}$/.test(raw))
+    return `https://www.instagram.com/${raw.replace(/^@/, '')}/`;
+  try {
+    const url = new URL(raw);
+    return ['https:', 'http:'].includes(url.protocol) &&
+      ['instagram.com', 'www.instagram.com'].includes(url.hostname) &&
+      !url.username &&
+      !url.password
+      ? url.href
+      : '';
+  } catch {
+    return '';
+  }
 }

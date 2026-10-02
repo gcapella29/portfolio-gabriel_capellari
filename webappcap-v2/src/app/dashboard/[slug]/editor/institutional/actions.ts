@@ -79,6 +79,7 @@ export async function saveInstitutionalAction(form: FormData) {
   for (const [key, fallback] of Object.entries(institutionalCopy)) {
     if (
       [
+        'institutional_main_demo_notice',
         'institutional_main_close',
         'institutional_main_footer_brand',
         'institutional_main_footer_credit',
@@ -184,10 +185,20 @@ export async function saveInstitutionalAction(form: FormData) {
   ])
     contact[key] = text(form, key).slice(0, 1000);
   contact.whatsapp = String(contact.whatsapp).replace(/\D/g, '').slice(0, 15);
+  const media = {...current.media};
+  if (allowed)
+    media.hero = picture(
+      form,
+      'hero',
+      current.media.hero,
+      true,
+      access.project.id,
+    );
   // Reuse the existing draft writes and atomic publication flow.
   await saveV2Section(access.project.id, 'identity', identity);
   await saveV2Section(access.project.id, 'content', content);
   await saveV2Section(access.project.id, 'contact', contact);
+  if (allowed) await saveV2Section(access.project.id, 'media', media);
   const base = `/dashboard/${encodeURIComponent(slug)}`;
   revalidatePath(`${base}/editor/institutional`);
   revalidatePath(`/preview/${encodeURIComponent(slug)}`);

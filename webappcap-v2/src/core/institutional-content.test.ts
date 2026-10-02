@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  institutionalInstagram,
   institutionalDefaults,
   institutionalData,
   institutionalRows,
@@ -88,5 +89,31 @@ test('stable IDs survive list reordering and malformed rows are ignored', () => 
       ).map((row) => row.id),
     ).size,
     2,
+  );
+});
+
+test('individual Instagram accepts handles and Instagram URLs without external destinations', () => {
+  assert.equal(
+    institutionalInstagram('@gabriel.capellari'),
+    'https://www.instagram.com/gabriel.capellari/',
+  );
+  assert.equal(
+    institutionalInstagram('https://instagram.com/gabriel/'),
+    'https://instagram.com/gabriel/',
+  );
+  for (const value of [
+    'javascript:alert(1)',
+    'https://evil.example/person',
+    'https://instagram.com.evil.example/person',
+    'https://user:pass@instagram.com/person',
+    '',
+  ])
+    assert.equal(institutionalInstagram(value), '');
+  assert.equal(
+    institutionalRows(
+      [{id: 'p', name: 'Pessoa', instagram: '@pessoa'}],
+      'institutional_current_members',
+    )[0].instagram,
+    '@pessoa',
   );
 });

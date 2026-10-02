@@ -1,5 +1,5 @@
 'use client';
-import {useMemo,useState} from 'react';
+import {useMemo, useState} from 'react';
 import {
   institutionalCopy,
   institutionalData,
@@ -29,8 +29,11 @@ export default function InstitutionalEditor({
   canManageMedia: boolean;
   saved: boolean;
 }) {
-  const initial = useMemo(()=>institutionalData(data.content),[data.content]),
-    [lists, setLists] = useState(()=>initial.lists);
+  const initial = useMemo(
+      () => institutionalData(data.content),
+      [data.content],
+    ),
+    [lists, setLists] = useState(() => initial.lists);
   const update = (
     key: InstitutionalListKey,
     id: string,
@@ -76,7 +79,11 @@ export default function InstitutionalEditor({
         currentFit={text(item.fit) || 'cover'}
         currentZoom={text(item.zoom) || 100}
         {...imageEditorFrame('institutional-main-1', slotType)}
-        help="Enquadramento do site. Arraste, ajuste o zoom e salve o rascunho."
+        help={
+          slotType === 'hero'
+            ? 'Referência desktop 2:1. A capa adapta a altura ao conteúdo e à tela; confira no Preview. Arraste e ajuste o zoom.'
+            : 'Enquadramento do site. Arraste, ajuste o zoom e salve o rascunho.'
+        }
       />
     );
   };
@@ -103,7 +110,7 @@ export default function InstitutionalEditor({
         id="institutional-identity"
         number="01"
         title="Identidade e história"
-        summary="Nome, apresentação, períodos e opções de demonstração"
+        summary="Nome, foto de capa, apresentação e períodos"
       >
         <div className={styles.fields}>
           <label className="field">
@@ -139,9 +146,7 @@ export default function InstitutionalEditor({
             initial.previousPeriod,
           )}
           <label className="field">
-            <span>
-              Faixa de demonstração e fotos ilustrativas dos álbuns vazios
-            </span>
+            <span>Fotos ilustrativas nos álbuns vazios</span>
             <select
               name="institutional_demo"
               defaultValue={String(initial.demo)}
@@ -160,6 +165,9 @@ export default function InstitutionalEditor({
               <option value="false">Mostrar somente iniciais</option>
             </select>
           </label>
+          {canManageMedia
+            ? image('hero', data.media.hero, 'Foto do hero (opcional)', 'hero')
+            : null}
         </div>
       </EditorBlock>
       {(Object.keys(institutionalLists) as InstitutionalListKey[]).map(
@@ -189,7 +197,11 @@ export default function InstitutionalEditor({
                             `${key}-${row.id}-${keyField}`,
                             row[keyField],
                             label,
-                            keyField === 'image' ? key === 'institutional_campaigns' ? 'campaign' : 'project' : 'photo',
+                            keyField === 'image'
+                              ? key === 'institutional_campaigns'
+                                ? 'campaign'
+                                : 'project'
+                              : 'photo',
                           )
                         ) : null
                       ) : (
@@ -338,6 +350,7 @@ export default function InstitutionalEditor({
             .filter(
               ([key]) =>
                 ![
+                  'institutional_main_demo_notice',
                   'institutional_main_close',
                   'institutional_main_footer_brand',
                   'institutional_main_footer_credit',

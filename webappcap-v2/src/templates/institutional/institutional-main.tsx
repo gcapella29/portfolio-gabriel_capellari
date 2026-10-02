@@ -1,7 +1,11 @@
 'use client';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
-import {institutionalData} from '@/core/institutional-content';
+import {
+  institutionalData,
+  institutionalImage,
+  institutionalImageStyle,
+} from '@/core/institutional-content';
 import type {TemplateRenderProps} from '../types';
 import {InstitutionalContext} from './context';
 import {
@@ -56,8 +60,11 @@ export function InstitutionalMainTemplate({
       target = document.createElement('div');
     sheet.rel = 'stylesheet';
     sheet.href = '/templates/institutional/styles.css';
+    const refinements = document.createElement('link');
+    refinements.rel = 'stylesheet';
+    refinements.href = '/templates/institutional/refinements.css';
     bridge.textContent = `:host{display:block}.institutional-document{--ink:#0f1d33;--blue:#1f3a64;--gold:#b8863b;--gold-l:#d4a24c;--paper:#f6f1e7;--card:#fffdf8;--muted:#55607a;--line:rgba(15,29,51,.14);--max:1160px;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}.institutional-document section{scroll-margin-top:var(--top-height,120px)}.card-media{aspect-ratio:16/10;overflow:hidden}.card-media img{height:100%;width:100%}.date{z-index:1}.photo img{transform:scale(var(--photo-scale,1))}.photo:hover img{transform:scale(calc(var(--photo-scale,1)*1.06))}.lb-x{display:grid;place-items:center}.brand{white-space:normal;min-width:0}.mono{flex-shrink:0}@media(max-width:640px){.form input,.form select,.form textarea{font-size:16px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`;
-    shadow.append(sheet, bridge, target);
+    shadow.append(sheet, bridge, refinements, target);
     setMount(target);
     let font = document.querySelector<HTMLLinkElement>(
       'link[data-institutional-font]',
@@ -74,6 +81,7 @@ export function InstitutionalMainTemplate({
     return () => {
       alive.current = false;
       sheet.remove();
+      refinements.remove();
       bridge.remove();
       target.remove();
       font.dataset.users = String(Number(font.dataset.users || 1) - 1);
@@ -91,14 +99,12 @@ export function InstitutionalMainTemplate({
       if (frame.current !== null) cancelAnimationFrame(frame.current);
       frame.current = requestAnimationFrame(() => {
         if (['projetos', 'doacoes', 'campanhas'].includes(hash))
-          root.current
-            ?.querySelector(`#${hash}`)
-            ?.scrollIntoView({
-              behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
-                .matches
-                ? 'auto'
-                : 'smooth',
-            });
+          root.current?.querySelector(`#${hash}`)?.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)')
+              .matches
+              ? 'auto'
+              : 'smooth',
+          });
         else window.scrollTo(0, 0);
       });
     };
@@ -127,6 +133,38 @@ export function InstitutionalMainTemplate({
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
   }, [mount]);
+  useEffect(() => {
+    if (!mount || !root.current) return;
+    const nodes = root.current.querySelectorAll(
+      '.view:not([hidden]) .head,.view:not([hidden]) .card,.view:not([hidden]) .don,.view:not([hidden]) .tl,.view:not([hidden]) .person,.view:not([hidden]) .album,.view:not([hidden]) .info>div,.view:not([hidden]) .form',
+    );
+    nodes.forEach((node, index) => {
+      node.classList.add('reveal');
+      (node as HTMLElement).style.setProperty(
+        '--reveal-delay',
+        `${Math.min(index % 6, 3) * 55}ms`,
+      );
+    });
+    if (
+      typeof IntersectionObserver === 'undefined' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      nodes.forEach((node) => node.classList.add('in'));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries, obs) =>
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            obs.unobserve(entry.target);
+          }
+        }),
+      {threshold: 0.08},
+    );
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, [mount, view, album, model.lists]);
   const notify = (message: string) => {
     if (!alive.current) return;
     setToast(message);
@@ -166,10 +204,6 @@ export function InstitutionalMainTemplate({
                 ref={root}
                 onClick={navigate}
               >
-                <div className="demo-bar" id="demoBar" hidden={!model.demo}>
-                  {copy.institutional_main_demo_notice}
-                </div>
-
                 <header className="top">
                   <div className="wrap top-in">
                     <a className="brand" href="#inicio">
@@ -223,6 +257,16 @@ export function InstitutionalMainTemplate({
                     hidden={view !== 'inicio'}
                   >
                     <div className="hero">
+                      {institutionalImage(data.media.hero) ? (
+                        <div className="hero-image" aria-hidden="true">
+                          <img
+                            src={institutionalImage(data.media.hero)}
+                            style={institutionalImageStyle(data.media.hero)}
+                            alt=""
+                            fetchPriority="high"
+                          />
+                        </div>
+                      ) : null}
                       <div className="wrap">
                         <p className="kick" style={{color: 'var(--gold-l)'}}>
                           {copy.institutional_main_hero_kicker}

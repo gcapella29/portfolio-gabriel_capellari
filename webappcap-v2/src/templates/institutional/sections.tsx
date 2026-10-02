@@ -1,6 +1,7 @@
 'use client';
 import {useEffect, useRef, useState} from 'react';
 import {
+  institutionalInstagram,
   campaignProgress,
   institutionalImage,
   institutionalImageStyle,
@@ -177,26 +178,37 @@ export function Values() {
 }
 function Avatar({person}: {person: InstitutionalRow}) {
   const {model} = useInstitutional(),
-    src = institutionalImage(person.photo);
-  return (
-    <div className="avatar">
-      {model.showPhotos && src ? (
-        <img
-          src={src}
-          style={institutionalImageStyle(person.photo)}
-          alt={t(person.name)}
-          loading="lazy"
-        />
-      ) : (
-        t(person.name)
-          .split(/\s+/)
-          .filter(Boolean)
-          .slice(0, 2)
-          .map((w) => w[0])
-          .join('')
-          .toUpperCase()
-      )}
-    </div>
+    src = institutionalImage(person.photo),
+    href = institutionalInstagram(person.instagram);
+  const content =
+    model.showPhotos && src ? (
+      <img
+        src={src}
+        style={institutionalImageStyle(person.photo)}
+        alt={t(person.name)}
+        loading="lazy"
+      />
+    ) : (
+      t(person.name)
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((w) => w[0])
+        .join('')
+        .toUpperCase()
+    );
+  return href ? (
+    <a
+      className="avatar"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Instagram de ${t(person.name)}`}
+    >
+      {content}
+    </a>
+  ) : (
+    <div className="avatar">{content}</div>
   );
 }
 export function Management() {
