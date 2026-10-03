@@ -1,4 +1,5 @@
 'use client';
+import {protectShadowStyles} from '../shadow-styles';
 import {imagePositionStyle} from '@/core/image-placement';
 
 import {useCallback,useDeferredValue,useEffect,useMemo,useRef,useState} from 'react';
@@ -49,7 +50,7 @@ function useReveal(root:React.RefObject<HTMLDivElement|null>,mount:HTMLDivElemen
 export function CommerceModernTemplate({project,data,preview=false}:TemplateRenderProps){
  const host=useRef<HTMLDivElement>(null),root=useRef<HTMLDivElement>(null);
  const highlightsRef=useRef<HTMLDivElement>(null),catalogRef=useRef<HTMLDivElement>(null),cartButtonRef=useRef<HTMLButtonElement>(null);
- const [mount,setMount]=useState<HTMLDivElement|null>(null),[assetsReady,setAssetsReady]=useState(false);
+ const [mount,setMount]=useState<HTMLDivElement|null>(null);
  const [catalogRange,setCatalogRange]=useState({start:1,end:8});
  const [cartPulse,setCartPulse]=useState(false);
  const [highlightIndex,setHighlightIndex]=useState(0);
@@ -61,14 +62,10 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
   if(!font){font=document.createElement('link');font.rel='stylesheet';font.href='/fonts/commerce-modern.81ebc83b4cc2.css';font.dataset.commerceModernFont='';document.head.appendChild(font)}
   font.dataset.users=String(Number(font.dataset.users||0)+1);
   const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/templates/commerce-modern/styles.css';
-  let cancelled=false,pending=2;
-  const done=()=>{pending-=1;if(!cancelled&&pending<=0)setAssetsReady(true)};
-  for(const link of [font,sheet]){link.addEventListener('load',done,{once:true});link.addEventListener('error',done,{once:true});}
   const bridge=document.createElement('style');bridge.textContent='.commerce-modern-document{--bg:#eef8ff;--ink:#171717;--blue:#4f89ad;--blue-2:#3f7697;--deep:#315f7a;--sky:#bfe4f7;--muted:#5f6b73;--line:#dbe8f0;--shadow:0 12px 32px rgba(38,81,108,.10);--max:1180px;--heading:"Manrope",system-ui,sans-serif;--font:"DM Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;display:block;min-height:100vh;margin:0;font-family:var(--font);font-size:16px;font-weight:400;font-style:normal;text-align:left;letter-spacing:normal;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}';
   const target=document.createElement('div');target.setAttribute('data-commerce-modern-mount','');
-  shadow.append(sheet,bridge,target);setMount(target);
-  const timeout=window.setTimeout(()=>{if(!cancelled)setAssetsReady(true)},1200);
-  return()=>{cancelled=true;clearTimeout(timeout);for(const link of [font,sheet]){link.removeEventListener('load',done);link.removeEventListener('error',done)};font.dataset.users=String(Number(font.dataset.users||1)-1);if(font.dataset.users==='0')font.remove();sheet.remove();bridge.remove();target.remove()};
+  shadow.append(sheet,bridge,target);const releaseStyles=protectShadowStyles(target,[sheet]);setMount(target);
+  return()=>{releaseStyles();font.dataset.users=String(Number(font.dataset.users||1)-1);if(font.dataset.users==='0')font.remove();sheet.remove();bridge.remove();target.remove()};
  },[]);
 
  const brand=str(data.identity,'name',project.name||'Vet-se');
@@ -202,7 +199,7 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
   section.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
  },[]);
 
- const content=<div ref={root} className={'commerce-modern-document js'+(assetsReady?' assets-ready':' assets-loading')}>
+ const content=<div ref={root} className="commerce-modern-document js assets-ready">
   <div className="topbar" aria-hidden="true"><div className="marquee">{Array.from({length:6},(_,i)=><span key={i}>{STRIP}</span>)}</div></div>
 
   <nav className="nav" aria-label="Principal"><div className="container nav-inner">

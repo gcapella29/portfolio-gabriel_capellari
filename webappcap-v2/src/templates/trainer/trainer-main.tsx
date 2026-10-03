@@ -1,4 +1,5 @@
 'use client';
+import {protectShadowStyles} from '../shadow-styles';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import {trainerData,trainerImage,trainerImageStyle} from '@/core/trainer-content';
@@ -18,11 +19,11 @@ export function PersonalTrainerMainTemplate({project,data}:TemplateRenderProps){
   const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='/templates/personal-trainer/styles.css';
   const refinements=document.createElement('link');refinements.rel='stylesheet';refinements.href='/templates/personal-trainer/refinements.css';
   const bridge=document.createElement('style');bridge.textContent=`:host{display:block}.trainer-document{--bg:#ebe8e1;--card:#f7f5f0;--ink:#141414;--muted:#5d5a54;--acc:#ff5a1f;--ok:#17924d;--line:rgba(20,20,20,.14);--max:1160px;--head:"Barlow Condensed","Arial Narrow",Impact,sans-serif;--body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.5;-webkit-font-smoothing:antialiased}.trainer-document section,.trainer-document header{scroll-margin-top:72px}@media(max-width:700px){.trainer-document{padding-bottom:76px}}@media(prefers-reduced-motion:reduce){.trainer-document *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}`;
-  const target=document.createElement('div');shadow.append(sheet,bridge,refinements,target);setMount(target);
+  const target=document.createElement('div');shadow.append(sheet,bridge,refinements,target);const releaseStyles=protectShadowStyles(target,[sheet,refinements]);setMount(target);
   let font=document.querySelector<HTMLLinkElement>('link[data-personal-trainer-font]');
   if(!font){font=document.createElement('link');font.rel='stylesheet';font.href='/fonts/personal-trainer.60ee1d8f57c1.css';font.dataset.personalTrainerFont='';document.head.appendChild(font)}
   font.dataset.users=String(Number(font.dataset.users||0)+1);
-  return()=>{sheet.remove();bridge.remove();refinements.remove();target.remove();font.dataset.users=String(Number(font.dataset.users||1)-1);if(font.dataset.users==='0')font.remove()};
+  return()=>{releaseStyles();sheet.remove();bridge.remove();refinements.remove();target.remove();font.dataset.users=String(Number(font.dataset.users||1)-1);if(font.dataset.users==='0')font.remove()};
  },[]);
  const model=useMemo(()=>{
   const content=trainerData(data.content),number=String(data.contact.whatsapp||'').replace(/\D/g,'');
