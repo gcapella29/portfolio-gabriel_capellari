@@ -164,7 +164,7 @@ export function InstitutionalMainTemplate({
             obs.unobserve(entry.target);
           }
         }),
-      {threshold: 0.08},
+      {threshold: 0},
     );
     nodes.forEach((node) => observer.observe(node));
     return () => observer.disconnect();

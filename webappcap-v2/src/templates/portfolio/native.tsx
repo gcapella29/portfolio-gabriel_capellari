@@ -90,7 +90,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const targets=[...root.querySelectorAll<HTMLElement>('[data-reveal]')];
     if(reduced||!('IntersectionObserver' in window)){targets.forEach(target=>target.dataset.visible='true');return}
-    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){(entry.target as HTMLElement).dataset.visible='true';observer.unobserve(entry.target)}}),{threshold:.12,rootMargin:'0px 0px -50px'});
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){(entry.target as HTMLElement).dataset.visible='true';observer.unobserve(entry.target)}}),{threshold:0,rootMargin:'0px 0px -50px'});
     targets.forEach(target=>observer.observe(target));return()=>observer.disconnect();
   },[]);
   useEffect(()=>{

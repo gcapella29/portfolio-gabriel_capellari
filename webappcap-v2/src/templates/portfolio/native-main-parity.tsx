@@ -35,7 +35,7 @@ export function NativeMainParityPortfolioTemplate(props:TemplateRenderProps){
           (entry.target as HTMLElement).dataset.visible='true';
           observer?.unobserve(entry.target);
         }
-      }),{threshold:.14,rootMargin:'0px 0px -60px 0px'});
+      }),{threshold:0,rootMargin:'0px 0px -60px 0px'});
       targets.forEach(target=>observer?.observe(target));
     },50);
 

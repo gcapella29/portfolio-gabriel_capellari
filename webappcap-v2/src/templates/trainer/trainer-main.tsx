@@ -31,7 +31,7 @@ export function PersonalTrainerMainTemplate({project,data}:TemplateRenderProps){
  useEffect(()=>{
   const root=documentRoot.current;if(!root||!mount)return;
   if(!('IntersectionObserver'in window)){root.querySelectorAll('[data-reveal]').forEach(el=>el.classList.add('in'));return}
-  const observer=new IntersectionObserver((list,obs)=>list.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in');obs.unobserve(entry.target)}}),{threshold:.1,rootMargin:'0px 0px -5% 0px'});
+  const observer=new IntersectionObserver((list,obs)=>list.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in');obs.unobserve(entry.target)}}),{threshold:0,rootMargin:'0px 0px -5% 0px'});
   root.querySelectorAll('[data-reveal]').forEach(el=>observer.observe(el));return()=>observer.disconnect();
  },[mount,model.lists]);
  useEffect(()=>{

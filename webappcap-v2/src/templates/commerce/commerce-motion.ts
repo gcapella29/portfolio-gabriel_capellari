@@ -51,7 +51,8 @@ export function useCommerceMotion<T extends HTMLElement>(
     const reveal=Array.from(root.querySelectorAll<HTMLElement>('[data-reveal]'));
     root.dataset.motionReady='true';
 
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    // Reveal on entry, including sections taller than the viewport.
+    if(!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion: reduce)').matches){
       reveal.forEach(section=>section.dataset.visible='true');
       return;
     }
@@ -69,7 +70,7 @@ export function useCommerceMotion<T extends HTMLElement>(
             (entry.target as HTMLElement).dataset.visible='true';
             observer?.unobserve(entry.target);
           });
-        },{threshold:.12,rootMargin:'0px 0px -10%'});
+        },{threshold:0,rootMargin:'0px 0px -10%'});
         reveal.forEach(section=>observer?.observe(section));
       });
     });
@@ -112,6 +113,7 @@ export function useCommerceMotion<T extends HTMLElement>(
     const root=rootRef.current;
     if(
       !root||
+      !('IntersectionObserver' in window)||
       window.matchMedia(`(min-width: ${config.desktopMin}px)`).matches||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     )return;
