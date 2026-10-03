@@ -1,4 +1,5 @@
 'use client';
+import {protectShadowStyles} from '../shadow-styles';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import type {CSSProperties} from 'react';
 import {imageMediaStyle} from '@/core/image-placement';
@@ -69,6 +70,7 @@ export function InstitutionalMainTemplate({
     refinements.href = '/templates/institutional/refinements.css';
     bridge.textContent = `:host{display:block}.institutional-document{--ink:#0f1d33;--blue:#1f3a64;--gold:#b8863b;--gold-l:#d4a24c;--paper:#f6f1e7;--card:#fffdf8;--muted:#55607a;--line:rgba(15,29,51,.14);--max:1160px;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}.institutional-document section{scroll-margin-top:var(--top-height,120px)}.card-media{aspect-ratio:16/10;overflow:hidden}.card-media img{height:100%;width:100%}.date{z-index:1}.photo img{transform:scale(var(--photo-scale,1))}.photo:hover img{transform:scale(calc(var(--photo-scale,1)*1.06))}.lb-x{display:grid;place-items:center}.brand{white-space:normal;min-width:0}.mono{flex-shrink:0}@media(max-width:640px){.form input,.form select,.form textarea{font-size:16px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`;
     shadow.append(sheet, bridge, refinements, target);
+    const releaseStyles=protectShadowStyles(target,[sheet,refinements]);
     setMount(target);
     let font = document.querySelector<HTMLLinkElement>(
       'link[data-institutional-font]',
@@ -83,6 +85,7 @@ export function InstitutionalMainTemplate({
     }
     font.dataset.users = String(Number(font.dataset.users || 0) + 1);
     return () => {
+      releaseStyles();
       alive.current = false;
       sheet.remove();
       refinements.remove();
