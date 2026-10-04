@@ -1,5 +1,6 @@
 'use client';
 
+import {animatedImage} from '@/core/image-delivery';
 import {createSupabaseBrowserClient} from './browser';
 
 export type UploadedProjectImage={path:string;url:string};
@@ -36,13 +37,10 @@ async function readImageDimensions(file:File):Promise<ImageDimensions>{
 
 async function optimizeStaticImage(file:File,dimensions:ImageDimensions):Promise<File>{
   // GIFs may be animated; drawing them to canvas would silently discard frames.
-  if(file.type==='image/gif')return file;
+  if(animatedImage(new Uint8Array(await file.arrayBuffer()),file.type))return file;
 
   const maxSide=2400;
   const scale=Math.min(1,maxSide/Math.max(dimensions.width,dimensions.height));
-  const shouldResize=scale<1;
-  const shouldCompress=file.size>3*1024*1024;
-  if(!shouldResize&&!shouldCompress)return file;
 
   const objectUrl=URL.createObjectURL(file);
   try{
@@ -57,14 +55,14 @@ async function optimizeStaticImage(file:File,dimensions:ImageDimensions):Promise
     const canvas=document.createElement('canvas');
     canvas.width=width;
     canvas.height=height;
-    const context=canvas.getContext('2d',{alpha:file.type==='image/png'});
+    const context=canvas.getContext('2d',{alpha:true});
     if(!context)return file;
     context.drawImage(image,0,0,width,height);
 
-    const quality=file.type==='image/png'?undefined:.88;
-    const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,file.type,quality));
+    const quality=.88;
+    const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,'image/webp',quality));
     if(!blob||blob.size>=file.size)return file;
-    return new File([blob],file.name,{type:file.type,lastModified:file.lastModified});
+    return new File([blob],file.name.replace(/\.[^.]+$/,'.webp'),{type:blob.type,lastModified:file.lastModified});
   }finally{
     URL.revokeObjectURL(objectUrl);
   }
@@ -77,7 +75,7 @@ export async function uploadProjectImageDirect(projectId:string,file:File,slot:s
   const dimensions=await readImageDimensions(file);
   if(dimensions.width>12000||dimensions.height>12000)throw new Error('A imagem possui resolução excessiva. Use no máximo 12000 px por lado.');
   const prepared=await optimizeStaticImage(file,dimensions);
-  const path=`${projectId}/${safeSlot(slot)}-${crypto.randomUUID()}.${extension}`;
+  const path=`${projectId}/${safeSlot(slot)}-${crypto.randomUUID()}.${imageExtensions[prepared.type]||extension}`;
   const supabase=createSupabaseBrowserClient();
   const result=await supabase.storage.from(bucket).upload(path,prepared,{contentType:prepared.type,cacheControl:'31536000',upsert:false});
   if(result.error)throw new Error(result.error.message||'Não foi possível enviar a imagem.');

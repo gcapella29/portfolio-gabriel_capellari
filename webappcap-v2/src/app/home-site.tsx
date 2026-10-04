@@ -1,3 +1,4 @@
+import {SiteImage} from '@/templates/site-image';
 import Image from 'next/image';
 import fonts from '@/fonts/local.module.css';
 import {preloadSiteFonts} from '@/fonts/preload';
@@ -174,7 +175,7 @@ export function HomeSite({content={},preview=false,publishedProjects=[]}:{conten
                 <div className={projectStyles.storeHero}><Image src="/assets/media/vet-hero.webp" alt="" fill sizes="(max-width: 800px) 100vw, 54vw"/><div><h3>Vet-se</h3><p>Adesivos · Chaveiros · Mimos · Bottons · Ecobags e mais</p><em>Feito com amor especialmente para você!</em></div></div>
               </div>:
               <div className={projectStyles.genericPreview}>
-                {project.image?<img src={project.image} alt="" loading="lazy" decoding="async"/>:null}
+                {project.image?<SiteImage src={project.image} alt="" loading="lazy" decoding="async"/>:null}
                 <div><small>{project.category}</small><h3>{project.name}</h3><span>Conhecer projeto ↗</span></div>
               </div>}
           </a>

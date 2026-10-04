@@ -1,4 +1,5 @@
 'use client';
+import {SiteImage} from '../site-image';
 import {protectShadowStyles} from '../shadow-styles';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import type {CSSProperties} from 'react';
@@ -272,7 +273,7 @@ export function InstitutionalMainTemplate({
                     <div className="hero" hidden={!visible.hero}>
                       {institutionalImage(data.media.hero) ? (
                         <div className="hero-image" aria-hidden="true">
-                          <img
+                          <SiteImage loading="eager" imageWidth={1920} sizes="100vw"
                             src={institutionalImage(data.media.hero)}
                             style={(() => {
                               const hero = data.media.hero && typeof data.media.hero === 'object' ? data.media.hero as Record<string, unknown> : {};

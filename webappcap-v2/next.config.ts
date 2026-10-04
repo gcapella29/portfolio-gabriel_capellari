@@ -29,7 +29,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  images: supabaseHost ? { remotePatterns: [{ protocol: 'https', hostname: supabaseHost, pathname: '/storage/v1/object/public/**' }] } : undefined,
+  images: {remotePatterns:supabaseHost?[{protocol:'https',hostname:supabaseHost,pathname:'/storage/v1/object/public/**',search:''}]:[],minimumCacheTTL:86400,qualities:[75,85]},
   experimental: {
     serverActions: {
       bodySizeLimit: '4mb'
