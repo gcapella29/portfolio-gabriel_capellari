@@ -1,3 +1,4 @@
+import {SiteImage} from '../site-image';
 import {useTrainer,ph,type StateCopy} from "./context";
 import type {MouseEvent} from "react";
 const navigate=(event:MouseEvent<HTMLAnchorElement>)=>{const root=event.currentTarget.getRootNode() as ShadowRoot;const target=root.getElementById(event.currentTarget.hash.slice(1));if(target){event.preventDefault();target.scrollIntoView({block:"start",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}};
@@ -35,7 +36,7 @@ export function Hero({ t }:{t:StateCopy}) {
           </div>
         </div>
         <div className="portrait">
-          <img style={portraitStyle} src={portrait || ph("FOTO DO PERSONAL", "#3a3a3a")} alt={`Foto do personal trainer ${name}`} />
+          <SiteImage loading="eager" imageWidth={1920} sizes="(max-width:960px) 100vw, 50vw" style={portraitStyle} src={portrait || ph("FOTO DO PERSONAL", "#3a3a3a")} alt={`Foto do personal trainer ${name}`} />
           {cref?<span className="cref">{cref}</span>:null}
         </div>
       </div>

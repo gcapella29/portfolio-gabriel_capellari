@@ -1,3 +1,4 @@
+import {optimizeImageUpload} from './image-upload-optimization';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import type { OnboardingStep, ProjectContext } from './domain';
 import { getTemplate } from './segments';
@@ -28,8 +29,9 @@ export async function uploadProjectImage(projectId:string,file:File,slot:string)
   if(file.size>10*1024*1024)throw new Error('A imagem deve ter no máximo 10 MB.');
   const safeSlot=slot.replace(/[^a-z0-9-]/gi,'-').toLowerCase().slice(0,50)||'image';
   const bytes=Buffer.from(await file.arrayBuffer());if(!hasImageSignature(bytes,file.type))throw new Error('O arquivo enviado não corresponde a uma imagem válida.');
-  const path=`${projectId}/${safeSlot}-${crypto.randomUUID()}.${ext}`;
-  const sb=await createSupabaseServerClient();const result=await sb.storage.from('webappcap-v2-sites').upload(path,bytes,{contentType:file.type,upsert:false,cacheControl:'31536000'});if(result.error)throw result.error;
+  const {bytes:prepared,contentType,extension}=await optimizeImageUpload(bytes,file.type,ext);
+  const path=`${projectId}/${safeSlot}-${crypto.randomUUID()}.${extension}`;
+  const sb=await createSupabaseServerClient();const result=await sb.storage.from('webappcap-v2-sites').upload(path,prepared,{contentType,upsert:false,cacheControl:'31536000'});if(result.error)throw result.error;
   return {path,url:publicMediaUrl(path)};
 }
 

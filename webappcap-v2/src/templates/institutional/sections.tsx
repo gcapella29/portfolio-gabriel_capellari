@@ -1,4 +1,5 @@
 'use client';
+import {SiteImage} from '../site-image';
 import {useEffect, useRef, useState} from 'react';
 import {
   institutionalInstagram,
@@ -42,7 +43,7 @@ export function Projects() {
       {lists.institutional_projects.map((p, i) => (
         <article className="card" key={p.id}>
           <div className="card-media">
-            <img
+            <SiteImage
               src={institutionalImage(p.image) || placeholder(t(p.title), i)}
               style={institutionalImageStyle(p.image)}
               alt=""
@@ -108,7 +109,7 @@ export function Campaigns() {
         return (
           <article className="card camp" key={c.id}>
             <div className="card-media">
-              <img
+              <SiteImage
                 src={
                   institutionalImage(c.image) || placeholder(t(c.title), i + 1)
                 }
@@ -175,7 +176,7 @@ function Avatar({person}: {person: InstitutionalRow}) {
     href = institutionalInstagram(person.instagram);
   const content =
     model.showPhotos && src ? (
-      <img
+      <SiteImage
         src={src}
         style={institutionalImageStyle(person.photo)}
         alt={t(person.name)}
@@ -355,7 +356,7 @@ export function Albums() {
                       aria-label={`Ampliar foto ${i + 1} de ${t(row.title)}`}
                       onClick={() => setPhoto({src, caption: t(row.title)})}
                     >
-                      <img
+                      <SiteImage
                         src={src}
                         style={
                           {
@@ -422,7 +423,7 @@ export function Lightbox() {
       </button>
       {photo ? (
         <>
-          <img src={photo.src} alt={photo.caption} />
+          <SiteImage imageWidth={1920} sizes="100vw" src={photo.src} alt={photo.caption} />
           <p>{photo.caption}</p>
         </>
       ) : null}

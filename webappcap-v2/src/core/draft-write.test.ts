@@ -21,7 +21,7 @@ function fixture(options:{ensureError?:Error;saveError?:Error}={}){
  const code=ts.transpileModule(readFileSync(new URL('./onboarding-data.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
  runInNewContext(code,{exports,require:(name:string)=>{
   if(name==='@/lib/supabase/server')return {createSupabaseServerClient:async()=>{clients++;return client}};
-  if(name==='./segments'||name==='./content-snapshot')return {};
+  if(name==='./segments'||name==='./content-snapshot'||name==='./image-upload-optimization')return {};
   throw new Error(`Unexpected dependency: ${name}`);
  },Date});
  return {requests,clients:()=>clients,save:exports.saveV2Sections as (id:string,sections:Record<string,unknown>)=>Promise<void>};

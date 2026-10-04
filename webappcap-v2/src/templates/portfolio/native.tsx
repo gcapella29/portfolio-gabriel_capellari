@@ -1,4 +1,5 @@
 'use client';
+import {SiteImage} from '../site-image';
 import {imageMediaStyle} from '@/core/image-placement';
 import {heroCopyStyle,heroTextStyle,heroTextMotion} from '@/core/hero-typography';
 
@@ -119,7 +120,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
     <div className={styles.language} role="group" aria-label={language==='pt'?'Alterar idioma':'Change language'}><button type="button" aria-label="Português" aria-pressed={language==='pt'} onClick={()=>chooseLanguage('pt')}>🇧🇷</button><button type="button" aria-label="English" aria-pressed={language==='en'} onClick={()=>chooseLanguage('en')}>🇬🇧</button></div>
     <button className={styles.motionToggle} type="button" aria-pressed={motionPaused} onClick={()=>setMotionPaused(value=>!value)}>{motionPaused?'▶ LIVE':'Ⅱ LIVE'}</button>
     <header className={styles.hero} id="inicio">
-      <div ref={heroBackgroundRef} className={styles.heroBackground}><img src={hero} alt="" fetchPriority="high" style={imageMediaStyle({position:'50% 18%',...(typeof data.media.hero==='object'?data.media.hero:{})})}/><div className={styles.heroImageShade}/></div>
+      <div ref={heroBackgroundRef} className={styles.heroBackground}><SiteImage loading="eager" imageWidth={1920} sizes="100vw" src={hero} alt="" fetchPriority="high" style={imageMediaStyle({position:'50% 18%',...(typeof data.media.hero==='object'?data.media.hero:{})})}/><div className={styles.heroImageShade}/></div>
       <div className={styles.heroContent}>
         <div className={styles.heroTop}><span>{location}</span></div>
         <div className={styles.heroCopy} style={heroCopyStyle(data.appearance)}><h1 style={heroTextStyle(data.appearance,'title')} data-hero-motion={heroTextMotion(data.appearance,'title')}>{firstName}<br/><em>{surname}&quot;</em></h1><p style={heroTextStyle(data.appearance,'subtitle')} data-hero-motion={heroTextMotion(data.appearance,'subtitle')}>{localized(role,language)}</p><div className={styles.chips}>{languages.map(item=><span key={item.pt}><i className={styles.chipFlag} data-country={item.country} aria-hidden="true"/>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>

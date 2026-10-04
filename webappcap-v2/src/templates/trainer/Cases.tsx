@@ -1,3 +1,4 @@
+import {SiteImage} from '../site-image';
 import { useState } from "react";
 import {trainerImageStyle} from '@/core/trainer-content';
 import {useTrainer,ph} from "./context";
@@ -27,8 +28,8 @@ export default function Cases() {
           </div>}
           <div role={CASES.length===1?"region":"tabpanel"} id="case-panel" aria-labelledby={`case-${active}`}>
             <div className="ba" style={{ "--p": p + "%" } as CSSProperties}>
-              <img style={trainerImageStyle({position:c.after_position,fit:c.after_fit,zoom:c.after_zoom})} src={c.after || ph("FOTO DEPOIS", "#ff5a1f")} alt={`Foto depois: ${c.name}`} />
-              <div className="bef"><img style={trainerImageStyle({position:c.before_position,fit:c.before_fit,zoom:c.before_zoom})} src={c.before || ph("FOTO ANTES", "#6f6a62")} alt={`Foto antes: ${c.name}`} /></div>
+              <SiteImage style={trainerImageStyle({position:c.after_position,fit:c.after_fit,zoom:c.after_zoom})} src={c.after || ph("FOTO DEPOIS", "#ff5a1f")} alt={`Foto depois: ${c.name}`} />
+              <div className="bef"><SiteImage style={trainerImageStyle({position:c.before_position,fit:c.before_fit,zoom:c.before_zoom})} src={c.before || ph("FOTO ANTES", "#6f6a62")} alt={`Foto antes: ${c.name}`} /></div>
               <span className="lbl l">Antes</span><span className="lbl r">Depois</span><div className="line"></div>
               <input type="range" min="0" max="100" value={p} onChange={(e) => setP(Number(e.target.value))} aria-label="Deslize para comparar antes e depois" />
             </div>
