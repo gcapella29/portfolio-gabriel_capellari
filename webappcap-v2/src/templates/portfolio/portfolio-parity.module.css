@@ -2,15 +2,10 @@
 .mainParity :global(h1),.mainParity :global(h2),.mainParity :global(h3){font-family:var(--portfolio-heading),Fraunces,serif!important;letter-spacing:-.01em}
 .mainParity :global(#inicio p),.mainParity :global(#inicio [role="group"]),.mainParity :global(#inicio a),.mainParity :global(#inicio button),.mainParity :global(#inicio span),.mainParity :global(#destaques),.mainParity :global(#cobertura),.mainParity :global(#formacao h3),.mainParity :global(#formacao [class*="skillStack"]),.mainParity :global(footer){font-family:var(--portfolio-mono),'IBM Plex Mono',monospace!important}
 
-/* Main reveal grammar. */
-.mainParity :global([data-reveal]){opacity:0!important;transform:translateY(28px)!important;transition:opacity .8s cubic-bezier(.16,.8,.3,1),transform .8s cubic-bezier(.16,.8,.3,1)!important;will-change:transform,opacity}
-.mainParity :global([data-reveal][data-visible="true"]){opacity:1!important;transform:translateY(0)!important;will-change:auto}
+/* Cards and sections are visible without an entrance-animation signal. */
 .mainParity :global(#inicio) h1,.mainParity :global(#inicio) p{opacity:1!important;transform:none!important;animation:none!important}
-.mainParity :global(#inicio) h1 em{animation:goldGlow 4s ease-in-out infinite!important}
-.mainParity :global(#destaques)>*{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease!important}
-.mainParity :global(#destaques[data-visible="true"])>*{opacity:1;transform:translateY(0)}
-.mainParity :global(#destaques[data-visible="true"])>*:nth-child(1){transition-delay:.03s!important}.mainParity :global(#destaques[data-visible="true"])>*:nth-child(2){transition-delay:.08s!important}.mainParity :global(#destaques[data-visible="true"])>*:nth-child(3){transition-delay:.13s!important}.mainParity :global(#destaques[data-visible="true"])>*:nth-child(4){transition-delay:.18s!important}
-.mainParity :global(#destaques[data-visible="true"])>*:hover{transform:translateY(-6px)!important;border-color:rgba(227,187,61,.24)!important;box-shadow:0 18px 45px rgba(0,0,0,.16)!important}
+.mainParity :global(#destaques)>*{opacity:1;transform:none}
+@media(hover:hover) and (pointer:fine){.mainParity :global(#destaques)>*:hover{transform:translateY(-6px)!important;border-color:rgba(227,187,61,.24)!important;box-shadow:0 18px 45px rgba(0,0,0,.16)!important}}
 
 /* Main ticker: exact height, spacing and 24s continuous motion. */
 .mainParity :global(#inicio)+div[aria-hidden="true"]{background:var(--gold)!important;color:var(--dark)!important;overflow:hidden!important;white-space:nowrap!important;border-top:1px solid var(--dark)!important;border-bottom:1px solid var(--dark)!important;box-shadow:none!important}
@@ -46,11 +41,10 @@
   .mainParity :global(#inicio)+div[aria-hidden="true"]>div>div{padding:.82rem 0!important}
   .mainParity :global(#inicio)+div[aria-hidden="true"] span{font-size:.8rem!important;padding-left:1.9rem!important;padding-right:1.9rem!important}
 }
-@keyframes goldGlow{50%{text-shadow:0 0 26px rgba(227,187,61,.32)}}
 @keyframes mainTicker{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 
 @media(hover:none){
-  .mainParity :global(#destaques[data-visible="true"])>*:hover,.mainParity :global(#portfolio)>div:last-child>a:hover,.mainParity :global(#formacao) article:hover,.mainParity :global(#formacao [class*="skillStack"] span:hover),.mainParity :global(#instagram) a:hover{transform:none!important;box-shadow:none!important}
+  .mainParity :global(#destaques)>*:hover,.mainParity :global(#portfolio)>div:last-child>a:hover,.mainParity :global(#formacao) article:hover,.mainParity :global(#formacao [class*="skillStack"] span:hover),.mainParity :global(#instagram) a:hover{transform:none!important;box-shadow:none!important}
   .mainParity :global(#sobre) div:hover>img,.mainParity :global(#contato) div:hover>img{transform:none!important}
   .mainParity :global(#cobertura)>div>div:hover{padding-left:1.15rem!important;background:linear-gradient(90deg,rgba(255,255,255,.018),transparent)!important}
   .mainParity :global(#experiencia) article:hover{padding-left:1.45rem!important;background:transparent!important}
@@ -60,3 +54,5 @@
   .mainParity :global(#inicio) h1 em{animation:none!important}
   .mainParity :global(#inicio)+div[aria-hidden="true"]>div{animation:mainTicker 38s linear infinite!important;animation-play-state:running!important}
 }
+
+@media(prefers-reduced-motion:reduce){.mainParity *,.mainParity *::before,.mainParity *::after{transition:none!important}}
