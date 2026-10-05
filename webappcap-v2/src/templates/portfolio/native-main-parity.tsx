@@ -21,29 +21,7 @@ export function NativeMainParityPortfolioTemplate(props:TemplateRenderProps){
     if(!site)return;
     site.classList.add(parity.mainParity);
 
-    const targets=[...site.querySelectorAll<HTMLElement>('[data-reveal]')];
-    targets.forEach(target=>delete target.dataset.visible);
-
-    let observer:IntersectionObserver|null=null;
-    const timer=window.setTimeout(()=>{
-      if(!('IntersectionObserver' in window)){
-        targets.forEach(target=>target.dataset.visible='true');
-        return;
-      }
-      observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          (entry.target as HTMLElement).dataset.visible='true';
-          observer?.unobserve(entry.target);
-        }
-      }),{threshold:0,rootMargin:'0px 0px -60px 0px'});
-      targets.forEach(target=>observer?.observe(target));
-    },50);
-
-    return()=>{
-      window.clearTimeout(timer);
-      observer?.disconnect();
-      site.classList.remove(parity.mainParity);
-    };
+    return()=>{site.classList.remove(parity.mainParity)};
   },[]);
 
   useEffect(()=>{
