@@ -106,9 +106,9 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
         <div className={styles.heroCopy} style={heroCopyStyle(data.appearance)}><h1 style={heroTextStyle(data.appearance,'title')}>{firstName}<br/><em>{surname}&quot;</em></h1><p style={heroTextStyle(data.appearance,'subtitle')}>{localized(role,language)}</p><div className={styles.chips}>{languages.map(item=><span key={item.pt}><i className={styles.chipFlag} data-country={item.country} aria-hidden="true"/>{localized(item,language)}</span>)}</div><div className={styles.actions}><a className={styles.primary} href="#portfolio">{language==='pt'?'Ver meu trabalho ↘':'View my work ↘'}</a><a href="#contato">{language==='pt'?'Entrar em contato →':'Get in touch →'}</a><a href={cv} download>{language==='pt'?'Baixar CV ↓':'Download CV ↓'}</a><button type="button" onClick={share}>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button></div></div>
       </div>
     </header>
-    <div className={styles.tickerWrap} tabIndex={0} role="region" aria-label={language==='pt'?'Destaques do portfólio':'Portfolio highlights'}>
+    <div className={styles.tickerWrap} role="region" aria-label={language==='pt'?'Destaques do portfólio':'Portfolio highlights'}>
       <div className={styles.tickerTrack}>
-        <div className={styles.tickerGroup}>{ticker.map(item=><span key={item}>{item}</span>)}</div>
+        {[0,1].map(group=><div className={styles.tickerGroup} aria-hidden={group===1?true:undefined} key={group}>{ticker.map(item=><span key={`${group}-${item}`}>{item}</span>)}</div>)}
       </div>
     </div>
     <main>
