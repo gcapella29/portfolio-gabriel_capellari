@@ -118,8 +118,8 @@
  box-shadow:none!important;
  font-size:9.5px;
  font-weight:800;
- text-align:left;
- justify-content:flex-start;
+ text-align:center;
+ justify-content:center;
 }
 .dock[data-embedded=true]>button:hover,
 .dock[data-embedded=true]>a:hover{

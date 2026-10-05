@@ -1,6 +1,6 @@
-.overlay{position:fixed;inset:0;z-index:140;display:grid;grid-template-columns:minmax(0,1fr) minmax(520px,52vw);pointer-events:none}
-.backdrop{grid-column:1/2;grid-row:1;border:0;background:rgba(10,18,28,.34);backdrop-filter:blur(2px);pointer-events:auto;cursor:pointer}
-.panel{grid-column:2/3;grid-row:1;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:#f4f6f9;border-left:1px solid #dce2ea;box-shadow:-24px 0 60px rgba(17,24,39,.16);pointer-events:auto}
+.overlay{position:fixed;inset:0;z-index:140;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) minmax(520px,52vw);pointer-events:none}
+.backdrop{z-index:0;grid-column:1/2;grid-row:1;border:0;background:rgba(10,18,28,.34);backdrop-filter:blur(2px);pointer-events:auto;cursor:pointer}
+.panel{position:relative;z-index:1;grid-column:2/3;grid-row:1;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:#f4f6f9;border-left:1px solid #dce2ea;box-shadow:-24px 0 60px rgba(17,24,39,.16);pointer-events:auto}
 .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-bottom:1px solid #dce2ea;background:#fff}
 .toolbar>div:first-child{min-width:0}
 .toolbar strong,.toolbar small{display:block}
