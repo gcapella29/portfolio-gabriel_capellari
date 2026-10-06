@@ -1,10 +1,11 @@
 'use server';
+import {buyerTestimonialPatch} from '@/core/commerce-testimonials';
 import {normalizeImagePosition} from '@/core/image-placement';
 
 import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
 import {can} from '@/core/permissions';
-import {publicMediaUrl,readV2Content,saveV2Section} from '@/core/onboarding-data';
+import {publicMediaUrl,readV2Content,saveV2Sections} from '@/core/onboarding-data';
 import {resolveProjectAccess} from '@/core/session';
 import {menuItemLimitForProject,validatedMenuItems} from '@/core/menu-item-limit';
 
@@ -29,32 +30,33 @@ export async function saveCompleteContentAction(formData:FormData){
   products=validatedMenuItems(parsed,await menuItemLimitForProject(access.project.id),Array.isArray(current.content.menu_items)?current.content.menu_items.length:0);
  }
 
+ const testimonials=buyerTestimonialPatch(formData,current.content.testimonials,{projectId:access.project.id,manageMedia:can(access.role,'manageMedia'),mediaUrl:publicMediaUrl});
  const identity={...current.identity};
  for(const key of ['tagline','browser_title'] as const)if(provided(formData,key))identity[key]=text(formData,key).slice(0,key==='browser_title'?80:10000);
- await saveV2Section(access.project.id,'identity',identity);
 
  const content={...current.content};
- for(const key of ['hero_kicker','menu_intro','order_intro','whatsapp_order_message','whatsapp_direct_message','social_intro','about_main','creator_name','creator_bio','creator_instagram','creator_instagram_label','modern_marquee','modern_hero_title','modern_hero_text','modern_highlights_title','modern_highlights_intro','modern_notfound_title','modern_notfound_text'] as const)if(provided(formData,key))content[key]=text(formData,key).slice(0,key==='whatsapp_order_message'?1500:key==='whatsapp_direct_message'?1000:10000);
- for(const [field,key] of [['visibility:catalog','show_catalog'],['visibility:cart','show_cart'],['visibility:instagram','show_instagram'],['visibility:about','show_about']] as const)if(provided(formData,field))content[key]=checked(formData,field);
+ for(const key of ['hero_kicker','menu_intro','order_intro','whatsapp_order_message','whatsapp_direct_message','social_intro','about_main','creator_name','creator_bio','creator_instagram','creator_instagram_label','modern_marquee','modern_hero_title','modern_hero_text','modern_highlights_title','modern_highlights_intro','modern_notfound_title','modern_notfound_text','testimonials_title','testimonials_intro'] as const)if(provided(formData,key))content[key]=text(formData,key).slice(0,key==='testimonials_title'?160:key==='testimonials_intro'?1000:key==='whatsapp_order_message'?1500:key==='whatsapp_direct_message'?1000:10000);
+ for(const [field,key] of [['visibility:catalog','show_catalog'],['visibility:cart','show_cart'],['visibility:instagram','show_instagram'],['visibility:about','show_about'],['visibility:testimonials','show_testimonials']] as const)if(provided(formData,field))content[key]=checked(formData,field);
  if(products)content.menu_items=overlayNamedProductFields(formData,products).map(cleanProduct);
- await saveV2Section(access.project.id,'content',content);
+ if(testimonials!==undefined)content.testimonials=testimonials;
 
  const contact={...current.contact};
  for(const key of ['whatsapp','instagram'] as const)if(provided(formData,key))contact[key]=text(formData,key);
- await saveV2Section(access.project.id,'contact',contact);
+ const media={...current.media};let mediaChanged=false;
 
  if(can(access.role,'manageMedia')){
-  const media={...current.media};let changed=false;
+
   for(const slot of ['hero','creator'] as const){
-   if(text(formData,`removeMedia:${slot}`)==='yes'){delete media[slot];changed=true;continue}
+   if(text(formData,`removeMedia:${slot}`)==='yes'){delete media[slot];mediaChanged=true;continue}
    const rawPosition=text(formData,`mediaPosition:${slot}`),position=normalizeImagePosition(rawPosition);
    const fit=['cover','contain','fill'].includes(text(formData,`mediaFit:${slot}`))?text(formData,`mediaFit:${slot}`):'cover',zoom=String(Math.max(50,Math.min(200,Number(text(formData,`mediaZoom:${slot}`))||100)));
    const uploaded=directImage(formData,`uploadedMedia:${slot}`,access.project.id),existing=mediaUrl(media[slot]);
-   if(uploaded){media[slot]={...uploaded,position,fit,zoom};changed=true}else if(existing&&provided(formData,`mediaPosition:${slot}`)){media[slot]={...(typeof media[slot]==='object'&&media[slot]?media[slot] as Record<string,unknown>:{url:existing}),position,fit,zoom};changed=true}
+   if(uploaded){media[slot]={...uploaded,position,fit,zoom};mediaChanged=true}else if(existing&&provided(formData,`mediaPosition:${slot}`)){media[slot]={...(typeof media[slot]==='object'&&media[slot]?media[slot] as Record<string,unknown>:{url:existing}),position,fit,zoom};mediaChanged=true}
   }
-  if(changed)await saveV2Section(access.project.id,'media',media);
+
  }
 
+ await saveV2Sections(access.project.id,{identity,content,contact,...(mediaChanged?{media}:{})});
  revalidatePath(`/dashboard/${encodeURIComponent(slug)}/editor`);revalidatePath(`/preview/${encodeURIComponent(slug)}`);
  redirect(`/dashboard/${encodeURIComponent(slug)}/editor?savedContent=1#blocks`);
 }

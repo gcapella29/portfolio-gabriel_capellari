@@ -1,4 +1,5 @@
 import Block from './editor-block';
+import BuyerTestimonialsEditor from './buyer-testimonials-editor';
 import {imageEditorFrame} from '@/core/image-editor-frame';
 import ContentWorkspace,{type ContentNavItem} from '../content/content-workspace';
 import DirectImageField from '../content/direct-image-field';
@@ -15,7 +16,7 @@ function VisibilityToggle({name,label,description,defaultChecked}:{name:string;l
 function EditorPanel({eyebrow,title,description,children}:{eyebrow:string;title:string;description:string;children:React.ReactNode}){return <section className={styles.editorPanel}><div className={styles.editorPanelHead}><span>{eyebrow}</span><strong>{title}</strong><small>{description}</small></div><div className={styles.editorPanelBody}>{children}</div></section>}
 
 export default function CompleteContentEditor({projectId,slug,data,canManageMedia,modern=false,saved=false}:{projectId:string;slug:string;data:{identity:Record<string,unknown>;content:Record<string,unknown>;contact:Record<string,unknown>;media:Record<string,unknown>};canManageMedia:boolean;modern?:boolean;saved?:boolean}){
- const nav:ContentNavItem[]=[{id:'block-1',label:'Bloco 1 · Início'},{id:'block-2',label:'Bloco 2 · Catálogo'},{id:'block-3',label:'Bloco 3 · Carrinho'},{id:'block-4',label:'Bloco 4 · Instagram'},{id:'block-5',label:'Bloco 5 · Sobre'}];
+ const nav:ContentNavItem[]=[{id:'block-1',label:'Bloco 1 · Início'},{id:'block-2',label:'Bloco 2 · Catálogo'},{id:'block-3',label:'Bloco 3 · Carrinho'},{id:'block-4',label:'Bloco 4 · Instagram'},{id:'block-5',label:'Bloco 5 · Sobre'},{id:'block-6',label:'Bloco 6 · Relatos dos compradores'}];
  return <ContentWorkspace slug={slug} previewUrl={`/preview/${encodeURIComponent(slug)}`} saved={saved} portfolio={false} nav={nav} action={saveCompleteContentAction}>
   <Block id="block-1" number="01" title="Início" summary="Identidade, imagem principal e textos do hero">
    <EditorPanel eyebrow="IDENTIDADE" title="Como o site aparece" description="Nome exibido na aba do navegador e nos compartilhamentos.">
@@ -60,6 +61,12 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
    <div className="form-grid"><label className="field"><span>Nome da criadora</span><input name="creator_name" defaultValue={v(data.content,'creator_name')}/></label><label className="field"><span>Instagram da criadora</span><input name="creator_instagram" defaultValue={v(data.content,'creator_instagram')}/></label></div>
    <label className="field"><span>Texto sobre a criadora</span><textarea name="creator_bio" rows={4} defaultValue={v(data.content,'creator_bio')}/></label>
    {!modern?<label className="field"><span>Texto do botão de seguir</span><input name="creator_instagram_label" defaultValue={v(data.content,'creator_instagram_label')||'Seguir no Instagram ↗'}/></label>:null}
+  </Block>
+  <Block id="block-6" number="06" title="Relatos dos compradores" summary="Envie os prints dos feedbacks dos clientes">
+   <VisibilityToggle name="visibility:testimonials" label="Exibir relatos dos compradores" description="O bloco só aparece quando houver pelo menos um relato ativo cadastrado." defaultChecked={visible(data.content,'show_testimonials')}/>
+   <label className="field"><span>Título do bloco</span><input name="testimonials_title" maxLength={160} defaultValue={v(data.content,'testimonials_title')||'Quem comprou, conta.'}/></label>
+   <label className="field"><span>Introdução do bloco</span><textarea name="testimonials_intro" rows={2} maxLength={1000} defaultValue={'testimonials_intro' in data.content?v(data.content,'testimonials_intro'):'Relatos de quem já recebeu nossos produtos.'}/></label>
+   <BuyerTestimonialsEditor projectId={projectId} initial={data.content.testimonials} canManageMedia={canManageMedia}/>
   </Block>
  </ContentWorkspace>;
 }

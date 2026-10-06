@@ -7,7 +7,7 @@ import {initialTemplateForSegment,projectDefaultsForTemplate} from './template-d
 test('commerce complete exposes the full editor sequence', () => {
   const editor=editorForTemplate('commerce-main-1');
   assert.equal(editor?.mode,'complete');
-  assert.deepEqual(editor?.sections.map(section=>section.key),['identity','navigation','news','highlights','menu','order','contact','social','about','appearance']);
+  assert.deepEqual(editor?.sections.map(section=>section.key),['identity','navigation','news','highlights','menu','order','contact','social','about','testimonials','appearance']);
 });
 
 test('commerce sales exposes only the lean sales sequence', () => {
@@ -30,6 +30,6 @@ test('Loja Digital and Comércio keep separate template choices', () => {
   assert.equal(initialTemplateForSegment('commerce'),'commerce-bakery-1');
 });
 
-test('Modern has a compatible editor with shared catalog and contact',()=>{assert.deepEqual(editorSectionsForTemplate('commerce-modern-1').map(section=>section.key),['identity','highlights','menu','order','contact','about']);});
+test('Modern has a compatible editor with shared catalog and contact',()=>{assert.deepEqual(editorSectionsForTemplate('commerce-modern-1').map(section=>section.key),['identity','highlights','menu','order','contact','about','testimonials']);});
 
 test('Modern defaults retain its chosen draft template',()=>{assert.equal(projectDefaultsForTemplate('commerce-modern-1','Loja').appearance?.preview_template_key,'commerce-modern-1');});

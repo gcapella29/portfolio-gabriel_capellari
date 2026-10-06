@@ -26,6 +26,7 @@ const templateEditors: Record<string, TemplateEditorDefinition> = {
       {key:'contact',label:'Contato',description:'WhatsApp, Instagram e localização.'},
       {key:'social',label:'Redes sociais',description:'Chamadas para acompanhar o negócio.'},
       {key:'about',label:'Sobre',description:'História, apresentação e responsável pelo negócio.'},
+      {key:'testimonials',label:'Relatos dos compradores',description:'Feedbacks, fotos e prints autorizados dos clientes.'},
       {key:'appearance',label:'Aparência',description:'Cores, fontes e proporções do template.'}
     ]
   },
@@ -52,7 +53,7 @@ const templateEditors: Record<string, TemplateEditorDefinition> = {
   }
 };
 
-templateEditors['commerce-modern-1']={templateKey:'commerce-modern-1',label:'Modern',mode:'complete',sections:templateEditors['commerce-main-1'].sections.filter(section=>['identity','highlights','menu','order','contact','about'].includes(section.key))};
+templateEditors['commerce-modern-1']={templateKey:'commerce-modern-1',label:'Modern',mode:'complete',sections:templateEditors['commerce-main-1'].sections.filter(section=>['identity','highlights','menu','order','contact','about','testimonials'].includes(section.key))};
 
 templateEditors['personal-trainer-main-1']={templateKey:'personal-trainer-main-1',label:'Personal Trainer',mode:'trainer',sections:[{key:'identity',label:'Identidade e início',description:'Nome, CREF, foto e hero.'},{key:'agenda',label:'Agenda e contato',description:'Estado, WhatsApp e chamadas.'},{key:'method',label:'Método',description:'Etapas do acompanhamento.'},{key:'results',label:'Resultados',description:'Comparador de antes e depois.'},{key:'modes',label:'Modalidades',description:'Formas de atendimento.'},{key:'testimonials',label:'Depoimentos',description:'Relatos dos alunos.'},{key:'faq',label:'FAQ',description:'Perguntas e respostas.'},{key:'copy',label:'Textos do modelo',description:'Navegação e chamadas.'}]};
 

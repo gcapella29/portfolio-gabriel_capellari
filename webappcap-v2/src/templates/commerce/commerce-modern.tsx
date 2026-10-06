@@ -1,4 +1,5 @@
 'use client';
+import {BuyerTestimonials} from './buyer-testimonials';
 import {SiteImage} from '../site-image';
 import {protectShadowStyles} from '../shadow-styles';
 import {imagePositionStyle} from '@/core/image-placement';
@@ -237,6 +238,7 @@ export function CommerceModernTemplate({project,data,preview=false}:TemplateRend
     <div className="notfound" data-reveal><div><h3>{str(data.content,'modern_notfound_title','Não encontrou o que queria?')}</h3><p>{str(data.content,'modern_notfound_text',`Entre em contato pelo WhatsApp e a ${brand} te ajuda a encontrar o produto ideal.`)}</p></div>{whatsapp?<a className="btn btn-main" href={wa(str(data.content,'whatsapp_direct_message','Olá! Visitei o site da {loja} e gostaria de informações sobre outros produtos.').replaceAll('{loja}',brand))} {...ext}>Falar no WhatsApp ↗</a>:null}</div>
    </div></section>:null}
 
+   <BuyerTestimonials content={data.content} onZoom={setZoom}/>
    {showAbout?<section id="sobre"><div className="container"><div className="about-grid" data-reveal>
     <div className="about-copy"><div className="kicker">Sobre a {brand}</div><h2>Feito com amor especialmente para você.</h2><p>{str(data.content,'about_main','A Vet-se nasceu do amor pela Medicina Veterinária e pelo desejo de tornar a rotina vet ainda mais especial, com produtos criativos, funcionais e cheios de personalidade.')}</p><p>{str(data.content,'creator_bio','Aqui você encontra itens pensados por e para quem vive o dia a dia entre consultas, plantões, estudos e muito amor pelos animais.')}</p><div className="signature">{str(data.content,'creator_name','Vitória Catalano')} · Criadora da marca</div><div className="about-actions">{instagramUrl?<a className="btn btn-main" href={instagramUrl} {...ext}>Seguir a loja ↗</a>:null}{creatorInstagramUrl?<a className="btn btn-main" href={creatorInstagramUrl} {...ext}>Seguir a criadora ↗</a>:null}</div></div>
     <div className="about-photo">{aboutImage?<SiteImage style={mediaStyle(data.media.creator)} src={aboutImage} alt={str(data.content,'creator_name','Vitória Catalano')} loading="lazy" decoding="async" onLoad={markImageLoaded} onError={markImageLoaded} tabIndex={0} role="button" onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.currentTarget.click()}}} onClick={()=>setZoom({src:aboutImage,alt:str(data.content,'creator_name','Vitória Catalano')})}/>:null}</div>
