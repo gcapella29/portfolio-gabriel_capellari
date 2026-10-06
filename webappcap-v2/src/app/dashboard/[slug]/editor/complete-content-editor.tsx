@@ -62,7 +62,7 @@ export default function CompleteContentEditor({projectId,slug,data,canManageMedi
    <label className="field"><span>Texto sobre a criadora</span><textarea name="creator_bio" rows={4} defaultValue={v(data.content,'creator_bio')}/></label>
    {!modern?<label className="field"><span>Texto do botão de seguir</span><input name="creator_instagram_label" defaultValue={v(data.content,'creator_instagram_label')||'Seguir no Instagram ↗'}/></label>:null}
   </Block>
-  <Block id="block-6" number="06" title="Relatos dos compradores" summary="Feedbacks, fotos e prints enviados pelos clientes">
+  <Block id="block-6" number="06" title="Relatos dos compradores" summary="Envie os prints dos feedbacks dos clientes">
    <VisibilityToggle name="visibility:testimonials" label="Exibir relatos dos compradores" description="O bloco só aparece quando houver pelo menos um relato ativo cadastrado." defaultChecked={visible(data.content,'show_testimonials')}/>
    <label className="field"><span>Título do bloco</span><input name="testimonials_title" maxLength={160} defaultValue={v(data.content,'testimonials_title')||'Quem comprou, conta.'}/></label>
    <label className="field"><span>Introdução do bloco</span><textarea name="testimonials_intro" rows={2} maxLength={1000} defaultValue={'testimonials_intro' in data.content?v(data.content,'testimonials_intro'):'Relatos de quem já recebeu nossos produtos.'}/></label>

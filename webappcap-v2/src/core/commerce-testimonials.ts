@@ -14,7 +14,7 @@ export function testimonialRows(raw:unknown):BuyerTestimonial[]{
 }
 export function visibleBuyerTestimonials(content:Record<string,unknown>){
  if(String(content.show_testimonials).toLowerCase()==='false')return [];
- return testimonialRows(content.testimonials).filter(row=>row.enabled&&row.name&&(row.text||testimonialImageUrl(row.image)));
+ return testimonialRows(content.testimonials).filter(row=>row.enabled&&testimonialImageUrl(row.image));
 }
 // Resolve images against existing draft references or verified uploads, before any write.
 export function buyerTestimonialPatch(form:FormData,current:unknown,options:{projectId:string;manageMedia:boolean;mediaUrl:(path:string)=>string}){
@@ -36,7 +36,7 @@ export function buyerTestimonialPatch(form:FormData,current:unknown,options:{pro
     image={path,url:options.mediaUrl(path),fit:'contain',position:'center',zoom:100};
    }
   }else if((raw&&raw!=='null')||String(form.get(`removeMedia:${slot}`))==='yes')throw new Error('Sem permissão para editar imagens.');
-  if(!row.name||(!row.text&&!testimonialImageUrl(image)))throw new Error('Informe o nome e um texto ou imagem para cada relato. Nada foi salvo.');
+  if(!testimonialImageUrl(image))throw new Error('Envie um print para cada relato ou remova o item vazio. Nada foi salvo.');
   return {...row,image};
  });
 }

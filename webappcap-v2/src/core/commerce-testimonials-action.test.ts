@@ -22,7 +22,7 @@ async function fixture(form:FormData,writes:unknown[]=[]){
  await exported.saveCompleteContentAction(form);return {writes,revalidations};
 }
 test('complete commerce editor saves reviews with existing catalog and contact in one draft write',async()=>{
- const form=new FormData();form.set('slug','shop');form.set('section:testimonials',JSON.stringify([{id:'review',name:'Ana',text:'Gostei',role:'',enabled:true,image:''}]));form.set('visibility:testimonials','true');
+ const form=new FormData();form.set('slug','shop');form.set('section:testimonials',JSON.stringify([{id:'review',name:'',text:'',role:'',enabled:true,image:''}]));form.set('uploadedMedia:testimonial-review',JSON.stringify({path:'project/print.webp',url:'https://storage.example/project/print.webp'}));form.set('visibility:testimonials','true');
  const {writes,revalidations}=await fixture(form);assert.equal(writes.length,1);
  const saved=writes[0] as typeof current;assert.deepEqual(saved.content.menu_items,current.content.menu_items);assert.equal(saved.content.keep,'preserved');assert.deepEqual(saved.contact,current.contact);
  assert.equal((saved.content as Record<string,unknown>).show_testimonials,true);assert(revalidations.includes('/preview/shop'));
