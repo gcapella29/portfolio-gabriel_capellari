@@ -1,3 +1,4 @@
+import padariaSnapshot from '@/data/snapshots/padaria-santo-antonio.json';
 import type {V2Content} from './onboarding-data';
 import type {TemplateRenderProject} from '@/templates/types';
 
@@ -166,11 +167,23 @@ export async function readSnapshotPreviewBySlug(rawSlug:string){
   url.searchParams.set('api','published');
   url.searchParams.set('slug',slug);
 
-  const response=await fetch(url,{cache:'no-store'});
-  if(!response.ok)return null;
+  let payload:SnapshotPayload|null=null;
 
-  const payload=(await response.json()) as SnapshotPayload;
-  if(!payload.ok||!payload.snapshot)return null;
+  try{
+    const response=await fetch(url,{cache:'no-store'});
+    if(response.ok){
+      const raw=await response.text();
+      if(raw.trim().startsWith('{'))payload=JSON.parse(raw) as SnapshotPayload;
+    }
+  }catch{
+    // O Owner continua privado; o preview pode usar o snapshot real fixado nesta branch.
+  }
+
+  if((!payload||!payload.ok||!payload.snapshot)&&slug==='padaria-santo-antonio'){
+    payload=padariaSnapshot as SnapshotPayload;
+  }
+
+  if(!payload?.ok||!payload.snapshot)return null;
 
   const templateId=text(payload.snapshot.project?.template_id);
   const type=text(payload.snapshot.project?.tipo).toLowerCase();
