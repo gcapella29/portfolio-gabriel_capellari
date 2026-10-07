@@ -2,7 +2,7 @@ import padariaSnapshot from '@/data/snapshots/padaria-santo-antonio.json';
 import type {V2Content} from './onboarding-data';
 import type {TemplateRenderProject} from '@/templates/types';
 
-const OWNER_API_URL='https://script.google.com/macros/s/AKfycbyu2wAzXzH3gU0ft3MOFu45KQzIsTVeGJIoN9UABF8d5NW04yohfe3sdmduIciTcefubQ/exec';
+const PUBLIC_REGISTRY_URL=process.env.WEBAPPCAP_PUBLIC_SNAPSHOT_REGISTRY_URL?.trim()||'';
 
 type Row=Record<string,unknown>;
 type SnapshotPayload={
@@ -163,20 +163,27 @@ export async function readSnapshotPreviewBySlug(rawSlug:string){
   const slug=rawSlug.trim().toLowerCase();
   if(!slug)return null;
 
-  const url=new URL(OWNER_API_URL);
-  url.searchParams.set('api','published');
-  url.searchParams.set('slug',slug);
-
   let payload:SnapshotPayload|null=null;
 
-  try{
-    const response=await fetch(url,{cache:'no-store'});
-    if(response.ok){
-      const raw=await response.text();
-      if(raw.trim().startsWith('{'))payload=JSON.parse(raw) as SnapshotPayload;
+  if(PUBLIC_REGISTRY_URL){
+    try{
+      const registryResponse=await fetch(PUBLIC_REGISTRY_URL,{cache:'no-store'});
+      if(registryResponse.ok){
+        const registry=await registryResponse.json() as {
+          projects?:Record<string,{snapshot_url?:string}>
+        };
+        const snapshotUrl=registry.projects?.[slug]?.snapshot_url?.trim()||'';
+
+        if(snapshotUrl){
+          const snapshotResponse=await fetch(snapshotUrl,{cache:'no-store'});
+          if(snapshotResponse.ok){
+            payload=await snapshotResponse.json() as SnapshotPayload;
+          }
+        }
+      }
+    }catch{
+      // O preview continua disponível com o fixture até o canal público ser configurado.
     }
-  }catch{
-    // O Owner continua privado; o preview pode usar o snapshot real fixado nesta branch.
   }
 
   if((!payload||!payload.ok||!payload.snapshot)&&slug==='padaria-santo-antonio'){
