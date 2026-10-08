@@ -180,18 +180,60 @@
 .bakerySite .footer-inner a.root:hover{color:var(--accent)}
 
 @media (max-width:720px){
+  .bakerySite .container{width:min(calc(100% - 24px),var(--max))}
+  .bakerySite .nav-in{height:58px}
+  .bakerySite .nav-links{gap:8px}
   .bakerySite .nav-links a{display:none}
-  .bakerySite .hero{min-height:clamp(500px,68svh,640px)}
-  .bakerySite .hero-content{padding-bottom:55px}
+  .bakerySite .cart-chip{display:inline-flex!important;padding:7px 11px;font-size:.82rem}
+
+  .bakerySite .hero{
+    min-height:clamp(560px,78svh,680px);
+    align-items:flex-end
+  }
+  .bakerySite .hero-content{
+    width:calc(100% - 24px);
+    padding:180px 0 34px
+  }
+  .bakerySite .hero-content>.eyebrow{margin-bottom:8px}
+  .bakerySite .hero-sub{
+    max-width:34rem;
+    margin-bottom:16px;
+    font-size:.94rem
+  }
+  .bakerySite .hero-actions{
+    gap:8px;
+    align-items:center
+  }
+  .bakerySite .hero-actions .btn{
+    min-height:40px;
+    padding:0 14px;
+    font-size:.82rem
+  }
+  .bakerySite .phone{
+    margin-top:12px;
+    font-size:.86rem
+  }
+  .bakerySite .hero::after{height:92px}
+
+  .bakerySite section{padding:58px 0}
   .bakerySite .section-head,.bakerySite .order-top{display:block}
   .bakerySite .section-copy{margin-top:14px}
-  .bakerySite .carousel{height:500px}
-  .bakerySite .menu-row{grid-template-columns:1fr auto;gap:10px}
+  .bakerySite .carousel{height:430px;min-height:0}
+  .bakerySite .slide-copy{
+    left:22px;
+    right:22px;
+    bottom:70px
+  }
+  .bakerySite .slide-copy h3{font-size:clamp(2rem,10vw,3.25rem)}
+  .bakerySite .menu-row{grid-template-columns:1fr auto;gap:10px;padding:17px 16px}
   .bakerySite .menu-toggle{grid-column:2;grid-row:1/span 2}
-  .bakerySite .detail-inner{grid-template-columns:1fr}
-  .bakerySite .zoom{width:100%;height:220px}
+  .bakerySite .detail-inner{grid-template-columns:1fr;padding:16px}
+  .bakerySite .zoom{width:100%;height:210px}
+  .bakerySite .order{border-radius:24px;padding:22px 18px}
   .bakerySite .order-line{grid-template-columns:1fr auto}
   .bakerySite .fields{grid-template-columns:1fr}
+  .bakerySite .order-bottom{align-items:stretch}
+  .bakerySite .whatsapp-order{width:100%;min-height:48px}
 }
 @media (prefers-reduced-motion:reduce){
   .bakerySite{scroll-behavior:auto}
@@ -212,7 +254,9 @@
 }
 @media(max-width:520px){
  .bakerySite .hero-content{width:calc(100% - 28px)}
- .bakerySite .bakeryHeroTitle{font-size:clamp(2.35rem,12vw,4rem)!important}
+ .bakerySite .bakeryHeroTitle{font-size:clamp(2.15rem,10.5vw,3.35rem)!important;line-height:.94}
+ .bakerySite .bakeryHeroEyebrow{font-size:.86rem!important}
+ .bakerySite .bakeryHeroSubtitle{font-size:.92rem!important;line-height:1.42}
 }
 
 .bakerySite .hero{overflow:hidden}.bakery-hero-media{position:absolute;inset:0;overflow:hidden}.bakery-hero-media img{width:100%;height:100%;object-fit:cover}.bakery-hero-media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.72));pointer-events:none}
