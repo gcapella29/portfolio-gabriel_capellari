@@ -4,7 +4,7 @@ import type {TemplateRenderProject} from '@/templates/types';
 const PUBLIC_REGISTRY_URL=process.env.WEBAPPCAP_PUBLIC_SNAPSHOT_REGISTRY_URL?.trim()||'https://drive.google.com/uc?export=download&id=1mt6C4FOTuXkIBOmMunVqsEPIRuME4zQ0';
 
 type Row=Record<string,unknown>;
-type SnapshotPayload={
+export type SnapshotPayload={
   ok:boolean;
   error?:string;
   publication?:{published_id?:string;timestamp?:string;version?:number;checksum?:string};
@@ -50,7 +50,7 @@ function blockMap(rows:Row[]){
   );
 }
 
-function buildBakeryContent(snapshot:NonNullable<SnapshotPayload['snapshot']>){
+export function buildBakeryContent(snapshot:NonNullable<SnapshotPayload['snapshot']>){
   const project=snapshot.project||{};
   const config=snapshot.config||{};
   const style=snapshot.style||{};
@@ -155,6 +155,10 @@ function buildBakeryContent(snapshot:NonNullable<SnapshotPayload['snapshot']>){
   };
 
   return {project:renderProject,data:result};
+}
+
+export function renderSnapshotPayload(payload:SnapshotPayload){
+  return renderSnapshotPayload(payload);
 }
 
 export async function readSnapshotPreviewBySlug(rawSlug:string){
