@@ -20,6 +20,7 @@ export type SnapshotPayload={
     highlights?:Row[];
     testimonials?:Row[];
     faq?:Row[];
+    v2?:V2Content;
   };
 };
 
@@ -157,11 +158,46 @@ export function buildBakeryContent(snapshot:NonNullable<SnapshotPayload['snapsho
   return {project:renderProject,data:result};
 }
 
+function segmentFromSnapshotType(value:unknown):TemplateRenderProject['segment']{
+  const type=text(value).toLowerCase();
+  if(['personal-trainer','personal_trainer','fitness'].includes(type))return 'personal-trainer';
+  if(type==='institucional'||type==='institutional')return 'institutional';
+  if(type==='comercio'||type==='commerce'||type==='padaria')return 'commerce';
+  if(type==='escola'||type==='school')return 'school';
+  return 'portfolio';
+}
+
+function buildV2SnapshotContent(snapshot:NonNullable<SnapshotPayload['snapshot']>){
+  if(!snapshot.v2||typeof snapshot.v2!=='object')return null;
+  const project=snapshot.project||{};
+  const data=snapshot.v2;
+  const templateKey=text(data.appearance?.preview_template_key);
+  if(!templateKey)return null;
+
+  const renderProject:TemplateRenderProject={
+    id:text(project.project_id),
+    slug:text(project.slug),
+    name:text(project.nome||data.identity?.name),
+    segment:segmentFromSnapshotType(project.tipo),
+    templateKey
+  };
+
+  return {project:renderProject,data};
+}
+
 export function renderSnapshotPayload(payload:SnapshotPayload|null){
   if(!payload?.ok||!payload.snapshot)return null;
 
   const templateId=text(payload.snapshot.project?.template_id);
   const type=text(payload.snapshot.project?.tipo).toLowerCase();
+  const v2=buildV2SnapshotContent(payload.snapshot);
+
+  if(v2){
+    return {
+      ...v2,
+      publication:payload.publication||null
+    };
+  }
 
   if(templateId==='TPL-0005'||type==='padaria'){
     return {
