@@ -23,7 +23,9 @@
 .bakerySite .nav-links{display:flex;gap:22px;align-items:center;font-weight:500;font-size:.95rem}
 .bakerySite .nav-links a{text-decoration:none}
 .bakerySite .nav-links a:hover{color:var(--accent)}
-.bakerySite .cart-chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer}
+.bakerySite .cart-chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.bakerySite .cart-count{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--accent);color:#fff;font-size:.78rem}
+.bakerySite .cart-total{font-variant-numeric:tabular-nums}
 
 /* BOTÕES */
 .bakerySite .btn{border:0;text-decoration:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 22px;border-radius:999px;font-weight:700;transition:transform .2s,background .2s}
@@ -208,14 +210,25 @@
     align-items:center;
     gap:6px;
     min-height:34px;
-    padding:0 11px;
-    font-size:.78rem;
+    padding:0 9px;
+    font-size:.76rem;
     line-height:1;
     background:var(--text);
     color:#fff;
     border:1px solid rgba(255,255,255,.08);
     border-radius:12px;
     box-shadow:0 6px 16px rgba(46,36,29,.16)
+  }
+  .bakerySite .cart-chip .cart-label{font-weight:800}
+  .bakerySite .cart-chip .cart-count{
+    min-width:20px;
+    height:20px;
+    padding:0 5px;
+    background:var(--accent);
+    font-size:.72rem
+  }
+  .bakerySite .cart-chip .cart-total{
+    display:none
   }
 
 
