@@ -158,6 +158,8 @@ export function buildBakeryContent(snapshot:NonNullable<SnapshotPayload['snapsho
 }
 
 export function renderSnapshotPayload(payload:SnapshotPayload){
+  if(!payload?.ok||!payload.snapshot)return null;
+
   return renderSnapshotPayload(payload);
 }
 
