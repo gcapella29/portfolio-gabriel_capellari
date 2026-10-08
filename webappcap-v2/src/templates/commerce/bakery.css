@@ -184,7 +184,15 @@
   .bakerySite .nav-in{height:58px}
   .bakerySite .nav-links{gap:8px}
   .bakerySite .nav-links a{display:none}
-  .bakerySite .cart-chip{display:inline-flex!important;padding:7px 11px;font-size:.82rem}
+  .bakerySite .cart-chip{
+    display:inline-flex!important;
+    padding:7px 11px;
+    font-size:.82rem;
+    background:var(--accent);
+    color:#fff;
+    border-color:transparent;
+    box-shadow:0 8px 20px rgba(46,36,29,.14)
+  }
 
   .bakerySite .hero{
     min-height:clamp(560px,78svh,680px);
@@ -209,6 +217,19 @@
     padding:0 14px;
     font-size:.82rem
   }
+  .bakerySite .hero-actions .btn-primary{
+    min-width:154px;
+    box-shadow:0 10px 24px rgba(0,0,0,.16)
+  }
+  .bakerySite .hero-actions .btn-light{
+    background:rgba(255,255,255,.82);
+    padding-inline:12px
+  }
+  .bakerySite .hero-actions .btn-ghost{
+    background:rgba(0,0,0,.16);
+    border-color:rgba(255,255,255,.34);
+    padding-inline:12px
+  }
   .bakerySite .phone{
     margin-top:12px;
     font-size:.86rem
@@ -232,8 +253,27 @@
   .bakerySite .order{border-radius:24px;padding:22px 18px}
   .bakerySite .order-line{grid-template-columns:1fr auto}
   .bakerySite .fields{grid-template-columns:1fr}
-  .bakerySite .order-bottom{align-items:stretch}
-  .bakerySite .whatsapp-order{width:100%;min-height:48px}
+  .bakerySite .order-bottom{
+    position:sticky;
+    bottom:10px;
+    z-index:8;
+    align-items:center;
+    gap:12px;
+    margin:24px -8px -8px;
+    padding:10px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
+    background:rgba(46,36,29,.92);
+    backdrop-filter:blur(12px);
+    box-shadow:0 14px 34px rgba(0,0,0,.22)
+  }
+  .bakerySite .order-bottom .total{font-size:1.65rem}
+  .bakerySite .whatsapp-order{
+    width:auto;
+    flex:1;
+    min-height:46px;
+    padding-inline:16px
+  }
 }
 @media (prefers-reduced-motion:reduce){
   .bakerySite{scroll-behavior:auto}
