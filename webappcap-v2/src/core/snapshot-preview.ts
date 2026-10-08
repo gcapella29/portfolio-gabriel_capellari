@@ -1,8 +1,7 @@
-import padariaSnapshot from '@/data/snapshots/padaria-santo-antonio.json';
 import type {V2Content} from './onboarding-data';
 import type {TemplateRenderProject} from '@/templates/types';
 
-const PUBLIC_REGISTRY_URL=process.env.WEBAPPCAP_PUBLIC_SNAPSHOT_REGISTRY_URL?.trim()||'';
+const PUBLIC_REGISTRY_URL=process.env.WEBAPPCAP_PUBLIC_SNAPSHOT_REGISTRY_URL?.trim()||'https://drive.google.com/uc?export=download&id=1mt6C4FOTuXkIBOmMunVqsEPIRuME4zQ0';
 
 type Row=Record<string,unknown>;
 type SnapshotPayload={
@@ -72,7 +71,6 @@ function buildBakeryContent(snapshot:NonNullable<SnapshotPayload['snapshot']>){
   const highlightsBlock=blocksByType.get('destaques')||{};
   const highlightsCfg=json(highlightsBlock.config_json);
   const productsBlock=blocksByType.get('produtos')||{};
-  const productsCfg=json(productsBlock.config_json);
   const orderBlock=blocksByType.get('pedido')||{};
 
   const menuItems=items
@@ -182,12 +180,8 @@ export async function readSnapshotPreviewBySlug(rawSlug:string){
         }
       }
     }catch{
-      // O preview continua disponível com o fixture até o canal público ser configurado.
+      return null;
     }
-  }
-
-  if((!payload||!payload.ok||!payload.snapshot)&&slug==='padaria-santo-antonio'){
-    payload=padariaSnapshot as SnapshotPayload;
   }
 
   if(!payload?.ok||!payload.snapshot)return null;
