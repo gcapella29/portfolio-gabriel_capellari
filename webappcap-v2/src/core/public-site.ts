@@ -3,10 +3,13 @@ import {createSupabasePublicClient} from '@/lib/supabase/public';
 import type {SegmentKey} from './domain';
 import type {V2Content} from './onboarding-data';
 import {classifyHost} from './host-routing';
+import {readSnapshotPreviewBySlug} from './snapshot-preview';
 
 const PUBLIC_SITE_CACHE_SECONDS=60;
 const HOST_TAG_PREFIX='public-site-host:';
 const SLUG_TAG_PREFIX='public-site-slug:';
+const MIGRATED_SNAPSHOT_SLUGS=new Set(['padaria-santo-antonio']);
+
 
 const segmentFromValue=(value:unknown):SegmentKey=>{
   const v=String(value||'').toLowerCase();
@@ -20,6 +23,28 @@ const segmentFromValue=(value:unknown):SegmentKey=>{
 
 const cleanHost=(value:string)=>value.toLowerCase().trim().replace(/^https?:\/\//,'').split('/')[0].split(':')[0].replace(/\.$/,'');
 const cleanSlug=(value:string)=>value.trim().toLowerCase();
+
+async function readMigratedSnapshotSite(slug:string){
+  if(!MIGRATED_SNAPSHOT_SLUGS.has(slug))return null;
+  try{
+    const result=await readSnapshotPreviewBySlug(slug);
+    if(!result)return null;
+    return {
+      project:result.project,
+      data:result.data,
+      state:{
+        segment:result.project.segment,
+        template_key:result.project.templateKey,
+        lifecycle:'published',
+        native_subdomain:slug,
+        custom_domain:null,
+        domain_status:'active'
+      }
+    };
+  }catch{
+    return null;
+  }
+}
 
 async function hydratePublicProject(project:{id:string;slug:string;name:string;site_type?:string|null}){
   const sb=createSupabasePublicClient();
@@ -51,6 +76,9 @@ async function hydratePublicProject(project:{id:string;slug:string;name:string;s
 }
 
 async function fetchPublicSiteBySlug(slug:string){
+  const migrated=await readMigratedSnapshotSite(slug);
+  if(migrated)return migrated;
+
   const sb=createSupabasePublicClient();
   const p=await sb.from('projects')
     .select('id,slug,name,site_type')
@@ -66,6 +94,15 @@ async function fetchPublicSiteBySlug(slug:string){
 async function fetchPublicSiteByHost(host:string){
   const route=classifyHost(host);
   if(route.kind==='platform')return null;
+
+  const nativeSlug=host.endsWith('.webappcap.com.br')
+    ? host.slice(0,-'.webappcap.com.br'.length)
+    : '';
+
+  if(nativeSlug){
+    const migrated=await readMigratedSnapshotSite(nativeSlug);
+    if(migrated)return migrated;
+  }
 
   const sb=createSupabasePublicClient();
   const resolved=await sb.rpc('resolve_v2_public_site',{requested_host:route.host});
