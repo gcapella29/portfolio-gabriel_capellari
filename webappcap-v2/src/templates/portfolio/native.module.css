@@ -473,3 +473,36 @@
   .actions{gap:.5rem}
   .actions a,.actions button{font-size:.61rem}
 }
+
+
+/* Three compact language pills on one line, including narrow phones. */
+@media (max-width:600px){
+  .hero .chips{
+    display:grid;
+    grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1.18fr);
+    column-gap:4px;
+    row-gap:0;
+    align-items:stretch;
+    width:100%;
+    flex-wrap:nowrap;
+  }
+  .hero .chips span{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-width:0;
+    width:100%;
+    max-width:none;
+    gap:2px;
+    padding:.36rem 3px;
+    font-size:clamp(.52rem,2.35vw,.64rem);
+    letter-spacing:-.035em;
+    white-space:nowrap;
+    line-height:1.2;
+  }
+  .hero .chips .chipFlag{
+    width:12px;
+    height:9px;
+    flex:0 0 12px;
+  }
+}
