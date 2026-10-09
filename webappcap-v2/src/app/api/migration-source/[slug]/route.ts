@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import {readPublicSiteBySlug} from '@/core/public-site';
+import {readPublicSiteByHost,readPublicSiteBySlug} from '@/core/public-site';
 
 const slugPattern=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -14,7 +14,7 @@ export async function GET(
     return NextResponse.json({ok:false,error:'invalid_slug'},{status:400,headers:{'Cache-Control':'no-store'}});
   }
 
-  const site=await readPublicSiteBySlug(clean);
+  const site=(await readPublicSiteBySlug(clean))||(await readPublicSiteByHost(`${clean}.webappcap.com.br`));
 
   if(!site){
     return NextResponse.json({ok:false,error:'not_found'},{status:404,headers:{'Cache-Control':'no-store'}});
