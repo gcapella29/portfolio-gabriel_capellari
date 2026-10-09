@@ -72,3 +72,15 @@ a.avatar{transition:transform .25s ease,box-shadow .25s ease}a.avatar:hover{tran
   .completed-project-rail>.card:only-child{flex-basis:100%}
   .completed-project-rail:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
 }
+
+/* Keep institutional hero calls to action compact and symmetrical. */
+.hero .cta{gap:10px}
+.hero .cta .btn{min-height:44px;padding:10px 18px;font-size:.9rem;line-height:1.2}
+@media(max-width:640px){
+  .hero .cta{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:stretch}
+  .hero .cta .btn{min-width:0;min-height:44px;padding:9px 10px;font-size:clamp(.78rem,3vw,.88rem);line-height:1.2;overflow-wrap:anywhere}
+  .hero .cta .btn-projects{grid-column:1/-1;justify-self:center;width:min(100%,calc(50% - 5px))}
+}
+@media(max-width:360px){
+  .hero .cta .btn-projects{width:min(100%,70%)}
+}
