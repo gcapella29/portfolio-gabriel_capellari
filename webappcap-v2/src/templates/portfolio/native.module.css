@@ -297,3 +297,11 @@
 
 @keyframes tickerContinuous{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 @media(prefers-reduced-motion:reduce){.tickerTrack{animation-duration:38s}}
+
+/* Compact, balanced hero actions for portfolio on desktop and mobile. */
+.hero .actions{gap:.6rem}
+.hero .actions a,.hero .actions button{min-height:44px;padding:.62rem .88rem;font-size:.69rem}
+@media(max-width:560px){
+  .hero .actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;max-width:100%}
+  .hero .actions a,.hero .actions button{width:100%;padding:.58rem .5rem;font-size:clamp(.59rem,2.65vw,.65rem);line-height:1.25;white-space:normal}
+}
