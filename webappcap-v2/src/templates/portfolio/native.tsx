@@ -82,6 +82,54 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
     sections.forEach(section=>observer.observe(section));return()=>observer.disconnect();
   },[]);
   useEffect(()=>{
+    const root=siteRef.current;
+    if(!root||typeof IntersectionObserver==='undefined'||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+
+    // Animate content rather than section backgrounds, preserving carousels.
+    const selectors=[
+      '#destaques > article',
+      '#sobre > div',
+      '#wsop-featured > div',
+      '#cobertura > header',
+      '#cobertura > div > div',
+      '#portfolio > header',
+      '#portfolio > div:first-of-type',
+      '#portfolio > div:last-child > a',
+      '#experiencia > header',
+      '#experiencia > div > article',
+      '#formacao > header',
+      '#formacao > div > div',
+      '#instagram > div',
+      '#contato > div'
+    ];
+    const targets=Array.from(root.querySelectorAll<HTMLElement>(selectors.join(',')));
+    const counters=new Map<string,number>();
+    const observer=new IntersectionObserver(entries=>{
+      for(const entry of entries){
+        if(!entry.isIntersecting)continue;
+        (entry.target as HTMLElement).dataset.portfolioReveal='visible';
+        observer.unobserve(entry.target);
+      }
+    },{rootMargin:'0px 0px -8% 0px',threshold:0.06});
+
+    for(const target of targets){
+      const section=target.closest('section')?.id||'content';
+      const itemIndex=counters.get(section)||0;
+      counters.set(section,itemIndex+1);
+      target.style.setProperty('--portfolio-reveal-delay',String(Math.min(itemIndex,4)*65)+'ms');
+      target.dataset.portfolioReveal='pending';
+      observer.observe(target);
+    }
+    return()=>{
+      observer.disconnect();
+      for(const target of targets){
+        target.removeAttribute('data-portfolio-reveal');
+        target.style.removeProperty('--portfolio-reveal-delay');
+      }
+    };
+  },[]);
+
+  useEffect(()=>{
     const root=siteRef.current;if(!root)return;let frame=0;
     const update=()=>{frame=0;const max=document.documentElement.scrollHeight-window.innerHeight;root.style.setProperty('--scroll-progress',String(max>0?window.scrollY/max:0))};
     const schedule=()=>{if(!frame)frame=window.requestAnimationFrame(update)};update();window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});return()=>{window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);if(frame)window.cancelAnimationFrame(frame)};
@@ -119,7 +167,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
       <section className={`${styles.section} ${styles.portfolio}`} id="portfolio"><header><span className={styles.eyebrow}>{language==='pt'?'Onde ler':'Where to read'}</span><h2>{language==='pt'?'Portfólio publicado':'Published portfolio'}</h2></header><div className={styles.profile}><div className={styles.profilePhoto}><Image style={typeof data.media.profile === "object" ? imageMediaStyle(data.media.profile) : undefined} src={profileImage} alt={language==='pt'?`${name}, redator na PokerNews Brasil`:`${name}, writer at PokerNews Brazil`} fill sizes="220px"/></div><div><h3>{name}</h3><div className={styles.socialRow}><span>{language==='pt'?'Siga no':'Follow on'}</span><a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></a><a href={linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V23h-4V8zM8.5 8h3.8v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4v-6.9c0-1.65-.03-3.77-2.3-3.77-2.3 0-2.65 1.8-2.65 3.65V23h-4V8z"/></svg></a></div><p>{localized(profileBio,language)}</p></div></div><div className={styles.pressCards}>{portfolioLinks.map(item=><a href={item.href} target="_blank" rel="noreferrer" key={item.name}><span><strong>{item.name}</strong><small>{localized(item.description,language)}</small></span><b>→</b></a>)}</div></section>
       <section className={`${styles.section} ${styles.experience}`} id="experiencia"><header><span className={styles.eyebrow}>{language==='pt'?'Histórico de mãos':'Hand history'}</span><h2>{language==='pt'?'Experiência profissional':'Professional experience'}</h2></header><div className={styles.timeline}>{career.map(item=><article key={`${item.organization}-${item.years}-${item.role.pt}`}><div><h3>{localized(item.role,language)}</h3><time>{item.years}</time></div><strong>{item.organization}</strong><p>{localized(item.description,language)}</p></article>)}</div></section>
       <section className={`${styles.section} ${styles.education}`} id="formacao"><header><span className={styles.eyebrow}>{language==='pt'?'Fundamentos':'Foundations'}</span><h2>{language==='pt'?'Formação & ferramentas':'Education & tools'}</h2></header><div className={styles.educationGrid}><div>{education.map(item=><article key={item.title.pt}><strong>{localized(item.title,language)}</strong><span>{item.institution}</span></article>)}</div><div><h3 className={styles.stackTitle}>{language==='pt'?'Idiomas & ferramentas — mesa de fichas':'Languages & tools — chip stack'}</h3><div className={styles.skillStack}>{skills.map((skill,index)=><span className={index<2?styles.highlightSkill:''} key={skill.pt}>{localized(skill,language)}</span>)}</div></div></div></section>
-      <section className={`${styles.section} ${styles.instagram}`} id="instagram"><div><span className={styles.eyebrow}>{language==='pt'?'Bastidores':'Behind the scenes'}</span><h2>{language==='pt'?'Também no Instagram':'Also on Instagram'}</h2><p>{language==='pt'?'Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.':'Final-table behind the scenes, reporting trips and everyday reporter life — all there.'}</p><a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noreferrer">@{instagram} →</a></div><div className={styles.reel}><iframe src={reel} title={`Instagram — ${name}`} loading="lazy" allowFullScreen/></div></section>
+      <section className={`${styles.section} ${styles.instagram}`} id="instagram"><div><span className={styles.eyebrow}>{language==='pt'?'Bastidores':'Behind the scenes'}</span><h2>{language==='pt'?'Também no Instagram':'Also on Instagram'}</h2><p>{language==='pt'?'Bastidores de mesa final, viagens de cobertura e o dia a dia da vida de repórter — tudo por lá.':'Final-table behind the scenes, reporting trips and everyday reporter life — all there.'}</p><a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noreferrer">@{instagram} →</a></div><div className={styles.reel}><iframe src={reel} title={`Instagram — ${name}`} loading="lazy" allowFullScreen/><a className={styles.reelMobileLink} href={reel.replace(/\/embed\/?$/,'')} target="_blank" rel="noopener noreferrer"><span>INSTAGRAM · REEL</span><strong>{language==='pt'?'Ver vídeo no Instagram':'Watch on Instagram'}</strong><span>ABRIR ↗</span></a></div></section>
       <section className={`${styles.section} ${styles.contact}`} id="contato"><div><h2>{language==='pt'?'Contato':'Contact'}</h2><div className={styles.contactLinks}><a href={cv} download><span>{language==='pt'?'Currículo':'CV'}</span>{language==='pt'?'Baixar CV em PDF ↓':'Download CV as PDF ↓'}</a><button type="button" onClick={share}><span>{language==='pt'?'Portfólio':'Portfolio'}</span>{shareFeedback?(language==='pt'?'Link copiado ✓':'Link copied ✓'):(language==='pt'?'Compartilhar ↗':'Share ↗')}</button><a href={`mailto:${email}`}><span>E-mail</span>{email}</a><a href={`mailto:${emailAlt}`}><span>{language==='pt'?'E-mail alternativo':'Alternative email'}</span>{emailAlt}</a><a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer"><span>WhatsApp</span>{whatsappLabel}</a><a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noreferrer"><span>Instagram</span>@{instagram} →</a><a href={linkedin} target="_blank" rel="noreferrer"><span>LinkedIn</span>{language==='pt'?'Ver perfil →':'View profile →'}</a></div></div><div className={styles.contactPhoto}><Image style={typeof data.media.contact === "object" ? imageMediaStyle(data.media.contact) : undefined} src={contactImage} alt={language==='pt'?`${name} filmando mesa final durante torneio de poker`:`${name} filming a poker tournament final table`} fill sizes="(max-width: 819px) 100vw, 520px"/></div>
         <div className={styles.leadCard}>
           <h2 id="lead-title">{language==='pt'?'Fale comigo pelo WebAppCap':'Contact me through WebAppCap'}</h2>
