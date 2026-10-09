@@ -82,6 +82,54 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
     sections.forEach(section=>observer.observe(section));return()=>observer.disconnect();
   },[]);
   useEffect(()=>{
+    const root=siteRef.current;
+    if(!root||typeof IntersectionObserver==='undefined'||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+
+    // Animate content rather than section backgrounds, preserving carousels.
+    const selectors=[
+      '#destaques > article',
+      '#sobre > div',
+      '#wsop-featured > div',
+      '#cobertura > header',
+      '#cobertura > div > div',
+      '#portfolio > header',
+      '#portfolio > div:first-of-type',
+      '#portfolio > div:last-child > a',
+      '#experiencia > header',
+      '#experiencia > div > article',
+      '#formacao > header',
+      '#formacao > div > div',
+      '#instagram > div',
+      '#contato > div'
+    ];
+    const targets=Array.from(root.querySelectorAll<HTMLElement>(selectors.join(',')));
+    const counters=new Map<string,number>();
+    const observer=new IntersectionObserver(entries=>{
+      for(const entry of entries){
+        if(!entry.isIntersecting)continue;
+        (entry.target as HTMLElement).dataset.portfolioReveal='visible';
+        observer.unobserve(entry.target);
+      }
+    },{rootMargin:'0px 0px -8% 0px',threshold:0.06});
+
+    for(const target of targets){
+      const section=target.closest('section')?.id||'content';
+      const itemIndex=counters.get(section)||0;
+      counters.set(section,itemIndex+1);
+      target.style.setProperty('--portfolio-reveal-delay',String(Math.min(itemIndex,4)*65)+'ms');
+      target.dataset.portfolioReveal='pending';
+      observer.observe(target);
+    }
+    return()=>{
+      observer.disconnect();
+      for(const target of targets){
+        target.removeAttribute('data-portfolio-reveal');
+        target.style.removeProperty('--portfolio-reveal-delay');
+      }
+    };
+  },[]);
+
+  useEffect(()=>{
     const root=siteRef.current;if(!root)return;let frame=0;
     const update=()=>{frame=0;const max=document.documentElement.scrollHeight-window.innerHeight;root.style.setProperty('--scroll-progress',String(max>0?window.scrollY/max:0))};
     const schedule=()=>{if(!frame)frame=window.requestAnimationFrame(update)};update();window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});return()=>{window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);if(frame)window.cancelAnimationFrame(frame)};
