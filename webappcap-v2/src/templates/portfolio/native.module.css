@@ -297,3 +297,45 @@
 
 @keyframes tickerContinuous{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 @media(prefers-reduced-motion:reduce){.tickerTrack{animation-duration:38s}}
+
+
+/* Capellari mobile rhythm: scoped styles retain desktop parity. */
+.reelMobileLink{display:none}
+@media (max-width:819px){
+  .sectionNav{display:none}
+  .hero{min-height:100svh;padding:1.2rem 1.15rem 2rem}
+  .heroContent{min-height:calc(100svh - 3.2rem)}
+  .heroTop{padding-top:3.4rem}
+  .heroCopy{max-width:100%;padding-bottom:.4rem}
+  .heroCopy h1{font-size:clamp(2.65rem,10.5vw,4.4rem);line-height:1.02;overflow-wrap:normal;word-break:normal;text-wrap:balance}
+  .heroCopy>p{font-size:.76rem;line-height:1.55;letter-spacing:.015em}
+  .heroImageShade{background:linear-gradient(180deg,rgba(8,39,32,.62) 0%,rgba(8,39,32,.40) 35%,rgba(8,39,32,.86) 74%,#082720 100%)}
+  .chips{gap:.45rem;margin-top:1rem}
+  .chips span{max-width:100%;white-space:normal;font-size:.66rem}
+  .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-top:1.15rem}
+  .actions .primary{grid-column:1/-1}
+  .actions a,.actions button{min-width:0;min-height:46px;padding:.8rem .55rem;font-size:.68rem;line-height:1.35;white-space:normal;text-align:center}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;padding:1.4rem 1rem}
+  .stats article{min-width:0;padding:1rem}
+  .stats strong{font-size:2.4rem}
+  .stats span{overflow-wrap:anywhere;line-height:1.4}
+  .section{padding:3.4rem 1.15rem}
+  .section h2{line-height:1.12;text-wrap:balance}
+  .about,.featured,.instagram,.contact{gap:1.5rem}
+  .carousel{min-height:clamp(280px,100vw,430px)}
+  .featuredCopy h2{line-height:1.05}
+  .profile{min-width:0}
+  .pressCards>a{gap:.75rem;padding:1rem}
+  .educationGrid{gap:1.65rem}
+  .instagram{align-items:stretch}
+  .reel{width:100%;max-width:none;min-height:180px;aspect-ratio:auto;border-radius:16px;background:linear-gradient(135deg,#082720,#165343)}
+  .reel iframe{display:none}
+  .reelMobileLink{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.6rem;padding:1.25rem;text-align:center;text-decoration:none;color:var(--cream)!important}
+  .reelMobileLink span{font:600 .72rem/1.35 var(--portfolio-mono),'IBM Plex Mono',monospace;letter-spacing:.08em;color:var(--gold)}
+  .reelMobileLink strong{font:600 clamp(1.3rem,6vw,1.85rem)/1.2 var(--portfolio-heading),Fraunces,serif}
+  .contactLinks a,.contactLinks button{min-height:62px;overflow-wrap:anywhere}
+}
+@media (max-width:380px){
+  .heroCopy h1{font-size:2.55rem}
+  .actions a,.actions button{font-size:.64rem}
+}
