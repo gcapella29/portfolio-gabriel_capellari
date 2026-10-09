@@ -72,3 +72,42 @@ a.avatar{transition:transform .25s ease,box-shadow .25s ease}a.avatar:hover{tran
   .completed-project-rail>.card:only-child{flex-basis:100%}
   .completed-project-rail:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
 }
+
+
+/* Mobile layout pass for Alumni — intentionally scoped below the desktop breakpoint. */
+@media (max-width:640px){
+  .institutional-document{overflow-x:clip}
+  .top-in{gap:6px;padding:10px 0 8px}
+  .brand{font-size:1.32rem;line-height:1.15;gap:10px;min-width:0}
+  .mono{width:35px;height:35px;flex:0 0 35px;font-size:1.16rem}
+  .tabs{order:3;width:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px;padding:6px 0 0;overflow:visible;scrollbar-width:none}
+  .tabs a{display:flex;min-width:0;min-height:40px;align-items:center;justify-content:center;padding:9px 3px;font-size:.77rem;letter-spacing:-.01em;text-align:center;white-space:normal}
+  .hero{padding:38px 0 36px}
+  .hero::before{opacity:.18}
+  .hero-image::after{background:linear-gradient(90deg,rgba(15,29,51,.93),rgba(15,29,51,.68)),linear-gradient(0deg,rgba(15,29,51,.92),transparent 65%)}
+  .hero h1{max-width:12ch;font-size:clamp(2.55rem,10.4vw,3.65rem);line-height:1.04;overflow-wrap:normal;word-break:normal}
+  .hero .kick{font-size:.76rem;letter-spacing:.07em;line-height:1.35}
+  .hero p{max-width:34ch;font-size:1rem;line-height:1.55;margin:16px 0 22px}
+  .hero .cta{gap:9px}
+  .hero .cta .btn{min-width:0;min-height:48px;padding:12px 8px;font-size:.86rem;overflow-wrap:anywhere}
+  .hero .stats{margin-top:30px;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+  .hero .stats div{min-width:0;padding:14px 0}
+  .hero .stats strong{font-size:2.65rem}
+  .hero .stats span{font-size:.85rem;line-height:1.35}
+  .head h2{font-size:clamp(2.2rem,9.8vw,3rem);line-height:1.04;text-wrap:balance;overflow-wrap:normal}
+  .head .lead{line-height:1.55;font-size:1rem}
+  .current-project-rail{gap:12px;padding-left:0;padding-right:0;scroll-padding-left:0}
+  .current-project-rail>.camp{flex:0 0 100%;min-width:0}
+  .current-project-rail .card-b{padding:18px}
+  .completed-project-rail{gap:12px;padding:2px 0 18px;scroll-padding-left:0}
+  .completed-project-rail>.card{flex:0 0 100%;min-width:0}
+  .completed-project-rail>.card:only-child{flex-basis:100%}
+  .don{gap:6px;padding:18px 0}
+  .band .wrap{display:grid;justify-items:center}
+  .band h2{font-size:clamp(2rem,8.5vw,2.6rem);line-height:1.08}
+}
+@media (max-width:360px){
+  .tabs a{font-size:.69rem;padding-inline:1px}
+  .hero h1{font-size:2.45rem}
+  .hero .cta .btn{font-size:.79rem}
+}
