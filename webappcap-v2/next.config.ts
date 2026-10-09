@@ -26,7 +26,7 @@ const securityHeaders = [
   }
 ];
 
-const remotePatterns:NonNullable<NextConfig['images']>['remotePatterns']=[
+const remotePatterns:NonNullable<Exclude<NextConfig['images'],false>>['remotePatterns']=[
   ...(supabaseHost?[{protocol:'https' as const,hostname:supabaseHost,pathname:'/storage/v1/object/public/**',search:''}]:[]),
   {protocol:'https',hostname:'drive.google.com',pathname:'/thumbnail'}
 ];
