@@ -26,10 +26,15 @@ const securityHeaders = [
   }
 ];
 
+const remotePatterns:NonNullable<NextConfig['images']>['remotePatterns']=[
+  ...(supabaseHost?[{protocol:'https' as const,hostname:supabaseHost,pathname:'/storage/v1/object/public/**',search:''}]:[]),
+  {protocol:'https',hostname:'drive.google.com',pathname:'/thumbnail'}
+];
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  images: {remotePatterns:supabaseHost?[{protocol:'https',hostname:supabaseHost,pathname:'/storage/v1/object/public/**',search:''}]:[],minimumCacheTTL:86400,qualities:[75,85]},
+  images: {remotePatterns,minimumCacheTTL:86400,qualities:[75,85]},
   experimental: {
     serverActions: {
       bodySizeLimit: '4mb'
