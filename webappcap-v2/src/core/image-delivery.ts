@@ -1,8 +1,18 @@
+const DRIVE_FILE_ID=/^[A-Za-z0-9_-]{20,100}$/;
+
 export function optimizableProjectImage(src:string,storageUrl:string|undefined){
- if(!storageUrl)return false;
  try{
-  const url=new URL(src),origin=new URL(storageUrl);
-  return url.protocol==='https:'&&url.origin===origin.origin&&!url.username&&!url.password&&!url.search&&!url.hash&&url.pathname.startsWith('/storage/v1/object/public/')&&/\.(?:jpe?g|png|webp)$/i.test(url.pathname);
+  const url=new URL(src);
+  if(url.protocol!=='https:'||url.username||url.password||url.hash)return false;
+
+  if(url.hostname==='drive.google.com'&&url.pathname==='/thumbnail'){
+   const id=url.searchParams.get('id')||'';
+   return DRIVE_FILE_ID.test(id);
+  }
+
+  if(!storageUrl)return false;
+  const origin=new URL(storageUrl);
+  return url.origin===origin.origin&&!url.search&&url.pathname.startsWith('/storage/v1/object/public/')&&/\.(?:jpe?g|png|webp)$/i.test(url.pathname);
  }catch{return false}
 }
 

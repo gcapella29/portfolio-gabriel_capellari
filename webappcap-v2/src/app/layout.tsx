@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import '@/fonts/fonts.css';
-import '@/fonts/fonts.css';
 import './backend-interactions.css';
 import AppObservability from './app-observability';
 
