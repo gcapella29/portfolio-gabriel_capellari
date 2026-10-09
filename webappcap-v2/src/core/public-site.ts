@@ -8,7 +8,7 @@ import {readSnapshotPreviewBySlug} from './snapshot-preview';
 const PUBLIC_SITE_CACHE_SECONDS=60;
 const HOST_TAG_PREFIX='public-site-host:';
 const SLUG_TAG_PREFIX='public-site-slug:';
-const MIGRATED_SNAPSHOT_SLUGS=new Set(['padaria-santo-antonio','fabio-ferrari','alumni-ibitinga']);
+const MIGRATED_SNAPSHOT_SLUGS=new Set(['padaria-santo-antonio','fabio-ferrari','alumni-ibitinga','capellari']);
 
 
 const segmentFromValue=(value:unknown):SegmentKey=>{
