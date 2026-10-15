@@ -11,7 +11,7 @@ const string=(v:unknown)=>String(v??'').trim();
 const image=(v:unknown)=>typeof v==='string'?v:string((v&&typeof v==='object'?(v as Row).url:'')||'');
 const rows=(v:unknown):Row[]=>Array.isArray(v)?v.filter(x=>x&&typeof x==='object') as Row[]:[];
 const bi=(pt:string,en:string,lang:Lang)=>lang==='pt'?pt:en;
-const cases=[
+const defaultCases=[
  {n:'01',type:{pt:'PLATAFORMAS & PRODUTOS',en:'PLATFORMS & PRODUCTS'},name:'WebAppCap',
   desc:{pt:'Uma plataforma para criar, publicar e gerenciar sites de diferentes negócios, com editor, preview e gestão de conteúdo.',en:'A platform to build, publish and manage websites for different businesses, with editing, previews and content management.'},
   detail:'Next.js · Google Sheets · Vercel',href:'https://www.webappcap.com.br/'},
@@ -32,13 +32,29 @@ const focus=[
  {number:'04',pt:'Educação e idiomas',en:'Teaching & languages'}
 ];
 
-export function CapellariConcept({data}:{data:V2Content}){
+export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:boolean}){
  const [lang,setLang]=useState<Lang>('pt');
  const [menuOpen,setMenuOpen]=useState(false);
  const [galleryIndex,setGalleryIndex]=useState(0);
  const [copied,setCopied]=useState(false);
  const media=data.media||{};
  const content=data.content||{};
+ const title=(key:string,fallback:string)=>string(content[key])||fallback;
+ const suppliedCases=rows(content.portfolio_concept_cases);
+ const cases=(suppliedCases.length?suppliedCases:defaultCases).slice(0,12).map((item,i)=>{
+   const row=item as Row;
+   const category=(row.type&&typeof row.type==='object'?row.type:{}) as Row;
+   const description=(row.desc&&typeof row.desc==='object'?row.desc:{}) as Row;
+   return{
+     n:string(row.n)||String(i+1).padStart(2,'0'),
+     name:string(row.title||row.name)||'Projeto',
+     type:{pt:string(row.type_pt||category.pt)||'PROJETO DIGITAL',en:string(row.type_en||category.en)||'DIGITAL PROJECT'},
+     desc:{pt:string(row.description_pt||description.pt),en:string(row.description_en||description.en)},
+     detail:string(row.stack||row.detail),
+     href:string(row.url||row.href),
+     image:string(row.image)
+   };
+ });
  const contact=data.contact||{};
  const gallery=useMemo(()=>Array.isArray(media.gallery)?media.gallery.map(image).filter(Boolean):[],[media.gallery]);
  const career=rows(content.portfolio_career);
@@ -67,7 +83,7 @@ export function CapellariConcept({data}:{data:V2Content}){
  },[]);
  return <div className={styles.site}>
    <a className={styles.skip} href="#sobre">{text('Pular para o conteúdo','Skip to content')}</a>
-   <div className={styles.draftRibbon}>CONCEITO 01 <span>·</span> {text('RASCUNHO — NÃO PUBLICADO','DRAFT — NOT PUBLISHED')}</div>
+   {preview?<div className={styles.draftRibbon}>CONCEITO 01 <span>·</span> {text('RASCUNHO — NÃO PUBLICADO','DRAFT — NOT PUBLISHED')}</div>:null}
    <header className={styles.topbar}>
      <a className={styles.brand} href="#inicio" aria-label="Gabriel Capellari — início">GC<span>.</span></a>
      <span className={styles.topMeta}>GABRIEL CAPELLARI <i/> {text('PORTFÓLIO 2026','PORTFOLIO 2026')}</span>
@@ -88,8 +104,8 @@ export function CapellariConcept({data}:{data:V2Content}){
      <div className={styles.heroPhoto}>{hero?<SiteImage src={hero} alt="" loading="eager" imageWidth={1800} sizes="(max-width: 760px) 100vw, 55vw"/>:null}<div className={styles.heroPhotoShade}/><span className={styles.photoCaption}>IBITINGA · SP · BR</span></div>
      <div className={styles.heroText}>
        <span className={styles.kicker}><i/>{text('COMUNICAÇÃO, TECNOLOGIA & CRIAÇÃO','COMMUNICATION, TECHNOLOGY & CREATION')}</span>
-       <h1>{text('Histórias que viram','Stories turned into')}<br/><em>{text('soluções reais.','real solutions.')}</em></h1>
-       <p>{text('Sou Gabriel Capellari. Jornalista, educador e criador de projetos digitais. Combino escrita, pesquisa, dados e tecnologia para transformar ideias em experiências úteis.','I’m Gabriel Capellari — journalist, educator and digital project builder. I combine writing, research, data and technology to turn ideas into useful experiences.')}</p>
+       <h1>{lang==='pt'?title('portfolio_concept_hero_title_pt','Histórias que viram'):title('portfolio_concept_hero_title_en','Stories turned into')}<br/><em>{lang==='pt'?title('portfolio_concept_hero_accent_pt','soluções reais.'):title('portfolio_concept_hero_accent_en','real solutions.')}</em></h1>
+       <p>{lang==='pt'?title('portfolio_concept_intro_pt','Sou Gabriel Capellari. Jornalista, educador e criador de projetos digitais. Combino escrita, pesquisa, dados e tecnologia para transformar ideias em experiências úteis.'):title('portfolio_concept_intro_en','I’m Gabriel Capellari — journalist, educator and digital project builder. I combine writing, research, data and technology to turn ideas into useful experiences.')}</p>
        <div className={styles.heroTags}><span>{text('Conteúdo & SEO','Content & SEO')}</span><span>{text('Produtos digitais','Digital products')}</span><span>{text('Dados & automação','Data & automation')}</span></div>
        <div className={styles.heroActions}>
          <a className={styles.actionPrimary} href="#projetos">{text('Explorar projetos ↗','Explore projects ↗')}</a>
@@ -118,8 +134,8 @@ export function CapellariConcept({data}:{data:V2Content}){
      <div className={styles.aboutCopy} data-concept-reveal>
        <span className={styles.sectionNum}>02 / {text('SOBRE MIM','ABOUT ME')}</span>
        <h2>{text('Uma trajetória feita','A career built on')}<br/><em>{text('de conexões.','connections.')}</em></h2>
-       <p>{text('Comecei na educação, encontrei no jornalismo a oportunidade de contar histórias e, nos projetos digitais, uma nova forma de resolver problemas. Hoje reúno essas experiências para trabalhar com conteúdo, produtos, ferramentas e processos.','I started in education, found storytelling through journalism and discovered a new way to solve problems through digital projects. Today I bring those experiences together across content, tools, products and workflows.')}</p>
-       <p>{text('A bagagem editorial segue comigo: pesquisa, clareza, atenção aos detalhes e capacidade de entregar sob pressão. A ela se somam a construção de sites, sistemas, painéis de dados e automações — sempre com foco em tornar a tecnologia mais simples para quem usa.','My editorial background stays with me: research, clarity, attention to detail and delivery under pressure. I add website creation, systems, dashboards and automations — focusing on making technology easier for people to use.')}</p>
+       <p>{lang==='pt'?title('portfolio_concept_about_a_pt','Comecei na educação, encontrei no jornalismo a oportunidade de contar histórias e, nos projetos digitais, uma nova forma de resolver problemas. Hoje reúno essas experiências para trabalhar com conteúdo, produtos, ferramentas e processos.'):title('portfolio_concept_about_a_en','I started in education, found storytelling through journalism and discovered a new way to solve problems through digital projects. Today I bring those experiences together across content, tools, products and workflows.')}</p>
+       <p>{lang==='pt'?title('portfolio_concept_about_b_pt','A bagagem editorial segue comigo: pesquisa, clareza, atenção aos detalhes e capacidade de entregar sob pressão. A ela se somam a construção de sites, sistemas, painéis de dados e automações — sempre com foco em tornar a tecnologia mais simples para quem usa.'):title('portfolio_concept_about_b_en','My editorial background stays with me: research, clarity, attention to detail and delivery under pressure. I add website creation, systems, dashboards and automations — focusing on making technology easier for people to use.')}</p>
        <a className={styles.inlineLink} href="#trajetoria">{text('Conheça meu caminho','Explore my journey')} <span>↗</span></a>
      </div>
    </section>
@@ -127,8 +143,8 @@ export function CapellariConcept({data}:{data:V2Content}){
    <section className={styles.projects} id="projetos">
      <div className={styles.projectsHead} data-concept-reveal><div><span className={styles.sectionNum}>03 / {text('PROJETOS SELECIONADOS','SELECTED WORK')}</span><h2>{text('Do problema','From problems')}<br/><em>{text('ao projeto.','to products.')}</em></h2></div><p>{text('Quatro exemplos de como transformo ideias em experiências, organização e soluções concretas.','Four examples of turning ideas into experiences, organization and practical solutions.')}</p></div>
      <div className={styles.projectGrid}>{cases.map((item,i)=><article key={item.n} className={`${styles.projectCard} ${i%2?styles.projectCardLight:''}`} data-concept-reveal>
-       <div className={styles.cardHead}><span>{item.n} — 04</span><span>{text(item.type.pt,item.type.en)}</span></div>
-       <div className={styles.cardArt} aria-hidden="true"><span>{item.n}</span><b>{i===0?'W':i===1?'E':i===2?'▥':'A'}</b><i/></div>
+       <div className={styles.cardHead}><span>{item.n} — {String(cases.length).padStart(2,'0')}</span><span>{text(item.type.pt,item.type.en)}</span></div>
+       <div className={styles.cardArt} aria-hidden="true">{item.image?<SiteImage src={item.image} alt="" imageWidth={900} sizes="(max-width: 760px) 100vw, 45vw"/>:<><span>{item.n}</span><b>{i===0?'W':i===1?'E':i===2?'▥':'A'}</b><i/></>}</div>
        <h3>{item.name}</h3><p>{text(item.desc.pt,item.desc.en)}</p>
        <div className={styles.cardFoot}><span>{item.detail}</span><a href={item.href||'#contato'} target={item.href?'_blank':undefined} rel={item.href?'noopener noreferrer':undefined}>{item.href?text('Ver projeto','View project'):text('Saiba mais','Learn more')} ↗</a></div>
      </article>)}</div>
@@ -163,7 +179,7 @@ export function CapellariConcept({data}:{data:V2Content}){
    </section>
 
    <section className={styles.contact} id="contato">
-     <div className={styles.contactIntro} data-concept-reveal><span className={styles.sectionNum}>07 / {text('PRÓXIMO CAPÍTULO','NEXT CHAPTER')}</span><h2>{text('Vamos criar','Let’s build')}<br/><em>{text('algo relevante.','something meaningful.')}</em></h2><p>{text('Estou aberto a oportunidades e colaborações em comunicação, conteúdo, produtos digitais, dados e projetos que conectem essas áreas.','I’m open to opportunities and collaborations in communication, content, digital products, data and work connecting those fields.')}</p><div className={styles.contactActions}>{email?<a className={styles.contactMain} href={`mailto:${email}`}>{text('Escrever um e-mail ↗','Send an email ↗')}</a>:null}{whatsapp?<a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>:null}</div></div>
+     <div className={styles.contactIntro} data-concept-reveal><span className={styles.sectionNum}>07 / {text('PRÓXIMO CAPÍTULO','NEXT CHAPTER')}</span><h2>{text('Vamos criar','Let’s build')}<br/><em>{text('algo relevante.','something meaningful.')}</em></h2><p>{lang==='pt'?title('portfolio_concept_contact_pt','Estou aberto a oportunidades e colaborações em comunicação, conteúdo, produtos digitais, dados e projetos que conectem essas áreas.'):title('portfolio_concept_contact_en','I’m open to opportunities and collaborations in communication, content, digital products, data and work connecting those fields.')}</p><div className={styles.contactActions}>{email?<a className={styles.contactMain} href={`mailto:${email}`}>{text('Escrever um e-mail ↗','Send an email ↗')}</a>:null}{whatsapp?<a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>:null}</div></div>
      <div className={styles.contactPanel} data-concept-reveal><div className={styles.panelTop}>LET&apos;S CONNECT <span>✳</span></div><strong>{name}</strong><p>{text('Jornalismo · Educação · Produtos digitais · Tecnologia','Journalism · Education · Digital products · Technology')}</p><div>{linkedIn?<a href={linkedIn} target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>:null}{instagram?<a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noopener noreferrer">INSTAGRAM ↗</a>:null}<a href={cv} target="_blank" rel="noopener noreferrer">CURRÍCULO ↓</a><button type="button" onClick={share}>{copied?'COPIADO ✓':text('COPIAR LINK ↗','COPY LINK ↗')}</button></div><small>{text('Os links externos funcionam. Esta página é apenas uma proposta de design; o site oficial permanece igual.','External links are active. This is a design proposal; the official website is unchanged.')}</small></div>
    </section>
 
