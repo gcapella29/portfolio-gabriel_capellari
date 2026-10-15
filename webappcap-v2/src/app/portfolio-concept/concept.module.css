@@ -49,7 +49,7 @@
 .heroText{position:relative;z-index:3;grid-column:1;grid-row:1;display:flex;flex-direction:column;justify-content:center;max-width:930px;min-width:0;padding:145px clamp(24px,5.5vw,100px) 85px clamp(24px,5.5vw,100px)}
 .kicker{display:flex;align-items:center;gap:14px;font-size:10px;font-weight:800;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;line-height:1.8}
 .kicker i{width:25px;height:1px;background:currentColor;flex-shrink:0}
-.heroText h1{font-size:clamp(64px,6.2vw,120px);line-height:.99;letter-spacing:-.062em;margin-top:24px;text-wrap:balance;white-space:nowrap}
+.heroText h1{font-size:clamp(48px,5.2vw,88px);line-height:1.03;letter-spacing:-.06em;margin-top:24px;text-wrap:balance;white-space:normal}
 .heroText h1 em,.about h2 em,.projects h2 em,.editorial h2 em,.learning h2 em,.contact h2 em{font-weight:400;font-style:italic;color:var(--gold)}
 .heroText>p{max-width:540px;margin-top:30px;color:#d5e0d8;font-size:clamp(14px,1.15vw,17px);line-height:1.75}
 .heroTags{display:flex;gap:9px;flex-wrap:wrap;margin-top:26px}
@@ -176,7 +176,7 @@
 @keyframes revealUp{from{transform:translateY(17px);opacity:.5}to{transform:translateY(0);opacity:1}}
 @media (max-width:1180px){
  .topMeta{display:none}
- .heroText h1{font-size:clamp(54px,6.5vw,85px)}
+ .heroText h1{font-size:clamp(45px,5.1vw,70px)}
  .heroText{padding-inline:4vw}
  .heroActions a{font-size:10px;padding:12px 14px}
  .verticalStamp{display:none}
@@ -190,7 +190,7 @@
  .brand{font-size:31px}
  .hero{grid-template-columns:50% 50%;height:auto;min-height:680px}
  .heroText{padding-top:138px;padding-bottom:75px}
- .heroText h1{font-size:clamp(45px,6.7vw,62px)}
+ .heroText h1{font-size:clamp(41px,5.9vw,56px)}
  .heroText>p{font-size:13px}
  .heroTags span{font-size:9px}
  .about{grid-template-columns:.95fr 1.05fr}
@@ -219,7 +219,7 @@
  .heroText{padding:14px 24px 95px;max-width:none;order:1;background:var(--forest-deep)}
  .kicker{font-size:9px;letter-spacing:.12em;gap:8px}
  .kicker i{width:14px}
- .heroText h1{font-size:clamp(43px,9.5vw,66px);white-space:normal;letter-spacing:-.045em;margin-top:21px}
+ .heroText h1{font-size:clamp(38px,9.1vw,66px);white-space:normal;letter-spacing:-.045em;margin-top:21px}
  .heroText>p{font-size:14px;margin-top:22px;line-height:1.8}
  .heroTags{margin-top:23px;gap:6px}
  .heroTags span{font-size:10px;padding:8px 10px}
