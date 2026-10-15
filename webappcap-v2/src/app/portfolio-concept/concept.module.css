@@ -71,7 +71,7 @@
 @keyframes marqueeFlow{to{transform:translateX(-50%)}}
 .sectionNum{display:block;color:#b79552;font-size:10px;font-weight:850;letter-spacing:.20em;line-height:1.6}
 .focus{padding:75px clamp(24px,6vw,110px) 85px;background:var(--forest);color:var(--cream)}
-.focusHead{display:flex;align-items:end;justify-content:space-between;gap:35px;padding-bottom:25px;border-bottom:1px solid rgba(255,255,255,.18)}
+.focusHead{display:flex;align-items:flex-end;justify-content:space-between;gap:35px;padding-bottom:25px;border-bottom:1px solid rgba(255,255,255,.18)}
 .focusHead p{max-width:560px;font-size:20px;line-height:1.55;color:#d7e2d9;font-family:var(--portfolio-heading),Georgia,serif}
 .focusGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
 .focusItem{min-height:142px;display:flex;flex-direction:column;justify-content:space-between;position:relative;gap:22px;padding:26px 20px 5px 0;border-right:1px solid rgba(255,255,255,.18)}
@@ -93,7 +93,7 @@
 .inlineLink{display:inline-flex;align-items:center;gap:28px;border-bottom:1px solid #c5ab6d;padding-bottom:13px;margin-top:35px;font-size:12px;font-weight:800;letter-spacing:.035em}
 .inlineLink span{font-size:19px;color:#af8a3f}
 .projects{background:#e8ebe4;padding:clamp(80px,9vw,135px) clamp(24px,6vw,110px)}
-.projectsHead{display:flex;align-items:end;justify-content:space-between;gap:42px;margin-bottom:52px}
+.projectsHead{display:flex;align-items:flex-end;justify-content:space-between;gap:42px;margin-bottom:52px}
 .projectsHead>p{max-width:420px;font-size:17px;color:#5a6b61;line-height:1.8}
 .projectGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .projectCard{min-width:0;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:34px clamp(27px,3vw,46px) 28px;min-height:510px;background:var(--forest);color:var(--cream);transition:transform .3s ease,box-shadow .3s ease}
