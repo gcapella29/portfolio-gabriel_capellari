@@ -285,3 +285,8 @@
 @media (prefers-reduced-motion:reduce){
  .site *, .site *::before, .site *::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}
 }
+
+/* Uploaded real case screenshots fill the visual slots without changing geometry. */
+.cardArt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .6s ease}
+.projectCard:hover .cardArt img{transform:scale(1.035)}
+@media (prefers-reduced-motion:reduce){.projectCard:hover .cardArt img{transform:none}}
