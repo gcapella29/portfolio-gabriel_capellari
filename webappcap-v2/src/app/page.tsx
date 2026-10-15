@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { readPublishedRootContent } from '@/core/root-site';
-import {readPublishedHomeProjects} from '@/core/home-projects';
+import {readPublishedHomeProjects,readPublishedHomeProjectsFromSnapshots} from '@/core/home-projects';
+import {rootSnapshotEnabled} from '@/core/root-site';
 import { HomeSite } from './home-site';
 
 export const metadata:Metadata={
@@ -18,6 +19,6 @@ export const metadata:Metadata={
 };
 
 export default async function HomePage(){
-  const [content,publishedProjects]=await Promise.all([readPublishedRootContent(),readPublishedHomeProjects()]);
+  const [content,publishedProjects]=await Promise.all([readPublishedRootContent(),rootSnapshotEnabled?readPublishedHomeProjectsFromSnapshots():readPublishedHomeProjects()]);
   return <HomeSite content={content} publishedProjects={publishedProjects}/>;
 }
