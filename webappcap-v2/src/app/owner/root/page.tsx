@@ -17,6 +17,19 @@ function Block({id,title,description,children,open=false}:{id:string;title:strin
 
 export default async function RootEditorPage({searchParams}:{searchParams:Promise<{saved?:string;published?:string}>}){
  await requirePlatformOwner();
+ if (process.env.WEBAPPCAP_ROOT_CONTENT_SOURCE === 'snapshot') {
+   return <main style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:'2rem',background:'#f7f4ec',color:'#082720',fontFamily:'Inter,Arial,sans-serif'}}>
+     <div style={{maxWidth:650}}>
+       <p style={{fontWeight:700,letterSpacing:'.12em'}}>WEBAPPCAP · RAIZ</p>
+       <h1>O editor da raiz foi transferido para o Owner.</h1>
+       <p>O conteúdo publicado agora é controlado pela planilha do projeto. Abra WebAppCap no Owner (Apps Script), use a aba Conteúdo para salvar o rascunho e a aba Migração para gerar, aprovar e publicar o preview.</p>
+       <p>Este editor antigo está em modo somente leitura para impedir alterações que não seriam publicadas no novo sistema. Login, formulários e gestão dos clientes continuam funcionando.</p>
+       <p><a href="https://docs.google.com/spreadsheets/d/1Rf7v32wwMGNuXpS3aYypz_eNmElJUhBTO85v0P18to0/edit" target="_blank" rel="noopener noreferrer" style={{fontWeight:700,textDecoration:'underline'}}>Consultar planilha do projeto ↗</a></p>
+       <p><Link href="/owner/projects">Voltar aos projetos</Link></p>
+     </div>
+   </main>;
+ }
+
  const query=await searchParams,{draft,publishedAt}=await readRootDraft();
  return <div className={dashboardStyles.shell}>
   <aside className={dashboardStyles.sidebar}>
