@@ -52,6 +52,7 @@ export async function readPublishedHomeProjectsFromSnapshots():Promise<HomeProje
             v2?:{identity?:Record<string,unknown>;media?:Record<string,unknown>};
             config?:Record<string,unknown>;
             blocks?:unknown[];
+            media?:unknown[];
           }
         };
         if(!payload.ok||!payload.snapshot)return null;
@@ -71,16 +72,37 @@ export async function readPublishedHomeProjectsFromSnapshots():Promise<HomeProje
           const object=value&&typeof value==='object'?value as Record<string,unknown>:{};
           return mediaUrl(object.url||value);
         };
+        const bakeryHero=(()=>{
+          const blocks=Array.isArray(payload.snapshot?.blocks)?payload.snapshot.blocks:[];
+          const raw=blocks.find(item=>item&&typeof item==='object'&&
+            String((item as Record<string,unknown>).tipo)==='hero') as Record<string,unknown>|undefined;
+          const mediaId=(()=>{
+            try{return String((JSON.parse(String(raw?.config_json||'{}')) as Record<string,unknown>).image_id||'')}
+            catch{return ''}
+          })();
+          const list=Array.isArray(payload.snapshot?.media)?payload.snapshot.media:[];
+          const entry=list.find(item=>item&&typeof item==='object'&&
+            String((item as Record<string,unknown>).media_id)===mediaId) as Record<string,unknown>|undefined;
+          return mediaObject(entry?.url||entry?.preview_url||'');
+        })();
         const name=String(project.nome||identity.name||slug).trim();
         return{
           name,slug,url:`https://${slug}.webappcap.com.br/`,
           category,description,
           facts:[{label:'GESTÃO',text:'Editor e preview'},{label:'MOBILE',text:'Experiência responsiva'}],
           tags:[category,'WebAppCap'],
-          image:mediaObject(media.hero)||mediaObject(media.bakery_hero)||undefined
+          image:mediaObject(media.hero)||mediaObject(media.bakery_hero)||bakeryHero||undefined
         };
       }catch{return null;}
     }));
-    return results.filter((item):item is HomeProjectCase=>Boolean(item));
+    const published=results.filter((item):item is HomeProjectCase=>Boolean(item));
+    // Transitional case: Vet-se remains on the legacy public CMS until its
+    // own customer-approved migration. Failure must not block the homepage.
+    if(!published.some(item=>item.slug==='vet-se')){
+      const legacy=await readPublishedHomeProjects();
+      const vetse=legacy.find(item=>item.slug==='vet-se');
+      if(vetse)published.push(vetse);
+    }
+    return published;
   }catch{return [];}
 }
