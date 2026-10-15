@@ -14,5 +14,5 @@ export const metadata:Metadata={
 export default async function CapellariConceptPage(){
   const published=await readSnapshotPreviewBySlug('capellari');
   if(!published||published.project.slug!=='capellari')notFound();
-  return <CapellariConcept data={published.data}/>;
+  return <CapellariConcept data={published.data} preview/>;
 }
