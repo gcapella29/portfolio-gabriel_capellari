@@ -26,3 +26,61 @@ export async function readPublishedHomeProjects():Promise<HomeProjectCase[]>{
     });
   }catch{return [];}
 }
+
+/**
+ * Public project cards sourced from already published Drive snapshots.
+ * On the root cutover this avoids querying the legacy CMS for presentation.
+ */
+export async function readPublishedHomeProjectsFromSnapshots():Promise<HomeProjectCase[]>{
+  const registryUrl=process.env.WEBAPPCAP_PUBLIC_SNAPSHOT_REGISTRY_URL?.trim()
+    ||'https://drive.google.com/uc?export=download&id=1mt6C4FOTuXkIBOmMunVqsEPIRuME4zQ0';
+  try {
+    const response=await fetch(registryUrl,{cache:'no-store'});
+    if(!response.ok)return [];
+    const registry=await response.json() as {projects?:Record<string,{snapshot_url?:string}>};
+    const entries=Object.entries(registry.projects||{}).filter(([slug])=>slug!=='webappcap');
+    const results=await Promise.all(entries.map(async([slug,row]):Promise<HomeProjectCase|null>=>{
+      const snapshotUrl=String(row?.snapshot_url||'').trim();
+      if(!/^https:\/\/drive\.google\.com\//.test(snapshotUrl))return null;
+      try{
+        const snap=await fetch(snapshotUrl,{cache:'no-store'});
+        if(!snap.ok)return null;
+        const payload=await snap.json() as {
+          ok?:boolean;
+          snapshot?:{
+            project?:Record<string,unknown>;
+            v2?:{identity?:Record<string,unknown>;media?:Record<string,unknown>};
+            config?:Record<string,unknown>;
+            blocks?:unknown[];
+          }
+        };
+        if(!payload.ok||!payload.snapshot)return null;
+        const project=payload.snapshot.project||{};
+        const identity=payload.snapshot.v2?.identity||{};
+        const media=payload.snapshot.v2?.media||{};
+        const kind=String(project.tipo||'').toLowerCase();
+        const category=kind==='padaria'?'Loja Digital':
+          kind==='institucional'?'Institucional':
+          kind==='personal-trainer'?'Personal Trainer':
+          kind==='portfolio'?'Portfólio':
+          kind==='comercio'?'Comércio':'Site profissional';
+        const description=kind==='padaria'
+          ?'Produtos, destaques e pedidos em um site responsivo.'
+          :descriptions[kind]||'Um projeto WebAppCap com conteúdo gerenciado no Owner.';
+        const mediaObject=(value:unknown):string=>{
+          const object=value&&typeof value==='object'?value as Record<string,unknown>:{};
+          return mediaUrl(object.url||value);
+        };
+        const name=String(project.nome||identity.name||slug).trim();
+        return{
+          name,slug,url:`https://${slug}.webappcap.com.br/`,
+          category,description,
+          facts:[{label:'GESTÃO',text:'Editor e preview'},{label:'MOBILE',text:'Experiência responsiva'}],
+          tags:[category,'WebAppCap'],
+          image:mediaObject(media.hero)||mediaObject(media.bakery_hero)||undefined
+        };
+      }catch{return null;}
+    }));
+    return results.filter((item):item is HomeProjectCase=>Boolean(item));
+  }catch{return [];}
+}
