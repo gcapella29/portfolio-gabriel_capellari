@@ -22,6 +22,10 @@ const renderers: Record<string,ComponentType<TemplateRenderProps>> = {
 
 export function renderTemplate(props:TemplateRenderProps){
   const key=props.project.templateKey||'';
+  // The multidisciplinary concept is exclusive to PRJ-0002. Other tenants must not render it accidentally.
+  if(key==='portfolio-multidisciplinary-1' && (props.project.id!=='PRJ-0002' || props.project.slug!=='capellari')){
+    return <main style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:'2rem',fontFamily:'Arial,sans-serif'}}><div><strong>WebAppCap</strong><h1>Modelo indisponível para este projeto.</h1></div></main>;
+  }
   const Renderer=renderers[key];
   if(!Renderer){
     return <main style={{minHeight:'100vh',display:'grid',placeItems:'center',padding:'2rem',fontFamily:'Arial,sans-serif'}}><div style={{maxWidth:620}}><strong>WebAppCap</strong><h1>Modelo ainda não disponível.</h1><p>Este projeto utiliza um modelo que não está ativo na versão atual da plataforma.</p></div></main>;
