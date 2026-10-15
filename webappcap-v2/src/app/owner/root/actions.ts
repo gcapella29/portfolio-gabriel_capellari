@@ -19,6 +19,9 @@ const contentFrom = (formData: FormData) => Object.fromEntries(
 
 export async function saveRootDraftAction(formData: FormData) {
   await requirePlatformOwner();
+  if (process.env.WEBAPPCAP_ROOT_CONTENT_SOURCE === 'snapshot') {
+    throw new Error('A raiz agora é editada pelo Owner (Apps Script). Este endpoint legado está bloqueado.');
+  }
   const sb = await createSupabaseServerClient();
   const result = await sb.from('platform_root_content').upsert({
     id: true,
@@ -33,6 +36,9 @@ export async function saveRootDraftAction(formData: FormData) {
 
 export async function publishRootAction() {
   await requirePlatformOwner();
+  if (process.env.WEBAPPCAP_ROOT_CONTENT_SOURCE === 'snapshot') {
+    throw new Error('A raiz agora é editada pelo Owner (Apps Script). Este endpoint legado está bloqueado.');
+  }
   const sb = await createSupabaseServerClient();
   const current = await sb.from('platform_root_content').select('draft').eq('id', true).maybeSingle();
   if (current.error || !current.data) throw current.error || new Error('Salve um rascunho antes de publicar.');
