@@ -4,11 +4,12 @@ import {useEffect,useMemo,useState} from 'react';
 import type {V2Content} from '@/core/onboarding-data';
 import {SiteImage} from '@/templates/site-image';
 import styles from './concept.module.css';
+import {capellariMedia,portfolioUrl} from '@/core/capellari-preview';
 
 type Lang='pt'|'en';
 type Row=Record<string,unknown>;
 const string=(v:unknown)=>String(v??'').trim();
-const image=(v:unknown)=>typeof v==='string'?v:string((v&&typeof v==='object'?(v as Row).url:'')||'');
+const image=(v:unknown)=>portfolioUrl(typeof v==='string'?v:(v&&typeof v==='object'?(v as Row).url:''));
 const rows=(v:unknown):Row[]=>Array.isArray(v)?v.filter(x=>x&&typeof x==='object') as Row[]:[];
 const bi=(pt:string,en:string,lang:Lang)=>lang==='pt'?pt:en;
 const defaultCases=[
@@ -37,7 +38,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
  const [menuOpen,setMenuOpen]=useState(false);
  const [galleryIndex,setGalleryIndex]=useState(0);
  const [copied,setCopied]=useState(false);
- const media=data.media||{};
+ const media=capellariMedia(data);
  const content=data.content||{};
  const title=(key:string,fallback:string)=>string(content[key])||fallback;
  const suppliedCases=rows(content.portfolio_concept_cases);
@@ -51,8 +52,8 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
      type:{pt:string(row.type_pt||category.pt)||'PROJETO DIGITAL',en:string(row.type_en||category.en)||'DIGITAL PROJECT'},
      desc:{pt:string(row.description_pt||description.pt),en:string(row.description_en||description.en)},
      detail:string(row.stack||row.detail),
-     href:string(row.url||row.href),
-     image:string(row.image)
+     href:portfolioUrl(row.url||row.href),
+     image:image(row.image)
    };
  });
  const contact=data.contact||{};
@@ -60,14 +61,15 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
  const career=rows(content.portfolio_career);
  const skills=rows(content.portfolio_skills);
  const education=rows(content.portfolio_education);
+ const galleryMeta=rows(content.portfolio_gallery_meta);
  const press=rows(content.portfolio_links);
  const hero=image(media.hero);
  const aboutPhoto=image(media.about);
  const name=string(data.identity?.name).replace(/["”]+$/,'')||'Gabriel Capellari';
- const cv=string(contact.cv)||'#formacao';
+ const cv=portfolioUrl(contact.cv)||'#formacao';
  const email=string(contact.email)||'';
  const whatsapp=string(contact.whatsapp).replace(/\D/g,'');
- const linkedIn=string(contact.linkedin);
+ const linkedIn=portfolioUrl(contact.linkedin);
  const instagram=string(contact.instagram).replace(/^@/,'');
  const text=(pt:string,en:string)=>bi(pt,en,lang);
  const nextGallery=(step:number)=>setGalleryIndex(n=>(n+step+gallery.length)%Math.max(gallery.length,1));
@@ -81,7 +83,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
    const observer=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting){(e.target as HTMLElement).classList.add(styles.revealed);observer.unobserve(e.target)}}},{threshold:.08,rootMargin:'0px 0px -6% 0px'});
    els.forEach(el=>observer.observe(el));return()=>observer.disconnect();
  },[]);
- return <div className={styles.site}>
+ return <div className={styles.site} lang={lang==='pt'?'pt-BR':'en'}>
    <a className={styles.skip} href="#sobre">{text('Pular para o conteúdo','Skip to content')}</a>
    {preview?<div className={styles.draftRibbon}>CONCEITO 01 <span>·</span> {text('RASCUNHO — NÃO PUBLICADO','DRAFT — NOT PUBLISHED')}</div>:null}
    <header className={styles.topbar}>
@@ -97,7 +99,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
        <button type="button" aria-pressed={lang==='pt'} onClick={()=>setLang('pt')}>PT</button>
        <button type="button" aria-pressed={lang==='en'} onClick={()=>setLang('en')}>EN</button>
      </div>
-     <button className={styles.mobileMenu} type="button" aria-expanded={menuOpen} onClick={()=>setMenuOpen(open=>!open)} aria-label={menuOpen?'Fechar menu':'Abrir menu'}>{menuOpen?'✕':'☰'}</button>
+     <button className={styles.mobileMenu} type="button" aria-expanded={menuOpen} onClick={()=>setMenuOpen(open=>!open)} aria-label={menuOpen?text('Fechar menu','Close menu'):text('Abrir menu','Open menu')}>{menuOpen?'✕':'☰'}</button>
    </header>
 
    <section className={styles.hero} id="inicio">
@@ -156,10 +158,10 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
        <h2>{text('Jornalismo','Journalism')}<br/><em>{text('sem fronteiras.','without borders.')}</em></h2>
        <p>{text('O poker me levou a coberturas internacionais, reportagens ao vivo, entrevistas e projetos editoriais. Essa experiência desenvolveu minha capacidade de apurar, comunicar e trabalhar com ritmo — habilidades que levo para tudo o que construo.','Poker journalism brought me to international events, live reporting, interviews and editorial projects. It sharpened how I research, communicate and work under pressure — skills I bring to everything I build.')}</p>
        <div className={styles.editorialStats}><span>WSOP</span><span>LAS VEGAS</span><span>2022 — 2025</span></div>
-       <div className={styles.publications}>{press.map(item=><a key={string(item.name)} href={string(item.url)} target="_blank" rel="noopener noreferrer"><strong>{string(item.name)}</strong><span>{lang==='pt'?string(item.description_pt):string(item.description_en)}</span><b>↗</b></a>)}</div>
+       <div className={styles.publications}>{press.map(item=><a key={string(item.name)} href={portfolioUrl(item.url)||'#contato'} target="_blank" rel="noopener noreferrer"><strong>{string(item.name)}</strong><span>{lang==='pt'?string(item.description_pt):string(item.description_en)}</span><b>↗</b></a>)}</div>
      </div>
      <div className={styles.editorialVisual} data-concept-reveal>
-       {gallery.length?<><div className={styles.editorialImage}><SiteImage src={gallery[galleryIndex]} alt={text('Registro fotográfico da cobertura da WSOP em Las Vegas','Photo from WSOP Las Vegas coverage')} imageWidth={1100} sizes="(max-width: 760px) 100vw, 50vw"/></div><div className={styles.galleryControls}><span>{String(galleryIndex+1).padStart(2,'0')} / {String(gallery.length).padStart(2,'0')}</span><div><button aria-label={text('Foto anterior','Previous photo')} type="button" onClick={()=>nextGallery(-1)}>←</button><button aria-label={text('Próxima foto','Next photo')} type="button" onClick={()=>nextGallery(1)}>→</button></div></div></>:null}
+       {gallery.length?<><div className={styles.editorialImage}><SiteImage src={gallery[galleryIndex%gallery.length]} alt={string(galleryMeta[galleryIndex%gallery.length]?.[lang==='pt'?'alt_pt':'alt_en'])||text('Registro fotográfico da cobertura da WSOP em Las Vegas','Photo from WSOP Las Vegas coverage')} imageWidth={1100} sizes="(max-width: 760px) 100vw, 50vw"/></div><div className={styles.galleryControls}><span>{String(galleryIndex+1).padStart(2,'0')} / {String(gallery.length).padStart(2,'0')}</span><div><button aria-label={text('Foto anterior','Previous photo')} type="button" onClick={()=>nextGallery(-1)}>←</button><button aria-label={text('Próxima foto','Next photo')} type="button" onClick={()=>nextGallery(1)}>→</button></div></div></>:null}
      </div>
    </section>
 
@@ -174,13 +176,13 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
        <h3>{text('Formação','Education')}</h3>
        {education.map((item,i)=><div className={styles.educationRow} key={i}><strong>{lang==='pt'?string(item.title_pt):string(item.title_en)}</strong><span>{string(item.institution)}</span></div>)}
        <h3>{text('Ferramentas e competências','Tools and skills')}</h3>
-       <div className={styles.skills}>{['Google Apps Script','Google Sheets','Next.js','Dashboards','Automação','Comunicação',...skills.map(item=>lang==='pt'?string(item.label_pt):string(item.label_en))].filter(Boolean).map((skill,i)=><span key={i}>{skill}</span>)}</div>
+       <div className={styles.skills}>{['Google Apps Script','Google Sheets','Next.js','Dashboards',text('Automação','Automation'),text('Comunicação','Communication'),...skills.map(item=>lang==='pt'?string(item.label_pt):string(item.label_en))].filter(Boolean).map((skill,i)=><span key={i}>{skill}</span>)}</div>
      </div>
    </section>
 
    <section className={styles.contact} id="contato">
      <div className={styles.contactIntro} data-concept-reveal><span className={styles.sectionNum}>07 / {text('PRÓXIMO CAPÍTULO','NEXT CHAPTER')}</span><h2>{text('Vamos criar','Let’s build')}<br/><em>{text('algo relevante.','something meaningful.')}</em></h2><p>{lang==='pt'?title('portfolio_concept_contact_pt','Estou aberto a oportunidades e colaborações em comunicação, conteúdo, produtos digitais, dados e projetos que conectem essas áreas.'):title('portfolio_concept_contact_en','I’m open to opportunities and collaborations in communication, content, digital products, data and work connecting those fields.')}</p><div className={styles.contactActions}>{email?<a className={styles.contactMain} href={`mailto:${email}`}>{text('Escrever um e-mail ↗','Send an email ↗')}</a>:null}{whatsapp?<a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>:null}</div></div>
-     <div className={styles.contactPanel} data-concept-reveal><div className={styles.panelTop}>LET&apos;S CONNECT <span>✳</span></div><strong>{name}</strong><p>{text('Jornalismo · Educação · Produtos digitais · Tecnologia','Journalism · Education · Digital products · Technology')}</p><div>{linkedIn?<a href={linkedIn} target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>:null}{instagram?<a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noopener noreferrer">INSTAGRAM ↗</a>:null}<a href={cv} target="_blank" rel="noopener noreferrer">CURRÍCULO ↓</a><button type="button" onClick={share}>{copied?'COPIADO ✓':text('COPIAR LINK ↗','COPY LINK ↗')}</button></div><small>{text('Os links externos funcionam. Esta página é apenas uma proposta de design; o site oficial permanece igual.','External links are active. This is a design proposal; the official website is unchanged.')}</small></div>
+     <div className={styles.contactPanel} data-concept-reveal><div className={styles.panelTop}>LET&apos;S CONNECT <span>✳</span></div><strong>{name}</strong><p>{text('Jornalismo · Educação · Produtos digitais · Tecnologia','Journalism · Education · Digital products · Technology')}</p><div>{linkedIn?<a href={linkedIn} target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>:null}{instagram?<a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noopener noreferrer">INSTAGRAM ↗</a>:null}<a href={cv} target="_blank" rel="noopener noreferrer">CURRÍCULO ↓</a><button type="button" onClick={share}>{copied?text('COPIADO ✓','COPIED ✓'):text('COPIAR LINK ↗','COPY LINK ↗')}</button></div><small hidden={!preview}>{text('Os links externos funcionam. Esta página é apenas uma proposta de design; o site oficial permanece igual.','External links are active. This is a design proposal; the official website is unchanged.')}</small></div>
    </section>
 
    <footer className={styles.footer}><span>GC<span>.</span></span><p>{text('Histórias, ideias e soluções em movimento.','Stories, ideas and solutions in motion.')}</p><a href="#inicio">{text('Voltar ao início ↑','Back to top ↑')}</a></footer>
