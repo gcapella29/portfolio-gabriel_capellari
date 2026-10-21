@@ -1,9 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {capellariMedia,capellariPreviewLayout,portfolioUrl} from './capellari-preview.ts';
+import {capellariMedia,capellariPreviewLayout,portfolioUrl,useDefaultCapellariCases} from './capellari-preview.ts';
 
 const project={id:'PRJ-0002',slug:'capellari'};
 const data={identity:{name:'Gabriel'},content:{hero_title:'Clássico',portfolio_concept_hero_title_pt:'Novo'},appearance:{preview_template_key:'portfolio-multidisciplinary-1'},contact:{},media:{hero:{url:'/classic.jpg'},portfolio_concept:{hero:{url:'/new.jpg'}}}};
+
+test('explicit empty cases hide the cards while existing publications retain defaults',()=>{
+  assert.equal(useDefaultCapellariCases({}),true);
+  assert.equal(useDefaultCapellariCases({portfolio_concept_cases:[]}),true);
+  assert.equal(useDefaultCapellariCases({portfolio_concept_cases:[],portfolio_concept_cases_configured:true}),false);
+  assert.equal(useDefaultCapellariCases({portfolio_concept_cases:[{name:'Custom'}]}),false);
+});
 
 test('preview switches both layouts without changing Owner sections or selection',()=>{
   const before=structuredClone(data);
