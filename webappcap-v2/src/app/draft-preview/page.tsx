@@ -45,7 +45,9 @@ export default async function DraftPreviewPage({searchParams}:Props){
       <strong>Rascunho v{result.preview?.draft_version} · Comparar layouts</strong>
       <a href={link('classic')} aria-current={selection.templateKey==='portfolio-legacy-1'||selection.templateKey==='portfolio-native-1'?'page':undefined}>Clássico</a>
       <a href={link('multidisciplinary')} aria-current={selection.templateKey==='portfolio-multidisciplinary-1'?'page':undefined}>Multidisciplinar</a>
-      <span>Comparação temporária. O rascunho salvo permanece igual.</span>
+      <span>Comparação temporária. Para conferir alterações salvas depois desta cópia, gere um novo preview no Owner.</span>
+      {result.preview?.created_at?<span>Gerado em <time dateTime={result.preview.created_at}>{result.preview.created_at}</time></span>:null}
+      {result.preview?.content_hash?<span>Conteúdo: {result.preview.content_hash.slice(0,12)}</span>:null}
     </nav>
     <div style={{position:'relative'}}>{rendered}</div>
   </>;

@@ -10,6 +10,7 @@ type DraftPayload=SnapshotPayload&{
     project_id?:string;
     slug?:string;
     draft_version?:number;
+    content_hash?:string;
     created_at?:string;
     expires_at?:string;
   };
