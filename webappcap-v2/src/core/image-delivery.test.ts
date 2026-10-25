@@ -2,9 +2,11 @@ import test from 'node:test';import assert from 'node:assert/strict';import shar
 import {animatedImage,optimizableProjectImage} from './image-delivery.ts';
 import {optimizeImageUpload} from './image-upload-optimization.ts';
 const origin='https://owned.supabase.co';
-test('delivery optimizes only public raster files from the configured storage origin',()=>{
+test('delivery optimizes public raster files from configured storage and Drive thumbnails',()=>{
  assert.equal(optimizableProjectImage(`${origin}/storage/v1/object/public/bucket/a.png`,origin),true);
- for(const src of [`${origin}/storage/v1/object/sign/b/a.png?token=secret`,`${origin}/storage/v1/object/public/b/a.svg`,`${origin}/storage/v1/object/public/b/a.gif`,'https://other.supabase.co/storage/v1/object/public/b/a.png','data:image/png;base64,abc','/assets/a.png',`${origin}/storage/v1/object/public/b/a.png?v=1`,`${origin}/storage/v1/object/public/b/a.png#x`])assert.equal(optimizableProjectImage(src,origin),false);
+ assert.equal(optimizableProjectImage('https://drive.google.com/thumbnail?id=1QKpWWXBHR2gtByiJz1R6eGJQsQcF_7Sv&sz=w1600',origin),true);
+ assert.equal(optimizableProjectImage('https://drive.google.com/thumbnail?id=1QKpWWXBHR2gtByiJz1R6eGJQsQcF_7Sv&sz=w1600',undefined),true);
+ for(const src of [`${origin}/storage/v1/object/sign/b/a.png?token=secret`,`${origin}/storage/v1/object/public/b/a.svg`,`${origin}/storage/v1/object/public/b/a.gif`,'https://other.supabase.co/storage/v1/object/public/b/a.png','data:image/png;base64,abc','/assets/a.png',`${origin}/storage/v1/object/public/b/a.png?v=1`,`${origin}/storage/v1/object/public/b/a.png#x`,'https://drive.google.com/thumbnail?id=short','https://drive.google.com/file/d/1QKpWWXBHR2gtByiJz1R6eGJQsQcF_7Sv/view'])assert.equal(optimizableProjectImage(src,origin),false);
  assert.equal(optimizableProjectImage(`${origin}/storage/v1/object/public/b/a.jpg`,undefined),false);
 });
 test('animation detection parses chunks and ignores marker text inside pixel payloads',()=>{

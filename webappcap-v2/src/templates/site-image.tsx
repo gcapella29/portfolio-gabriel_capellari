@@ -8,6 +8,7 @@ export function SiteImage({src,imageWidth=640,sizes='(max-width: 700px) 100vw, 6
  const optimized=src&&optimizableProjectImage(src,process.env.NEXT_PUBLIC_SUPABASE_URL)
   ?getImageProps({src,alt:props.alt||'',width:imageWidth,height:imageWidth,sizes,quality:85}).props
   :undefined;
+ const fetchPriority=props.fetchPriority||(loading==='eager'?'high':undefined);
  // eslint-disable-next-line @next/next/no-img-element -- Preserve native template geometry.
- return <img {...props} alt={props.alt||''} src={optimized?.src||src} srcSet={props.srcSet||optimized?.srcSet} sizes={optimized?sizes:undefined} loading={loading} decoding={props.decoding||'async'}/>;
+ return <img {...props} alt={props.alt||''} src={optimized?.src||src} srcSet={props.srcSet||optimized?.srcSet} sizes={optimized?sizes:props.sizes} loading={loading} fetchPriority={fetchPriority} decoding={props.decoding||'async'}/>;
 }
