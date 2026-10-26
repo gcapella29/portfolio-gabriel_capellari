@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {capellariMedia,capellariPreviewLayout,portfolioUrl,useDefaultCapellariCases} from './capellari-preview.ts';
+import {capellariMedia,capellariPreviewLayout,portfolioUrl,useDefaultCapellariCases,portfolioCv,capellariMarquee} from './capellari-preview.ts';
 
 const project={id:'PRJ-0002',slug:'capellari'};
 const data={identity:{name:'Gabriel'},content:{hero_title:'Clássico',portfolio_concept_hero_title_pt:'Novo'},appearance:{preview_template_key:'portfolio-multidisciplinary-1'},contact:{},media:{hero:{url:'/classic.jpg'},portfolio_concept:{hero:{url:'/new.jpg'}}}};
@@ -38,4 +38,22 @@ test('new media overrides preserve classic images and inherit unspecified slots'
 test('Owner links only allow web URLs, local assets and anchors',()=>{
   for(const value of ['javascript:alert(1)','data:text/html,test','//other.test','file:///test',{}])assert.equal(portfolioUrl(value),'');
   for(const value of ['https://example.com','/assets/photo.jpg','#contato'])assert.equal(portfolioUrl(value),value);
+});
+
+test('curriculum matches the language and preserves the legacy fallback',()=>{
+  const contact={cv:'/old.pdf',cv_pt:'https://example.test/pt.pdf',cv_en:'https://example.test/en.pdf'};
+  const before=structuredClone(contact);
+  assert.equal(portfolioCv(contact,'pt'),contact.cv_pt);
+  assert.equal(portfolioCv(contact,'en'),contact.cv_en);
+  assert.equal(portfolioCv({cv:'/old.pdf',cv_pt:'/pt.pdf'},'en'),'/old.pdf');
+  assert.deepEqual(contact,before);
+});
+test('unsafe curriculum URLs cannot replace a safe fallback',()=>{
+  assert.equal(portfolioCv({cv:'/old.pdf',cv_en:'javascript:alert(1)'},'en'),'/old.pdf');
+  assert.equal(portfolioCv({},'pt','/default.pdf'),'/default.pdf');
+  assert.equal(portfolioCv({cv:'//unsafe.test'},'en'),'#formacao');
+});
+test('yellow band has copy in both languages',()=>{
+  assert.deepEqual(capellariMarquee('pt'),['NARRATIVAS','PRODUTOS DIGITAIS','PESQUISA','DADOS E AUTOMAÇÃO','EDUCAÇÃO']);
+  assert.deepEqual(capellariMarquee('en'),['STORYTELLING','DIGITAL PRODUCTS','RESEARCH','DATA & AUTOMATION','EDUCATION']);
 });

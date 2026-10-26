@@ -3,6 +3,20 @@ import type {V2Content} from './onboarding-data';
 export const CLASSIC_PORTFOLIO='portfolio-legacy-1';
 export const MULTIDISCIPLINARY_PORTFOLIO='portfolio-multidisciplinary-1';
 
+export function portfolioCv(contact:Record<string,unknown>,language:'pt'|'en',fallback='#formacao'){
+  for(const value of [contact[`cv_${language}`],contact.cv,fallback]){
+    const url=portfolioUrl(value);
+    if(url)return url;
+  }
+  return '#formacao';
+}
+
+export function capellariMarquee(language:'pt'|'en'){
+  return language==='pt'
+    ? ['NARRATIVAS','PRODUTOS DIGITAIS','PESQUISA','DADOS E AUTOMAÇÃO','EDUCAÇÃO']
+    : ['STORYTELLING','DIGITAL PRODUCTS','RESEARCH','DATA & AUTOMATION','EDUCATION'];
+}
+
 export function useDefaultCapellariCases(content:Record<string,unknown>){
   return content.portfolio_concept_cases_configured!==true &&
     (!Array.isArray(content.portfolio_concept_cases)||content.portfolio_concept_cases.length===0);
