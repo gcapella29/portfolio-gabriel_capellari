@@ -3,8 +3,13 @@ import type {V2Content} from './onboarding-data';
 export const CLASSIC_PORTFOLIO='portfolio-legacy-1';
 export const MULTIDISCIPLINARY_PORTFOLIO='portfolio-multidisciplinary-1';
 
-export function portfolioCv(contact:Record<string,unknown>,language:'pt'|'en',fallback='#formacao'){
-  for(const value of [contact[`cv_${language}`],contact.cv,fallback]){
+export const CAPELLARI_CV_LINKS={
+  pt:'https://drive.google.com/file/d/1FRnCEjjW4_JhVs1lUQTwY68lXaaCFSWY/view',
+  en:'https://drive.google.com/file/d/1wm1hNdUKW19WA28zRdFjtMrvQ8KMuZE7/view'
+};
+
+export function portfolioCv(contact:Record<string,unknown>,language:'pt'|'en',fallback='#formacao',localizedDefaults?:Partial<Record<'pt'|'en',string>>){
+  for(const value of [contact[`cv_${language}`],localizedDefaults?.[language],contact.cv,fallback]){
     const url=portfolioUrl(value);
     if(url)return url;
   }

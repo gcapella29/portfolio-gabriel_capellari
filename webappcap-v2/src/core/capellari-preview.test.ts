@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {capellariMedia,capellariPreviewLayout,portfolioUrl,useDefaultCapellariCases,portfolioCv,capellariMarquee} from './capellari-preview.ts';
+import {capellariMedia,capellariPreviewLayout,portfolioUrl,useDefaultCapellariCases,portfolioCv,capellariMarquee,CAPELLARI_CV_LINKS} from './capellari-preview.ts';
 
 const project={id:'PRJ-0002',slug:'capellari'};
 const data={identity:{name:'Gabriel'},content:{hero_title:'Clássico',portfolio_concept_hero_title_pt:'Novo'},appearance:{preview_template_key:'portfolio-multidisciplinary-1'},contact:{},media:{hero:{url:'/classic.jpg'},portfolio_concept:{hero:{url:'/new.jpg'}}}};
@@ -56,4 +56,12 @@ test('unsafe curriculum URLs cannot replace a safe fallback',()=>{
 test('yellow band has copy in both languages',()=>{
   assert.deepEqual(capellariMarquee('pt'),['NARRATIVAS','PRODUTOS DIGITAIS','PESQUISA','DADOS E AUTOMAÇÃO','EDUCAÇÃO']);
   assert.deepEqual(capellariMarquee('en'),['STORYTELLING','DIGITAL PRODUCTS','RESEARCH','DATA & AUTOMATION','EDUCATION']);
+});
+
+test('Capellari defaults use the chosen PDFs and allow a saved language override',()=>{
+  const legacy={cv:'/old.pdf'};
+  assert.equal(portfolioCv(legacy,'pt','#formacao',CAPELLARI_CV_LINKS),CAPELLARI_CV_LINKS.pt);
+  assert.equal(portfolioCv(legacy,'en','#formacao',CAPELLARI_CV_LINKS),CAPELLARI_CV_LINKS.en);
+  assert.equal(portfolioCv({...legacy,cv_en:'/custom-en.pdf'},'en','#formacao',CAPELLARI_CV_LINKS),'/custom-en.pdf');
+  assert.equal(portfolioCv(legacy,'pt'),'/old.pdf');
 });

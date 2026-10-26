@@ -4,7 +4,7 @@ import {useEffect,useMemo,useState} from 'react';
 import type {V2Content} from '@/core/onboarding-data';
 import {SiteImage} from '@/templates/site-image';
 import styles from './concept.module.css';
-import {capellariMedia,portfolioUrl,useDefaultCapellariCases,portfolioCv,capellariMarquee} from '@/core/capellari-preview';
+import {capellariMedia,portfolioUrl,useDefaultCapellariCases,portfolioCv,capellariMarquee,CAPELLARI_CV_LINKS} from '@/core/capellari-preview';
 
 type Lang='pt'|'en';
 type Row=Record<string,unknown>;
@@ -66,7 +66,7 @@ export function CapellariConcept({data,preview=false,reference=false}:{data:V2Co
  const hero=image(media.hero);
  const aboutPhoto=image(media.about);
  const name=string(data.identity?.name).replace(/["”]+$/,'')||'Gabriel Capellari';
- const cv=portfolioCv(contact,lang);
+ const cv=portfolioCv(contact,lang,'#formacao',CAPELLARI_CV_LINKS);
  const email=string(contact.email)||'';
  const whatsapp=string(contact.whatsapp).replace(/\D/g,'');
  const linkedIn=portfolioUrl(contact.linkedin);

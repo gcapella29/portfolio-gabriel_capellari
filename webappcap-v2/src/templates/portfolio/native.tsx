@@ -1,6 +1,6 @@
 'use client';
 import {SiteImage} from '../site-image';
-import {portfolioCv} from '@/core/capellari-preview';
+import {portfolioCv,CAPELLARI_CV_LINKS} from '@/core/capellari-preview';
 import {imageMediaStyle} from '@/core/image-placement';
 import {heroCopyStyle,heroTextStyle} from '@/core/hero-typography';
 
@@ -50,7 +50,7 @@ export function NativePortfolioTemplate({project,data,preview=false}:TemplateRen
   const whatsapp=stringValue(data.contact,'whatsapp',defaults.contact.whatsapp).replace(/\D/g,'');
   const whatsappLabel=stringValue(data.contact,'whatsapp_label',defaults.contact.whatsappLabel);
   const linkedin=stringValue(data.contact,'linkedin',defaults.contact.linkedin);
-  const cv=portfolioCv(data.contact,language,defaults.contact.cv);
+  const cv=portfolioCv(data.contact,language,defaults.contact.cv,project.slug==='capellari'?CAPELLARI_CV_LINKS:undefined);
   const reel=stringValue(data.contact,'reel',defaults.contact.reel);
   const languages=(storedRows(data.content,'portfolio_languages')??defaults.identity.languages.map(item=>({country:item.country,label_pt:item.pt,label_en:item.en}))).map(item=>({country:field(item,'country')||'br',pt:field(item,'label_pt'),en:field(item,'label_en')}));
   const ticker=(storedRows(data.content,'portfolio_ticker')??defaults.ticker.map(title=>({title}))).map(item=>field(item,'title')).filter(Boolean);
