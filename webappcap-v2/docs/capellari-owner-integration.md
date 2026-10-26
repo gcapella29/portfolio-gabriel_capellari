@@ -13,7 +13,9 @@ permite visualizar ambos os modelos usando `layout=classic` ou
 Manter o token e a expiração: gerar outro preview pelo Owner quando expirar.
 
 `/portfolio-concept` continua sendo a referência visual alimentada pelo
-snapshot **publicado**. Ela não representa o rascunho do Owner.
+snapshot **publicado**. Ela não representa o rascunho do Owner e informa essa
+origem no título e na faixa de referência. O preview do rascunho identifica
+a data de geração e, quando fornecido pelo Owner RC5.3, o hash do conteúdo.
 
 ## Contrato para o editor do Owner
 
@@ -37,8 +39,10 @@ O conceito lê `content.portfolio_concept_*`: `hero_title_pt/en`,
 `contact_pt/en` e `cases`. Campos vazios usam o texto visual aprovado.
 
 Cada case aceita `title`, `type_pt/en`, `description_pt/en`, `stack`, `url`
-e `image` (URL ou objeto com `url`). O frontend limita a 12 cases; atualmente
-lista vazia usa os quatro cases aprovados. Não apagar os campos clássicos
+e `image` (URL ou objeto com `url`). O frontend limita a 12 cases. Publicações
+anteriores mantêm os quatro cases padrão quando a lista está vazia. Ao editar
+a lista, o Owner RC5.3 salva `portfolio_concept_cases_configured: true`; com
+essa marca, uma lista vazia oculta os cards. Não apagar os campos clássicos
 `hero_title`, `hero_text`, `about`, `proof` e suas traduções.
 
 Trajetória, formação, links editoriais e competências continuam lendo
@@ -59,6 +63,12 @@ Não copiar essas substituições para os slots clássicos. Metadados acessívei
 da galeria usam `content.portfolio_gallery_meta[].alt_pt/en`.
 
 ## Pendências para concluir a integração
+
+O pacote local RC5.3 corrige leitura de dados mutáveis, proteção de versão,
+salvamento com recuperação, comparação de conteúdo antes de `no_changes` e
+arquivos publicados versionados. Ele precisa ser validado numa cópia do Apps
+Script antes de implantação; nenhuma atualização de dados é implícita no pacote.
+O rascunho v11 divergente exige reconciliação aprovada, preservando ambos os lados.
 
 1. Auditar os arquivos atuais do Apps Script do Owner antes de aplicar o contrato.
 2. Auditar os handlers de leitura, gravação e geração de preview antes de editar.

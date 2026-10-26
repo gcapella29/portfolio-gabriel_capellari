@@ -4,7 +4,7 @@ import {useEffect,useMemo,useState} from 'react';
 import type {V2Content} from '@/core/onboarding-data';
 import {SiteImage} from '@/templates/site-image';
 import styles from './concept.module.css';
-import {capellariMedia,portfolioUrl} from '@/core/capellari-preview';
+import {capellariMedia,portfolioUrl,useDefaultCapellariCases,portfolioCv,capellariMarquee,CAPELLARI_CV_LINKS} from '@/core/capellari-preview';
 
 type Lang='pt'|'en';
 type Row=Record<string,unknown>;
@@ -33,7 +33,7 @@ const focus=[
  {number:'04',pt:'Educação e idiomas',en:'Teaching & languages'}
 ];
 
-export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:boolean}){
+export function CapellariConcept({data,preview=false,reference=false}:{data:V2Content;preview?:boolean;reference?:boolean}){
  const [lang,setLang]=useState<Lang>('pt');
  const [menuOpen,setMenuOpen]=useState(false);
  const [galleryIndex,setGalleryIndex]=useState(0);
@@ -42,7 +42,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
  const content=data.content||{};
  const title=(key:string,fallback:string)=>string(content[key])||fallback;
  const suppliedCases=rows(content.portfolio_concept_cases);
- const cases=(suppliedCases.length?suppliedCases:defaultCases).slice(0,12).map((item,i)=>{
+ const cases=(useDefaultCapellariCases(content)?defaultCases:suppliedCases).slice(0,12).map((item,i)=>{
    const row=item as Row;
    const category=(row.type&&typeof row.type==='object'?row.type:{}) as Row;
    const description=(row.desc&&typeof row.desc==='object'?row.desc:{}) as Row;
@@ -66,7 +66,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
  const hero=image(media.hero);
  const aboutPhoto=image(media.about);
  const name=string(data.identity?.name).replace(/["”]+$/,'')||'Gabriel Capellari';
- const cv=portfolioUrl(contact.cv)||'#formacao';
+ const cv=portfolioCv(contact,lang,'#formacao',CAPELLARI_CV_LINKS);
  const email=string(contact.email)||'';
  const whatsapp=string(contact.whatsapp).replace(/\D/g,'');
  const linkedIn=portfolioUrl(contact.linkedin);
@@ -85,7 +85,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
  },[]);
  return <div className={styles.site} lang={lang==='pt'?'pt-BR':'en'}>
    <a className={styles.skip} href="#sobre">{text('Pular para o conteúdo','Skip to content')}</a>
-   {preview?<div className={styles.draftRibbon}>CONCEITO 01 <span>·</span> {text('RASCUNHO — NÃO PUBLICADO','DRAFT — NOT PUBLISHED')}</div>:null}
+   {reference?<div className={styles.draftRibbon}>{text('REFERÊNCIA VISUAL · DADOS PUBLICADOS','VISUAL REFERENCE · PUBLISHED DATA')}</div>:preview?<div className={styles.draftRibbon}>CONCEITO 01 <span>·</span> {text('RASCUNHO — NÃO PUBLICADO','DRAFT — NOT PUBLISHED')}</div>:null}
    <header className={styles.topbar}>
      <a className={styles.brand} href="#inicio" aria-label="Gabriel Capellari — início">GC<span>.</span></a>
      <span className={styles.topMeta}>GABRIEL CAPELLARI <i/> {text('PORTFÓLIO 2026','PORTFOLIO 2026')}</span>
@@ -120,7 +120,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
    </section>
 
    <div className={styles.marquee} aria-label={text('Áreas de atuação','Areas of work')}>
-     <div className={styles.marqueeTrack} aria-hidden="true">{[0,1].map(i=><span key={i}>STORYTELLING <b>✳</b> DIGITAL PRODUCTS <b>✳</b> RESEARCH <b>✳</b> DATA & AUTOMATION <b>✳</b> EDUCATION <b>✳</b></span>)}</div>
+     <div className={styles.marqueeTrack}>{[0,1].map(i=><span key={i} aria-hidden={i===1?true:undefined}>{capellariMarquee(lang).map(item=><span key={item}>{item} <b aria-hidden="true">✳</b> </span>)}</span>)}</div>
    </div>
 
    <section id="areas" className={styles.focus}>
@@ -182,7 +182,7 @@ export function CapellariConcept({data,preview=false}:{data:V2Content;preview?:b
 
    <section className={styles.contact} id="contato">
      <div className={styles.contactIntro} data-concept-reveal><span className={styles.sectionNum}>07 / {text('PRÓXIMO CAPÍTULO','NEXT CHAPTER')}</span><h2>{text('Vamos criar','Let’s build')}<br/><em>{text('algo relevante.','something meaningful.')}</em></h2><p>{lang==='pt'?title('portfolio_concept_contact_pt','Estou aberto a oportunidades e colaborações em comunicação, conteúdo, produtos digitais, dados e projetos que conectem essas áreas.'):title('portfolio_concept_contact_en','I’m open to opportunities and collaborations in communication, content, digital products, data and work connecting those fields.')}</p><div className={styles.contactActions}>{email?<a className={styles.contactMain} href={`mailto:${email}`}>{text('Escrever um e-mail ↗','Send an email ↗')}</a>:null}{whatsapp?<a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>:null}</div></div>
-     <div className={styles.contactPanel} data-concept-reveal><div className={styles.panelTop}>LET&apos;S CONNECT <span>✳</span></div><strong>{name}</strong><p>{text('Jornalismo · Educação · Produtos digitais · Tecnologia','Journalism · Education · Digital products · Technology')}</p><div>{linkedIn?<a href={linkedIn} target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>:null}{instagram?<a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noopener noreferrer">INSTAGRAM ↗</a>:null}<a href={cv} target="_blank" rel="noopener noreferrer">CURRÍCULO ↓</a><button type="button" onClick={share}>{copied?text('COPIADO ✓','COPIED ✓'):text('COPIAR LINK ↗','COPY LINK ↗')}</button></div><small hidden={!preview}>{text('Os links externos funcionam. Esta página é apenas uma proposta de design; o site oficial permanece igual.','External links are active. This is a design proposal; the official website is unchanged.')}</small></div>
+     <div className={styles.contactPanel} data-concept-reveal><div className={styles.panelTop}>LET&apos;S CONNECT <span>✳</span></div><strong>{name}</strong><p>{text('Jornalismo · Educação · Produtos digitais · Tecnologia','Journalism · Education · Digital products · Technology')}</p><div>{linkedIn?<a href={linkedIn} target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>:null}{instagram?<a href={`https://www.instagram.com/${instagram}/`} target="_blank" rel="noopener noreferrer">INSTAGRAM ↗</a>:null}<a href={cv} target="_blank" rel="noopener noreferrer">{text('CURRÍCULO ↓','RÉSUMÉ ↓')}</a><button type="button" onClick={share}>{copied?text('COPIADO ✓','COPIED ✓'):text('COPIAR LINK ↗','COPY LINK ↗')}</button></div><small hidden={!preview&&!reference}>{reference?text('Esta referência usa os dados publicados. Para conferir alterações, gere um preview do rascunho no Owner.','This reference uses published data. Generate a draft preview in Owner to check edits.'):text('Esta prévia usa uma cópia do rascunho. Gere outra após salvar novas alterações.','This preview uses a draft copy. Generate another after saving changes.')}</small></div>
    </section>
 
    <footer className={styles.footer}><span>GC<span>.</span></span><p>{text('Histórias, ideias e soluções em movimento.','Stories, ideas and solutions in motion.')}</p><a href="#inicio">{text('Voltar ao início ↑','Back to top ↑')}</a></footer>
