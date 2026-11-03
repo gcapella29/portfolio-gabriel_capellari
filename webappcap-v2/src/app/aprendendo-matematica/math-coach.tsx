@@ -35,12 +35,12 @@ export default function MathCoach({lessons,progress,modules,reviewCount,onLesson
  useEffect(()=>{let active=true;loadStudy().then(s=>{if(active){setStudy(s);setError('');}}).catch(e=>{if(active)setError(e instanceof Error?e.message:'Erro ao carregar plano.');});return()=>{active=false;};},[reload]);
  const completed=new Set(progress.filter(x=>x.status==='concluida').map(x=>x.aula_id));
  const guidance=useMemo(()=>{
-  if(!study)return topics.map((t,i)=>({...t,attempted:0,accuracy:0,score:200-i,level:'Não avaliado'}));
+  // Antes de existir histórico, use uma recomendação curricular inicial com a mesma estrutura dos itens avaliados.
   return topics.map((t,i)=>{
-   const v=study.stats.skills[t.skill]||{total:0,correct:0};
+   const v=study?.stats.skills[t.skill]||{total:0,correct:0};
    const attempted=v.total;
    const accuracy=attempted?Math.round(v.correct/attempted*100):0;
-   const unresolved=study.mistakes.filter(m=>m.skill===t.skill&&!m.resolved).length;
+   const unresolved=(study?.mistakes||[]).filter(m=>m.skill===t.skill&&!m.resolved).length;
    const mastery=attempted<5?'Ainda em observação':attempted>=20&&accuracy>=90?'Bom desempenho sustentado':attempted>=10&&accuracy>=80?'Avançando':accuracy<60?'Reforço necessário':'Em desenvolvimento';
    const prerequisite=t.prerequisite!=='Nenhum'&&!completed.has(t.prerequisite);
    const score=(attempted<5?110:100-accuracy)+(unresolved*8)+(prerequisite?-55:0)+(completed.has(t.lessonId)?-30:0)-i;
