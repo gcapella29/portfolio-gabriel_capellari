@@ -150,6 +150,8 @@ function doPost(event) {
         value = completeLesson(String(data.id||'')); break;
       case 'diagnostics':
         value = getDiagnosticsApi_(); break;
+      case 'review':
+        value = getReviewApi_(); break;
       case 'finish-diagnostic':
         value = finishDiagnosticApi_(data.answers); break;
       default: return json_({ok:false,error:'Operação desconhecida.'});
@@ -217,4 +219,46 @@ function finishDiagnosticApi_(answers) {
     registrar_(ss,'DIAGNOSTICO_CONCLUIDO','diagnostico',id,{acertos:totalCorrect,questoes:normalized.length});
   }finally{lock.releaseLock();}
   return {id,...summary};
+}
+
+
+/**
+ * V0.3 · Revisão espaçada das questões de prática com erro histórico.
+ * A fila é derivada de Respostas (fonte de verdade), sem sobrescrever progresso.
+ * Erro: 1 dia; primeira correção: 3 dias; segunda: 7 dias;
+ * três acertos seguidos: questão consolidada, fora da fila.
+ */
+function getReviewApi_() {
+  const ss=db_();
+  const rows=objects_(ss,'Respostas').filter(r=>String(r.aluno_id)===ALUNO_ID);
+  const questions=objects_(ss,'Questoes').filter(q=>String(q.tipo)==='pratica');
+  const attempts=new Map();
+  rows.forEach((r,i)=>{
+    const id=String(r.questao_id);
+    const list=attempts.get(id)||[];
+    list.push({idx:i,correct:r.correta===true||String(r.correta).toLowerCase()==='true',at:r.data_hora});
+    attempts.set(id,list);
+  });
+  const now=Date.now(),due=[],upcoming=[];
+  questions.forEach(q=>{
+    const list=attempts.get(String(q.questao_id))||[];
+    if(!list.length||!list.some(a=>!a.correct))return;
+    const sorted=[...list].sort((a,b)=>new Date(a.at).getTime()-new Date(b.at).getTime()||a.idx-b.idx);
+    let streak=0;
+    for(let i=sorted.length-1;i>=0;i--){if(!sorted[i].correct)break;streak++;}
+    if(streak>=3)return;
+    const delayDays=streak===0?1:streak===1?3:7;
+    const lastTime=new Date(sorted[sorted.length-1].at).getTime();
+    if(!Number.isFinite(lastTime))return;
+    const item={
+      id:String(q.questao_id),skill:String(q.habilidade),level:String(q.nivel),
+      title:String(q.enunciado),options:JSON.parse(q.alternativas_json),
+      lessonId:String(q.aula_id),dueAt:new Date(lastTime+delayDays*86400000).toISOString(),
+      daysInterval:delayDays
+    };
+    (lastTime+delayDays*86400000<=now?due:upcoming).push(item);
+  });
+  due.sort((a,b)=>a.dueAt.localeCompare(b.dueAt));
+  upcoming.sort((a,b)=>a.dueAt.localeCompare(b.dueAt));
+  return {due:due.slice(0,20),upcoming:upcoming.slice(0,20),dueCount:due.length,upcomingCount:upcoming.length};
 }
