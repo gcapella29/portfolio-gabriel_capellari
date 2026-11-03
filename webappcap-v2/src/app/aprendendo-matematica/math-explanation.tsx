@@ -1,7 +1,9 @@
 import styles from './math.module.css';
 
 export default function MathExplanation({explanation,correct,chosen,correctOption,topic=''}:{explanation:string;correct:boolean;chosen?:string;correctOption?:string;topic?:string}){
- const sections=explanation.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+ const paragraphs=explanation.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+ const sections:string[]=[];
+ for(const part of paragraphs){if(/^(?:\d+\.|Atenção)/i.test(part)||!sections.length)sections.push(part);else sections[sections.length-1]+='\n'+part;}
  const structured=sections.length>1&&sections.some(s=>/^(?:\d+\.|Atenção)/i.test(s));
  return <div className={styles.explanationV5} aria-live="polite">
   <div className={correct?styles.explanationSuccess:styles.explanationIntro}>
