@@ -19,7 +19,7 @@ function doGet() {
   return HtmlService.createHtmlOutput(
     '<!doctype html><meta charset="utf-8"><title>Aprendendo Matemática</title>'+
     '<p>Este aplicativo mudou para o WebAppCap.</p>'+
-    '<p><a href="https://aprendendo-matematica.webappcap.com.br/">Abrir Aprendendo Matemática</a></p>'
+    '<p><a target="_blank" rel="noopener noreferrer" href="https://aprendendo-matematica.webappcap.com.br/">Abrir Aprendendo Matemática em nova aba</a></p>'
   );
 }
 function db_(){return SpreadsheetApp.openById(DB_ID);}
