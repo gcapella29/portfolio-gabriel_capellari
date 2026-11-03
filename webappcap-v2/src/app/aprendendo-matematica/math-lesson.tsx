@@ -1,0 +1,39 @@
+'use client';
+import {useState} from 'react';
+import styles from './math.module.css';
+
+type Step={title:string;text:string;example?:string};
+type Walk={line:string;why:string};
+type Check={question:string;options:string[];correct:number;why:string};
+type LessonData={version?:number;intro:string;analogy?:string;vocab?:{term:string;meaning:string}[];steps:Step[];walkthrough?:Walk[];pitfall:string;recap?:string[]|string;check?:Check;worked?:string};
+
+function Visual({id}:{id:string}){
+ if(id==='A02')return <div className={styles.diagram}><div className={styles.diagramCaption}>Uma barra dividida em oito partes iguais — três selecionadas representam 3/8</div><div className={styles.fractionBar}>{Array.from({length:8},(_,i)=><span key={i} className={i<3?styles.fracFilled:''}>{i<3?'✓':''}</span>)}</div><strong>3 pedaços de 8 = 3/8 da barra</strong></div>;
+ if(id==='A03')return <div className={styles.diagram}><div className={styles.diagramCaption}>Cada quadradinho representa 1%. Observe 25 de 100</div><div className={styles.percentGrid}>{Array.from({length:100},(_,i)=><span key={i} className={i<25?styles.percentFilled:''}/>)}</div><strong>25% = 25 em 100 = 1/4</strong></div>;
+ if(id==='A04')return <div className={styles.diagram}><div className={styles.diagramCaption}>Reta numérica: quanto mais à direita, maior o valor</div><div className={styles.numberLine}>{[-5,-4,-3,-2,-1,0,1,2,3,4,5].map(n=><span key={n} className={n===-2?styles.lineFocus:''}>{n}</span>)}</div><strong>−2 é maior que −5 porque fica mais à direita</strong></div>;
+ if(id==='A05')return <div className={styles.diagram}><div className={styles.diagramCaption}>A mesma receita, multiplicada por dois, mantém a proporção</div><div className={styles.ratioGroup}><span>2 sucos</span><div className={styles.ratioTiles}>{[0,1].map(i=><b key={i}/>)}</div><span>3 águas</span><div className={styles.ratioTiles}>{[0,1,2].map(i=><i key={i}/>)}</div></div><div className={styles.ratioGroup}><span>4 sucos</span><div className={styles.ratioTiles}>{[0,1,2,3].map(i=><b key={i}/>)}</div><span>6 águas</span><div className={styles.ratioTiles}>{[0,1,2,3,4,5].map(i=><i key={i}/>)}</div></div></div>;
+ if(id==='A06')return <div className={styles.diagram}><div className={styles.diagramCaption}>Uma equação é uma balança: os dois lados precisam valer a mesma coisa</div><svg width="100%" height="160" viewBox="0 0 450 160" role="img" aria-label="Balança equilibrada: x mais três igual a onze"><path d="M75 64 L375 64 M225 67 L225 133 M185 133 L265 133" stroke="#6556c7" strokeWidth="5" strokeLinecap="round"/><path d="M75 64 L75 105 M375 64 L375 105 M30 105 L120 105 M330 105 L420 105" stroke="#9ca0bb" strokeWidth="3"/><rect x="43" y="78" width="64" height="27" rx="8" fill="#e6e0ff"/><text x="75" y="96" fill="#4b3b9f" textAnchor="middle" fontSize="14" fontWeight="700">x + 3</text><rect x="343" y="78" width="64" height="27" rx="8" fill="#def4e9"/><text x="375" y="96" fill="#216a4e" textAnchor="middle" fontSize="16" fontWeight="700">11</text><text x="225" y="27" fill="#555c7d" textAnchor="middle" fontSize="16">Retire 3 dos dois lados → x = 8</text></svg></div>;
+ if(id==='A07')return <div className={styles.diagram}><div className={styles.diagramCaption}>Retângulo de 4 por 3: doze quadrados de área e catorze unidades no contorno</div><div className={styles.geometryGrid}>{Array.from({length:12},(_,i)=><span key={i}/>)}</div><strong>Área: 4 × 3 = 12 unidades² · Perímetro: 4 + 3 + 4 + 3 = 14 unidades</strong></div>;
+ if(id==='A08')return <div className={styles.diagram}><div className={styles.diagramCaption}>Compare a altura das barras; um valor extremo pode puxar a média</div><div className={styles.statBars}>{[2,2,2,10].map((n,i)=><div key={i}><span style={{height:`${n*11}px`}}/><small>{n}</small></div>)}</div><strong>Média 4 · Mediana 2 · Moda 2</strong></div>;
+ if(id==='A09')return <div className={styles.diagram}><div className={styles.diagramCaption}>Urna com 3 bolas vermelhas e 2 azuis: a chance de azul é 2/5</div><div className={styles.probBalls}>{[0,1,2,3,4].map(i=><span key={i} className={i<3?styles.ballRed:styles.ballBlue}/>)}</div><strong>Casos favoráveis: 2 · Casos possíveis: 5</strong></div>;
+ return <div className={styles.diagram}><div className={styles.diagramCaption}>Juntar, retirar, formar grupos e repartir são ideias diferentes</div><div className={styles.operationTiles}><span>12 + 7 = 19</span><span>19 − 7 = 12</span><span>3 × 4 = 12</span><span>12 ÷ 3 = 4</span></div><strong>Observe como uma operação pode conferir a outra</strong></div>;
+}
+
+export default function MathLesson({lessonId,raw}:{lessonId:string;raw:string}){
+ const [choice,setChoice]=useState<number|null>(null);
+ let data:LessonData|null=null;
+ try{const parsed=JSON.parse(raw);if(parsed&&typeof parsed.intro==='string'&&Array.isArray(parsed.steps))data=parsed;}catch{}
+ if(!data)return <div className={styles.longform}><p>{raw}</p></div>;
+ const recap=Array.isArray(data.recap)?data.recap:data.recap?[data.recap]:[];
+ return <article className={styles.longform}>
+  <div className={styles.lessonLead}><span className={styles.chapterMarker}>01 · ENTENDA A IDEIA</span><p>{data.intro}</p></div>
+  <Visual id={lessonId}/>
+  {data.analogy?<section className={styles.lessonAnalogy}><span className={styles.chapterMarker}>ONDE ISSO APARECE NA VIDA REAL?</span><p>{data.analogy}</p></section>:null}
+  {data.vocab?.length?<section className={styles.lessonGlossary}><span className={styles.chapterMarker}>02 · PALAVRAS QUE VOCÊ PRECISA CONHECER</span><div className={styles.glossaryGrid}>{data.vocab.map(v=><div key={v.term}><strong>{v.term}</strong><p>{v.meaning}</p></div>)}</div></section>:null}
+  <section><span className={styles.chapterMarker}>03 · APRENDA PASSO A PASSO</span><div className={styles.tutorialSteps}>{data.steps.map((step,i)=><section key={i} className={styles.tutorialStep}><div className={styles.tutorialHead}><b>{i+1}</b><h3>{step.title}</h3></div><p>{step.text}</p>{step.example?<div className={styles.mathExample}><small>EXEMPLO COMENTADO</small><strong>{step.example}</strong></div>:null}</section>)}</div></section>
+  {data.walkthrough?.length?<section className={styles.walkthrough}><span className={styles.chapterMarker}>04 · RESOLVA COMIGO, LINHA POR LINHA</span>{data.walkthrough.map((line,i)=><div key={i} className={styles.walkRow}><span>{String(i+1).padStart(2,'0')}</span><div><strong>{line.line}</strong><p>{line.why}</p></div></div>)}</section>:data.worked?<section className={styles.walkthrough}><strong>Aplicação prática</strong><p>{data.worked}</p></section>:null}
+  <section className={styles.lessonWarning}><strong>⚠ Um erro que muita gente comete</strong><p>{data.pitfall}</p></section>
+  {recap.length?<section className={styles.lessonTakeaways}><span className={styles.chapterMarker}>05 · TRÊS IDEIAS PARA LEMBRAR</span>{recap.map((point,i)=><p key={i}><span>✓</span>{point}</p>)}</section>:null}
+  {data.check?<section className={styles.lessonCheck}><span className={styles.chapterMarker}>06 · TESTE SE ENTENDEU</span><h3>{data.check.question}</h3><div className={styles.checkOptions}>{data.check.options.map((opt,i)=><button key={i} type="button" onClick={()=>setChoice(i)} className={choice===i?styles.checkSelected:''}>{String.fromCharCode(65+i)} · {opt}</button>)}</div>{choice!==null?<div className={choice===data.check.correct?styles.checkCorrect:styles.checkRetry}><strong>{choice===data.check.correct?'Isso! Você compreendeu.':'Você está construindo o raciocínio. Tente mais uma vez.'}</strong><p>{data.check.why}</p></div>:null}<p className={styles.checkNote}>Essa pergunta é para compreender o conceito. A prática oficial, com registro de desempenho, vem a seguir.</p></section>:null}
+ </article>;
+}
