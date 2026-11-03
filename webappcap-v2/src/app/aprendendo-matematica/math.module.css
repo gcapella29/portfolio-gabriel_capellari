@@ -171,3 +171,25 @@
 .bigScore{font-size:48px;color:#6754d0;font-weight:900;margin:14px 0}
 @media(max-width:950px){.dashboardCards{grid-template-columns:repeat(2,1fr)}.studyFilters{grid-template-columns:repeat(2,1fr)}.studyFilters label:last-child{grid-column:1/-1}.skillReport{grid-template-columns:1fr}}
 @media(max-width:610px){.glossaryGrid,.questionCards{grid-template-columns:1fr}.dashboardCards{grid-template-columns:repeat(2,minmax(0,1fr))}.graphSurface,.quizV4{padding:18px}.studyBanner{padding:24px}.dailyChart{gap:4px}.studyFilters{grid-template-columns:1fr}.studyFilters label:last-child{grid-column:auto}.fractionBar span{height:43px}.lessonAnalogy,.lessonWarning,.lessonTakeaways,.lessonCheck,.lessonGlossary,.walkthrough{padding:16px}}
+
+
+/* Correções didáticas v0.4.1 — separar a explicação em etapas legíveis */
+.explanationV5{display:grid;gap:13px;margin-top:12px;color:#303a58}
+.explanationSuccess,.explanationIntro{border-radius:13px;padding:17px 19px;background:#edf9f3;color:#245f49;border:1px solid #c5e9d7}
+.explanationIntro{background:#f3f2ff;border-color:#ded9fb;color:#3f3974}
+.explanationSuccess strong,.explanationIntro strong{font-size:16px;line-height:1.55}
+.explanationSuccess p,.explanationIntro p{margin:9px 0 0;font-size:14px;line-height:1.7}
+.explanationSteps{display:grid;gap:11px}
+.explanationStep,.explanationCaution,.explanationSimple{background:#fff;border:1px solid #e0e4f1;border-radius:14px;padding:18px 19px;box-shadow:0 3px 10px rgba(38,37,93,.025)}
+.explanationHeader{display:flex;align-items:center;gap:11px;margin-bottom:8px}
+.explanationHeader span{width:29px;height:29px;flex:0 0 29px;display:grid;place-items:center;border-radius:9px;background:#eeeaff;color:#6354c2;font-size:12px;font-weight:850}
+.explanationHeader h4,.explanationSimple h4{margin:0;color:#292f58;font-size:15px;line-height:1.5;font-weight:800}
+.explanationStep p,.explanationCaution p,.explanationSimple p{color:#4a526e;line-height:1.8;font-size:14px;margin:4px 0 0;white-space:pre-wrap}
+.explanationCaution{background:#fff9ec;border-color:#f2dba5}
+.explanationCaution .explanationHeader span{background:#ffebbb;color:#835915}
+.explanationCaution .explanationHeader h4{color:#80591e}
+.explanationSources{font-size:11px;line-height:1.65;color:#7a839c;margin:0}
+.explanationSources a{color:#6251b7;text-decoration:underline}
+.answerYes,.answerNo{background:transparent;color:inherit;border:0;padding:0}
+.feedback,.feedbackBad{background:transparent;color:inherit;border:0;padding:0}
+@media(max-width:610px){.explanationStep,.explanationCaution,.explanationSimple{padding:14px}.explanationIntro,.explanationSuccess{padding:14px}}
