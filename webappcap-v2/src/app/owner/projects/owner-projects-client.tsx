@@ -12,7 +12,7 @@ type Filter='all'|'published'|'configuring'|'attention'|'archived';
 
 type CardModel={
  key:string;
- kind:'root'|'project';
+ kind:'root'|'project'|'external';
  name:string;
  host:string;
  siteType:string;
@@ -39,6 +39,16 @@ const rootCard:CardModel={
  badges:['Raiz oficial'],facts:['Institucional','Online'],manageHref:'/owner/root',previewHref:'/owner/root/preview',siteHref:'https://www.webappcap.com.br'
 };
 
+const mathAppCard:CardModel={
+ key:'external-aprendendo-matematica',kind:'external',name:'Aprendendo Matemática',
+ host:'aprendendo-matematica.webappcap.com.br',siteType:'Aplicativo educacional',published:true,archived:false,
+ status:'Externo · Apps Script',attention:false,badges:['Educação','Google Sheets + Apps Script'],
+ facts:['Uso individual','Banco de dados: Google Sheets','V0.2 em desenvolvimento'],
+ manageHref:'https://script.google.com/macros/s/AKfycbxquiATK-Je3l8ej7L9wnzjV8Q8MXQwt29BeuufiZnlJyV23gC6qBX0RcYCb06jeiTj/exec',
+ previewHref:'https://docs.google.com/spreadsheets/d/1c1t0jBt-Jh2-M8lNVSUwKPRP9ZtG6RjM3YDgMOUVeN8/edit',
+ siteHref:'https://aprendendo-matematica.webappcap.com.br/'
+};
+
 function toCard(project:OwnerProjectView):CardModel{
  const host=project.customDomain&&project.domainStatus==='active'?project.customDomain:(project.nativeSubdomain?`${project.nativeSubdomain}.webappcap.com.br`:`${project.slug}.webappcap.com.br`);
  const commerce=project.siteType==='food-business'||project.siteType==='commerce';
@@ -53,7 +63,7 @@ function toCard(project:OwnerProjectView):CardModel{
 
 export default function OwnerProjectsClient({projects}:{projects:OwnerProjectView[]}){
  const [query,setQuery]=useState(''),[filter,setFilter]=useState<Filter>('all');
- const cards=useMemo(()=>[rootCard,...projects.map(toCard)],[projects]);
+ const cards=useMemo(()=>[rootCard,...projects.map(toCard),...(!projects.some(project=>project.slug==='aprendendo-matematica')?[mathAppCard]:[])],[projects]);
  const filtered=useMemo(()=>{
   const normalized=query.trim().toLocaleLowerCase('pt-BR');
   return cards.filter(card=>{
@@ -83,7 +93,7 @@ export default function OwnerProjectsClient({projects}:{projects:OwnerProjectVie
     </div>
    </div>
    <div className={styles.cardFooter}>
-    <div className={styles.cardActions}>{card.archived?<span className={styles.secondaryAction}>Arquivado · {card.project?.slug}</span>:<><Link href={card.manageHref} className={styles.primaryAction}>Gerenciar <span>→</span></Link>{card.kind==='root'?<Link href="/dashboard/gabriel-capellari/leads" className={styles.secondaryAction}>Leads</Link>:null}<Link href={card.previewHref} target="_blank" className={styles.secondaryAction}>Preview</Link>{card.siteHref?<a href={card.siteHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>Site ↗</a>:null}</>}</div>
+    <div className={styles.cardActions}>{card.archived?<span className={styles.secondaryAction}>Arquivado · {card.project?.slug}</span>:<>{card.kind==='external'?<a href={card.manageHref} className={styles.primaryAction} target="_blank" rel="noopener noreferrer">Abrir aplicativo <span>↗</span></a>:<Link href={card.manageHref} className={styles.primaryAction}>Gerenciar <span>→</span></Link>}{card.kind==='root'?<Link href="/dashboard/gabriel-capellari/leads" className={styles.secondaryAction}>Leads</Link>:null}{card.kind==='external'?<a href={card.previewHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>Planilha ↗</a>:<Link href={card.previewHref} target="_blank" className={styles.secondaryAction}>Preview</Link>}{card.siteHref?<a href={card.siteHref} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>Site ↗</a>:null}</>}</div>
     {card.kind==='project'&&card.project&&card.project.siteType!=='portfolio'?card.archived?<PermanentDeleteDialog target={{slug:card.project.slug,name:card.project.name}}/>:<details className={styles.moreMenu}><summary aria-label={`Mais ações para ${card.name}`} title="Mais ações">•••</summary><div className={styles.moreMenuPanel}><DeleteProjectDialog target={{slug:card.project.slug,name:card.project.name}}/></div></details>:null}
    </div>
   </article>)}</div>}
