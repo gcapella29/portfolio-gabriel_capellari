@@ -5,7 +5,7 @@ import {isPlatformOwner} from '@/core/session';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
 
-const actions=new Set(['initial','questions','answer','lesson','diagnostics','finish-diagnostic','review']);
+const actions=new Set(['initial','questions','answer','lesson','diagnostics','finish-diagnostic','review','study']);
 
 function fail(message:string,status:number){
  return NextResponse.json({ok:false,error:message},{status,headers:{'Cache-Control':'no-store'}});
