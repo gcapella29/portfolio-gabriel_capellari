@@ -1,6 +1,6 @@
 import styles from './math.module.css';
 
-export default function MathExplanation({explanation,correct,chosen,correctOption,probability=false}:{explanation:string;correct:boolean;chosen?:string;correctOption?:string;probability?:boolean}){
+export default function MathExplanation({explanation,correct,chosen,correctOption,topic=''}:{explanation:string;correct:boolean;chosen?:string;correctOption?:string;topic?:string}){
  const sections=explanation.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
  const structured=sections.length>1&&sections.some(s=>/^(?:\d+\.|Atenção)/i.test(s));
  return <div className={styles.explanationV5} aria-live="polite">
@@ -18,6 +18,6 @@ export default function MathExplanation({explanation,correct,chosen,correctOptio
       <p>{body}</p>
     </section>;
    })}</div>:<div className={styles.explanationSimple}><h4>Resolução comentada</h4><p>{explanation}</p></div>}
-  {probability?<p className={styles.explanationSources}>Referências conceituais: <a href="https://openstax.org/books/introductory-statistics/pages/3-1-terminology" target="_blank" rel="noopener noreferrer">OpenStax · Introdução à probabilidade</a> e <a href="https://basenacionalcomum.mec.gov.br/images/BNCC_20dez_site.pdf" target="_blank" rel="noopener noreferrer">BNCC · EF06MA30</a>. Explicações elaboradas para este aplicativo, não reproduzidas desses materiais.</p>:null}
+  <p className={styles.explanationSources}>Referência conceitual para aprofundamento: <a href={topic==='A02'||topic==='fracoes'?'https://openstax.org/books/prealgebra-2e/pages/4-1-visualize-fractions':topic==='A06'||topic==='algebra'?'https://openstax.org/books/prealgebra-2e/pages/8-4-solve-equations-with-fraction-or-decimal-coefficients':topic==='A09'||topic==='dados'?'https://openstax.org/books/introductory-statistics/pages/3-1-terminology':'https://openstax.org/books/prealgebra-2e/pages/preface'} target="_blank" rel="noopener noreferrer">OpenStax · Matemática e Estatística</a> e <a href="https://basenacionalcomum.mec.gov.br/images/BNCC_20dez_site.pdf" target="_blank" rel="noopener noreferrer">BNCC</a>. A resolução foi escrita especificamente para esta questão, não é uma transcrição desses materiais.</p>
  </div>;
 }
