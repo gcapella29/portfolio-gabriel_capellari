@@ -18,6 +18,15 @@ function matchesPrefix(path: string, prefixes: string[]) {
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  // Aplicativo externo isolado: não expor a aplicação de perfil único pelo tenant CMS.
+  // O Apps Script mantém seu próprio controle de acesso (somente proprietário).
+  const incomingHost = (request.headers.get('host') || '').split(':')[0].toLowerCase();
+  if (incomingHost === 'aprendendo-matematica.webappcap.com.br' && path === '/') {
+    return NextResponse.redirect(
+      'https://script.google.com/macros/s/AKfycbxquiATK-Je3l8ej7L9wnzjV8Q8MXQwt29BeuufiZnlJyV23gC6qBX0RcYCb06jeiTj/exec',
+      307
+    );
+  }
   const host = classifyHost(request.headers.get('host') || '');
   const isTenantRoute = path === '/tenant' || path.startsWith('/tenant/');
   const isApiRoute = path === '/api' || path.startsWith('/api/');
