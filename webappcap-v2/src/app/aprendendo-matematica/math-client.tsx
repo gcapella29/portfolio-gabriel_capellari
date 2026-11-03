@@ -118,6 +118,7 @@ export default function MathClient(){
     }catch(e){setError(e instanceof Error?e.message:'Falha ao salvar diagnóstico.');}
     finally{setBusy(false)}
    }else{
+    if(mode==='pratica')setLesson(null);
     setSummary({correct:correctCount,total:answers.length,skills:{},priorities:[]});
     setMode(null);await refresh().catch(()=>{});
    }
