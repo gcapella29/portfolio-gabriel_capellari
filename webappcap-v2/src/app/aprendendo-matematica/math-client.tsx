@@ -40,6 +40,7 @@ export default function MathClient(){
  const [selected,setSelected]=useState<number|null>(null);
  const [verdict,setVerdict]=useState<Verdict|null>(null);
  const [answers,setAnswers]=useState<Answer[]>([]);
+ const [correctCount,setCorrectCount]=useState(0);
  const [summary,setSummary]=useState<DiagnosticResult|null>(null);
 
  const refresh=useCallback(async()=>{
@@ -60,7 +61,7 @@ export default function MathClient(){
    if(!questions.length)throw new Error('Não há exercícios disponíveis nesta atividade.');
    setAllQuestions(questions);
    setQueue(type==='diagnostico'?skills.map(([skill])=>questions.find(q=>q.skill===skill&&q.level==='facil')).filter((q):q is Question=>Boolean(q)):questions);
-   setIndex(0);setSelected(null);setVerdict(null);setAnswers([]);setMode(type);setSummary(null);
+   setIndex(0);setSelected(null);setVerdict(null);setAnswers([]);setCorrectCount(0);setMode(type);setSummary(null);
    setPage(type==='diagnostico'?'diagnostico':'aulas');
   }catch(e){setError(e instanceof Error?e.message:'Não foi possível abrir a atividade.')}
   finally{setBusy(false)}
@@ -76,6 +77,7 @@ export default function MathClient(){
   try{
    const result=await call<Verdict>('answer',{id:current.id,index:selected});
    setVerdict(result);
+   if(result.correct)setCorrectCount(v=>v+1);
    setAnswers(a=>[...a,{id:current.id,index:selected}]);
   }catch(e){setError(e instanceof Error?e.message:'Não foi possível registrar a resposta.')}
   finally{setBusy(false)}
@@ -98,7 +100,7 @@ export default function MathClient(){
     }catch(e){setError(e instanceof Error?e.message:'Falha ao salvar diagnóstico.');}
     finally{setBusy(false)}
    }else{
-    setSummary({correct:answers.filter(a=>a.id).length,total:answers.length,skills:{},priorities:[]});
+    setSummary({correct:correctCount,total:answers.length,skills:{},priorities:[]});
     setMode(null);await refresh().catch(()=>{});
    }
    return;
@@ -154,7 +156,7 @@ export default function MathClient(){
     <h2 className={styles.sectionTitle}>Seu percurso</h2>{modulesView()}</>:
    page==='trilha'?<>{header('CURRÍCULO','Minha trilha','Seis áreas principais; as aulas serão ampliadas progressivamente.')}{last?<><h2 className={styles.sectionTitle}>Seu mapa atual</h2>{skillCards(last)}</>:<div className={styles.notice}>Faça o diagnóstico para receber prioridades de estudo.</div>}<h2 className={styles.sectionTitle}>Módulos</h2>{modulesView()}</>:
    page==='diagnostico'?mode==='diagnostico'?renderQuiz():summary?summaryView():<>{header('AVALIAÇÃO FORMATIVA','Diagnóstico inteligente','Questões progressivas em seis competências: pare em cada área quando encontrar uma dificuldade.')}<section className={styles.panel}><span className={styles.tag}>6 A 18 QUESTÕES · SEM CRONÔMETRO</span><h2 className={styles.sectionTitle}>Descubra o que já sabe</h2><p className={styles.lead}>Começamos pelo básico em cada tema. Um acerto abre a próxima dificuldade, e um erro indica uma oportunidade de reforço. O resultado é uma recomendação inicial, não uma nota definitiva.</p><button className={styles.button} disabled={busy} onClick={()=>openQuiz('diagnostico')}>{busy?'Carregando…':'Iniciar diagnóstico →'}</button></section>{last?<><h2 className={styles.sectionTitle}>Última avaliação</h2>{skillCards(last)}</>:null}</>:
-   page==='aulas'?mode==='pratica'?renderQuiz():lesson?<>{header('AULA INTERATIVA',lesson.titulo,lesson.objetivo)}<section className={styles.panel}><h2 className={styles.sectionTitle}>Vamos entender</h2><div className={styles.theory}>{lesson.teoria}</div><p className={styles.lead}>Leia a explicação e pratique com correção comentada.</p><div className={styles.actions}><button disabled={busy} className={styles.button} onClick={()=>openQuiz('pratica',lesson.aula_id)}>Praticar →</button><button disabled={busy} className={`${styles.button} ${styles.buttonSoft}`} onClick={completeLesson}>Marcar como estudada</button><button className={`${styles.button} ${styles.buttonSecondary}`} onClick={()=>setLesson(null)}>Voltar</button></div></section></>:summary?<><section className={styles.panel}><h2>Prática concluída</h2><p>Suas respostas foram registradas no Google Sheets.</p><button className={styles.button} onClick={()=>{setSummary(null);setLesson(null)}}>Voltar às aulas</button></section></>:<>{header('BIBLIOTECA','Aulas','Teoria e exercícios comentados, preservados na sua planilha.') }<section className={styles.panel}>{orderedLessons.map(a=><div className={styles.row} key={a.aula_id}><div><h3>{a.titulo}</h3><p>{a.objetivo}</p><span className={styles.tag}>{a.status==='disponivel'?'Disponível':'Em breve'}</span></div><button className={styles.button} disabled={a.status!=='disponivel'} onClick={()=>setLesson(a)}>Estudar →</button></div>)}</section></>:
+   page==='aulas'?mode==='pratica'?renderQuiz():lesson?<>{header('AULA INTERATIVA',lesson.titulo,lesson.objetivo)}<section className={styles.panel}><h2 className={styles.sectionTitle}>Vamos entender</h2><div className={styles.theory}>{lesson.teoria}</div><p className={styles.lead}>Leia a explicação e pratique com correção comentada.</p><div className={styles.actions}><button disabled={busy} className={styles.button} onClick={()=>openQuiz('pratica',lesson.aula_id)}>Praticar →</button><button disabled={busy} className={`${styles.button} ${styles.buttonSoft}`} onClick={completeLesson}>Marcar como estudada</button><button className={`${styles.button} ${styles.buttonSecondary}`} onClick={()=>setLesson(null)}>Voltar</button></div></section></>:summary?<><section className={styles.panel}><h2>Prática concluída</h2><p>Você acertou {summary.correct} de {summary.total} questões. Suas respostas foram registradas no Google Sheets.</p><button className={styles.button} onClick={()=>{setSummary(null);setLesson(null)}}>Voltar às aulas</button></section></>:<>{header('BIBLIOTECA','Aulas','Teoria e exercícios comentados, preservados na sua planilha.') }<section className={styles.panel}>{orderedLessons.map(a=><div className={styles.row} key={a.aula_id}><div><h3>{a.titulo}</h3><p>{a.objetivo}</p><span className={styles.tag}>{a.status==='disponivel'?'Disponível':'Em breve'}</span></div><button className={styles.button} disabled={a.status!=='disponivel'} onClick={()=>setLesson(a)}>Estudar →</button></div>)}</section></>:
    <>{header('ACOMPANHAMENTO','Meu progresso','Histórico de estudos e avaliações armazenado no Google Sheets.')}<div className={styles.grid3}><div className={styles.stat}><small>Respostas</small><strong>{data?.answeredCount||0}</strong></div><div className={styles.stat}><small>Aulas estudadas</small><strong>{points}</strong></div><div className={styles.stat}><small>Diagnósticos V0.2</small><strong>{history.length}</strong></div></div>
     <h2 className={styles.sectionTitle}>Histórico de diagnósticos</h2>{history.length?<div className={styles.history}>{history.map(item=><div className={styles.historyItem} key={item.id}><div><strong>{item.result.correct} acertos em {item.result.total} questões</strong><br/><small>{new Date(item.at).toLocaleString('pt-BR')}</small></div><span className={styles.tag}>Concluído</span></div>)}</div>:<div className={styles.notice}>Seu primeiro diagnóstico V0.2 aparecerá aqui.</div>}
     <h2 className={styles.sectionTitle}>Aulas concluídas</h2><section className={styles.panel}>{(data?.progress||[]).filter(p=>p.status==='concluida').length?data?.progress.filter(p=>p.status==='concluida').map(p=><p key={p.aula_id}>✓ {orderedLessons.find(l=>l.aula_id===p.aula_id)?.titulo||p.aula_id}</p>):<p className={styles.lead}>Nenhuma aula marcada como concluída.</p>}</section></>}
