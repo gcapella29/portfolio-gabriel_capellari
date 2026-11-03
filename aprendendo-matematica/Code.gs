@@ -14,13 +14,13 @@ const ESTRUTURA = {
   Log: ['evento_id','data_hora','tipo','entidade','entidade_id','detalhes_json']
 };
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('Aprendendo Matemática | WebAppCap')
-    .addMetaTag('viewport','width=device-width, initial-scale=1')
-    // Necessário apenas para exibir dentro do subdomínio WebAppCap.
-    // ATENÇÃO: ALLOWALL permite incorporar o app em qualquer site.
-    // Mantenha a implantação restrita à conta proprietária.
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  // A aplicação agora é renderizada nativamente no WebAppCap.
+  // Não expor google.script.run para uma implantação que permite POST de servidor.
+  return HtmlService.createHtmlOutput(
+    '<!doctype html><meta charset="utf-8"><title>Aprendendo Matemática</title>'+
+    '<p>Este aplicativo mudou para o WebAppCap.</p>'+
+    '<p><a href="https://aprendendo-matematica.webappcap.com.br/">Abrir Aprendendo Matemática</a></p>'
+  );
 }
 function db_(){return SpreadsheetApp.openById(DB_ID);}
 function sheet_(ss,name){const s=ss.getSheetByName(name);if(!s)throw Error('Aba ausente: '+name);return s;}
@@ -115,4 +115,106 @@ function completeLesson(id){
     if(!has){appendObject_(ss,'Progresso',{aluno_id:ALUNO_ID,aula_id:id,status:'concluida',ultima_atividade:new Date()});registrar_(ss,'AULA_CONCLUIDA','aula',id,{});}
     return {ok:true};
   }finally{lock.releaseLock();}
+}
+
+/**
+ * V0.2 · API privada para o servidor WebAppCap.
+ *
+ * Script Properties: WEBAPPCAP_MATH_API_KEY
+ * Implante como Web App "executar como eu" com acesso "qualquer pessoa",
+ * SOMENTE depois de trocar doGet pelo aviso acima e cadastrar a chave.
+ * O cliente nunca recebe a chave. Autorização de proprietário ocorre
+ * também no gateway do WebAppCap.
+ */
+function json_(object) {
+  return ContentService.createTextOutput(JSON.stringify(object))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+function doPost(event) {
+  try {
+    const raw = String(event && event.postData && event.postData.contents || '');
+    if (!raw || raw.length > 24000) throw Error('Requisição inválida.');
+    const data = JSON.parse(raw);
+    const key = PropertiesService.getScriptProperties().getProperty('WEBAPPCAP_MATH_API_KEY');
+    if (!key || key.length < 32 || typeof data.token !== 'string' || data.token !== key) {
+      return json_({ok:false,error:'Não autorizado.'});
+    }
+    let value;
+    switch(String(data.action || '')) {
+      case 'initial': value = getInitialData(); break;
+      case 'questions':
+        value = getQuestionsApi_(String(data.tipo || ''),String(data.aulaId || '')); break;
+      case 'answer':
+        value = submitAnswer(String(data.id||''),Number(data.index)); break;
+      case 'lesson':
+        value = completeLesson(String(data.id||'')); break;
+      case 'diagnostics':
+        value = getDiagnosticsApi_(); break;
+      case 'finish-diagnostic':
+        value = finishDiagnosticApi_(data.answers); break;
+      default: return json_({ok:false,error:'Operação desconhecida.'});
+    }
+    return json_({ok:true,data:value});
+  } catch(error) {
+    return json_({ok:false,error:String(error && error.message || 'Falha ao processar operação.')});
+  }
+}
+function getQuestionsApi_(tipo,aulaId) {
+  if(tipo!=='diagnostico_v2' && tipo!=='diagnostico' && tipo!=='pratica')
+    throw Error('Atividade inválida.');
+  return objects_(db_(),'Questoes')
+    .filter(q=>q.tipo===tipo && (tipo!=='pratica'||String(q.aula_id)===aulaId))
+    .map(q=>({
+      id:String(q.questao_id),skill:String(q.habilidade),level:String(q.nivel),
+      title:String(q.enunciado),options:JSON.parse(q.alternativas_json)
+    }));
+}
+function getDiagnosticsApi_() {
+  return objects_(db_(),'Diagnosticos').filter(x=>x.aluno_id===ALUNO_ID && x.concluido_em)
+    .slice(-15).reverse().map(x=>({
+      id:String(x.diagnostico_id),
+      at:x.concluido_em instanceof Date?x.concluido_em.toISOString():String(x.concluido_em),
+      result:JSON.parse(String(x.resultado_json||'{}'))
+    }));
+}
+function finishDiagnosticApi_(answers) {
+  if(!Array.isArray(answers)||answers.length<6||answers.length>18)
+    throw Error('O diagnóstico precisa de 6 a 18 respostas.');
+  const skills=['operacoes','fracoes','proporcoes','algebra','geometria','dados'];
+  const levels=['facil','medio','dificil'];
+  const ss=db_(),all=objects_(ss,'Questoes').filter(q=>q.tipo==='diagnostico_v2');
+  const byId=new Map(all.map(q=>[String(q.questao_id),q]));
+  const existing=objects_(ss,'Respostas').filter(x=>x.aluno_id===ALUNO_ID);
+  const results={},normalized=[];
+  let pos=0,totalCorrect=0;
+  for (const skill of skills) {
+    let achieved=0,used=0;
+    for(let levelIndex=0;levelIndex<levels.length;levelIndex++) {
+      const answer=answers[pos],q=answer&&byId.get(String(answer.id));
+      if(!q||q.habilidade!==skill||q.nivel!==levels[levelIndex])
+        throw Error('Sequência do diagnóstico inválida.');
+      const choice=Number(answer.index);
+      const choices=JSON.parse(q.alternativas_json);
+      if(!Number.isInteger(choice)||choice<0||choice>=choices.length)
+        throw Error('Alternativa inválida.');
+      if(!existing.some(row=>String(row.questao_id)===String(q.questao_id)&&Number(row.resposta)===choice))
+        throw Error('Resposta ainda não registrada no banco.');
+      const correct=choice===Number(q.resposta);
+      normalized.push({id:String(q.questao_id),skill,level:q.nivel,correct});
+      used++;pos++;
+      if(!correct)break;
+      achieved++;totalCorrect++;
+    }
+    results[skill]={achieved,attempted:used,label:achieved===3?'Avançando bem':achieved===2?'Intermediário':achieved===1?'Fundamentos presentes':'Reforço prioritário'};
+  }
+  if(pos!==answers.length)throw Error('Quantidade inconsistente de respostas.');
+  const id=Utilities.getUuid(),date=new Date();
+  const summary={correct:totalCorrect,total:normalized.length,skills:results,items:normalized,
+    priorities:skills.filter(k=>results[k].achieved<2)};
+  const lock=LockService.getScriptLock();lock.waitLock(10000);
+  try{
+    appendObject_(ss,'Diagnosticos',{diagnostico_id:id,aluno_id:ALUNO_ID,iniciado_em:date,concluido_em:date,resultado_json:JSON.stringify(summary),versao:'0.2'});
+    registrar_(ss,'DIAGNOSTICO_CONCLUIDO','diagnostico',id,{acertos:totalCorrect,questoes:normalized.length});
+  }finally{lock.releaseLock();}
+  return {id,...summary};
 }
