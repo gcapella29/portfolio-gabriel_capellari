@@ -9,15 +9,24 @@ type Progress={aula_id:string;status:string};
 type Module={modulo_id:string;titulo:string;ordem:string|number};
 type Topic={name:string;skill:string;lessonId:string;intro:string;prerequisite:string};
 const topics:Topic[]=[
- {name:'As quatro operações',skill:'operacoes',lessonId:'A01',intro:'Juntar, retirar, multiplicar e repartir',prerequisite:'Nenhum'},
- {name:'Frações',skill:'fracoes',lessonId:'A02',intro:'Partes iguais de um todo',prerequisite:'A01'},
- {name:'Porcentagem',skill:'proporcoes',lessonId:'A03',intro:'Partes por cem e descontos',prerequisite:'A02'},
- {name:'Números negativos e decimais',skill:'operacoes',lessonId:'A04',intro:'Sinais, reta numérica e vírgula',prerequisite:'A01'},
- {name:'Razões e proporções',skill:'proporcoes',lessonId:'A05',intro:'Comparar grandezas e taxas',prerequisite:'A02'},
- {name:'Equações',skill:'algebra',lessonId:'A06',intro:'Descobrir um valor desconhecido',prerequisite:'A01'},
- {name:'Perímetro e área',skill:'geometria',lessonId:'A07',intro:'Medir o contorno e a superfície',prerequisite:'A01'},
- {name:'Média, mediana e moda',skill:'dados',lessonId:'A08',intro:'Interpretar um conjunto de números',prerequisite:'A01'},
- {name:'Probabilidade',skill:'dados',lessonId:'A09',intro:'Entender chances e resultados possíveis',prerequisite:'A02'}
+ {name:'Valor posicional',skill:'operacoes',lessonId:'A19',intro:'Comece pelos números e seus valores',prerequisite:'Nenhum'},
+ {name:'Adição',skill:'operacoes',lessonId:'A20',intro:'Aprenda a juntar quantidades',prerequisite:'A19'},
+ {name:'Subtração',skill:'operacoes',lessonId:'A21',intro:'Diferenças e troco com compreensão',prerequisite:'A20'},
+ {name:'Multiplicação',skill:'operacoes',lessonId:'A22',intro:'Visualize grupos iguais',prerequisite:'A20'},
+ {name:'Divisão',skill:'operacoes',lessonId:'A23',intro:'Repartições iguais',prerequisite:'A22'},
+ {name:'Frações — conceito',skill:'fracoes',lessonId:'A10',intro:'Entenda numerador e denominador',prerequisite:'A23'},
+ {name:'Frações — equivalência',skill:'fracoes',lessonId:'A11',intro:'Partes equivalentes do mesmo todo',prerequisite:'A10'},
+ {name:'Frações — adição',skill:'fracoes',lessonId:'A13',intro:'Junte partes com denominadores iguais',prerequisite:'A11'},
+ {name:'Frações — subtração',skill:'fracoes',lessonId:'A15',intro:'Retire partes do mesmo tamanho',prerequisite:'A13'},
+ {name:'Frações — multiplicação',skill:'fracoes',lessonId:'A17',intro:'Calcule frações de quantidades',prerequisite:'A15'},
+ {name:'Frações — divisão',skill:'fracoes',lessonId:'A18',intro:'Conte quantas porções cabem',prerequisite:'A17'},
+ {name:'Porcentagem',skill:'proporcoes',lessonId:'A27',intro:'O que significa por cento',prerequisite:'A10'},
+ {name:'Razões e proporções',skill:'proporcoes',lessonId:'A29',intro:'Compare quantidades por unidade',prerequisite:'A23'},
+ {name:'Equações',skill:'algebra',lessonId:'A30',intro:'Descubra o valor desconhecido',prerequisite:'A20'},
+ {name:'Geometria — perímetro',skill:'geometria',lessonId:'A32',intro:'Meça o contorno',prerequisite:'A20'},
+ {name:'Geometria — área',skill:'geometria',lessonId:'A33',intro:'Meça superfícies',prerequisite:'A22'},
+ {name:'Estatística — média',skill:'dados',lessonId:'A35',intro:'Entenda os valores de um conjunto',prerequisite:'A23'},
+ {name:'Probabilidade',skill:'dados',lessonId:'A37',intro:'Conte resultados possíveis e favoráveis',prerequisite:'A10'}
 ];
 function dateBR(date:string){try{return new Date(date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});}catch{return date;}}
 async function loadStudy():Promise<StudyData>{
