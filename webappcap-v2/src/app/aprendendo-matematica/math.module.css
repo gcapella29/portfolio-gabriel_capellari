@@ -193,3 +193,135 @@
 .answerYes,.answerNo{background:transparent;color:inherit;border:0;padding:0}
 .feedback,.feedbackBad{background:transparent;color:inherit;border:0;padding:0}
 @media(max-width:610px){.explanationStep,.explanationCaution,.explanationSimple{padding:14px}.explanationIntro,.explanationSuccess{padding:14px}}
+
+
+/* V0.5 — Modernização, densidade informacional e ritmo espacial */
+.shell{grid-template-columns:226px minmax(0,1fr);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none;color:#202842;background:#f7f8fc}
+.sidebar{padding:22px 12px;gap:20px;position:sticky;top:0;max-height:100dvh;overflow-y:auto;box-shadow:1px 0 0 #e8eaf2}
+.brand{padding:5px 8px 13px;gap:10px}
+.nav{gap:3px}
+.nav button{font:700 13px/1.3 Inter,ui-sans-serif,system-ui,sans-serif;gap:10px;padding:11px 13px;border-radius:10px;min-height:42px}
+.navIcon{font-size:18px;width:20px}
+.nav button:hover{transform:none}
+.main{max-width:none;padding:25px clamp(20px,3.2vw,48px) 55px}
+.topline{margin:0 0 20px;letter-spacing:.06em}
+.eyebrow{margin:0 0 7px;letter-spacing:.1em}
+.title{font-size:clamp(28px,3vw,38px);margin-bottom:7px}
+.lead{font-size:14px;line-height:1.6;margin:0 0 16px}
+.sectionTitle{margin:23px 0 12px;font-size:21px}
+.hero{margin:15px 0 19px;border-radius:18px;padding:25px}
+.hero h2{margin:7px 0;font-size:26px}
+.hero p{line-height:1.55;margin-bottom:15px}
+.grid3{gap:12px}
+.stat,.module,.panel{border-radius:14px;padding:17px}
+.module{gap:8px}
+.module p{line-height:1.5}
+.row{padding:12px 0;gap:11px}
+.row h3{font-size:15px}
+.row p{line-height:1.4}
+.button{border-radius:10px;padding:11px 15px}
+.theory{margin:10px 0}
+.longform{font-size:14px;line-height:1.65;gap:16px}
+.chapterMarker{margin:0 0 8px;font-size:10px}
+.lessonLead{font-size:16px;line-height:1.6}
+.diagram{padding:17px 20px;gap:10px}
+.lessonAnalogy,.lessonWarning,.lessonTakeaways,.lessonCheck,.lessonGlossary,.walkthrough{padding:16px 18px;border-radius:13px}
+.lessonAnalogy p{font-size:14px}
+.tutorialSteps{gap:10px}
+.tutorialStep{padding:16px;border-radius:12px}
+.tutorialStep p{margin:8px 0;line-height:1.65}
+.tutorialHead h3{font-size:16px}
+.mathExample{padding:12px 14px}
+.walkRow{padding:10px 0}
+.walkRow p{line-height:1.6}
+.glossaryGrid{gap:8px}
+.glossaryGrid>div{padding:12px 14px}
+.studyV4{gap:14px}
+.studyBanner{border-radius:16px;padding:24px 26px}
+.studyBanner h1{font-size:clamp(26px,2.8vw,36px)}
+.studyBanner p{font-size:14px;line-height:1.5}
+.dashboardCards{gap:9px}
+.dashboardCards article{padding:14px 15px;border-radius:12px;gap:6px}
+.dashboardCards article strong{font-size:26px}
+.graphSurface,.quizV4{padding:21px 23px;border-radius:15px}
+.graphTitle{margin-bottom:14px}
+.graphTitle h2{font-size:20px;margin:5px 0}
+.studyFilters{gap:12px}
+.studyFilters select{padding:10px 12px;min-height:42px}
+.studyGo{margin-top:15px}
+.questionCards{gap:9px}
+.questionCards>div{padding:13px}
+.quizV4 h2{margin:12px 0 19px;font-size:23px}
+.quizOptions{gap:8px}
+.quizOptions button{padding:12px 14px;border-radius:10px}
+.quizOptions button b{padding:6px 9px}
+.hintPanel{margin:13px 0;padding:13px 16px}
+.explanationV5{gap:10px}
+.explanationIntro,.explanationSuccess{padding:13px 15px}
+.explanationSteps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.explanationStep,.explanationCaution,.explanationSimple{padding:14px 15px}
+.explanationStep p,.explanationCaution p{font-size:13px;line-height:1.65}
+.explanationCaution{grid-column:1/-1}
+.explanationHeader{margin-bottom:6px}
+.explanationHeader h4{font-size:14px}
+.explanationSources{font-size:11px}
+.coachRoot{display:grid;gap:14px;min-width:0}
+.coachHero{background:linear-gradient(115deg,#252b5b 0%,#5347b7 65%,#806ce7);color:#fff;border-radius:17px;padding:27px 29px;display:flex;align-items:center;justify-content:space-between;gap:20px;overflow:hidden}
+.coachHero h1{font-size:clamp(25px,2.8vw,35px);letter-spacing:-.035em;line-height:1.16;margin:7px 0 9px;max-width:660px}
+.coachHero p{font-size:14px;line-height:1.6;max-width:720px;margin:0;color:#e4e3fa}
+.coachHeroMark{font-size:118px;color:#ffffff18;font-weight:800;line-height:1}
+.coachEyebrow{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#6b5aca}
+.coachHero .coachEyebrow{color:#d9d1ff}
+.coachSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.coachSummary article{border:1px solid #e3e6f0;background:#fff;border-radius:13px;padding:16px;display:grid;gap:5px;min-width:0}
+.coachSummary small{font-size:11px;color:#767d98}
+.coachSummary strong{font-size:26px;color:#282e55;letter-spacing:-.04em}
+.coachSummary article>span{font-size:11px;color:#9097aa;line-height:1.4}
+.coachTwoCols{display:grid;grid-template-columns:1.05fr .95fr;gap:13px;align-items:stretch}
+.coachFeature,.coachSchedule,.coachSkillPanel,.coachRoadmap{background:#fff;border:1px solid #e3e6f0;border-radius:15px;padding:22px 23px;min-width:0}
+.coachFeatureHead,.coachScheduleHead,.coachHeading{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.coachOutlineTag{font-size:10px;color:#6754c2;background:#f1efff;border-radius:99px;padding:7px 10px;white-space:nowrap}
+.coachFeature h2,.coachSchedule h2,.coachHeading h2{color:#293053;line-height:1.25;letter-spacing:-.025em;margin:9px 0 8px;font-size:21px}
+.coachFeature>p{font-size:13px;line-height:1.75;color:#626b84;margin:8px 0 15px}
+.coachActions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:15px}
+.coachPrimary,.coachSecondary{border:0;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;padding:11px 15px;background:#6b55d4;color:white}
+.coachPrimary:hover{background:#5542bc}
+.coachSecondary{background:#efecff;color:#5b4abe}
+.coachNote{font-size:11px;color:#8b91a6;line-height:1.6;margin-top:15px}
+.coachWarning{border:1px solid #eddaa7;border-radius:10px;background:#fffaee;color:#845b1f;padding:10px 12px;font-size:12px}
+.coachDuration{display:flex;gap:3px;background:#f1effa;padding:3px;border-radius:10px;flex-shrink:0}
+.coachDuration button{border:0;border-radius:8px;background:transparent;padding:7px 8px;color:#6d6799;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.coachDuration button[aria-pressed="true"]{background:#fff;color:#5d4abf;box-shadow:0 1px 4px #39337524}
+.coachTaskList{display:grid;gap:0;margin-top:12px}
+.coachTask{display:grid;grid-template-columns:29px minmax(0,1fr) 30px;gap:11px;align-items:center;padding:12px 0;border-bottom:1px solid #eceef5}
+.coachTask:last-child{border-bottom:0}
+.coachTaskNum{border-radius:9px;background:#efeaff;color:#5f4fbd;font-size:12px;font-weight:900;display:grid;place-items:center;width:28px;height:28px}
+.coachTask strong{font-size:13px;color:#30385d;display:block}
+.coachTask strong small{font-weight:600;color:#969aab}
+.coachTask p{margin:4px 0 0;font-size:12px;line-height:1.5;color:#7c839d}
+.coachTask>button{border:0;background:#f2f1fa;color:#6555c9;border-radius:9px;cursor:pointer;height:29px;font-size:18px}
+.coachDisclaimer{color:#9599aa;font-size:10px;line-height:1.5;display:block;margin-top:13px}
+.coachHeading h2{margin-bottom:4px}
+.coachHeading p{font-size:12px;line-height:1.5;color:#7c849a;margin:0}
+.coachHeading>button{border:0;color:#6251bd;background:#f3f0ff;border-radius:9px;padding:9px 11px;font-size:11px;white-space:nowrap;font-weight:800;cursor:pointer}
+.coachSkillGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:17px}
+.coachSkill{border-radius:12px;border:1px solid #e7e9f2;padding:14px;min-width:0}
+.coachSkillHead{display:flex;align-items:start;justify-content:space-between;gap:8px}
+.coachSkillHead strong{font-size:13px;color:#2d3458;line-height:1.3}
+.coachSkillHead span{font-size:10px;color:#7c7498;text-align:right;max-width:100px}
+.coachSkillBar{background:#ebeaf4;border-radius:99px;height:7px;overflow:hidden;margin:11px 0 9px}
+.coachSkillBar span{display:block;height:100%;background:linear-gradient(90deg,#6852d0,#4eb8ac);border-radius:99px}
+.coachSkillMeta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.coachSkillMeta small{font-size:10px;color:#8a90a5}
+.coachSkillMeta button{border:0;background:transparent;color:#5e4fbb;font-size:11px;font-weight:850;cursor:pointer;white-space:nowrap}
+.coachRoadmapItems{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:13px}
+.coachRoadmapItems article{border:1px solid #e9eaf2;padding:13px;border-radius:11px;min-width:0}
+.coachRoadmapItems strong{font-size:13px;color:#323959;display:block;line-height:1.35}
+.coachRoadmapItems small{font-size:11px;color:#8c90a4}
+.coachRetry{margin-left:10px;border:0;border-radius:8px;padding:8px;color:#5f4cb7;background:#efeafe;cursor:pointer}
+.coachHomeNudge{margin-top:19px;border:1px solid #dedcf2;border-radius:13px;background:#f5f3ff;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px 18px}
+.coachHomeNudge strong{color:#5146aa;font-size:15px}
+.coachHomeNudge p{color:#77759b;font-size:12px;margin:5px 0 0}
+@media(max-width:1250px){.coachTwoCols{grid-template-columns:1fr}.coachSkillGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.coachRoadmapItems{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:920px){.shell{grid-template-columns:68px minmax(0,1fr)}.sidebar{padding:18px 6px}.nav button{padding:10px 3px;justify-content:center}.coachSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:610px){.shell{display:block}.sidebar{position:sticky;top:0;max-height:none;overflow:visible;display:flex;flex-direction:row;padding:8px 9px}.nav{display:flex;overflow-x:auto}.nav button{width:auto;padding:9px 10px;min-height:38px}.main{padding:18px 12px 40px}.topline{margin-bottom:14px}.explanationSteps{grid-template-columns:1fr}.coachHero{padding:21px}.coachHeroMark{display:none}.coachSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.coachTwoCols{grid-template-columns:1fr}.coachFeature,.coachSchedule,.coachSkillPanel,.coachRoadmap{padding:16px}.coachSkillGrid,.coachRoadmapItems{grid-template-columns:1fr}.coachHomeNudge{flex-direction:column;align-items:stretch}.coachFeatureHead,.coachScheduleHead,.coachHeading{flex-wrap:wrap}.glossaryGrid{grid-template-columns:1fr}.stat,.module,.panel{padding:14px}}
