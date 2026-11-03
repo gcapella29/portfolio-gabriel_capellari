@@ -16,7 +16,11 @@ const ESTRUTURA = {
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Aprendendo Matemática | WebAppCap')
-    .addMetaTag('viewport','width=device-width, initial-scale=1');
+    .addMetaTag('viewport','width=device-width, initial-scale=1')
+    // Necessário apenas para exibir dentro do subdomínio WebAppCap.
+    // ATENÇÃO: ALLOWALL permite incorporar o app em qualquer site.
+    // Mantenha a implantação restrita à conta proprietária.
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 function db_(){return SpreadsheetApp.openById(DB_ID);}
 function sheet_(ss,name){const s=ss.getSheetByName(name);if(!s)throw Error('Aba ausente: '+name);return s;}
