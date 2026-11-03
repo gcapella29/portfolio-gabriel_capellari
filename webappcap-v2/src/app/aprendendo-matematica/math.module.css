@@ -325,3 +325,15 @@
 @media(max-width:1250px){.coachTwoCols{grid-template-columns:1fr}.coachSkillGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.coachRoadmapItems{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:920px){.shell{grid-template-columns:68px minmax(0,1fr)}.sidebar{padding:18px 6px}.nav button{padding:10px 3px;justify-content:center}.coachSummary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:610px){.shell{display:block}.sidebar{position:sticky;top:0;max-height:none;overflow:visible;display:flex;flex-direction:row;padding:8px 9px}.nav{display:flex;overflow-x:auto}.nav button{width:auto;padding:9px 10px;min-height:38px}.main{padding:18px 12px 40px}.topline{margin-bottom:14px}.explanationSteps{grid-template-columns:1fr}.coachHero{padding:21px}.coachHeroMark{display:none}.coachSummary{grid-template-columns:repeat(2,minmax(0,1fr))}.coachTwoCols{grid-template-columns:1fr}.coachFeature,.coachSchedule,.coachSkillPanel,.coachRoadmap{padding:16px}.coachSkillGrid,.coachRoadmapItems{grid-template-columns:1fr}.coachHomeNudge{flex-direction:column;align-items:stretch}.coachFeatureHead,.coachScheduleHead,.coachHeading{flex-wrap:wrap}.glossaryGrid{grid-template-columns:1fr}.stat,.module,.panel{padding:14px}}
+
+
+/* Interação nos diagramas pedagógicos */
+.visualControls{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:2px 0}
+.visualControls button{background:#fff;color:#5a4ac1;border:1px solid #dcd8f8;border-radius:9px;padding:9px 12px;cursor:pointer;font-weight:750;font-size:12px}
+.visualControls button:disabled{opacity:.4;cursor:not-allowed}
+.visualControls input[type=range]{width:min(260px,100%);accent-color:#6d5ad6}
+.visualControls strong{font-size:14px;color:#453e8b}
+.numberLine button{min-width:0;flex:1;padding:9px 3px;border:0;border-radius:7px;background:#fff;color:#30395a;font-size:12px;cursor:pointer}
+.numberLine .lineFocus{background:#705add;color:#fff;font-weight:800}
+.diagram>small{font-size:11px;color:#67708f;line-height:1.45}
+@media(max-width:610px){.numberLine{gap:1px}.numberLine button{font-size:10px;padding:9px 1px}.visualControls{gap:8px}}
