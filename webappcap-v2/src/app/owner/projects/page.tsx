@@ -63,11 +63,12 @@ export default async function OwnerProjectsPage({searchParams}:{searchParams:Pro
   };
  });
 
- const published=projectViews.filter(project=>!project.archived&&project.published).length+1;
+ const externalMathApp=!projectViews.some(project=>project.slug==='aprendendo-matematica');
+ const published=projectViews.filter(project=>!project.archived&&project.published).length+1+(externalMathApp?1:0);
  const configuring=projectViews.filter(project=>!project.published&&!project.archived).length;
  const newLeads=projectViews.filter(project=>!project.archived).reduce((sum,project)=>sum+project.leadsNew,0);
  const attention=projectViews.filter(project=>!project.archived&&needsAttention(project)).length;
- const totalProjects=projectViews.filter(project=>!project.archived).length+1;
+ const totalProjects=projectViews.filter(project=>!project.archived).length+1+(externalMathApp?1:0);
  const canCreateProjects=Object.values(segments).some(segment=>segment.key!=='portfolio'&&segment.templates.some(template=>template.status==='ready'));
  const leadProject=projectViews.find(project=>!project.archived&&project.leadsNew>0);
 
