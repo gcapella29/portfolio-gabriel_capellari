@@ -44,7 +44,7 @@ const mathAppCard:CardModel={
  host:'aprendendo-matematica.webappcap.com.br',siteType:'Aplicativo educacional',published:true,archived:false,
  status:'Externo · Apps Script',attention:false,badges:['Educação','Google Sheets + Apps Script'],
  facts:['Uso individual','Banco de dados: Google Sheets','V0.2 em desenvolvimento'],
- manageHref:'https://script.google.com/macros/s/AKfycbxquiATK-Je3l8ej7L9wnzjV8Q8MXQwt29BeuufiZnlJyV23gC6qBX0RcYCb06jeiTj/exec',
+ manageHref:'https://aprendendo-matematica.webappcap.com.br/',
  previewHref:'https://docs.google.com/spreadsheets/d/1c1t0jBt-Jh2-M8lNVSUwKPRP9ZtG6RjM3YDgMOUVeN8/edit',
  siteHref:'https://aprendendo-matematica.webappcap.com.br/'
 };
