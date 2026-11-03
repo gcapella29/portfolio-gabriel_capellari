@@ -1,11 +1,12 @@
 'use client';
 import {useState} from 'react';
 import styles from './math.module.css';
+import LessonPractice from './lesson-practice';
 
 type Step={title:string;text:string;example?:string};
 type Walk={line:string;why:string};
 type Check={question:string;options:string[];correct:number;why:string};
-type LessonData={version?:number;intro:string;analogy?:string;vocab?:{term:string;meaning:string}[];steps:Step[];walkthrough?:Walk[];pitfall:string;recap?:string[]|string;check?:Check;worked?:string};
+type LessonData={scope?:string;source?:string;sourceUrl?:string;practice?:{id:string;question:string;options:string[];explanation:string}[];version?:number;intro:string;analogy?:string;vocab?:{term:string;meaning:string}[];steps:Step[];walkthrough?:Walk[];pitfall:string;recap?:string[]|string;check?:Check;worked?:string};
 
 function Visual({id}:{id:string}){
  const [parts,setParts]=useState(3);
@@ -30,7 +31,8 @@ export default function MathLesson({lessonId,raw}:{lessonId:string;raw:string}){
  const recap=Array.isArray(data.recap)?data.recap:data.recap?[data.recap]:[];
  return <article className={styles.longform}>
   <div className={styles.lessonLead}><span className={styles.chapterMarker}>01 · ENTENDA A IDEIA</span><p>{data.intro}</p></div>
-  <Visual id={lessonId}/>
+  {data.version===6?<div className={styles.lessonScope}><span>OBJETIVO ESPECÍFICO DESTA AULA</span><strong>{data.scope||'Dominar este conceito antes de avançar.'}</strong><p>Estude este assunto primeiro. O próximo tópico aparece como outra aula na trilha.</p></div>:null}
+  {data.version===6&&lessonId>='A10'&&lessonId<='A18'?<div className={styles.diagram}><div className={styles.diagramCaption}>Uma unidade pode ser dividida em partes iguais. Use a explicação abaixo para interpretar a operação desta aula.</div><div className={styles.fractionBar}>{Array.from({length:8},(_,i)=><span key={i} className={i<3?styles.fracFilled:''}>{i<3?'✓':''}</span>)}</div><strong>Exemplo de representação: 3/8</strong></div>:<Visual id={lessonId}/>}
   {data.analogy?<section className={styles.lessonAnalogy}><span className={styles.chapterMarker}>ONDE ISSO APARECE NA VIDA REAL?</span><p>{data.analogy}</p></section>:null}
   {data.vocab?.length?<section className={styles.lessonGlossary}><span className={styles.chapterMarker}>02 · PALAVRAS QUE VOCÊ PRECISA CONHECER</span><div className={styles.glossaryGrid}>{data.vocab.map(v=><div key={v.term}><strong>{v.term}</strong><p>{v.meaning}</p></div>)}</div></section>:null}
   <section><span className={styles.chapterMarker}>03 · APRENDA PASSO A PASSO</span><div className={styles.tutorialSteps}>{data.steps.map((step,i)=><section key={i} className={styles.tutorialStep}><div className={styles.tutorialHead}><b>{i+1}</b><h3>{step.title}</h3></div><p>{step.text}</p>{step.example?<div className={styles.mathExample}><small>EXEMPLO COMENTADO</small><strong>{step.example}</strong></div>:null}</section>)}</div></section>
@@ -38,5 +40,7 @@ export default function MathLesson({lessonId,raw}:{lessonId:string;raw:string}){
   <section className={styles.lessonWarning}><strong>⚠ Um erro que muita gente comete</strong><p>{data.pitfall}</p></section>
   {recap.length?<section className={styles.lessonTakeaways}><span className={styles.chapterMarker}>05 · TRÊS IDEIAS PARA LEMBRAR</span>{recap.map((point,i)=><p key={i}><span>✓</span>{point}</p>)}</section>:null}
   {data.check?<section className={styles.lessonCheck}><span className={styles.chapterMarker}>06 · TESTE SE ENTENDEU</span><h3>{data.check.question}</h3><div className={styles.checkOptions}>{data.check.options.map((opt,i)=><button key={i} type="button" onClick={()=>setChoice(i)} className={choice===i?styles.checkSelected:''}>{String.fromCharCode(65+i)} · {opt}</button>)}</div>{choice!==null?<div className={choice===data.check.correct?styles.checkCorrect:styles.checkRetry}><strong>{choice===data.check.correct?'Isso! Você compreendeu.':'Você está construindo o raciocínio. Tente mais uma vez.'}</strong><p>{data.check.why}</p></div>:null}<p className={styles.checkNote}>Essa pergunta é para compreender o conceito. A prática oficial, com registro de desempenho, vem a seguir.</p></section>:null}
+  {data.practice?.length?<LessonPractice key={lessonId} items={data.practice} topic={lessonId}/>:null}
+  {data.sourceUrl?<div className={styles.lessonReferences}><strong>Para aprofundar</strong><p>Sequência elaborada com referências conceituais de materiais didáticos reconhecidos, sem transcrição das atividades.</p><a href={data.sourceUrl} target="_blank" rel="noopener noreferrer">Consultar material de referência ↗</a></div>:null}
  </article>;
 }
