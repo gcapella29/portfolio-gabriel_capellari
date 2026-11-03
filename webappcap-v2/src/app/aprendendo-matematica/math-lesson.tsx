@@ -2,6 +2,7 @@
 import {useState} from 'react';
 import styles from './math.module.css';
 import LessonPractice from './lesson-practice';
+import FractionConcept from './fraction-concept';
 
 type Step={title:string;text:string;example?:string};
 type Walk={line:string;why:string};
@@ -32,7 +33,7 @@ export default function MathLesson({lessonId,raw}:{lessonId:string;raw:string}){
  return <article className={styles.longform}>
   <div className={styles.lessonLead}><span className={styles.chapterMarker}>01 · ENTENDA A IDEIA</span><p>{data.intro}</p></div>
   {data.version===6?<div className={styles.lessonScope}><span>OBJETIVO ESPECÍFICO DESTA AULA</span><strong>{data.scope||'Dominar este conceito antes de avançar.'}</strong><p>Estude este assunto primeiro. O próximo tópico aparece como outra aula na trilha.</p></div>:null}
-  {data.version===6&&lessonId>='A10'&&lessonId<='A18'?<div className={styles.diagram}><div className={styles.diagramCaption}>Uma unidade pode ser dividida em partes iguais. Use a explicação abaixo para interpretar a operação desta aula.</div><div className={styles.fractionBar}>{Array.from({length:8},(_,i)=><span key={i} className={i<3?styles.fracFilled:''}>{i<3?'✓':''}</span>)}</div><strong>Exemplo de representação: 3/8</strong></div>:<Visual id={lessonId}/>}
+  {data.version===6?(Number(lessonId.slice(1))>=10&&Number(lessonId.slice(1))<=18?<FractionConcept lessonId={lessonId}/>:null):<Visual id={lessonId}/>} 
   {data.analogy?<section className={styles.lessonAnalogy}><span className={styles.chapterMarker}>ONDE ISSO APARECE NA VIDA REAL?</span><p>{data.analogy}</p></section>:null}
   {data.vocab?.length?<section className={styles.lessonGlossary}><span className={styles.chapterMarker}>02 · PALAVRAS QUE VOCÊ PRECISA CONHECER</span><div className={styles.glossaryGrid}>{data.vocab.map(v=><div key={v.term}><strong>{v.term}</strong><p>{v.meaning}</p></div>)}</div></section>:null}
   <section><span className={styles.chapterMarker}>03 · APRENDA PASSO A PASSO</span><div className={styles.tutorialSteps}>{data.steps.map((step,i)=><section key={i} className={styles.tutorialStep}><div className={styles.tutorialHead}><b>{i+1}</b><h3>{step.title}</h3></div><p>{step.text}</p>{step.example?<div className={styles.mathExample}><small>EXEMPLO COMENTADO</small><strong>{step.example}</strong></div>:null}</section>)}</div></section>
