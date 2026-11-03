@@ -5,6 +5,7 @@ import styles from './math.module.css';
 import MathExplanation from './math-explanation';
 import MathLesson from './math-lesson';
 import MathStudy from './math-study';
+import MathCoach from './math-coach';
 
 type Module={modulo_id:string;ordem:number|string;titulo:string;descricao:string;status:string};
 type Lesson={aula_id:string;modulo_id:string;ordem:number|string;titulo:string;objetivo:string;teoria:string;status:string};
@@ -15,7 +16,7 @@ type Verdict={correct:boolean;correctIndex:number;explanation:string};
 type SkillResult={achieved:number;attempted:number;label:string};
 type DiagnosticResult={correct:number;total:number;skills:Record<string,SkillResult>;priorities:string[]};
 type History={id:string;at:string;result:DiagnosticResult};
-type Page='home'|'trilha'|'diagnostico'|'aulas'|'praticar'|'simulados'|'erros'|'revisao'|'progresso';
+type Page='home'|'mentor'|'trilha'|'diagnostico'|'aulas'|'praticar'|'simulados'|'erros'|'revisao'|'progresso';
 type Answer={id:string;index:number};
 type ReviewItem=Question&{dueAt:string;lessonId:string;daysInterval:number};
 type ReviewData={due:ReviewItem[];upcoming:ReviewItem[];dueCount:number;upcomingCount:number};
@@ -135,7 +136,7 @@ export default function MathClient(){
   catch(e){setError(e instanceof Error?e.message:'Não foi possível salvar.')}
   finally{setBusy(false)}
  }
- const pages=[['home','Início','⌂'],['trilha','Minha trilha','▦'],['aulas','Aulas','◫'],['praticar','Praticar','◉'],['simulados','Simulados','▤'],['erros','Caderno de erros','✐'],['diagnostico','Diagnóstico','✎'],['revisao','Revisões','↺'],['progresso','Meu progresso','◷']] as const;
+ const pages=[['home','Início','⌂'],['mentor','Meu plano','✦'],['trilha','Minha trilha','▦'],['aulas','Aulas','◫'],['praticar','Praticar','◉'],['simulados','Simulados','▤'],['erros','Caderno de erros','✐'],['diagnostico','Diagnóstico','✎'],['revisao','Revisões','↺'],['progresso','Meu progresso','◷']] as const;
  const orderedLessons=useMemo(()=>[...(data?.lessons||[])].sort((a,b)=>{const ma=data?.modules.find(m=>m.modulo_id===a.modulo_id);const mb=data?.modules.find(m=>m.modulo_id===b.modulo_id);return Number(ma?.ordem||0)-Number(mb?.ordem||0)||Number(a.ordem)-Number(b.ordem);}),[data?.lessons,data?.modules]);
 
  const header=(eyebrow:string,title:string,description:string)=><><p className={styles.eyebrow}>{eyebrow}</p><h1 className={styles.title}>{title}</h1><p className={styles.lead}>{description}</p></>;
@@ -174,7 +175,8 @@ export default function MathClient(){
    {page==='home'?<>{header('BEM-VINDO','A matemática começa aqui','Um caminho de aprendizagem que respeita seu ritmo, do básico ao avançado.')}
     <section className={styles.hero}><small>SEU PRÓXIMO PASSO</small><h2>{last?'Continue evoluindo':'Descubra seu ponto de partida'}</h2><p>Faça um diagnóstico progressivo para encontrar seus pontos fortes e o que merece atenção.</p><button className={`${styles.button} ${styles.buttonWhite}`} disabled={busy} onClick={()=>openQuiz('diagnostico')}>{last?'Refazer diagnóstico':'Iniciar diagnóstico'} →</button></section>
     <div className={styles.grid3}><div className={styles.stat}><small>Questões respondidas</small><strong>{data?.answeredCount||0}</strong></div><div className={styles.stat}><small>Aulas estudadas</small><strong>{points}</strong></div><div className={styles.stat}><small>Último diagnóstico</small><strong>{progressLabel}</strong></div></div>
-    {review.dueCount>0?<section className={styles.panel}><h2>Revisões disponíveis: {review.dueCount}</h2><p className={styles.lead}>Revisite exercícios em que você teve dificuldade e fortaleça a memória.</p><button className={styles.button} onClick={()=>navigate('revisao')}>Ver revisões →</button></section>:null}<h2 className={styles.sectionTitle}>Seu percurso</h2>{modulesView()}</>:
+    {review.dueCount>0?<section className={styles.panel}><h2>Revisões disponíveis: {review.dueCount}</h2><p className={styles.lead}>Revisite exercícios em que você teve dificuldade e fortaleça a memória.</p><button className={styles.button} onClick={()=>navigate('revisao')}>Ver revisões →</button></section>:null}<section className={styles.coachHomeNudge}><div><strong>Conheça seu plano de estudos V0.5</strong><p>A próxima aula é recomendada com base no seu desempenho e nos pré-requisitos.</p></div><button className={styles.button} onClick={()=>navigate('mentor')}>Abrir meu plano →</button></section><h2 className={styles.sectionTitle}>Seu percurso</h2>{modulesView()}</>:
+   page==='mentor'?<MathCoach lessons={orderedLessons} progress={data?.progress||[]} modules={data?.modules||[]} reviewCount={review.dueCount} onLesson={id=>{setLesson(orderedLessons.find(x=>x.aula_id===id)||null);setMode(null);setPage('aulas');setError('');}} onPractice={()=>navigate('praticar')} onReview={()=>navigate('revisao')}/>:
    page==='trilha'?<>{header('CURRÍCULO','Minha trilha','Seis áreas principais; as aulas serão ampliadas progressivamente.')}{last?<><h2 className={styles.sectionTitle}>Seu mapa atual</h2>{skillCards(last)}</>:<div className={styles.notice}>Faça o diagnóstico para receber prioridades de estudo.</div>}<h2 className={styles.sectionTitle}>Módulos</h2>{modulesView()}</>:
    page==='praticar'?<MathStudy variant="practice" lessons={orderedLessons}/>:
    page==='simulados'?<MathStudy variant="simulado" lessons={orderedLessons}/>:
