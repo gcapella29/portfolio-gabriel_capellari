@@ -133,7 +133,7 @@ export default function MathClient(){
   finally{setBusy(false)}
  }
  const pages=[['home','Início','⌂'],['trilha','Minha trilha','▦'],['diagnostico','Diagnóstico','✎'],['aulas','Aulas','◫'],['revisao','Revisões','↺'],['progresso','Progresso','◷']] as const;
- const orderedLessons=useMemo(()=>[...(data?.lessons||[])].sort((a,b)=>Number(a.ordem)-Number(b.ordem)),[data?.lessons]);
+ const orderedLessons=useMemo(()=>[...(data?.lessons||[])].sort((a,b)=>{const ma=data?.modules.find(m=>m.modulo_id===a.modulo_id);const mb=data?.modules.find(m=>m.modulo_id===b.modulo_id);return Number(ma?.ordem||0)-Number(mb?.ordem||0)||Number(a.ordem)-Number(b.ordem);}),[data?.lessons,data?.modules]);
 
  const header=(eyebrow:string,title:string,description:string)=><><p className={styles.eyebrow}>{eyebrow}</p><h1 className={styles.title}>{title}</h1><p className={styles.lead}>{description}</p></>;
 
