@@ -33,7 +33,7 @@ export default function MathCoach({lessons,progress,modules,reviewCount,onLesson
  const [showAll,setShowAll]=useState(false);
  const [reload,setReload]=useState(0);
  useEffect(()=>{let active=true;loadStudy().then(s=>{if(active){setStudy(s);setError('');}}).catch(e=>{if(active)setError(e instanceof Error?e.message:'Erro ao carregar plano.');});return()=>{active=false;};},[reload]);
- const completed=new Set(progress.filter(x=>x.status==='concluida').map(x=>x.aula_id));
+ const completed=useMemo(()=>new Set(progress.filter(x=>x.status==='concluida').map(x=>x.aula_id)),[progress]);
  const guidance=useMemo(()=>{
   // Antes de existir histórico, use uma recomendação curricular inicial com a mesma estrutura dos itens avaliados.
   return topics.map((t,i)=>{
