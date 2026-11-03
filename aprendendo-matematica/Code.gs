@@ -152,6 +152,8 @@ function doPost(event) {
         value = getDiagnosticsApi_(); break;
       case 'review':
         value = getReviewApi_(); break;
+      case 'study':
+        value = getStudyApi_(); break;
       case 'finish-diagnostic':
         value = finishDiagnosticApi_(data.answers); break;
       default: return json_({ok:false,error:'Operação desconhecida.'});
@@ -261,4 +263,86 @@ function getReviewApi_() {
   due.sort((a,b)=>a.dueAt.localeCompare(b.dueAt));
   upcoming.sort((a,b)=>a.dueAt.localeCompare(b.dueAt));
   return {due:due.slice(0,20),upcoming:upcoming.slice(0,20),dueCount:due.length,upcomingCount:upcoming.length};
+}
+
+/**
+ * V0.4 · banco de questões e progresso, consultados via gateway autenticado.
+ * Respostas é a única fonte de verdade; nenhuma célula histórica é alterada.
+ * A API nunca retorna o gabarito antes de uma tentativa.
+ */
+function getStudyApi_() {
+  const ss=db_();
+  const questions=objects_(ss,'Questoes').filter(q=>String(q.tipo)==='pratica');
+  const lessons=objects_(ss,'Aulas');
+  const lessonMap=new Map(lessons.map(a=>[String(a.aula_id),a]));
+  const attempts=objects_(ss,'Respostas')
+    .filter(r=>String(r.aluno_id)===ALUNO_ID)
+    .map((r,i)=>({
+      id:String(r.questao_id),
+      correct:r.correta===true||String(r.correta).toLowerCase()==='true',
+      at:r.data_hora instanceof Date?r.data_hora:new Date(r.data_hora),
+      order:i
+    }));
+  const qMap=new Map(objects_(ss,'Questoes').map(q=>[String(q.questao_id),q]));
+  const correctCount=attempts.filter(a=>a.correct).length;
+  const allBySkill={},byModule={},daily={},perQuestion=new Map();
+  attempts.forEach(a=>{
+    const q=qMap.get(a.id);
+    if(!q)return;
+    const skill=String(q.habilidade||'outros');
+    const unit=allBySkill[skill]||{total:0,correct:0,wrong:0};
+    unit.total++;if(a.correct)unit.correct++;else unit.wrong++;
+    allBySkill[skill]=unit;
+    if(String(q.tipo)==='pratica'){
+      const lesson=lessonMap.get(String(q.aula_id));
+      const moduleId=lesson?String(lesson.modulo_id):'outros';
+      const moduleStats=byModule[moduleId]||{total:0,correct:0};
+      moduleStats.total++;if(a.correct)moduleStats.correct++;
+      byModule[moduleId]=moduleStats;
+    }
+    const date=Utilities.formatDate(a.at,'America/Sao_Paulo','yyyy-MM-dd');
+    const day=daily[date]||{date,total:0,correct:0};
+    day.total++;if(a.correct)day.correct++;daily[date]=day;
+    const series=perQuestion.get(a.id)||[];
+    series.push(a);perQuestion.set(a.id,series);
+  });
+  const now=new Date();
+  const days=[];
+  for(let daysAgo=13;daysAgo>=0;daysAgo--){
+    const date=new Date(now.getTime()-daysAgo*86400000);
+    const key=Utilities.formatDate(date,'America/Sao_Paulo','yyyy-MM-dd');
+    days.push(daily[key]||{date:key,total:0,correct:0});
+  }
+  const mistakes=[];
+  questions.forEach(q=>{
+    const series=perQuestion.get(String(q.questao_id))||[];
+    if(!series.some(a=>!a.correct))return;
+    const last=series[series.length-1];
+    mistakes.push({
+      id:String(q.questao_id),lessonId:String(q.aula_id),skill:String(q.habilidade),
+      level:String(q.nivel),title:String(q.enunciado),
+      options:JSON.parse(String(q.alternativas_json)),
+      wrongCount:series.filter(a=>!a.correct).length,
+      attemptCount:series.length,
+      resolved:last.correct,
+      lastAt:last.at.toISOString()
+    });
+  });
+  mistakes.sort((a,b)=>Number(a.resolved)-Number(b.resolved)||b.lastAt.localeCompare(a.lastAt));
+  return {
+    bank:questions.map(q=>({
+      id:String(q.questao_id),lessonId:String(q.aula_id),skill:String(q.habilidade),
+      level:String(q.nivel),title:String(q.enunciado),
+      options:JSON.parse(String(q.alternativas_json))
+    })),
+    stats:{
+      total:attempts.length,correct:correctCount,
+      accuracy:attempts.length?Math.round(correctCount/attempts.length*100):0,
+      questionCount:questions.length,allQuestionCount:qMap.size,
+      skills:allBySkill,modules:byModule,days,
+      mistakes:mistakes.length,
+      unresolved:mistakes.filter(m=>!m.resolved).length
+    },
+    mistakes:mistakes.slice(0,150)
+  };
 }
