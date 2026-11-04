@@ -26,6 +26,13 @@ export async function middleware(request: NextRequest) {
     target.search = '';
     return NextResponse.rewrite(target);
   }
+  // English Lab lives in the Next.js application, like Aprendendo Matemática.
+  if (incomingHost === 'english-lab.webappcap.com.br' && path === '/') {
+    const target = request.nextUrl.clone();
+    target.pathname = '/english-lab';
+    target.search = '';
+    return NextResponse.rewrite(target);
+  }
   const host = classifyHost(request.headers.get('host') || '');
   const isTenantRoute = path === '/tenant' || path.startsWith('/tenant/');
   const isApiRoute = path === '/api' || path.startsWith('/api/');
