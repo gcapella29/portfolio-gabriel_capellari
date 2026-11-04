@@ -8,11 +8,11 @@
           "value": "english-lab.webappcap.com.br"
         }
       ],
-      "destination": "/english-lab.html"
+      "destination": "/api/english-lab"
     },
     {
       "source": "/english-lab",
-      "destination": "/english-lab.html"
+      "destination": "/api/english-lab"
     },
     {
       "source": "/p/:slug",
