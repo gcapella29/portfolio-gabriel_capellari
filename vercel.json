@@ -1,6 +1,16 @@
 {
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "english-lab.webappcap.com.br"
+        }
+      ],
+      "destination": "/english-lab.html"
+    },
+    {
       "source": "/english-lab",
       "destination": "/english-lab.html"
     },
